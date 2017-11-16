@@ -23,6 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die;
 
 /**
  * Returns the courses stored in database
@@ -61,16 +62,14 @@ function block_attestoodle_get_modules() {
 function block_attestoodle_get_courses_modules($courses) {
     global $DB;
 
-    // On filtre les courses pour ne récupérer que les id
+    // On filtre les courses pour ne récupérer que les id.
     $idcourses = array_map(function ($results) {
         return $results->id;
     }, $courses);
 
     if (count($idcourses) > 0) {
-
-
         $stridcourses = implode(",", $idcourses);
-        // On spécifie une clause WHERE particuliere
+        // On spécifie une clause WHERE particuliere.
         $whereclause = "course IN ({$stridcourses})";
 
         // $results = $DB->get_records_select('course_modules', $where_clause);

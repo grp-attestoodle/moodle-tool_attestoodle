@@ -74,8 +74,8 @@ class training_factory extends singleton {
 
     public function get_trainings_as_stdclass() {
         return array_map(function($o) {
-                return $o->get_object_as_stdclass();
-            }, $this->trainings);
+            return $o->get_object_as_stdclass();
+        }, $this->trainings);
     }
 }
 

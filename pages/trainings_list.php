@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-// Importation de la config $CFG qui importe égalment $DB et $OUTPUT
+// Importation de la config $CFG qui importe égalment $DB et $OUTPUT.
 require_once(dirname(__FILE__) . '/../../../config.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/lib.php');
 
@@ -36,7 +36,7 @@ $options = array('class' => 'attestoodle-button');
 echo $OUTPUT->single_button($url, $label, 'get', $options);
 
 echo $OUTPUT->heading('Liste des formations :');
-// Print des formations dans un tableau
+// Print des formations dans un tableau.
 training_factory::get_instance()->create_trainings();
 $data = training_factory::get_instance()->get_trainings_as_stdClass();
 echo "<pre>";

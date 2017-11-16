@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -30,7 +31,7 @@ class block_attestoodle extends block_base {
         $this->title = get_string('pluginname', 'block_attestoodle');
     }
 
-    // Méthode appelée au moment de l'affichage
+    // Méthode appelée au moment de l'affichage.
     public function get_content() {
         global $CFG, $OUTPUT, $USER;
 
@@ -48,7 +49,7 @@ class block_attestoodle extends block_base {
         $this->content->icons = array();
         $this->content->footer = '';
 
-        // user/index.php expect course context, so get one if page has module context.
+        // File user/index.php expect course context, so get one if page has module context.
         $currentcontext = $this->page->context->get_course_context(false);
 
         if (!empty($this->config->text)) {
@@ -75,13 +76,13 @@ class block_attestoodle extends block_base {
         $options = array('class' => 'attestoodle-button');
         // Bouton vers un liens vers une autre page //  $this->content->text .=
         // ...$OUTPUT->single_button($url, $label, 'post', $options);
-        // ...mode get offre la visu de l'url (debug)
+        // ...mode get offre la visu de l'url (debug).
         $this->content->text .= $OUTPUT->single_button($url, $label, 'get', $options);
 
         return $this->content;
     }
 
-    // My moodle can only have SITEID and it's redundant here, so take it away
+    // My moodle can only have SITEID and it's redundant here, so take it away.
     public function applicable_formats() {
         return array('all' => false,
             'site' => true,
