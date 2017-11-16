@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -60,27 +61,27 @@ function block_attestoodle_get_modules() {
 function block_attestoodle_get_courses_modules($courses) {
     global $DB;
 
-    // on filtre les courses pour ne récupérer que les id
-    $id_courses = array_map(function ($results) {
-            return $results->id;
-        }, $courses);
+    // On filtre les courses pour ne récupérer que les id
+    $idcourses = array_map(function ($results) {
+        return $results->id;
+    }, $courses);
 
-    if (count($id_courses) > 0) {
+    if (count($idcourses) > 0) {
 
 
-        $str_id_courses = implode(",", $id_courses);
-        // on spécifie une clause WHERE particuliere
-        $where_clause = "course IN ({$str_id_courses})";
+        $stridcourses = implode(",", $idcourses);
+        // On spécifie une clause WHERE particuliere
+        $whereclause = "course IN ({$stridcourses})";
 
         // $results = $DB->get_records_select('course_modules', $where_clause);
-        $request = "SELECT DISTINCT module FROM {course_modules} WHERE course IN ({$str_id_courses})";
+        $request = "SELECT DISTINCT module FROM {course_modules} WHERE course IN ({$stridcourses})";
         $results = $DB->get_records_sql($request);
 
-        $modules_results = array_map(function ($results) {
+        $modulesresults = array_map(function ($results) {
                 return $results->module;
             }, $results);
-        return $modules_results;
-        //return $results;
+        return $modulesresults;
+        // return $results;
     } else {
         return array();
     }
@@ -89,17 +90,17 @@ function block_attestoodle_get_courses_modules($courses) {
 function block_attestoodle_get_activities_with_intro($activities) {
     global $DB;
 
-    $array_return = array();
+    $arrayreturn = array();
 
-    foreach ($activities as $table_name) {
-        $request = "SELECT * FROM {" . $table_name . "} WHERE intro LIKE '%<span class=\"tps_jalon\">%</span>%'";
+    foreach ($activities as $tablename) {
+        $request = "SELECT * FROM {" . $tablename . "} WHERE intro LIKE '%<span class=\"tps_jalon\">%</span>%'";
         $results = $DB->get_records_sql($request);
         if (count($results) > 0) {
             foreach ($results as $result) {
-                array_push($array_return, $result);
+                array_push($arrayreturn, $result);
             }
         }
     }
 
-    return $array_return;
+    return $arrayreturn;
 }

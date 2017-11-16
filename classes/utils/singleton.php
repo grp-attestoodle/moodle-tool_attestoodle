@@ -29,21 +29,22 @@ namespace block_attestoodle\utils;
 defined('MOODLE_INTERNAL') || die;
 
 abstract class singleton {
+
     /** @var singleton Instance of the singleton */
     protected static $instance;
 
     /**
      * This makes __construct method protected to avoid external instanciation
      */
-    protected function __construct() {}
+    protected function __construct() {
+    }
 
     /**
      * Method that returns or generates the singleton instance
      *
      * @return singleton The instance of the singleton
      */
-    public static function get_instance()
-    {
+    public static function get_instance() {
         if (!isset(static::$instance)) {
             static::$instance = new static();
         }
@@ -54,8 +55,7 @@ abstract class singleton {
     /**
      * This overrides __clone method to avoid cloning of the singleton
      */
-    public function __clone()
-    {
+    public function __clone() {
         trigger_error('Cloning is not allowed', E_USER_ERROR);
     }
 }

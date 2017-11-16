@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -27,12 +26,12 @@ defined('MOODLE_INTERNAL') || die();
 
 class block_attestoodle extends block_base {
 
-    function init() {
+    public function init() {
         $this->title = get_string('pluginname', 'block_attestoodle');
     }
 
-    // méthode appelée au moment de l'affichage
-    function get_content() {
+    // Méthode appelée au moment de l'affichage
+    public function get_content() {
         global $CFG, $OUTPUT, $USER;
 
         if ($this->content !== null) {
@@ -74,14 +73,15 @@ class block_attestoodle extends block_base {
         $url = new moodle_url('/blocks/attestoodle/course_list_page.php', $parameters);
         $label = get_string('course_list_btn_text', 'block_attestoodle');
         $options = array('class' => 'attestoodle-button');
-        // bouton vers un liens vers une autre page //  $this->content->text .= $OUTPUT->single_button($url, $label, 'post', $options);
-        // mode get offre la visu de l'url (debug)
+        // Bouton vers un liens vers une autre page //  $this->content->text .=
+        // ...$OUTPUT->single_button($url, $label, 'post', $options);
+        // ...mode get offre la visu de l'url (debug)
         $this->content->text .= $OUTPUT->single_button($url, $label, 'get', $options);
 
         return $this->content;
     }
 
-    // my moodle can only have SITEID and it's redundant here, so take it away
+    // My moodle can only have SITEID and it's redundant here, so take it away
     public function applicable_formats() {
         return array('all' => false,
             'site' => true,
@@ -96,7 +96,7 @@ class block_attestoodle extends block_base {
         return true;
     }
 
-    function has_config() {
+    public function has_config() {
         return true;
     }
 

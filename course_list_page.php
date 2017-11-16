@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -13,7 +14,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
 
 /**
  *
@@ -32,38 +32,38 @@ require_once($CFG->dirroot.'/blocks/attestoodle/classes/utils/db_accessor.php');
 //require_once($CFG->dirroot.'/blocks/attestoodle/classes/training.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/training_factory.php');
 
-//use block_attestoodle\utils\singleton;
+// use block_attestoodle\utils\singleton;
 use block_attestoodle\utils\db_accessor;
 use block_attestoodle\factories\training_factory;
-//use block_attestoodle\training;
+// use block_attestoodle\training;
 
 // 1) récupération de tous les courses avec suivi d'achevement activé
 $courses = block_attestoodle_get_courses(true);
 
 // 2) générer un tableau associatif des modules (id => name) depuis
-// la table "modules"
-$array_modules = block_attestoodle_get_modules();
+// ...la table "modules"
+$arraymodules = block_attestoodle_get_modules();
 
 
 // 3) Récupérer tous les "course_modules" filtrés avec les résultats
-// du 1)
-$course_modules = block_attestoodle_get_courses_modules($courses);
+// ...du 1)
+$coursemodules = block_attestoodle_get_courses_modules($courses);
 
 
 // 4) Pour chaque "course_module", récupérer le nom de la table dans
-// le tableau 2) correspondant puis tous les enregistrements de
-// ladite table ayant id = "instance" (dans 3))
-$array_modules_name = array();
-foreach ($course_modules as $id_course_module => $id_module){
-    array_push($array_modules_name, $array_modules[$id_module]);
+// ...le tableau 2) correspondant puis tous les enregistrements de
+// ...ladite table ayant id = "instance" (dans 3))
+$arraymodulesname = array();
+foreach ($coursemodules as $idcoursemodule => $idmodule){
+    array_push($arraymodulesname, $arraymodules[$idmodule]);
 }
 
 
 // 5) Filtrer les résultats du 4) avec intro qui contient span
-$activities_with_intro = block_attestoodle_get_activities_with_intro($array_modules_name);
+$activitieswithintro = block_attestoodle_get_activities_with_intro($arraymodulesname);
 
 
-// output de la page
+// Output de la page
 echo $OUTPUT->header();
 
 $parameters = array();
@@ -74,7 +74,7 @@ echo $OUTPUT->single_button($url, $label, 'get', $options);
 
 echo $OUTPUT->heading('Liste des cours :');
 
-// print des resultats dans un tableau
+// Print des resultats dans un tableau
 $table = new html_table();
 $table->head = array('ID', 'Fullname', 'Completion enabled');
 $table->data = $courses;
@@ -82,16 +82,16 @@ echo html_writer::table($table);
 
 echo "<pre>\n";
 echo "tableau course_modules\n";
-print_r($course_modules);
+print_r($coursemodules);
 echo "======================================\n";
 echo "tableau array_modules\n";
-print_r($array_modules);
+print_r($arraymodules);
 echo "======================================\n";
 echo "tableau array_printable\n";
-print_r($array_printable);
+print_r($arrayprintable);
 echo "======================================\n";
 echo "tableau activities_with_intro\n";
-print_r($activities_with_intro);
+print_r($activitieswithintro);
 echo "</pre>\n";
 echo "<p>Petit test</p>";
 

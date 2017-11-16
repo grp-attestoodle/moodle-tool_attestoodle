@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -56,7 +55,7 @@ class training {
             ];
     }
 
-    public function get_object_as_stdClass() {
+    public function get_object_as_stdclass() {
         $obj = new \stdClass();
         $obj->id = $this->id;
         $obj->name = $this->name;

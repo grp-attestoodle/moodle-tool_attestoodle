@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -33,7 +32,7 @@ class db_accessor extends singleton {
     protected static $instance;
 
     /** @var $DB Instance of the $DB Moodle variable */
-    private static $DB;
+    private static $db;
 
     /**
      * Constructor of the db_accessor singleton
@@ -42,15 +41,15 @@ class db_accessor extends singleton {
     protected function __construct() {
         global $DB;
         parent::__construct();
-        self::$DB = $DB;
+        self::$db = $DB;
     }
 
     /**
-     * 
+     *
      * @return stdClass
      */
     public function get_all_trainings() {
-        $result = self::$DB->get_records('course_categories');
+        $result = self::$db->get_records('course_categories');
         return $result;
     }
 }

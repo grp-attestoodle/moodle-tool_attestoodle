@@ -36,11 +36,11 @@ class training_factory extends singleton {
     protected static $instance;
 
     /** @var array Array containing all the trainings */
-    private $array_trainings;
+    private $trainings;
 
     protected function __construct() {
         parent::__construct();
-        $this->array_trainings = array();
+        $this->trainings = array();
     }
 
     /**
@@ -50,32 +50,32 @@ class training_factory extends singleton {
      * @param stdClass $dbTraining Standard object from the Moodle request
      * @return training The training added in the array
      */
-    private function create($dbTraining) {
-        $id = $dbTraining->id;
-        $name = $dbTraining->name;
-        $desc = $dbTraining->description;
+    private function create($dbtraining) {
+        $id = $dbtraining->id;
+        $name = $dbtraining->name;
+        $desc = $dbtraining->description;
 
-        $trainingToAdd = new training($id, $name, $desc);
-        $this->array_trainings[] = $trainingToAdd;
+        $trainingtoadd = new training($id, $name, $desc);
+        $this->trainings[] = $trainingtoadd;
 
-        return $trainingToAdd;
+        return $trainingtoadd;
     }
 
     public function create_trainings() {
-        $dbTrainings = db_accessor::get_instance()->get_all_trainings();
-        foreach ($dbTrainings as $training) {
+        $dbtrainings = db_accessor::get_instance()->get_all_trainings();
+        foreach ($dbtrainings as $training) {
             $this->create($training);
         }
     }
 
     public function get_trainings() {
-        return $this->array_trainings;
+        return $this->trainings;
     }
 
-    public function get_trainings_as_stdClass() {
+    public function get_trainings_as_stdclass() {
         return array_map(function($o) {
-                return $o->get_object_as_stdClass();
-            }, $this->array_trainings);
+                return $o->get_object_as_stdclass();
+            }, $this->trainings);
     }
 }
 
