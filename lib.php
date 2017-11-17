@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -77,8 +76,8 @@ function block_attestoodle_get_courses_modules($courses) {
         $results = $DB->get_records_sql($request);
 
         $modulesresults = array_map(function ($results) {
-                return $results->module;
-            }, $results);
+            return $results->module;
+        }, $results);
         return $modulesresults;
         // return $results;
     } else {

@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -54,7 +53,7 @@ $coursemodules = block_attestoodle_get_courses_modules($courses);
 // ...le tableau 2) correspondant puis tous les enregistrements de
 // ...ladite table ayant id = "instance" (dans 3)).
 $arraymodulesname = array();
-foreach ($coursemodules as $idcoursemodule => $idmodule){
+foreach ($coursemodules as $idcoursemodule => $idmodule) {
     array_push($arraymodulesname, $arraymodules[$idmodule]);
 }
 
