@@ -23,7 +23,7 @@
  */
 
 // Importation de la config $CFG qui importe égalment $DB et $OUTPUT.
-require_once(dirname(__FILE__) . '/../../config.php');
+require_once(dirname(__FILE__) . '/../../../config.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/lib.php');
 
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/utils/singleton.php');
@@ -65,15 +65,13 @@ $label = get_string('trainings_list_btn_text', 'block_attestoodle');
 $options = array('class' => 'attestoodle-button');
 echo $OUTPUT->single_button($url, $label, 'get', $options);
 
-echo $OUTPUT->heading('Liste des cours :');
+echo $OUTPUT->heading('Liste des cours 2:');
 
 // Print des resultats dans un tableau.
 $table = new html_table();
 $table->head = array('ID', 'Fullname', 'Completion enabled');
 $table->data = $courses;
 echo html_writer::table($table);
-
-
 
 // Print de la fin de la page.
 echo $OUTPUT->footer();
