@@ -47,7 +47,7 @@ class training_factory extends singleton {
      * Create a training from a Moodle request standard object, add it
      * to the array then return it
      *
-     * @param stdClass $dbTraining Standard object from the Moodle request
+     * @param stdClass $dbtraining Standard object from the Moodle request
      * @return training The training added in the array
      */
     private function create($dbtraining) {
@@ -56,6 +56,12 @@ class training_factory extends singleton {
         $desc = $dbtraining->description;
 
         $trainingtoadd = new training($id, $name, $desc);
+
+        $courses = courses_factory::get_instance()->retrieve_courses_by_training($id);
+        foreach ($courses as $course) {
+            $trainingtoadd->add_course($course);
+        }
+
         $this->trainings[] = $trainingtoadd;
 
         return $trainingtoadd;

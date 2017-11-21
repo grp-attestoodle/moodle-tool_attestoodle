@@ -24,10 +24,12 @@
 
 namespace block_attestoodle;
 
+use block_attestoodle\factories\courses_factory;
+
 defined('MOODLE_INTERNAL') || die;
 
 class training {
-    /** @var int Id of the training */
+    /** @var string Id of the training */
     private $id;
 
     /** @var string Name of the training */
@@ -36,15 +38,22 @@ class training {
     /** @var string Description of the training */
     private $description;
 
+    /** @var array Description of the training */
+    private $courses;
+
     /**
      * Constructor of the training class
      *
+     * @param string $id Id of the training
      * @param string $name Name of the training
+     * @param string $description Description of the training
+     * @param array $courses Courses of the training
      */
     public function __construct($id, $name, $description) {
         $this->id = $id;
         $this->name = $name;
         $this->description = $description;
+        $this->courses = array();
     }
 
     public function get_data_as_table() {
@@ -67,7 +76,7 @@ class training {
     /**
      * Getter for $id property
      *
-     * @return int Id of the training
+     * @return string Id of the training
      */
     public function get_id() {
         return $this->id;
@@ -85,16 +94,25 @@ class training {
     /**
      * Getter for $description property
      *
-     * @return string Name of the training
+     * @return string Description of the training
      */
     public function get_description() {
         return $this->description;
     }
 
     /**
+     * Getter for $courses property
+     *
+     * @return array Courses of the training
+     */
+    public function get_courses() {
+        return $this->courses;
+    }
+
+    /**
      * Setter for $id property
      *
-     * @param int $prop Id to set for the training
+     * @param string $prop Id to set for the training
      */
     public function set_id($prop) {
         $this->id = $prop;
@@ -112,9 +130,27 @@ class training {
     /**
      * Setter for $description property
      *
-     * @param string $prop Name to set for the training
+     * @param string $prop Description to set for the training
      */
     public function set_description($prop) {
         $this->description = $prop;
+    }
+
+    /**
+     * Setter for $courses property
+     *
+     * @param array $prop Courses to set for the training
+     */
+    public function set_courses($prop) {
+        $this->courses = $prop;
+    }
+
+    /**
+     * Add a course to the training courses list
+     *
+     * @param course $course Course to add to the training
+     */
+    public function add_course($course) {
+        $this->courses[] = $course;
     }
 }
