@@ -52,4 +52,54 @@ class db_accessor extends singleton {
         $result = self::$db->get_records('course_categories');
         return $result;
     }
+
+    /**
+     *
+     * @param int $id
+     * @return stdClass
+     */
+    public function get_courses_by_training($id) {
+        $result = self::$db->get_records('course', array('category' => $id));
+        return $result;
+    }
+
+    /**
+     *
+     * @param int $id
+     * @return stdClass
+     */
+    public function get_activities_by_course($id) {
+        $result = self::$db->get_records('course', array('category' => $id));
+        return $result;
+    }
+
+    /**
+     *
+     * @param int $id
+     * @return stdClass
+     */
+    public function get_course_modules_by_course($id) {
+        $result = self::$db->get_records('course_modules', array('course' => $id));
+        return $result;
+    }
+
+    /**
+     *
+     * @param int $id
+     * @return stdClass
+     */
+    public function get_module_table_name($id) {
+        $result = self::$db->get_record('modules', array('id' => $id), "name");
+        return $result->name;
+    }
+
+    /**
+     *
+     * @param int $id
+     * @return stdClass
+     */
+    public function get_course_modules_infos($instanceid, $tablename) {
+        $result = self::$db->get_record($tablename, array('id' => $instanceid));
+        return $result;
+    }
 }
