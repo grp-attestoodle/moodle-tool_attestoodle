@@ -35,11 +35,11 @@ class activities_factory extends singleton {
     /** @var courses_factory Instance of the training_factory singleton */
     protected static $instance;
 
-    private $module_names;
+    private $modulenames;
 
     protected function __construct() {
         parent::__construct();
-        $this->module_names = array();
+        $this->modulenames = array();
     }
 
     /**
@@ -58,12 +58,12 @@ class activities_factory extends singleton {
     }
 
     private function get_module_table_name($moduleid) {
-        if (!isset($this->module_names[$moduleid])) {
+        if (!isset($this->modulenames[$moduleid])) {
             $modulename = db_accessor::get_instance()->get_module_table_name($moduleid);
-            $this->module_names[$moduleid] = $modulename;
+            $this->modulenames[$moduleid] = $modulename;
         }
 
-        return $this->module_names[$moduleid];
+        return $this->modulenames[$moduleid];
     }
 
     public function retrieve_activities_by_course($id) {
