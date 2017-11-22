@@ -30,8 +30,9 @@ defined('MOODLE_INTERNAL') || die;
  * @param boolean completionenabled Set to true if we need only the courses where completion is enabled
  * @return array Array of courses retrieved in DB
  */
-function block_attestoodle_get_courses($completionenabled = true) {
+function block_attestoodle_get_courses() {
     global $DB;
+    $completionenabled = true;
     $result = $DB->get_records('course',
                             array('enablecompletion' => (int)$completionenabled),
                             null,
@@ -68,10 +69,7 @@ function block_attestoodle_get_courses_modules($courses) {
 
     if (count($idcourses) > 0) {
         $stridcourses = implode(",", $idcourses);
-        // On spécifie une clause WHERE particuliere.
-        $whereclause = "course IN ({$stridcourses})";
 
-        // $results = $DB->get_records_select('course_modules', $where_clause);
         $request = "SELECT DISTINCT module FROM {course_modules} WHERE course IN ({$stridcourses})";
         $results = $DB->get_records_sql($request);
 
@@ -79,7 +77,6 @@ function block_attestoodle_get_courses_modules($courses) {
             return $results->module;
         }, $results);
         return $modulesresults;
-        // return $results;
     } else {
         return array();
     }

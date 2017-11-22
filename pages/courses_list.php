@@ -31,7 +31,7 @@ require_once($CFG->dirroot.'/blocks/attestoodle/classes/utils/db_accessor.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/training_factory.php');
 
 // 1) récupération de tous les courses avec suivi d'achevement activé.
-$courses = block_attestoodle_get_courses(true);
+$courses = block_attestoodle_get_courses();
 
 // 2) générer un tableau associatif des modules (id => name) depuis
 // ...la table "modules".

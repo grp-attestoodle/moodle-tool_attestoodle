@@ -32,7 +32,7 @@ class block_attestoodle extends block_base {
 
     // Méthode appelée au moment de l'affichage.
     public function get_content() {
-        global $CFG, $OUTPUT, $USER;
+        global $OUTPUT, $USER;
 
         if ($this->content !== null) {
             return $this->content;
@@ -73,9 +73,8 @@ class block_attestoodle extends block_base {
         $url = new moodle_url('/blocks/attestoodle/pages/courses_list.php', $parameters);
         $label = get_string('course_list_btn_text', 'block_attestoodle');
         $options = array('class' => 'attestoodle-button');
-        // Bouton vers un liens vers une autre page //  $this->content->text .=
-        // ...$OUTPUT->single_button($url, $label, 'post', $options);
-        // ...mode get offre la visu de l'url (debug).
+        // Bouton vers un liens vers une autre page où le
+        // ...mode 'get' offre la visu de l'url (debug).
         $this->content->text .= $OUTPUT->single_button($url, $label, 'get', $options);
 
         return $this->content;
