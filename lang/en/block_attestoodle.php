@@ -32,6 +32,6 @@ $string['attestoodle:myaddinstance'] = 'Add an attestoodle block to my moodle';
 $string['pluginname'] = 'Attestoodle';
 
 $string['hello'] = 'Salut :)';
-$string['course_list_btn_text'] = 'Liste des cours';
-
+$string['courses_list_btn_text'] = 'Liste des cours';
 $string['trainings_list_btn_text'] = 'Liste des formations';
+$string['training_detail_btn_text'] = 'Détails';

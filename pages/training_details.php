@@ -16,6 +16,9 @@
 
 // Importation de la config $CFG qui importe égalment $DB et $OUTPUT.
 require_once(dirname(__FILE__) . '/../../../config.php');
+
+$trainingid = required_param('id', PARAM_INT);
+
 require_once($CFG->dirroot.'/blocks/attestoodle/lib.php');
 
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/training_factory.php');
@@ -34,23 +37,31 @@ $label = get_string('courses_list_btn_text', 'block_attestoodle');
 $options = array('class' => 'attestoodle-button');
 echo $OUTPUT->single_button($url, $label, 'get', $options);
 
-echo $OUTPUT->heading('Liste des formations :');
-// Print des formations dans un tableau.
-training_factory::get_instance()->create_trainings();
-$databrut = training_factory::get_instance()->get_trainings();
+if (!training_factory::get_instance()->has_training($trainingid)) {
+    echo "Aucune formation ayant l'ID : " . $trainingid;
+} else {
+    $training = training_factory::get_instance()->retrieve_training($trainingid);
 
-$data = parse_trainings_as_stdclass($databrut);
+    foreach ($training->get_courses() as $course) {
+        echo $OUTPUT->heading($course->get_name());
 
-$table = new html_table();
-$table->head = array('ID', 'Nom', 'Description', '');
-$table->data = $data;
+        $data = $course->get_activities_as_stdclass();
+        $table = new html_table();
+        $table->head = array('Nom', 'Description', 'Jalon');
+        $table->data = $data;
 
-echo html_writer::table($table);
+        echo html_writer::table($table);
+    }
 
-//echo "<pre>";
-//foreach (training_factory::get_instance()->get_trainings() as $t) {
-//    var_dump($t->get_courses());
-//}
-//echo "</pre>";
-
+//    echo $OUTPUT->heading('Liste des formations :');
+//    // Print des formations dans un tableau.
+//    training_factory::get_instance()->create_trainings();
+//    $data = training_factory::get_instance()->get_trainings_as_stdClass();
+//
+//    $table = new html_table();
+//    $table->head = array('ID', 'Nom', 'Description');
+//    $table->data = $data;
+//
+//    echo html_writer::table($table);
+}
 echo $OUTPUT->footer();

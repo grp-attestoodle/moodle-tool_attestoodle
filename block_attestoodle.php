@@ -70,8 +70,8 @@ class block_attestoodle extends block_base {
         $this->content->text = get_string('hello', 'block_attestoodle') . ' ' . $USER->firstname;
 
         $parameters = array();
-        $url = new moodle_url('/blocks/attestoodle/pages/courses_list.php', $parameters);
-        $label = get_string('course_list_btn_text', 'block_attestoodle');
+        $url = new moodle_url('/blocks/attestoodle/pages/trainings_list.php', $parameters);
+        $label = get_string('trainings_list_btn_text', 'block_attestoodle');
         $options = array('class' => 'attestoodle-button');
         // Bouton vers un liens vers une autre page où le
         // ...mode 'get' offre la visu de l'url (debug).

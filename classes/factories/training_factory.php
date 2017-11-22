@@ -78,10 +78,25 @@ class training_factory extends singleton {
         return $this->trainings;
     }
 
-    public function get_trainings_as_stdclass() {
-        return array_map(function($o) {
-            return $o->get_object_as_stdclass();
-        }, $this->trainings);
+    public function has_training($id) {
+        $t = $this->retrieve_training($id);
+        return isset($t);
+    }
+
+    public function retrieve_training($id) {
+        // TODO: problem with the training list cache (no cache)
+        $this->create_trainings();
+
+        $training = null;
+        foreach ($this->trainings as $t) {
+            echo $t->get_id() . "\n";
+            if ($t->get_id() == $id) {
+                echo "retrieved";
+                $training = $t;
+                break;
+            }
+        }
+        return $training;
     }
 }
 

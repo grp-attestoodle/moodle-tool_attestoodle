@@ -64,6 +64,17 @@ class course {
         return $obj;
     }
 
+    public function get_activities_as_stdclass() {
+        return array_map(function ($act) {
+            return $act->get_object_as_stdclass();
+        }, $this->activities);
+//        $obj = new \stdClass();
+//        $obj->id = $this->id;
+//        $obj->name = $this->name;
+//
+//        return $obj;
+    }
+
     /**
      * Getter for $id property
      *
