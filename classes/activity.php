@@ -36,8 +36,8 @@ class activity {
     /** @var string Name of the activity */
     private $description;
 
-    /** @var jalon Jalon of the activity */
-    private $jalon;
+    /** @var int Jalon of the activity */
+    private $marker;
 
     /**
      * Constructor of the activity class
@@ -46,11 +46,25 @@ class activity {
      * @param string $name Name of the course
      * @param string $description Description of the course
      */
-    public function __construct($id, $name, $description) {
+    public function __construct($id, $name, $description, $marker = null) {
         $this->id = $id;
         $this->name = $name;
         $this->description = $description;
-        $this->jalon = null;
+        $this->marker = $marker;
+    }
+
+    public function has_marker() {
+        return isset($this->marker);
+    }
+
+    public function get_object_as_stdclass() {
+        $obj = new \stdClass();
+//        $obj->id = $this->id;
+        $obj->name = $this->name;
+        $obj->description = $this->description;
+        $obj->hasmarker = $this->has_marker() ? $this->marker . " minutes" : 'Non';
+
+        return $obj;
     }
 
     /**
@@ -71,7 +85,6 @@ class activity {
         return $this->name;
     }
 
-
     /**
      * Getter for $description property
      *
@@ -79,6 +92,15 @@ class activity {
      */
     public function get_description() {
         return $this->description;
+    }
+
+    /**
+     * Getter for $marker property
+     *
+     * @return int Marker value of the activity
+     */
+    public function get_marker() {
+        return $this->marker;
     }
 
     /**
@@ -106,5 +128,14 @@ class activity {
      */
     public function set_description($prop) {
         $this->description = $prop;
+    }
+
+    /**
+     * Setter for $marker property
+     *
+     * @param int $prop Marker value to set for the activity
+     */
+    public function set_marker($prop) {
+        $this->marker = $prop;
     }
 }

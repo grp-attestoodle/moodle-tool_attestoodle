@@ -54,7 +54,22 @@ class activities_factory extends singleton {
         $name = $dbactivity->name;
         $desc = $dbactivity->intro;
 
-        return new activity($id, $name, $desc);
+        $marker = null;
+        if (isset($desc)) {
+            $marker = $this->extractmarker($desc);
+        }
+
+        return new activity($id, $name, $desc, $marker);
+    }
+
+    private function extractmarker($string) {
+        $marker = null;
+        $matches = array();
+        $regexp = "/<span class=(?:(?:\"tps_jalon\")|(?:\'tps_jalon\'))>(.+)<\/span>/iU";
+        if (preg_match($regexp, $string, $matches)) {
+            $marker = $matches[1];
+        }
+        return $marker;
     }
 
     private function get_module_table_name($moduleid) {
