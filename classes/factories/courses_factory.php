@@ -56,6 +56,12 @@ class courses_factory extends singleton {
         return $coursetoadd;
     }
 
+    /**
+     * Function that retrieves the courses corresponding to a specific training
+     *
+     * @param string $id Id of the training to search courses for
+     * @return array Array containing the courses objects
+     */
     public function retrieve_courses_by_training($id) {
         $dbcourses = db_accessor::get_instance()->get_courses_by_training($id);
         $courses = array();

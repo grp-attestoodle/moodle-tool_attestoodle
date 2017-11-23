@@ -33,35 +33,52 @@ class activity {
     /** @var string Name of the activity */
     private $name;
 
-    /** @var string Name of the activity */
+    /** @var string Description of the activity */
     private $description;
 
-    /** @var int Jalon of the activity */
+    /** @var string Type of the activity */
+    private $type;
+
+    /** @var int Marker time (in minutes) of the activity */
     private $marker;
 
     /**
      * Constructor of the activity class
      *
-     * @param string $id Id of the course
-     * @param string $name Name of the course
-     * @param string $description Description of the course
+     * @param string $id Id of the activity
+     * @param string $name Name of the activity
+     * @param string $description Description of the activity
+     * @param string $type Type of the activity
+     * @param int $marker The marker time of the activity if any
      */
-    public function __construct($id, $name, $description, $marker = null) {
+    public function __construct($id, $name, $description, $type, $marker = null) {
         $this->id = $id;
         $this->name = $name;
         $this->description = $description;
+        $this->type = $type;
         $this->marker = $marker;
     }
 
+    /**
+     * Method that checks if the activity contains a marker
+     *
+     * @return boolean TRUE if the activity contains a marker
+     */
     public function has_marker() {
         return isset($this->marker);
     }
 
+    /**
+     * Returns the current activity informations as an stdClass object
+     * @TODO used to display in a moodle html_table object. It has to be
+     * made in a specific UI class
+     *
+     * @return stdClass The stdClass containing the activity informations
+     */
     public function get_object_as_stdclass() {
         $obj = new \stdClass();
-        // $obj->id = $this->id;
+        $obj->type = $this->type;
         $obj->name = $this->name;
-        $obj->description = $this->description;
         $obj->hasmarker = $this->has_marker() ? $this->marker . " minutes" : 'Non';
 
         return $obj;
@@ -92,6 +109,15 @@ class activity {
      */
     public function get_description() {
         return $this->description;
+    }
+
+    /**
+     * Getter for $type property
+     *
+     * @return string Type of the activity
+     */
+    public function get_type() {
+        return $this->type;
     }
 
     /**
@@ -128,6 +154,15 @@ class activity {
      */
     public function set_description($prop) {
         $this->description = $prop;
+    }
+
+    /**
+     * Setter for $type property
+     *
+     * @param string $prop Type to set for the activity
+     */
+    public function set_type($prop) {
+        $this->type = $prop;
     }
 
     /**

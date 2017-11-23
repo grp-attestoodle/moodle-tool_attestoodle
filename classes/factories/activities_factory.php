@@ -35,8 +35,15 @@ class activities_factory extends singleton {
     /** @var courses_factory Instance of the training_factory singleton */
     protected static $instance;
 
+    /**
+     * @var array Associative array containing the modules tables names in
+     * a key => value form where key = id of the module and value = table name
+     */
     private $modulenames;
 
+    /**
+     * Constructor method (protected to avoid external instanciation)
+     */
     protected function __construct() {
         parent::__construct();
         $this->modulenames = array();
@@ -49,7 +56,7 @@ class activities_factory extends singleton {
      * @param stdClass $dbactivity Standard object from the Moodle request
      * @return activity The activity created
      */
-    private function create($dbactivity) {
+    private function create($dbactivity, $tablename) {
         $id = $dbactivity->id;
         $name = $dbactivity->name;
         $desc = $dbactivity->intro;
@@ -59,19 +66,32 @@ class activities_factory extends singleton {
             $marker = $this->extractmarker($desc);
         }
 
-        return new activity($id, $name, $desc, $marker);
+        return new activity($id, $name, $desc, $tablename, $marker);
     }
 
+    /**
+     * Method that extract the marker time value in a string
+     *
+     * @param string $string The string that may contain a marker time value
+     * @return int The marker time within the string, null if no marker time has
+     * been found
+     */
     private function extractmarker($string) {
         $marker = null;
         $matches = array();
         $regexp = "/<span class=(?:(?:\"tps_jalon\")|(?:\'tps_jalon\'))>(.+)<\/span>/iU";
         if (preg_match($regexp, $string, $matches)) {
-            $marker = $matches[1];
+            $marker = (int)$matches[1];
         }
         return $marker;
     }
 
+    /**
+     * Method that retrieve a module table name based on the id of the module
+     *
+     * @param string $moduleid Id of the module to search for
+     * @return string Name of the table corresponding to the module id
+     */
     private function get_module_table_name($moduleid) {
         if (!isset($this->modulenames[$moduleid])) {
             $modulename = db_accessor::get_instance()->get_module_table_name($moduleid);
@@ -81,6 +101,12 @@ class activities_factory extends singleton {
         return $this->modulenames[$moduleid];
     }
 
+    /**
+     * Method that retrieve all activities linked to a course
+     *
+     * @param string $id Id of the course to search activities for
+     * @return array Array containing all the activity objects of the course
+     */
     public function retrieve_activities_by_course($id) {
         $dbcoursemodules = db_accessor::get_instance()->get_course_modules_by_course($id);
         $activities = array();
@@ -92,7 +118,7 @@ class activities_factory extends singleton {
 
             $coursemodulesinfos = db_accessor::get_instance()->get_course_modules_infos($instanceid, $tablename);
 
-            $activities[] = $this->create($coursemodulesinfos);
+            $activities[] = $this->create($coursemodulesinfos, $tablename);
         }
         return $activities;
     }

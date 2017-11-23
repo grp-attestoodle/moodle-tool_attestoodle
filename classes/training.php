@@ -56,6 +56,13 @@ class training {
         $this->courses = array();
     }
 
+    /**
+     * Returns the current training informations in an array
+     * @TODO used to display in a moodle html_table object. It has to be
+     * made in a specific UI class
+     *
+     * @return array The array containing the training informations
+     */
     public function get_data_as_table() {
         return [
                 $this->id,
@@ -64,6 +71,13 @@ class training {
             ];
     }
 
+    /**
+     * Returns the current training informations as an stdClass object
+     * @TODO used to display in a moodle html_table object. It has to be
+     * made in a specific UI class
+     *
+     * @return stdClass The stdClass containing the training informations
+     */
     public function get_object_as_stdclass() {
         $obj = new \stdClass();
         $obj->id = $this->id;

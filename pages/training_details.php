@@ -31,9 +31,10 @@ require_once($CFG->dirroot.'/blocks/attestoodle/classes/activity.php');
 use block_attestoodle\factories\training_factory;
 
 echo $OUTPUT->header();
+
 $parameters = array();
-$url = new moodle_url('/blocks/attestoodle/pages/courses_list.php', $parameters);
-$label = get_string('courses_list_btn_text', 'block_attestoodle');
+$url = new moodle_url('/blocks/attestoodle/pages/trainings_list.php', $parameters);
+$label = get_string('trainings_list_btn_text', 'block_attestoodle');
 $options = array('class' => 'attestoodle-button');
 echo $OUTPUT->single_button($url, $label, 'get', $options);
 
@@ -47,21 +48,11 @@ if (!training_factory::get_instance()->has_training($trainingid)) {
 
         $data = $course->get_activities_as_stdclass();
         $table = new html_table();
-        $table->head = array('Nom', 'Description', 'Jalon');
+        $table->head = array('Type', 'Nom', 'Jalon');
         $table->data = $data;
 
         echo html_writer::table($table);
     }
-
-    // echo $OUTPUT->heading('Liste des formations :');
-    // Print des formations dans un tableau.
-    // training_factory::get_instance()->create_trainings();
-    // $data = training_factory::get_instance()->get_trainings_as_stdClass();
-
-    // $table = new html_table();
-    // $table->head = array('ID', 'Nom', 'Description');
-    // $table->data = $data;
-
-    // echo html_writer::table($table);
 }
+
 echo $OUTPUT->footer();

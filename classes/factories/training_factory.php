@@ -38,6 +38,9 @@ class training_factory extends singleton {
     /** @var array Array containing all the trainings */
     private $trainings;
 
+    /**
+     * Constructor method
+     */
     protected function __construct() {
         parent::__construct();
         $this->trainings = array();
@@ -67,6 +70,10 @@ class training_factory extends singleton {
         return $trainingtoadd;
     }
 
+    /**
+     * Create all the trainings within the database and store them in the
+     * trainings list
+     */
     public function create_trainings() {
         $dbtrainings = db_accessor::get_instance()->get_all_trainings();
         foreach ($dbtrainings as $training) {
@@ -74,24 +81,41 @@ class training_factory extends singleton {
         }
     }
 
+    /**
+     * Getter of the $trainings property
+     *
+     * @return array The trainings stored in the factory
+     */
     public function get_trainings() {
         return $this->trainings;
     }
 
+    /**
+     * Method that checks if a training exists based on its ID
+     *
+     * @param string $id Id to search against
+     * @return boolean TRUE if the training exists, FALSE if not
+     */
     public function has_training($id) {
         $t = $this->retrieve_training($id);
         return isset($t);
     }
 
+    /**
+     * Method that retrieve a training within the list based on an ID
+     *
+     * @param string $id Id of the training to retrieve
+     * @return training The training retrieved or NULL if no training has been
+     * found
+     */
     public function retrieve_training($id) {
         // TODO: problem with the training list cache (no cache)
+        $this->trainings = array();
         $this->create_trainings();
 
         $training = null;
         foreach ($this->trainings as $t) {
-            echo $t->get_id() . "\n";
             if ($t->get_id() == $id) {
-                echo "retrieved";
                 $training = $t;
                 break;
             }
