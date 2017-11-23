@@ -114,6 +114,6 @@ function parse_trainings_as_stdclass($data) {
             $stdclass->link = $OUTPUT->single_button($url, $label, 'get', $options);
 
             return $stdclass;
-        }, $data);
+    }, $data);
     return $newdata;
 }

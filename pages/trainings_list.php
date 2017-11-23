@@ -47,10 +47,12 @@ $table->data = $data;
 
 echo html_writer::table($table);
 
-//echo "<pre>";
-//foreach (training_factory::get_instance()->get_trainings() as $t) {
-//    var_dump($t->get_courses());
-//}
-//echo "</pre>";
+/*
+echo "<pre>";
+foreach (training_factory::get_instance()->get_trainings() as $t) {
+    var_dump($t->get_courses());
+}
+echo "</pre>";
+*/
 
 echo $OUTPUT->footer();

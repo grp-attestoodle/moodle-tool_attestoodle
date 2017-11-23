@@ -53,15 +53,15 @@ if (!training_factory::get_instance()->has_training($trainingid)) {
         echo html_writer::table($table);
     }
 
-//    echo $OUTPUT->heading('Liste des formations :');
-//    // Print des formations dans un tableau.
-//    training_factory::get_instance()->create_trainings();
-//    $data = training_factory::get_instance()->get_trainings_as_stdClass();
-//
-//    $table = new html_table();
-//    $table->head = array('ID', 'Nom', 'Description');
-//    $table->data = $data;
-//
-//    echo html_writer::table($table);
+    // echo $OUTPUT->heading('Liste des formations :');
+    // Print des formations dans un tableau.
+    // training_factory::get_instance()->create_trainings();
+    // $data = training_factory::get_instance()->get_trainings_as_stdClass();
+
+    // $table = new html_table();
+    // $table->head = array('ID', 'Nom', 'Description');
+    // $table->data = $data;
+
+    // echo html_writer::table($table);
 }
 echo $OUTPUT->footer();
