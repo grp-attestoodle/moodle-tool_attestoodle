@@ -36,17 +36,20 @@ class course {
     /** @var array Activities of the course */
     private $activities;
 
+    /** @var array Learners registered for the course */
+    private $learners;
+
     /**
      * Constructor of the course class
      *
      * @param string $id Id of the course
      * @param string $name Name of the course
-     * @param array $activities Activities of the course
      */
     public function __construct($id, $name) {
         $this->id = $id;
         $this->name = $name;
         $this->activities = array();
+        $this->learners = array();
     }
 
     /**
@@ -93,6 +96,20 @@ class course {
     }
 
     /**
+     * Returns the current course learners informations as an array of
+     * stdClass object
+     * @TODO used to display in a moodle html_table object. It has to be
+     * made in a specific UI class
+     *
+     * @return stdClass The array containing the course learners informations
+     */
+    public function get_learners_as_stdclass() {
+        return array_map(function ($l) {
+            return $l->get_object_as_stdclass();
+        }, $this->learners);
+    }
+
+    /**
      * Getter for $id property
      *
      * @return int Id of the course
@@ -117,6 +134,15 @@ class course {
      */
     public function get_activities() {
         return $this->activities;
+    }
+
+    /**
+     * Getter for $learners property
+     *
+     * @return array Learners of the course
+     */
+    public function get_learners() {
+        return $this->learners;
     }
 
     /**
@@ -153,5 +179,23 @@ class course {
      */
     public function add_activity($activity) {
         $this->activities[] = $activity;
+    }
+
+    /**
+     * Setter for $learners property
+     *
+     * @param array $prop Learners to set for the course
+     */
+    public function set_learners($prop) {
+        $this->learners = $prop;
+    }
+
+    /**
+     * Add a learner to the course learners list
+     *
+     * @param learner $learner Learner to add to the course
+     */
+    public function add_learner($learner) {
+        $this->learners[] = $learner;
     }
 }
