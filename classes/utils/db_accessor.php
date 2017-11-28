@@ -68,8 +68,8 @@ class db_accessor extends singleton {
      * @param int $id
      * @return stdClass
      */
-    public function get_activities_by_course($id) {
-        $result = self::$db->get_records('course', array('category' => $id));
+    public function get_course_modules_by_course($id) {
+        $result = self::$db->get_records('course_modules', array('course' => $id));
         return $result;
     }
 
@@ -78,8 +78,9 @@ class db_accessor extends singleton {
      * @param int $id
      * @return stdClass
      */
-    public function get_course_modules_by_course($id) {
-        $result = self::$db->get_records('course_modules', array('course' => $id));
+    public function get_learners_by_course($id) {
+        $result = array();
+        // TODO request: $result = self::$db->get_records('xxx', array('xxx' => $id));
         return $result;
     }
 
