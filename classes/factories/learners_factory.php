@@ -112,18 +112,14 @@ class learners_factory extends singleton {
     public function retrieve_learners_by_course($id) {
         $learners = array();
 
-        $entries = db_accessor::get_instance()->get_learners_by_course($id);
-        // 1) récupérer les ids + firstname + lastname de chaque étudiant du cours
-        // $entries = tableau_etudiants;
-
-        // 2) pour chaque etudiants
-        // -- $this->has_learner($id_etudiant) ?
-        // -- -- OUI
-        // -- -- -- $learners[] = $this->retrieve_learner($id)
-        // -- -- NON
-        // -- -- -- $learners[] = $this->create($entries[current])
-
-        // 3) return $learners;
+        $dblearners = db_accessor::get_instance()->get_learners_by_course($id);
+        foreach ($dblearners as $learner) {
+            if ($this->has_learner($learner->id)) {
+                $learners[] = $this->retrieve_learner($learner->id);
+            } else {
+                $learners[] = $this->create($learner);
+            }
+        }
 
         return $learners;
     }
