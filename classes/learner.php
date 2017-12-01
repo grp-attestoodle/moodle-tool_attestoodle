@@ -58,6 +58,7 @@ class learner {
      */
     public function get_object_as_stdclass() {
         $obj = new \stdClass();
+        $obj->id = $this->id;
         $obj->firstname = $this->firstname;
         $obj->lastname = $this->lastname;
 

@@ -16,6 +16,9 @@
 
 // Importation de la config $CFG qui importe égalment $DB et $OUTPUT.
 require_once(dirname(__FILE__) . '/../../../config.php');
+
+$trainingid = required_param('id', PARAM_INT);
+
 require_once($CFG->dirroot.'/blocks/attestoodle/lib.php');
 
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/training_factory.php');
@@ -29,23 +32,26 @@ require_once($CFG->dirroot.'/blocks/attestoodle/classes/activity.php');
 use block_attestoodle\factories\training_factory;
 
 echo $OUTPUT->header();
-$parameters = array();
-$url = new moodle_url('/blocks/attestoodle/pages/courses_list.php', $parameters);
-$label = get_string('courses_list_btn_text', 'block_attestoodle');
-$options = array('class' => 'attestoodle-button');
-echo $OUTPUT->single_button($url, $label, 'get', $options);
 
-echo $OUTPUT->heading('Liste des formations :');
-// Print des formations dans un tableau.
-training_factory::get_instance()->create_trainings();
-$databrut = training_factory::get_instance()->get_trainings();
+// Link to the trainings list
+echo $OUTPUT->single_button(
+        new moodle_url('/blocks/attestoodle/pages/training_details.php', array('id' => $trainingid)),
+        get_string('backto_training_detail_btn_text', 'block_attestoodle'),
+        'get',
+        array('class' => 'attestoodle-button'));
 
-$data = parse_trainings_as_stdclass($databrut);
+if (!training_factory::get_instance()->has_training($trainingid)) {
+    $warningunknownid = get_string('training_details_unknown_training_id', 'block_attestoodle') . $trainingid;
+    echo $warningunknownid;
+} else {
+    $training = training_factory::get_instance()->retrieve_training($trainingid);
+    $data = $training->get_learners_as_stdclass();
+    $table = new html_table();
+    $table->head = array('ID', 'Nom', 'Prénom');
+    $table->data = $data;
 
-$table = new html_table();
-$table->head = array('ID', 'Nom', 'Description', '');
-$table->data = $data;
-
-echo html_writer::table($table);
+    echo $OUTPUT->heading(get_string('training_learners_list_heading', 'block_attestoodle', count($data)));
+    echo html_writer::table($table);
+}
 
 echo $OUTPUT->footer();

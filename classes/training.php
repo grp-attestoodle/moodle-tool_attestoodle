@@ -88,6 +88,41 @@ class training {
     }
 
     /**
+     * Returns the learners registered to at least one course of the training
+     *
+     * @return array The array containing the learners of the training
+     */
+    public function get_learners() {
+        $learners = array();
+
+        foreach ($this->courses as $course) {
+            $courselearners = $course->get_learners();
+            foreach ($courselearners as $courselearner) {
+                if (!in_array($courselearner, $learners, true)) {
+                    $learners[] = $courselearner;
+                }
+            }
+
+        }
+
+        return $learners;
+    }
+
+    /**
+     * Returns the current training learners informations as an array of
+     * stdClass object
+     * @TODO used to display in a moodle html_table object. It has to be
+     * made in a specific UI class
+     *
+     * @return stdClass The array containing the training learners informations
+     */
+    public function get_learners_as_stdclass() {
+        return array_map(function ($l) {
+            return $l->get_object_as_stdclass();
+        }, $this->get_learners());
+    }
+
+    /**
      * Getter for $id property
      *
      * @return string Id of the training

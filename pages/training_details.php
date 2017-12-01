@@ -24,6 +24,7 @@ require_once($CFG->dirroot.'/blocks/attestoodle/lib.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/training_factory.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/courses_factory.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/activities_factory.php');
+require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/learners_factory.php');
 
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/course.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/activity.php');
@@ -32,15 +33,24 @@ use block_attestoodle\factories\training_factory;
 
 echo $OUTPUT->header();
 
-$parameters = array();
-$url = new moodle_url('/blocks/attestoodle/pages/trainings_list.php', $parameters);
-$label = get_string('trainings_list_btn_text', 'block_attestoodle');
-$options = array('class' => 'attestoodle-button');
-echo $OUTPUT->single_button($url, $label, 'get', $options);
+// Link to the trainings list
+echo $OUTPUT->single_button(
+        new moodle_url('/blocks/attestoodle/pages/trainings_list.php', array()),
+        get_string('trainings_list_btn_text', 'block_attestoodle'),
+        'get',
+        array('class' => 'attestoodle-button'));
 
 if (!training_factory::get_instance()->has_training($trainingid)) {
-    echo "Aucune formation ayant l'ID : " . $trainingid;
+    $warningunknownid = get_string('training_details_unknown_training_id', 'block_attestoodle') . $trainingid;
+    echo $warningunknownid;
 } else {
+    // Link to the training learners list
+    echo $OUTPUT->single_button(
+            new moodle_url('/blocks/attestoodle/pages/training_learners_list.php', array('id' => $trainingid)),
+            get_string('training_details_learners_list_btn_text', 'block_attestoodle'),
+            'get',
+            array('class' => 'attestoodle-button'));
+
     $training = training_factory::get_instance()->retrieve_training($trainingid);
 
     foreach ($training->get_courses() as $course) {
