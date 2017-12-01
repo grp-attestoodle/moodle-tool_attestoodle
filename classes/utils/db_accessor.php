@@ -75,12 +75,28 @@ class db_accessor extends singleton {
 
     /**
      *
-     * @param int $id
+     * @param int $courseid
      * @return stdClass
      */
-    public function get_learners_by_course($id) {
-        $result = array();
-        // TODO request: $result = self::$db->get_records('xxx', array('xxx' => $id));
+    public function get_learners_by_course($courseid) {
+        $studentroleid = get_config('attestoodle', 'student_role_id');
+        $request = "
+                SELECT u.id, u.firstname, u.lastname
+                FROM mdl_user u
+                JOIN mdl_role_assignments ra
+                    ON u.id = ra.userid
+                JOIN mdl_context cx
+                    ON ra.contextid = cx.id
+                JOIN mdl_course c
+                    ON cx.instanceid = c.id
+                    AND cx.contextlevel = 50
+                WHERE 1=1
+                    AND c.id = ?
+                    AND ra.roleid = ?
+                ORDER BY u.lastname
+            ";
+        $result = self::$db->get_records_sql($request, array($courseid, $studentroleid));
+
         return $result;
     }
 
