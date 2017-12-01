@@ -24,11 +24,15 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$settings->add(new admin_setting_heading('sampleheader',
-                                         get_string('headerconfig', 'block_attestoodle'),
-                                         get_string('descconfig', 'block_attestoodle')));
+$settings->add(new admin_setting_heading('attestoodle_settings_header',
+                                         get_string('settings_header', 'block_attestoodle'),
+                                         get_string('settings_description', 'block_attestoodle')));
 
-$settings->add(new admin_setting_configcheckbox('attestoodle/foo',
-                                                get_string('labelfoo', 'block_attestoodle'),
-                                                get_string('descfoo', 'block_attestoodle'),
-                                                '0'));
+/**
+ * Setting for the ID in mdl_role table corresponding to the student role
+ */
+$settings->add(new admin_setting_configtext('attestoodle/student_role_id',
+                                                get_string('settings_student_role_label', 'block_attestoodle'),
+                                                get_string('settings_student_role_helper', 'block_attestoodle'),
+                                                5,
+                                                PARAM_INT));
