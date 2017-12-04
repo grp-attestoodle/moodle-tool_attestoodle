@@ -53,11 +53,14 @@ class activities_factory extends singleton {
      * Create a course from a Moodle request standard object, add it
      * to the array then return it
      *
+     * @param string $activityid Id of the activity in mdl_course_modules table
      * @param stdClass $dbactivity Standard object from the Moodle request
+     * @param string $tablename Name of the db table where the activity is stored
+     *  in, corresponding to the type of the activity
      * @return activity The activity created
      */
-    private function create($dbactivity, $tablename) {
-        $id = $dbactivity->id;
+    private function create($activityid, $dbactivity, $tablename) {
+        $id = $activityid;
         $name = $dbactivity->name;
         $desc = $dbactivity->intro;
 
@@ -113,14 +116,15 @@ class activities_factory extends singleton {
         $dbcoursemodules = db_accessor::get_instance()->get_course_modules_by_course($id);
         $activities = array();
         foreach ($dbcoursemodules as $coursemodule) {
-            $moduleid = $coursemodule->module;
-            $instanceid = $coursemodule->instance;
+            $activityid = $coursemodule->id;
 
+            $moduleid = $coursemodule->module;
             $tablename = $this->get_module_table_name($moduleid);
 
+            $instanceid = $coursemodule->instance;
             $coursemodulesinfos = db_accessor::get_instance()->get_course_modules_infos($instanceid, $tablename);
 
-            $activities[] = $this->create($coursemodulesinfos, $tablename);
+            $activities[] = $this->create($activityid, $coursemodulesinfos, $tablename);
         }
         return $activities;
     }

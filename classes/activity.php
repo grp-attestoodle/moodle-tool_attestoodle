@@ -78,6 +78,7 @@ class activity {
      */
     public function get_object_as_stdclass() {
         $obj = new \stdClass();
+        $obj->id = $this->id;
         $obj->type = $this->type;
         $obj->name = $this->name;
         $obj->hasmarker = $this->has_marker() ? $this->marker . " minutes" : 'Non';

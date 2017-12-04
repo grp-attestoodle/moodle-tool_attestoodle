@@ -58,7 +58,7 @@ if (!training_factory::get_instance()->has_training($trainingid)) {
 
         $data = $course->get_activities_as_stdclass();
         $table = new html_table();
-        $table->head = array('Type', 'Nom', 'Jalon');
+        $table->head = array('id', 'Type', 'Nom', 'Jalon');
         $table->data = $data;
 
         echo html_writer::table($table);
