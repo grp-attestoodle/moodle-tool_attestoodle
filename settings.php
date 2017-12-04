@@ -28,9 +28,7 @@ $settings->add(new admin_setting_heading('attestoodle_settings_header',
                                          get_string('settings_header', 'block_attestoodle'),
                                          get_string('settings_description', 'block_attestoodle')));
 
-/**
- * Setting for the ID in mdl_role table corresponding to the student role
- */
+// Setting for the ID in mdl_role table corresponding to the student role.
 $settings->add(new admin_setting_configtext('attestoodle/student_role_id',
                                                 get_string('settings_student_role_label', 'block_attestoodle'),
                                                 get_string('settings_student_role_helper', 'block_attestoodle'),

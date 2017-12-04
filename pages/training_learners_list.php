@@ -33,7 +33,7 @@ use block_attestoodle\factories\training_factory;
 
 echo $OUTPUT->header();
 
-// Link to the trainings list
+// Link to the trainings list.
 echo $OUTPUT->single_button(
         new moodle_url('/blocks/attestoodle/pages/training_details.php', array('id' => $trainingid)),
         get_string('backto_training_detail_btn_text', 'block_attestoodle'),

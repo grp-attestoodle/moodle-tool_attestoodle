@@ -33,7 +33,7 @@ use block_attestoodle\factories\training_factory;
 
 echo $OUTPUT->header();
 
-// Link to the trainings list
+// Link to the trainings list.
 echo $OUTPUT->single_button(
         new moodle_url('/blocks/attestoodle/pages/trainings_list.php', array()),
         get_string('trainings_list_btn_text', 'block_attestoodle'),
@@ -44,7 +44,7 @@ if (!training_factory::get_instance()->has_training($trainingid)) {
     $warningunknownid = get_string('training_details_unknown_training_id', 'block_attestoodle') . $trainingid;
     echo $warningunknownid;
 } else {
-    // Link to the training learners list
+    // Link to the training learners list.
     echo $OUTPUT->single_button(
             new moodle_url('/blocks/attestoodle/pages/training_learners_list.php', array('id' => $trainingid)),
             get_string('training_details_learners_list_btn_text', 'block_attestoodle'),
