@@ -39,7 +39,7 @@ class activity {
     /** @var string Type of the activity */
     private $type;
 
-    /** @var int Marker time (in minutes) of the activity */
+    /** @var integer Marker time (in minutes) of the activity */
     private $marker;
 
     /**
@@ -49,7 +49,7 @@ class activity {
      * @param string $name Name of the activity
      * @param string $description Description of the activity
      * @param string $type Type of the activity
-     * @param int $marker The marker time of the activity if any
+     * @param integer $marker The marker time of the activity if any
      */
     public function __construct($id, $name, $description, $type, $marker = null) {
         $this->id = $id;
@@ -70,7 +70,8 @@ class activity {
 
     /**
      * Returns the current activity informations as an stdClass object
-     * @TODO used to display in a moodle html_table object. It has to be
+     *
+     * @todo used to display in a moodle html_table object. It has to be
      * made in a specific UI class
      *
      * @return stdClass The stdClass containing the activity informations
@@ -123,7 +124,7 @@ class activity {
     /**
      * Getter for $marker property
      *
-     * @return int Marker value of the activity
+     * @return integer|null Marker value of the activity
      */
     public function get_marker() {
         return $this->marker;
@@ -168,7 +169,7 @@ class activity {
     /**
      * Setter for $marker property
      *
-     * @param int $prop Marker value to set for the activity
+     * @param integer $prop Marker value to set for the activity
      */
     public function set_marker($prop) {
         $this->marker = $prop;

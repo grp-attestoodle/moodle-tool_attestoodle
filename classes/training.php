@@ -38,7 +38,7 @@ class training {
     /** @var string Description of the training */
     private $description;
 
-    /** @var array Description of the training */
+    /** @var course[] Courses of the training */
     private $courses;
 
     /**
@@ -47,7 +47,6 @@ class training {
      * @param string $id Id of the training
      * @param string $name Name of the training
      * @param string $description Description of the training
-     * @param array $courses Courses of the training
      */
     public function __construct($id, $name, $description) {
         $this->id = $id;
@@ -58,7 +57,8 @@ class training {
 
     /**
      * Returns the current training informations in an array
-     * @TODO used to display in a moodle html_table object. It has to be
+     *
+     * @todo Used to display in a moodle html_table object. It has to be
      * made in a specific UI class
      *
      * @return array The array containing the training informations
@@ -73,7 +73,8 @@ class training {
 
     /**
      * Returns the current training informations as an stdClass object
-     * @TODO used to display in a moodle html_table object. It has to be
+     *
+     * @todo Used to display in a moodle html_table object. It has to be
      * made in a specific UI class
      *
      * @return stdClass The stdClass containing the training informations
@@ -90,7 +91,7 @@ class training {
     /**
      * Returns the learners registered to at least one course of the training
      *
-     * @return array The array containing the learners of the training
+     * @return learner[] The array containing the learners of the training
      */
     public function get_learners() {
         $learners = array();
@@ -111,10 +112,11 @@ class training {
     /**
      * Returns the current training learners informations as an array of
      * stdClass object
-     * @TODO used to display in a moodle html_table object. It has to be
+     *
+     * @todo Used to display in a moodle html_table object. It has to be
      * made in a specific UI class
      *
-     * @return stdClass The array containing the training learners informations
+     * @return stdClass[] The array containing the training learners informations
      */
     public function get_learners_as_stdclass() {
         return array_map(function ($l) {
@@ -152,7 +154,7 @@ class training {
     /**
      * Getter for $courses property
      *
-     * @return array Courses of the training
+     * @return course[] Courses of the training
      */
     public function get_courses() {
         return $this->courses;
@@ -188,7 +190,7 @@ class training {
     /**
      * Setter for $courses property
      *
-     * @param array $prop Courses to set for the training
+     * @param course[] $prop Courses to set for the training
      */
     public function set_courses($prop) {
         $this->courses = $prop;

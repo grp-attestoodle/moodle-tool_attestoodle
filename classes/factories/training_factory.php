@@ -35,7 +35,7 @@ class training_factory extends singleton {
     /** @var training_factory Instance of the training_factory singleton */
     protected static $instance;
 
-    /** @var array Array containing all the trainings */
+    /** @var training[] Array containing all the trainings */
     private $trainings;
 
     /**
@@ -84,7 +84,7 @@ class training_factory extends singleton {
     /**
      * Getter of the $trainings property
      *
-     * @return array The trainings stored in the factory
+     * @return training[] The trainings stored in the factory
      */
     public function get_trainings() {
         return $this->trainings;
@@ -105,7 +105,7 @@ class training_factory extends singleton {
      * Method that retrieve a training within the list based on an ID
      *
      * @param string $id Id of the training to retrieve
-     * @return training The training retrieved or NULL if no training has been
+     * @return training|null The training retrieved or NULL if no training has been
      * found
      */
     public function retrieve_training($id) {

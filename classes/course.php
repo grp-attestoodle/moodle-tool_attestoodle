@@ -33,10 +33,10 @@ class course {
     /** @var string Name of the course */
     private $name;
 
-    /** @var array Activities of the course */
+    /** @var activity[] Activities of the course */
     private $activities;
 
-    /** @var array Learners registered for the course */
+    /** @var learner[] Learners registered for the course */
     private $learners;
 
     /**
@@ -54,7 +54,8 @@ class course {
 
     /**
      * Returns the current course informations in an array
-     * @TODO used to display in a moodle html_table object. It has to be
+     *
+     * @todo Used to display in a moodle html_table object. It has to be
      * made in a specific UI class
      *
      * @return array The array containing the course informations
@@ -68,7 +69,8 @@ class course {
 
     /**
      * Returns the current course informations as an stdClass object
-     * @TODO used to display in a moodle html_table object. It has to be
+     *
+     * @todo Used to display in a moodle html_table object. It has to be
      * made in a specific UI class
      *
      * @return stdClass The stdClass containing the course informations
@@ -84,7 +86,8 @@ class course {
     /**
      * Returns the current course activities informations as an array of
      * stdClass object
-     * @TODO used to display in a moodle html_table object. It has to be
+     *
+     * @todo Used to display in a moodle html_table object. It has to be
      * made in a specific UI class
      *
      * @return stdClass The array containing the course activities informations
@@ -98,7 +101,8 @@ class course {
     /**
      * Returns the current course learners informations as an array of
      * stdClass object
-     * @TODO used to display in a moodle html_table object. It has to be
+     *
+     * @todo Used to display in a moodle html_table object. It has to be
      * made in a specific UI class
      *
      * @return stdClass The array containing the course learners informations
@@ -112,7 +116,7 @@ class course {
     /**
      * Getter for $id property
      *
-     * @return int Id of the course
+     * @return string Id of the course
      */
     public function get_id() {
         return $this->id;
@@ -130,7 +134,7 @@ class course {
     /**
      * Getter for $activities property
      *
-     * @return array Activities of the course
+     * @return activity[] Activities of the course
      */
     public function get_activities() {
         return $this->activities;
@@ -139,7 +143,7 @@ class course {
     /**
      * Getter for $learners property
      *
-     * @return array Learners of the course
+     * @return learner[] Learners of the course
      */
     public function get_learners() {
         return $this->learners;
@@ -148,7 +152,7 @@ class course {
     /**
      * Setter for $id property
      *
-     * @param int $prop Id to set for the course
+     * @param string $prop Id to set for the course
      */
     public function set_id($prop) {
         $this->id = $prop;
@@ -166,7 +170,7 @@ class course {
     /**
      * Setter for $activities property
      *
-     * @param array $prop Activities to set for the course
+     * @param activity[] $prop Activities to set for the course
      */
     public function set_activities($prop) {
         $this->activities = $prop;
@@ -184,7 +188,7 @@ class course {
     /**
      * Setter for $learners property
      *
-     * @param array $prop Learners to set for the course
+     * @param learner[] $prop Learners to set for the course
      */
     public function set_learners($prop) {
         $this->learners = $prop;

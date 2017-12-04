@@ -32,7 +32,7 @@ use block_attestoodle\activity;
 defined('MOODLE_INTERNAL') || die;
 
 class activities_factory extends singleton {
-    /** @var courses_factory Instance of the training_factory singleton */
+    /** @var activities_factory Instance of the activities_factory singleton */
     protected static $instance;
 
     /**
@@ -72,8 +72,10 @@ class activities_factory extends singleton {
     /**
      * Method that extract the marker time value in a string
      *
+     * @todo Use a XMLParser function instead of a RegExp
+     *
      * @param string $string The string that may contain a marker time value
-     * @return int The marker time within the string, null if no marker time has
+     * @return integer|null The marker time within the string, null if no marker time has
      * been found
      */
     private function extractmarker($string) {
@@ -81,7 +83,7 @@ class activities_factory extends singleton {
         $matches = array();
         $regexp = "/<span class=(?:(?:\"tps_jalon\")|(?:\'tps_jalon\'))>(.+)<\/span>/iU";
         if (preg_match($regexp, $string, $matches)) {
-            $marker = (int)$matches[1];
+            $marker = (integer)$matches[1];
         }
         return $marker;
     }
@@ -105,7 +107,7 @@ class activities_factory extends singleton {
      * Method that retrieve all activities linked to a course
      *
      * @param string $id Id of the course to search activities for
-     * @return array Array containing all the activity objects of the course
+     * @return activity[] Array containing all the activity objects of the course
      */
     public function retrieve_activities_by_course($id) {
         $dbcoursemodules = db_accessor::get_instance()->get_course_modules_by_course($id);

@@ -32,7 +32,7 @@ use block_attestoodle\course;
 defined('MOODLE_INTERNAL') || die;
 
 class courses_factory extends singleton {
-    /** @var courses_factory Instance of the training_factory singleton */
+    /** @var courses_factory Instance of the courses_factory singleton */
     protected static $instance;
 
     /**
@@ -48,14 +48,14 @@ class courses_factory extends singleton {
 
         $coursetoadd = new course($id, $name);
 
-        /* TODO: adding activities one by one with ->add_activity method
+        /* @todo: adding activities one by one with ->add_activity method
         seems stupid */
         $activities = activities_factory::get_instance()->retrieve_activities_by_course($id);
         foreach ($activities as $activity) {
             $coursetoadd->add_activity($activity);
         }
 
-        /* TODO: adding learners one by one with ->add_learner method
+        /* @todo: adding learners one by one with ->add_learner method
         seems stupid */
         $learners = learners_factory::get_instance()->retrieve_learners_by_course($id);
         foreach ($learners as $learner) {
@@ -69,7 +69,7 @@ class courses_factory extends singleton {
      * Function that retrieves the courses corresponding to a specific training
      *
      * @param string $id Id of the training to search courses for
-     * @return array Array containing the courses objects
+     * @return course[] Array containing the courses objects
      */
     public function retrieve_courses_by_training($id) {
         $dbcourses = db_accessor::get_instance()->get_courses_by_training($id);
