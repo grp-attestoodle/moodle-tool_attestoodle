@@ -117,3 +117,17 @@ function parse_trainings_as_stdclass($data) {
     }, $data);
     return $newdata;
 }
+
+/**
+ * Parse a number of minutes into a hours string
+ *
+ * @param integer $minutes The number of minutes to parse
+ * @return string The hourse corresponding (formating 'XhYY')
+ */
+function parse_minutes_to_hours($minutes) {
+    $h = floor($minutes / 60);
+    $m = $minutes % 60;
+    $m = $m < 10 ? '0' . $m : $m;
+
+    return $h . "h" . $m;
+}

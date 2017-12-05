@@ -215,7 +215,7 @@ class training {
     public function retrieve_activity($idactivity) {
         $activity = null;
         foreach ($this->courses as $course) {
-            $activity = $course->retrieve_activity($activityid);
+            $activity = $course->retrieve_activity($idactivity);
             if (isset($activity)) {
                 break;
             }

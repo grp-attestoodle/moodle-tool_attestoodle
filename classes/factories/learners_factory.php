@@ -60,7 +60,6 @@ class learners_factory extends singleton {
         $lastname = $dblearner->lastname;
 
         $learnertoadd = new learner($id, $firstname, $lastname);
-        $this->retrieve_validated_activities($learnertoadd);
 
         $this->learners[] = $learnertoadd;
 
@@ -76,14 +75,23 @@ class learners_factory extends singleton {
      * @param learner $learner The learner to search activities for
      */
     private function retrieve_validated_activities(&$learner) {
+        $learner->set_validated_activities(array());
         $dbactivities = db_accessor::get_instance()->get_activities_validated_by_learner($learner);
-
         foreach ($dbactivities as $dbactivity) {
             $activity = trainings_factory::get_instance()->retrieve_activity($dbactivity->coursemoduleid);
             if (isset($activity)) {
                 $validatedactivity = new validated_activity($activity, $dbactivity->timemodified);
                 $learner->add_validated_activity($validatedactivity);
             }
+        }
+    }
+
+    /**
+     * Method that retrieves validated activities for all the learners in the factory
+     */
+    public function retrieve_all_validated_activities() {
+        foreach ($this->learners as $learner) {
+            $this->retrieve_validated_activities($learner);
         }
     }
 

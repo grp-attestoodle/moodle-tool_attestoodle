@@ -60,12 +60,12 @@ class trainings_factory extends singleton {
 
         $trainingtoadd = new training($id, $name, $desc);
 
+        $this->trainings[] = $trainingtoadd;
+
         $courses = courses_factory::get_instance()->retrieve_courses_by_training($id);
         foreach ($courses as $course) {
             $trainingtoadd->add_course($course);
         }
-
-        $this->trainings[] = $trainingtoadd;
 
         return $trainingtoadd;
     }
@@ -79,6 +79,7 @@ class trainings_factory extends singleton {
         foreach ($dbtrainings as $training) {
             $this->create($training);
         }
+        learners_factory::get_instance()->retrieve_all_validated_activities();
     }
 
     /**
@@ -109,7 +110,7 @@ class trainings_factory extends singleton {
      * found
      */
     public function retrieve_training($id) {
-        // TODO: problem with the training list cache (no cache).
+        // @todo problem with the training list cache (no cache).
         $this->trainings = array();
         $this->create_trainings();
 

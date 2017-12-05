@@ -28,6 +28,7 @@ require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/learners_facto
 
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/course.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/activity.php');
+require_once($CFG->dirroot.'/blocks/attestoodle/classes/validated_activity.php');
 
 use block_attestoodle\factories\trainings_factory;
 
@@ -47,7 +48,7 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
     $training = trainings_factory::get_instance()->retrieve_training($trainingid);
     $data = $training->get_learners_as_stdclass();
     $table = new html_table();
-    $table->head = array('ID', 'Nom', 'Prénom');
+    $table->head = array('ID', 'Nom', 'Prénom', 'Activités validées', 'Total jalons');
     $table->data = $data;
 
     echo $OUTPUT->heading(get_string('training_learners_list_heading', 'block_attestoodle', count($data)));

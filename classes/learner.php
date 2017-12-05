@@ -65,8 +65,34 @@ class learner {
         $obj->id = $this->id;
         $obj->firstname = $this->firstname;
         $obj->lastname = $this->lastname;
+        $obj->nbvalidatedactivities = $this->get_total_validated_activities();
+        $obj->totalmarkers = parse_minutes_to_hours($this->get_total_markers());
 
         return $obj;
+    }
+
+    /**
+     * Methods that return the number of activities validated by the learner
+     *
+     * @return integer The number of activities validated by the learner
+     */
+    public function get_total_validated_activities() {
+        return count($this->validatedactivities);
+    }
+
+    /**
+     * Methods that return the total of markers validated by the learner
+     *
+     * @return integer The total amount of minutes validated by the learner
+     */
+    public function get_total_markers() {
+        $totalminutes = 0;
+        foreach ($this->validatedactivities as $validatedactivity) {
+            if ($validatedactivity->get_activity()->has_marker()) {
+                $totalminutes += $validatedactivity->get_activity()->get_marker();
+            }
+        }
+        return $totalminutes;
     }
 
     /**
