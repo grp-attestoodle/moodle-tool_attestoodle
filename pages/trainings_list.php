@@ -25,8 +25,9 @@ require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/learners_facto
 
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/course.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/activity.php');
+require_once($CFG->dirroot.'/blocks/attestoodle/classes/validated_activity.php');
 
-use block_attestoodle\factories\training_factory;
+use block_attestoodle\factories\trainings_factory;
 
 echo $OUTPUT->header();
 $parameters = array();
@@ -37,8 +38,8 @@ echo $OUTPUT->single_button($url, $label, 'get', $options);
 
 echo $OUTPUT->heading('Liste des formations :');
 // Print des formations dans un tableau.
-training_factory::get_instance()->create_trainings();
-$databrut = training_factory::get_instance()->get_trainings();
+trainings_factory::get_instance()->create_trainings();
+$databrut = trainings_factory::get_instance()->get_trainings();
 
 $data = parse_trainings_as_stdclass($databrut);
 

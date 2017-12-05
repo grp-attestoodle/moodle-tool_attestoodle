@@ -39,6 +39,9 @@ class course {
     /** @var learner[] Learners registered for the course */
     private $learners;
 
+    /** @var training Training corresponding to the course */
+    private $training;
+
     /**
      * Constructor of the course class
      *
@@ -150,6 +153,15 @@ class course {
     }
 
     /**
+     * Getter for $training property
+     *
+     * @return training Training of the course
+     */
+    public function get_training() {
+        return $this->training;
+    }
+
+    /**
      * Setter for $id property
      *
      * @param string $prop Id to set for the course
@@ -182,6 +194,7 @@ class course {
      * @param activity $activity Activity to add to the course
      */
     public function add_activity($activity) {
+        $activity->set_course($this);
         $this->activities[] = $activity;
     }
 
@@ -201,5 +214,32 @@ class course {
      */
     public function add_learner($learner) {
         $this->learners[] = $learner;
+    }
+
+    /**
+     * Setter for $training property
+     *
+     * @param training $prop Training to set for the course
+     */
+    public function set_training($prop) {
+        $this->training = $prop;
+    }
+
+    /**
+     * Methods that retrieve an activity within the course activities
+     * list based on its id
+     *
+     * @param string $idactivity The id to search for
+     * @return activity|null The activity retrieved if any
+     */
+    public function retrieve_activity($idactivity) {
+        $activity = null;
+        foreach ($this->activities as $activitytotest) {
+            if ($activitytotest->get_id() == $idactivity) {
+                $activity = $activitytotest;
+                break;
+            }
+        }
+        return $activity;
     }
 }

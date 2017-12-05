@@ -42,6 +42,9 @@ class activity {
     /** @var integer Marker time (in minutes) of the activity */
     private $marker;
 
+    /** @var course The course corresponding to the activity */
+    private $course;
+
     /**
      * Constructor of the activity class
      *
@@ -132,6 +135,15 @@ class activity {
     }
 
     /**
+     * Getter for $course property
+     *
+     * @return course The course of the activity
+     */
+    public function get_course() {
+        return $this->course;
+    }
+
+    /**
      * Setter for $id property
      *
      * @param string $prop Id to set for the activity
@@ -174,5 +186,14 @@ class activity {
      */
     public function set_marker($prop) {
         $this->marker = $prop;
+    }
+
+    /**
+     * Setter for $course property
+     *
+     * @param course $prop Course corresponding to the activity
+     */
+    public function set_course($prop) {
+        $this->course = $prop;
     }
 }

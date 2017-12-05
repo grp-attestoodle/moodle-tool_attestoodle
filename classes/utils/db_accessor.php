@@ -102,6 +102,21 @@ class db_accessor extends singleton {
 
     /**
      *
+     * @param type $learner
+     * @return stdClass
+     */
+    public function get_activities_validated_by_learner($learner) {
+        $result = self::$db->get_records(
+                'course_modules_completion',
+                array(
+                    'user' => $learner->get_id(),
+                    'completionstate' => 1
+                ));
+        return $result;
+    }
+
+    /**
+     *
      * @param int $id
      * @return stdClass
      */

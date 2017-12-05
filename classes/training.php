@@ -202,6 +202,24 @@ class training {
      * @param course $course Course to add to the training
      */
     public function add_course($course) {
+        $course->set_training($this);
         $this->courses[] = $course;
+    }
+
+    /**
+     * Methods that retrieve an activity based on its id
+     *
+     * @param string $idactivity The id to search for
+     * @return activity|null The activity retrieved if any
+     */
+    public function retrieve_activity($idactivity) {
+        $activity = null;
+        foreach ($this->courses as $course) {
+            $activity = $course->retrieve_activity($activityid);
+            if (isset($activity)) {
+                break;
+            }
+        }
+        return $activity;
     }
 }

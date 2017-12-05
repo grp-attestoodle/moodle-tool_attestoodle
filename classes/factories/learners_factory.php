@@ -28,6 +28,7 @@ namespace block_attestoodle\factories;
 use block_attestoodle\utils\singleton;
 use block_attestoodle\utils\db_accessor;
 use block_attestoodle\learner;
+use block_attestoodle\validated_activity;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -59,10 +60,31 @@ class learners_factory extends singleton {
         $lastname = $dblearner->lastname;
 
         $learnertoadd = new learner($id, $firstname, $lastname);
+        $this->retrieve_validated_activities($learnertoadd);
 
         $this->learners[] = $learnertoadd;
 
         return $learnertoadd;
+    }
+
+    /**
+     * Method that retrieves the activities validated by a learner in DB and
+     * stores them in the learner
+     *
+     * @todo The passing by reference may be useless
+     *
+     * @param learner $learner The learner to search activities for
+     */
+    private function retrieve_validated_activities(&$learner) {
+        $dbactivities = db_accessor::get_instance()->get_activities_validated_by_learner($learner);
+
+        foreach ($dbactivities as $dbactivity) {
+            $activity = trainings_factory::get_instance()->retrieve_activity($dbactivity->coursemoduleid);
+            if (isset($activity)) {
+                $validatedactivity = new validated_activity($activity, $dbactivity->timemodified);
+                $learner->add_validated_activity($validatedactivity);
+            }
+        }
     }
 
     /**

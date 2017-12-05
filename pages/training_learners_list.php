@@ -29,7 +29,7 @@ require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/learners_facto
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/course.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/activity.php');
 
-use block_attestoodle\factories\training_factory;
+use block_attestoodle\factories\trainings_factory;
 
 echo $OUTPUT->header();
 
@@ -40,11 +40,11 @@ echo $OUTPUT->single_button(
         'get',
         array('class' => 'attestoodle-button'));
 
-if (!training_factory::get_instance()->has_training($trainingid)) {
+if (!trainings_factory::get_instance()->has_training($trainingid)) {
     $warningunknownid = get_string('training_details_unknown_training_id', 'block_attestoodle') . $trainingid;
     echo $warningunknownid;
 } else {
-    $training = training_factory::get_instance()->retrieve_training($trainingid);
+    $training = trainings_factory::get_instance()->retrieve_training($trainingid);
     $data = $training->get_learners_as_stdclass();
     $table = new html_table();
     $table->head = array('ID', 'Nom', 'Prénom');

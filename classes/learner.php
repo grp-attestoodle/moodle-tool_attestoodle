@@ -36,6 +36,9 @@ class learner {
     /** @var string Lastname of the learner */
     private $lastname;
 
+    /** @var validated_activity[] Array of activity validated by the learner */
+    private $validatedactivities;
+
     /**
      * Constructor of the learner class
      *
@@ -47,6 +50,7 @@ class learner {
         $this->id = $id;
         $this->firstname = $firstname;
         $this->lastname = $lastname;
+        $this->$validatedactivities = array();
     }
 
     /**
@@ -93,6 +97,15 @@ class learner {
     }
 
     /**
+     * Getter for $validatedactivities property
+     *
+     * @return validated_activity[] Validated activities of the learner
+     */
+    public function get_validated_activities() {
+        return $this->validatedactivities;
+    }
+
+    /**
      * Setter for $id property
      *
      * @param string $prop Id to set for the learner
@@ -117,5 +130,23 @@ class learner {
      */
     public function set_lastname($prop) {
         $this->lastname = $prop;
+    }
+
+    /**
+     * Setter for $validatedactivities property
+     *
+     * @param validated_activity[] $prop Validated activities to set for the learner
+     */
+    public function set_validated_activities($prop) {
+        $this->validatedactivities = $prop;
+    }
+
+    /**
+     * Add a validated activity to the validated activities list
+     *
+     * @param validated_activity $validatedactivity Validated activity to add
+     */
+    public function add_validated_activity($validatedactivity) {
+        $this->validatedactivities[] = $validatedactivity;
     }
 }
