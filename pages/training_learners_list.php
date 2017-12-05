@@ -34,21 +34,28 @@ use block_attestoodle\factories\trainings_factory;
 
 echo $OUTPUT->header();
 
-// Link to the trainings list.
-echo $OUTPUT->single_button(
-        new moodle_url('/blocks/attestoodle/pages/training_details.php', array('id' => $trainingid)),
-        get_string('backto_training_detail_btn_text', 'block_attestoodle'),
-        'get',
-        array('class' => 'attestoodle-button'));
-
 if (!trainings_factory::get_instance()->has_training($trainingid)) {
+    // Link to the trainings list.
+    echo $OUTPUT->single_button(
+            new moodle_url('/blocks/attestoodle/pages/trainings_list.php', array()),
+            get_string('trainings_list_btn_text', 'block_attestoodle'),
+            'get',
+            array('class' => 'attestoodle-button'));
+
     $warningunknownid = get_string('training_details_unknown_training_id', 'block_attestoodle') . $trainingid;
     echo $warningunknownid;
 } else {
+    // Link to the training details.
+    echo $OUTPUT->single_button(
+            new moodle_url('/blocks/attestoodle/pages/training_details.php', array('id' => $trainingid)),
+            get_string('backto_training_detail_btn_text', 'block_attestoodle'),
+            'get',
+            array('class' => 'attestoodle-button'));
+
     $training = trainings_factory::get_instance()->retrieve_training($trainingid);
-    $data = $training->get_learners_as_stdclass();
+    $data = parse_learners_as_stdclass($training->get_learners());
     $table = new html_table();
-    $table->head = array('ID', 'Nom', 'Prénom', 'Activités validées', 'Total jalons');
+    $table->head = array('ID', 'Nom', 'Prénom', 'Activités validées', 'Total jalons', '');
     $table->data = $data;
 
     echo $OUTPUT->heading(get_string('training_learners_list_heading', 'block_attestoodle', count($data)));
