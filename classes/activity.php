@@ -60,6 +60,7 @@ class activity {
         $this->description = $description;
         $this->type = $type;
         $this->marker = $marker;
+        $this->course = null;
     }
 
     /**

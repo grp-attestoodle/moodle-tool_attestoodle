@@ -53,6 +53,7 @@ class course {
         $this->name = $name;
         $this->activities = array();
         $this->learners = array();
+        $this->training = null;
     }
 
     /**

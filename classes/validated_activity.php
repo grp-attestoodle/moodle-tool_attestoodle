@@ -39,10 +39,10 @@ class validated_activity {
      * @param activity $activity The activity validated
      * @param integer $unixtime The unixtime when the activity has been validated
      */
-    public function __constructor($activity, $unixtime) {
+    public function __construct($activity, $unixtime) {
         $this->activity = $activity;
         // The '@' is necessary for unixtime (@link https://bugs.php.net/bug.php?id=40171).
-        $this->datetime = new DateTime("@$unixtime");
+        $this->datetime = new \DateTime("@$unixtime");
     }
 
     /**

@@ -17,8 +17,7 @@
 // Importation de la config $CFG qui importe égalment $DB et $OUTPUT.
 require_once(dirname(__FILE__) . '/../../../config.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/lib.php');
-
-require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/training_factory.php');
+require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/trainings_factory.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/courses_factory.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/activities_factory.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/learners_factory.php');

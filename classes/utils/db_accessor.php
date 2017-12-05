@@ -109,7 +109,7 @@ class db_accessor extends singleton {
         $result = self::$db->get_records(
                 'course_modules_completion',
                 array(
-                    'user' => $learner->get_id(),
+                    'userid' => $learner->get_id(),
                     'completionstate' => 1
                 ));
         return $result;

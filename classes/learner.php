@@ -50,7 +50,7 @@ class learner {
         $this->id = $id;
         $this->firstname = $firstname;
         $this->lastname = $lastname;
-        $this->$validatedactivities = array();
+        $this->validatedactivities = array();
     }
 
     /**
