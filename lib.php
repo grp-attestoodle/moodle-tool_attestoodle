@@ -100,15 +100,33 @@ function block_attestoodle_get_activities_with_intro($activities) {
     return $arrayreturn;
 }
 
-function parse_trainings_as_stdclass($data) {
+function parse_learners_as_stdclass($data, $trainingid) {
+    $newdata = array_map(function($o) {
+            global $OUTPUT, $trainingid;
+            $stdclass = $o->get_object_as_stdclass();
 
+            $parameters = array(
+                    'training' => $trainingid,
+                    'user' => $stdclass->id);
+            $url = new moodle_url('/blocks/attestoodle/pages/learner_details.php', $parameters);
+            $label = get_string('learner_details_btn_text', 'block_attestoodle');
+            $options = array('class' => 'attestoodle-button');
+
+            $stdclass->link = $OUTPUT->single_button($url, $label, 'get', $options);
+
+            return $stdclass;
+    }, $data);
+    return $newdata;
+}
+
+function parse_trainings_as_stdclass($data) {
     $newdata = array_map(function($o) {
             global $OUTPUT;
             $stdclass = $o->get_object_as_stdclass();
 
             $parameters = array('id' => $stdclass->id);
             $url = new moodle_url('/blocks/attestoodle/pages/training_details.php', $parameters);
-            $label = get_string('training_detail_btn_text', 'block_attestoodle');
+            $label = get_string('training_details_btn_text', 'block_attestoodle');
             $options = array('class' => 'attestoodle-button');
 
             $stdclass->link = $OUTPUT->single_button($url, $label, 'get', $options);
@@ -130,4 +148,8 @@ function parse_minutes_to_hours($minutes) {
     $m = $m < 10 ? '0' . $m : $m;
 
     return $h . "h" . $m;
+}
+
+function parse_datetime_to_readable_format($datetime) {
+    return $datetime->format("d/m/Y à G:i:s");
 }

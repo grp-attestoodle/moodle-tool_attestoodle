@@ -39,8 +39,7 @@ $string['courses_list_btn_text'] = 'Liste des cours';
 $string['trainings_list_btn_text'] = 'Liste des formations';
 
 // Training list page strings.
-
-$string['training_detail_btn_text'] = 'Détails';
+$string['training_details_btn_text'] = 'Détails';
 
 // Training details page strings.
 $string['training_details_learners_list_btn_text'] = 'Etudiants de la formation';
@@ -49,6 +48,12 @@ $string['training_details_unknown_training_id'] = "Aucune formation ayant l'ID :
 // Training learners list page strings.
 $string['training_learners_list_heading'] = '{$a} étudiants dans la formation';
 $string['backto_training_detail_btn_text'] = 'Retour aux détails de la formation';
+$string['learner_details_btn_text'] = 'Détails';
+
+// Learner details page strings.
+$string['backto_training_learners_list_btn_text'] = 'Retour à la liste des étudiants';
+$string['learner_details_unknown_training_id'] = "Aucune formation ayant l'ID : ";
+$string['learner_details_unknown_learner_id'] = "Aucun étudiant ayant l'ID : ";
 
 // Unknown strings.
 // @TODO review these strings.
