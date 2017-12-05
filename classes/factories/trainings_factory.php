@@ -31,8 +31,8 @@ use block_attestoodle\training;
 
 defined('MOODLE_INTERNAL') || die;
 
-class training_factory extends singleton {
-    /** @var training_factory Instance of the training_factory singleton */
+class trainings_factory extends singleton {
+    /** @var trainings_factory Instance of the training_factory singleton */
     protected static $instance;
 
     /** @var training[] Array containing all the trainings */
@@ -121,6 +121,23 @@ class training_factory extends singleton {
             }
         }
         return $training;
+    }
+
+    /**
+     * Methods that retrieve an activity based on its id
+     *
+     * @param string $idactivity The id to search for
+     * @return activity|null The activity retrieved if any
+     */
+    public function retrieve_activity($idactivity) {
+        $activity = null;
+        foreach ($this->trainings as $training) {
+            $activity = $training->retrieve_activity($idactivity);
+            if (isset($activity)) {
+                break;
+            }
+        }
+        return $activity;
     }
 }
 
