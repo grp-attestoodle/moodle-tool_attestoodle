@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -13,25 +14,24 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
 // Importation de la config $CFG qui importe égalment $DB et $OUTPUT.
 require_once(dirname(__FILE__) . '/../../../config.php');
 
-require_once($CFG->dirroot.'/blocks/attestoodle/vendor/fpdf/fpdf.php');
+require_once($CFG->dirroot . '/blocks/attestoodle/vendor/fpdf/fpdf.php');
 
 $trainingid = required_param('training', PARAM_INT);
 $userid = required_param('user', PARAM_INT);
 
-require_once($CFG->dirroot.'/blocks/attestoodle/lib.php');
+require_once($CFG->dirroot . '/blocks/attestoodle/lib.php');
 
-require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/trainings_factory.php');
-require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/courses_factory.php');
-require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/activities_factory.php');
-require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/learners_factory.php');
+require_once($CFG->dirroot . '/blocks/attestoodle/classes/factories/trainings_factory.php');
+require_once($CFG->dirroot . '/blocks/attestoodle/classes/factories/courses_factory.php');
+require_once($CFG->dirroot . '/blocks/attestoodle/classes/factories/activities_factory.php');
+require_once($CFG->dirroot . '/blocks/attestoodle/classes/factories/learners_factory.php');
 
-require_once($CFG->dirroot.'/blocks/attestoodle/classes/course.php');
-require_once($CFG->dirroot.'/blocks/attestoodle/classes/activity.php');
-require_once($CFG->dirroot.'/blocks/attestoodle/classes/validated_activity.php');
+require_once($CFG->dirroot . '/blocks/attestoodle/classes/course.php');
+require_once($CFG->dirroot . '/blocks/attestoodle/classes/activity.php');
+require_once($CFG->dirroot . '/blocks/attestoodle/classes/validated_activity.php');
 
 use block_attestoodle\factories\trainings_factory;
 use block_attestoodle\factories\learners_factory;
@@ -42,10 +42,7 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
     echo $OUTPUT->header();
 
     echo $OUTPUT->single_button(
-            new moodle_url('/blocks/attestoodle/pages/trainings_list.php', array()),
-            get_string('backto_trainings_list_btn_text', 'block_attestoodle'),
-            'get',
-            array('class' => 'attestoodle-button'));
+            new moodle_url('/blocks/attestoodle/pages/trainings_list.php', array()), get_string('backto_trainings_list_btn_text', 'block_attestoodle'), 'get', array('class' => 'attestoodle-button'));
 
     $warningunknowntrainingid = get_string('unknown_training_id', 'block_attestoodle', $trainingid);
     echo $warningunknowntrainingid;
@@ -59,7 +56,9 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
         echo $OUTPUT->header();
 
         echo $OUTPUT->single_button(
-                new moodle_url('/blocks/attestoodle/pages/training_learners_list.php', array('id' => $trainingid)),
+                new moodle_url(
+                        '/blocks/attestoodle/pages/training_learners_list.php',
+                        array('id' => $trainingid)),
                 get_string('backto_training_learners_list_btn_text', 'block_attestoodle'),
                 'get',
                 array('class' => 'attestoodle-button'));
@@ -75,7 +74,7 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
         $filename = "certificate_{$learner->get_firstname()}{$learner->get_lastname()}.pdf";
 
         // le mettre au debut car plante si on declare $mysqli avant !
-        $pdf = new FPDF( 'P', 'mm', 'A4' );
+        $pdf = new FPDF('P', 'mm', 'A4');
 
         // on sup les 2 cm en bas
         $pdf->SetAutoPagebreak(false);
@@ -87,7 +86,6 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
 
             // logo : 80 de largeur et 55 de hauteur
             // $pdf->Image('logo_societe.png', 10, 10, 80, 55);
-
             // Titre
             $title = "Attestation mensuelle : temps d'apprentissage";
             $pdf->SetFont("Arial", "", 14);
@@ -126,7 +124,7 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
             // les traits verticaux colonnes
             $pdf->Line(150, 110, 150, 200);
             // Titre type apprentissage
-            $pdf->SetFont('Arial','B',10);
+            $pdf->SetFont('Arial', 'B', 10);
             $pdf->SetFillColor(210, 210, 210);
             $pdf->SetXY(10, 110);
             $pdf->Cell(140, 15, "Type d'apprentissage", 1, 0, 'C', true);
@@ -135,8 +133,9 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
             $pdf->Cell(50, 15, "Total heures", 1, 0, 'C', true);
 
             // Lignes d'activités
-            $y = 125; $lineheight = 8;
-            $pdf->SetFont('Arial','',10);
+            $y = 125;
+            $lineheight = 8;
+            $pdf->SetFont('Arial', '', 10);
             foreach ($certificate["activities"] as $type => $total) {
                 $pdf->SetXY(10, $y);
                 // Type de l'activite
@@ -152,12 +151,12 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
             $pdf->SetLineWidth(0.1);
             $pdf->Rect(5, 240, 200, 6, "D");
             $pdf->SetXY(0, 240);
-            $pdf->SetFont('Arial','',7);
+            $pdf->SetFont('Arial', '', 7);
             $pdf->Cell($pdf->GetPageWidth(), 7, "Cette attestation est faite pour servir et valoir ce que de droit", 0, 0, 'C');
 
             // Signatures.
             $pdf->SetXY(10, 250);
-            $pdf->SetFont('Arial','',10);
+            $pdf->SetFont('Arial', '', 10);
             $pdf->Cell($pdf->GetPageWidth() - 10, 0, "Signature stagiaire", 0, 1, 'L');
             $pdf->Cell($pdf->GetPageWidth() - 10, 0, "Signature responsable de formation", 0, 0, 'R');
         }
