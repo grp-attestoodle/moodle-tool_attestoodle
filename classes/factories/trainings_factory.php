@@ -110,7 +110,7 @@ class trainings_factory extends singleton {
      * found
      */
     public function retrieve_training($id) {
-        // @todo problem with the training list cache (no cache).
+        // TODO: problem with the training list cache (no cache).
         $this->trainings = array();
         $this->create_trainings();
 

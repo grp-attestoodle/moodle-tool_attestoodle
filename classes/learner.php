@@ -132,6 +132,17 @@ class learner {
     }
 
     /**
+     * Method that return the validated activities with marker
+     *
+     * @return validated_activity[] Validated activities with marker of the learner
+     */
+    public function get_validated_activities_with_marker() {
+        return array_filter($this->validatedactivities, function($va) {
+            return $va->get_activity()->has_marker();
+        });
+    }
+
+    /**
      * Setter for $id property
      *
      * @param string $prop Id to set for the learner
@@ -174,5 +185,62 @@ class learner {
      */
     public function add_validated_activity($validatedactivity) {
         $this->validatedactivities[] = $validatedactivity;
+    }
+
+    /**
+     * Method that return certificate informations for the learner
+     *
+     * @return \stdClass Informations structured in a stdClass object
+     */
+    public function get_certificate_informations() {
+        // 1) Récupérer toutes les activités validées.
+        $validatedactivitieswithmarker = $this->get_validated_activities_with_marker();
+
+        // 2) Filtrer les activités pour n'avoir que celle du mois en cours.
+        $filteredvalidatedactivities = $validatedactivitieswithmarker;
+
+        // 3) Construire un tableau regroupant les activités par type et
+        //   par formation et faire le total par type d'activité.
+        $activitiesstructured = array();
+
+        foreach ($filteredvalidatedactivities as $fva) {
+            $activity = $fva->get_activity();
+
+            // Instanciate the training in the global array if needed.
+            $trainingname = $activity->get_course()->get_training()->get_name();
+            if (!array_key_exists($trainingname, $activitiesstructured)) {
+                $activitiesstructured[$trainingname] = array(
+                        "totalminutes" => 0,
+                        "activities" => array()
+                    );
+            }
+
+            // Increment total minutes for the training.
+            $activitiesstructured[$trainingname]["totalminutes"] += $activity->get_marker();
+
+            // Retrieve current activity type.
+            $activitytype = $activity->get_type();
+
+            // Instanciate activity type in the training array if needed.
+            if (!array_key_exists($activitytype, $activitiesstructured[$trainingname]["activities"])) {
+                $activitiesstructured[$trainingname]["activities"][$activitytype] = 0;
+            }
+            // Increment total minutes for the activity type in the training.
+            $activitiesstructured[$trainingname]["activities"][$activitytype] += $activity->get_marker();
+        }
+        // 4) Avoir les infos "mois" "nom stagiaire"
+        $learnername = $this->firstname . " " . $this->lastname;
+        $period = "unknown period";
+
+        // 5) Pour chaque formation
+        //  - Faire le total des heures du mois en cours
+        //  - récupérer l'intitulé de la formation
+        //  - Générer l'attestation brut
+        $certificateinformations = new \stdClass();
+        $certificateinformations->learnername = $learnername;
+        $certificateinformations->period = $period;
+        $certificateinformations->certificates = $activitiesstructured;
+
+        return $certificateinformations;
     }
 }

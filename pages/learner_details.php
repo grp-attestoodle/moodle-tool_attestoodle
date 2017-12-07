@@ -37,7 +37,8 @@ use block_attestoodle\factories\learners_factory;
 echo $OUTPUT->header();
 
 if (!trainings_factory::get_instance()->has_training($trainingid)) {
-    // Link to the trainings list.
+    // Verifying training id.
+    // Link to the trainings list if the training id is not valid.
     echo $OUTPUT->single_button(
             new moodle_url('/blocks/attestoodle/pages/trainings_list.php', array()),
             get_string('trainings_list_btn_text', 'block_attestoodle'),
@@ -47,6 +48,7 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
     $warningunknowntrainingid = get_string('learner_details_unknown_training_id', 'block_attestoodle') . $trainingid;
     echo $warningunknowntrainingid;
 } else {
+    // If the training id is valid...
     // Link to the training learners list.
     echo $OUTPUT->single_button(
             new moodle_url('/blocks/attestoodle/pages/training_learners_list.php', array('id' => $trainingid)),
@@ -54,36 +56,40 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
             'get',
             array('class' => 'attestoodle-button'));
 
+    // Verifying learner id.
     if (!learners_factory::get_instance()->has_learner($userid)) {
         $warningunknownlearnerid = get_string('learner_details_unknown_learner_id', 'block_attestoodle') . $userid;
         echo $warningunknownlearnerid;
     } else {
-        // Link to the training learners list.
-    //    echo $OUTPUT->single_button(
-    //            new moodle_url('/blocks/attestoodle/pages/training_learners_list.php', array('id' => $trainingid)),
-    //            get_string('training_details_learners_list_btn_text', 'block_attestoodle'),
-    //            'get',
-    //            array('class' => 'attestoodle-button'));
-    //
-    //    $training = trainings_factory::get_instance()->retrieve_training($trainingid);
+        // If the learner id is valid...
         $learner = learners_factory::get_instance()->retrieve_learner($userid);
-    //
-    //    foreach ($training->get_courses() as $course) {
-    //        echo $OUTPUT->heading($course->get_name());
-    //
-    //        $data = $course->get_activities_as_stdclass();
-    //        $table = new html_table();
-    //        $table->head = array('id', 'Type', 'Nom', 'Jalon');
-    //        $table->data = $data;
-    //
-    //        echo html_writer::table($table);
+        $counternomarker = 0;
+        // Print validated activities informations (with marker only).
         foreach ($learner->get_validated_activities() as $vact) {
             $act = $vact->get_activity();
-            echo "<h1>" . $act->get_course()->get_training()->get_name() . "</h1>";
-            echo "<h2>" . $act->get_name() . "</h2>";
-            echo "<h3>" . $act->get_type(). " (" . parse_minutes_to_hours($act->get_marker()) . ") - Validée le " . parse_datetime_to_readable_format($vact->get_datetime()) . "</h3>";
-            echo "<p>" . $act->get_description() . "</p>";
+            if ($act->has_marker()) {
+                echo "<h1>" . $act->get_course()->get_training()->get_name() . "</h1>";
+                echo "<h2>" . $act->get_name() . "</h2>";
+                echo "<h3>" . $act->get_type(). " (" . parse_minutes_to_hours($act->get_marker())
+                        . ") - Validée le " . parse_datetime_to_readable_format($vact->get_datetime())
+                        . "</h3>";
+                // echo "<p>" . $act->get_description() . "</p>";
+            } else {
+                $counternomarker++;
+            }
         }
+        // Print a sentence if there is activities without marker.
+        if ($counternomarker > 0) {
+            $word = $counternomarker > 1 ? "activities" : "activity";
+            echo "<p><i>And {$counternomarker} other {$word} without marker.</i></p>";
+        }
+
+        echo "<hr />";
+
+        $certificateinfos = $learner->get_certificate_informations();
+        echo "<pre>";
+        var_dump($certificateinfos);
+        echo "</pre>";
     }
 }
 
