@@ -36,16 +36,16 @@ use block_attestoodle\factories\learners_factory;
 
 echo $OUTPUT->header();
 
+// Verifying training id.
 if (!trainings_factory::get_instance()->has_training($trainingid)) {
-    // Verifying training id.
     // Link to the trainings list if the training id is not valid.
     echo $OUTPUT->single_button(
             new moodle_url('/blocks/attestoodle/pages/trainings_list.php', array()),
-            get_string('trainings_list_btn_text', 'block_attestoodle'),
+            get_string('backto_trainings_list_btn_text', 'block_attestoodle'),
             'get',
             array('class' => 'attestoodle-button'));
 
-    $warningunknowntrainingid = get_string('learner_details_unknown_training_id', 'block_attestoodle') . $trainingid;
+    $warningunknowntrainingid = get_string('unknown_training_id', 'block_attestoodle', $trainingid);
     echo $warningunknowntrainingid;
 } else {
     // If the training id is valid...
@@ -58,7 +58,7 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
 
     // Verifying learner id.
     if (!learners_factory::get_instance()->has_learner($userid)) {
-        $warningunknownlearnerid = get_string('learner_details_unknown_learner_id', 'block_attestoodle') . $userid;
+        $warningunknownlearnerid = get_string('unknown_learner_id', 'block_attestoodle', $userid);
         echo $warningunknownlearnerid;
     } else {
         // If the learner id is valid...
@@ -86,9 +86,14 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
         echo "<hr />";
 
         $certificateinfos = $learner->get_certificate_informations();
-        echo "<pre>";
-        var_dump($certificateinfos);
-        echo "</pre>";
+
+        echo $OUTPUT->single_button(
+            new moodle_url('/blocks/attestoodle/pages/download_certificate.php', array(
+                    'training' => $trainingid,
+                    'user' => $userid)),
+            get_string('download_certificate_btn_text', 'block_attestoodle'),
+            'get',
+            array('class' => 'attestoodle-button'));
     }
 }
 
