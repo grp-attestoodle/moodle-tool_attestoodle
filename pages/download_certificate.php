@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -42,7 +41,12 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
     echo $OUTPUT->header();
 
     echo $OUTPUT->single_button(
-            new moodle_url('/blocks/attestoodle/pages/trainings_list.php', array()), get_string('backto_trainings_list_btn_text', 'block_attestoodle'), 'get', array('class' => 'attestoodle-button'));
+            new moodle_url(
+                    '/blocks/attestoodle/pages/trainings_list.php',
+                    array()),
+            get_string('backto_trainings_list_btn_text', 'block_attestoodle'),
+            'get',
+            array('class' => 'attestoodle-button'));
 
     $warningunknowntrainingid = get_string('unknown_training_id', 'block_attestoodle', $trainingid);
     echo $warningunknowntrainingid;
@@ -68,15 +72,15 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
 
         echo $OUTPUT->footer();
     } else {
-        // If the learner id is valid, process the PDF generation
+        // If the learner id is valid, process the PDF generation.
         $learner = learners_factory::get_instance()->retrieve_learner($userid);
         $certificateinfos = $learner->get_certificate_informations();
         $filename = "certificate_{$learner->get_firstname()}{$learner->get_lastname()}.pdf";
 
-        // le mettre au debut car plante si on declare $mysqli avant !
+        // PDF Class instanciation.
         $pdf = new FPDF('P', 'mm', 'A4');
 
-        // on sup les 2 cm en bas
+        // Suppressing margins
         $pdf->SetAutoPagebreak(false);
         $pdf->SetMargins(0, 0, 0);
 
@@ -84,9 +88,9 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
         foreach ($certificateinfos->certificates as $certificatekey => $certificate) {
             $pdf->AddPage();
 
-            // logo : 80 de largeur et 55 de hauteur
+            // Logo : 80 de largeur et 55 de hauteur.
             // $pdf->Image('logo_societe.png', 10, 10, 80, 55);
-            // Titre
+            // Titre.
             $title = "Attestation mensuelle : temps d'apprentissage";
             $pdf->SetFont("Arial", "", 14);
             $pdf->SetXY(0, 74);
@@ -98,49 +102,49 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
             $pdf->SetXY(0, 80);
             $pdf->Cell($pdf->GetPageWidth(), 0, $period, 0, 0, "C");
 
-            // Nom du stagiaire
+            // Nom du stagiaire.
             $learnername = utf8_decode("Nom du stagiaire : " . $learner->get_firstname() . " " . $learner->get_lastname());
             $pdf->SetFont("Arial", "", 10);
             $pdf->SetXY(10, 90);
             $pdf->Cell($pdf->GetStringWidth($learnername), 0, $learnername, 0, "L");
 
-            // Intitulé formation
+            // Intitulé formation.
             $trainingname = utf8_decode("Intitulé de la formation : " . $certificatekey);
             $pdf->SetXY(10, 95);
             $pdf->Cell($pdf->GetStringWidth($trainingname), 0, $trainingname, 0, "L");
 
-            // Temps d'apprentissage sur le mois
+            // Temps d'apprentissage sur le mois.
             $totalvalidatedtime = utf8_decode("Temps total validé sur la période : " . parse_minutes_to_hours($certificate["totalminutes"]));
             $pdf->SetXY(10, 100);
             $pdf->Cell($pdf->GetStringWidth($totalvalidatedtime), 0, $totalvalidatedtime, 0, "L");
 
-            // Détails des activités validées
+            // Validated activities details.
             $pdf->SetXY(10, 110);
-            // cadre avec 18 lignes max ! et 118 de hauteur --> 95 + 118 = 213 pour les traits verticaux
+            // Main borders.
             $pdf->SetLineWidth(0.1);
             $pdf->Rect(10, 110, 190, 90, "D");
-            // cadre titre des colonnes
+            // Header border.
             $pdf->Line(10, 125, 200, 125);
-            // les traits verticaux colonnes
+            // Columns.
             $pdf->Line(150, 110, 150, 200);
-            // Titre type apprentissage
+            // Titre type apprentissage.
             $pdf->SetFont('Arial', 'B', 10);
             $pdf->SetFillColor(210, 210, 210);
             $pdf->SetXY(10, 110);
             $pdf->Cell(140, 15, "Type d'apprentissage", 1, 0, 'C', true);
-            // Titre total heures
+            // Titre total heures.
             $pdf->SetXY(150, 110);
             $pdf->Cell(50, 15, "Total heures", 1, 0, 'C', true);
 
-            // Lignes d'activités
+            // Lignes d'activités.
             $y = 125;
             $lineheight = 8;
             $pdf->SetFont('Arial', '', 10);
             foreach ($certificate["activities"] as $type => $total) {
                 $pdf->SetXY(10, $y);
-                // Type de l'activite
+                // Type de l'activite.
                 $pdf->Cell(140, $lineheight, $type, 0, 0, 'L');
-                // Total heures
+                // Total heures.
                 $pdf->SetXY(150, $y);
                 $pdf->Cell(50, $lineheight, parse_minutes_to_hours($total), 0, 0, 'C');
                 $y += $lineheight;
