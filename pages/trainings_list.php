@@ -29,11 +29,6 @@ require_once($CFG->dirroot.'/blocks/attestoodle/classes/validated_activity.php')
 use block_attestoodle\factories\trainings_factory;
 
 echo $OUTPUT->header();
-$parameters = array();
-$url = new moodle_url('/blocks/attestoodle/pages/courses_list.php', $parameters);
-$label = get_string('courses_list_btn_text', 'block_attestoodle');
-$options = array('class' => 'attestoodle-button');
-echo $OUTPUT->single_button($url, $label, 'get', $options);
 
 echo $OUTPUT->heading('Liste des formations :');
 // Print des formations dans un tableau.
