@@ -193,21 +193,19 @@ class learner {
      * @return \stdClass Informations structured in a stdClass object
      */
     public function get_certificate_informations() {
-        // 1) Récupérer toutes les activités validées.
         $validatedactivitieswithmarker = $this->get_validated_activities_with_marker();
-
-        // 2) Filtrer les activités pour n'avoir que celle du mois en cours.
         $filteredvalidatedactivities = $validatedactivitieswithmarker;
 
-        // 3) Construire un tableau regroupant les activités par type et
-        //   par formation et faire le total par type d'activité.
+        // Retrieve activities informations in an array structure.
         $activitiesstructured = array();
-
         foreach ($filteredvalidatedactivities as $fva) {
+            // Retrieve activity.
             $activity = $fva->get_activity();
 
-            // Instanciate the training in the global array if needed.
+            // Retrieve current activity training.
             $trainingname = $activity->get_course()->get_training()->get_name();
+
+            // Instanciate the training in the global array if needed.
             if (!array_key_exists($trainingname, $activitiesstructured)) {
                 $activitiesstructured[$trainingname] = array(
                         "totalminutes" => 0,
@@ -228,14 +226,10 @@ class learner {
             // Increment total minutes for the activity type in the training.
             $activitiesstructured[$trainingname]["activities"][$activitytype] += $activity->get_marker();
         }
-        // 4) Avoir les infos "mois" "nom stagiaire"
+        // Retrieve global informations.
         $learnername = $this->firstname . " " . $this->lastname;
         $period = "unknown period";
 
-        // 5) Pour chaque formation
-        //  - Faire le total des heures du mois en cours
-        //  - récupérer l'intitulé de la formation
-        //  - Générer l'attestation brut
         $certificateinformations = new \stdClass();
         $certificateinformations->learnername = $learnername;
         $certificateinformations->period = $period;

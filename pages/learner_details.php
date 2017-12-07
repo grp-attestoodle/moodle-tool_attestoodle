@@ -73,7 +73,6 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
                 echo "<h3>" . $act->get_type(). " (" . parse_minutes_to_hours($act->get_marker())
                         . ") - Validée le " . parse_datetime_to_readable_format($vact->get_datetime())
                         . "</h3>";
-                // echo "<p>" . $act->get_description() . "</p>";
             } else {
                 $counternomarker++;
             }
