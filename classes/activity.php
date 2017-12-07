@@ -85,7 +85,10 @@ class activity {
         $obj->id = $this->id;
         $obj->type = $this->type;
         $obj->name = $this->name;
-        $obj->hasmarker = $this->has_marker() ? $this->marker . " minutes" : 'Non';
+        $obj->marker =
+                $this->has_marker() ?
+                parse_minutes_to_hours($this->marker) . " ({$this->marker} min)" :
+                'Non';
 
         return $obj;
     }
