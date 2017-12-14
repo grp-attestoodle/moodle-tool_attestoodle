@@ -32,6 +32,9 @@ use block_attestoodle\training;
 defined('MOODLE_INTERNAL') || die;
 
 class trainings_factory extends singleton {
+    /** @var trainings_factory Instance of the training_factory singleton */
+    protected static $instance;
+
     /** @var training[] Array containing all the trainings */
     private $trainings;
 
