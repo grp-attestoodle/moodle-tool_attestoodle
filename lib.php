@@ -27,6 +27,8 @@ defined('MOODLE_INTERNAL') || die;
 /**
  * Returns the courses stored in database
  *
+ * @todo To be supress
+ *
  * @param boolean completionenabled Set to true if we need only the courses where completion is enabled
  * @return array Array of courses retrieved in DB
  */
@@ -44,6 +46,8 @@ function block_attestoodle_get_courses() {
 /**
  * Returns an associated array containing the id and name of the modules in DB
  *
+ * @todo To be supress
+ *
  * @return array The associated array (id => name)
  */
 function block_attestoodle_get_modules() {
@@ -55,6 +59,8 @@ function block_attestoodle_get_modules() {
 
 /**
  * Returns an array of modules associated to a list of courses
+ *
+ * @todo To be supress
  *
  * @param array courses List of courses that need to be match before returning the courses_modules
  * @return array The courses modules
@@ -82,6 +88,13 @@ function block_attestoodle_get_courses_modules($courses) {
     }
 }
 
+/**
+ * @todo To be supress
+ *
+ * @global type $DB
+ * @param type $activities
+ * @return array
+ */
 function block_attestoodle_get_activities_with_intro($activities) {
     global $DB;
 
@@ -100,6 +113,13 @@ function block_attestoodle_get_activities_with_intro($activities) {
     return $arrayreturn;
 }
 
+/**
+ * @todo To replace with a specific UI class
+ *
+ * @param type $data
+ * @param type $trainingid
+ * @return type
+ */
 function parse_learners_as_stdclass($data, $trainingid) {
     $newdata = array_map(function($o) {
             global $OUTPUT, $trainingid;
@@ -119,6 +139,12 @@ function parse_learners_as_stdclass($data, $trainingid) {
     return $newdata;
 }
 
+/**
+ * @todo To replace with a specific UI class
+ *
+ * @param type $data
+ * @return type
+ */
 function parse_trainings_as_stdclass($data) {
     $newdata = array_map(function($o) {
             global $OUTPUT;
@@ -150,6 +176,12 @@ function parse_minutes_to_hours($minutes) {
     return $h . "h" . $m;
 }
 
+/**
+ * Parse a datetime object to a readable format
+ * 
+ * @param \DateTime $datetime The datetime object
+ * @return string the readable format
+ */
 function parse_datetime_to_readable_format($datetime) {
     return $datetime->format("d/m/Y à G:i:s");
 }

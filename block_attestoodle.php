@@ -67,7 +67,8 @@ class block_attestoodle extends block_base {
             $this->content->text .= $this->config->text;
         }
 
-        $this->content->text = get_string('hello', 'block_attestoodle') . ' ' . $USER->firstname;
+        // $this->content->text = get_string('hello', 'block_attestoodle') . ' ' . $USER->firstname;
+        $this->content->text = "";
 
         $parameters = array();
         $url = new moodle_url('/blocks/attestoodle/pages/trainings_list.php', $parameters);

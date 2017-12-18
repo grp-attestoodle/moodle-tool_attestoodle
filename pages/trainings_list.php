@@ -15,6 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 // Importation de la config $CFG qui importe égalment $DB et $OUTPUT.
+// @todo create an autoloader.
 require_once(dirname(__FILE__) . '/../../../config.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/lib.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/trainings_factory.php');
@@ -28,8 +29,10 @@ require_once($CFG->dirroot.'/blocks/attestoodle/classes/validated_activity.php')
 
 use block_attestoodle\factories\trainings_factory;
 
+// @todo Make a real header.
 echo $OUTPUT->header();
 
+// @todo Make a translation string.
 echo $OUTPUT->heading('Liste des formations :');
 // Print des formations dans un tableau.
 trainings_factory::get_instance()->create_trainings();

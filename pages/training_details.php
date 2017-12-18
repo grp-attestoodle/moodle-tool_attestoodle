@@ -32,6 +32,7 @@ require_once($CFG->dirroot.'/blocks/attestoodle/classes/validated_activity.php')
 
 use block_attestoodle\factories\trainings_factory;
 
+// @todo Make a real header.
 echo $OUTPUT->header();
 
 // Link to the trainings list.
@@ -52,6 +53,7 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
             'get',
             array('class' => 'attestoodle-button'));
 
+    // Retrieve the current training.
     $training = trainings_factory::get_instance()->retrieve_training($trainingid);
 
     foreach ($training->get_courses() as $course) {

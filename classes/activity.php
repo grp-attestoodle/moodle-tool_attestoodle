@@ -39,7 +39,10 @@ class activity {
     /** @var string Type of the activity */
     private $type;
 
-    /** @var integer Marker time (in minutes) of the activity */
+    /**
+     * @var integer Marker time (in minutes) of the activity
+     * @todo Replace by an inherited class "Milestone" with e specific marker property
+     */
     private $marker;
 
     /** @var course The course corresponding to the activity */

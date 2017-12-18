@@ -32,7 +32,7 @@ use block_attestoodle\training;
 defined('MOODLE_INTERNAL') || die;
 
 class trainings_factory extends singleton {
-    /** @var trainings_factory Instance of the training_factory singleton */
+    /** @var trainings_factory Instance of the trainings_factory singleton */
     protected static $instance;
 
     /** @var training[] Array containing all the trainings */
@@ -63,6 +63,8 @@ class trainings_factory extends singleton {
         $this->trainings[] = $trainingtoadd;
 
         $courses = courses_factory::get_instance()->retrieve_courses_by_training($id);
+        /* @todo: adding courses one by one with ->add_course method
+        seems stupid */
         foreach ($courses as $course) {
             $trainingtoadd->add_course($course);
         }

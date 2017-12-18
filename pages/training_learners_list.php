@@ -52,6 +52,7 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
             'get',
             array('class' => 'attestoodle-button'));
 
+    // Retrieve current training.
     $training = trainings_factory::get_instance()->retrieve_training($trainingid);
     $data = parse_learners_as_stdclass($training->get_learners());
     $table = new html_table();
