@@ -88,36 +88,36 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
         $pdf->SetAutoPagebreak(false);
         $pdf->SetMargins(0, 0, 0);
 
-        // @todo: Do the translations.
+        // @Todo: Do the translations.
         foreach ($certificateinfos->certificates as $certificatekey => $certificate) {
             $pdf->AddPage();
 
             // Logo : 80 de largeur et 55 de hauteur.
             // $pdf->Image('logo_societe.png', 10, 10, 80, 55);
-            // Titre.
+            // Title.
             $title = "Attestation mensuelle : temps d'apprentissage";
             $pdf->SetFont("helvetica", "", 14);
             $pdf->SetXY(0, 74);
             $pdf->Cell($pdf->GetPageWidth(), 0, $title, 0, 0, "C");
 
-            // Période.
+            // Period.
             $period = $certificateinfos->period;
             $pdf->SetFont("helvetica", "B", 14);
             $pdf->SetXY(0, 80);
             $pdf->Cell($pdf->GetPageWidth(), 0, $period, 0, 0, "C");
 
-            // Nom du stagiaire.
+            // Learner name.
             $learnername = "Nom du stagiaire : " . $learner->get_firstname() . " " . $learner->get_lastname();
             $pdf->SetFont("helvetica", "", 10);
             $pdf->SetXY(10, 90);
             $pdf->Cell($pdf->GetStringWidth($learnername), 0, $learnername, 0, "L");
 
-            // Intitulé formation.
+            // Training name.
             $trainingname = "Intitulé de la formation : " . $certificatekey;
             $pdf->SetXY(10, 95);
             $pdf->Cell($pdf->GetStringWidth($trainingname), 0, $trainingname, 0, "L");
 
-            // Temps d'apprentissage sur le mois.
+            // Total amount of learning time.
             $totalvalidatedtime = "Temps total validé sur la période : " . parse_minutes_to_hours($certificate["totalminutes"]);
             $pdf->SetXY(10, 100);
             $pdf->Cell($pdf->GetStringWidth($totalvalidatedtime), 0, $totalvalidatedtime, 0, "L");
@@ -131,31 +131,31 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
             $pdf->Line(10, 125, 200, 125);
             // Columns.
             $pdf->Line(150, 110, 150, 200);
-            // Titre type apprentissage.
+            // Column title "type".
             $pdf->SetFont('helvetica', 'B', 10);
             $pdf->SetFillColor(210, 210, 210);
             $pdf->SetXY(10, 110);
             $pdf->Cell(140, 15, "Type d'apprentissage", 1, 0, 'C', true);
-            // Titre total heures.
+            // Column title "total hours".
             $pdf->SetXY(150, 110);
             $pdf->Cell(50, 15, "Total heures", 1, 0, 'C', true);
 
-            // Lignes d'activités.
+            // Activities lines.
             $y = 125;
             $lineheight = 8;
             $pdf->SetFont('helvetica', '', 10);
             foreach ($certificate["activities"] as $type => $total) {
                 $pdf->SetXY(10, $y);
-                // Type de l'activite.
+                // Activity type.
                 $pdf->Cell(140, $lineheight, $type, 0, 0, 'L');
-                // Total heures.
+                // Activity total hours
                 $pdf->SetXY(150, $y);
                 $pdf->Cell(50, $lineheight, parse_minutes_to_hours($total), 0, 0, 'C');
                 $y += $lineheight;
                 $pdf->Line(10, $y, 200, $y);
             }
 
-            // Clause légale.
+            // Legal clause.
             $pdf->SetLineWidth(0.1);
             $pdf->Rect(5, 240, 200, 6, "D");
             $pdf->SetXY(0, 240);
