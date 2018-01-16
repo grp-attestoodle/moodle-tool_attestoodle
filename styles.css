@@ -1,0 +1,56 @@
+/* This file is part of Moodle - http://moodle.org/
+// 
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+*/
+/* 
+    Created on : 16 janv. 2018, 16:21:36
+    Author     : formation
+*/
+span.tps_jalon {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    border: 1px solid black;
+    background-color: blue;
+    color: transparent;
+    cursor: pointer;
+    /*transition: all .4s ease-in-out;*/
+}
+span.tps_jalon:hover {
+    color: red;
+    position: absolute;
+    width: auto;
+    height: 40px;
+    text-align: center;
+    background-color: yellow;
+    font-weight: bold;
+    padding: 10px;
+    border-radius: 0px;
+}
+span.tps_jalon:not(:hover)::before {
+    content: "?";
+    color: white;
+    text-align: center;
+    display: inline-block;
+    width: 100%;
+}
+span.tps_jalon:hover::before {
+    content: '/!\\ JALON ! ';
+}
+span.tps_jalon:hover::after {
+    content: ' minutes';
+}
