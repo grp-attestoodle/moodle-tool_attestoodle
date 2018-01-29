@@ -61,6 +61,7 @@ class activities_factory extends singleton {
      */
     private function create($activityid, $dbactivity, $tablename) {
         $id = $activityid;
+        $idmodule = $dbactivity->id;
         $name = $dbactivity->name;
         $desc = $dbactivity->intro;
 
@@ -69,7 +70,7 @@ class activities_factory extends singleton {
             $marker = $this->extractmarker($desc);
         }
 
-        return new activity($id, $name, $desc, $tablename, $marker);
+        return new activity($id, $idmodule, $name, $desc, $tablename, $marker);
     }
 
     /**

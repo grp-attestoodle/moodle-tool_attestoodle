@@ -30,6 +30,9 @@ class activity {
     /** @var string Id of the activity */
     private $id;
 
+    /** @var string Id of the activity from its specific module type */
+    private $idmodule;
+
     /** @var string Name of the activity */
     private $name;
 
@@ -57,8 +60,9 @@ class activity {
      * @param string $type Type of the activity
      * @param integer $marker The marker time of the activity if any
      */
-    public function __construct($id, $name, $description, $type, $marker = null) {
+    public function __construct($id, $idmodule, $name, $description, $type, $marker = null) {
         $this->id = $id;
+        $this->idmodule = $idmodule;
         $this->name = $name;
         $this->description = $description;
         $this->type = $type;
@@ -94,12 +98,34 @@ class activity {
     }
 
     /**
+     * Update the current activity data into the database.
+     */
+    public function persist() {
+        global $DB;
+
+        $obj = new \stdClass();
+        $obj->id = $this->idmodule;
+        $obj->intro = $this->description;
+
+        $DB->update_record($this->type, $obj);
+    }
+
+    /**
      * Getter for $id property
      *
      * @return string Id of the activity
      */
     public function get_id() {
         return $this->id;
+    }
+
+    /**
+     * Getter for $idmodule property
+     *
+     * @return string Id of the activity in its specific module
+     */
+    public function get_idmodule() {
+        return $this->idmodule;
     }
 
     /**
@@ -157,6 +183,15 @@ class activity {
     }
 
     /**
+     * Setter for $idmodule property
+     *
+     * @param string $prop Id module to set for the activity
+     */
+    public function set_idmodule($prop) {
+        $this->idmodule = $prop;
+    }
+
+    /**
      * Setter for $name property
      *
      * @param string $prop Name to set for the activity
@@ -174,6 +209,25 @@ class activity {
         $this->description = $prop;
     }
 
+    private function update_marker_in_description() {
+        $desc = $this->description;
+        $marker = $this->marker;
+
+        $regexp = "/<span class=(?:(?:\"tps_jalon\")|(?:\'tps_jalon\'))>(.+)<\/span>/iU";
+
+        if ($marker == null) {
+            $desc = preg_replace($regexp, "", $desc);
+        } else {
+            if (preg_match($regexp, $desc)) {
+                $desc = preg_replace($regexp, "<span class=\"tps_jalon\">{$marker}</span>", $desc);
+            } else {
+                $desc = $desc . "\n\n" . "<span class=\"tps_jalon\">{$marker}</span>";
+            }
+        }
+
+        $this->set_description($desc);
+    }
+
     /**
      * Setter for $type property
      *
@@ -184,12 +238,23 @@ class activity {
     }
 
     /**
-     * Setter for $marker property
+     * Set the $marker property if the value is different from the current one
      *
      * @param integer $prop Marker value to set for the activity
+     * @return boolean True if the new value is different from the current one
      */
     public function set_marker($prop) {
-        $this->marker = $prop;
+        if ($this->marker != $prop) {
+            if ($prop == 0) {
+                $this->marker = null;
+            } else {
+                $this->marker = $prop;
+            }
+            $this->update_marker_in_description();
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
