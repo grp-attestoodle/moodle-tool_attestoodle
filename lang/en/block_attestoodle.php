@@ -35,29 +35,29 @@ $string['settings_student_role_helper'] = 'Id of the student role in database';
 $string['hello'] = 'Salut';
 
 // Shared strings.
-$string['courses_list_btn_text'] = 'Liste des cours';
-$string['trainings_list_btn_text'] = 'Liste des formations';
-$string['backto_trainings_list_btn_text'] = 'Retour à la liste des formations';
-$string['backto_training_detail_btn_text'] = 'Retour aux détails de la formation';
-$string['backto_training_learners_list_btn_text'] = 'Retour à la liste des étudiants';
-$string['unknown_training_id'] = 'Aucune formation ayant l\'identifiant {$a}';
-$string['unknown_learner_id'] = 'Aucun étudiant ayant l\'identifiant {$a}';
+$string['courses_list_btn_text'] = 'Attestoodle courses list';
+$string['trainings_list_btn_text'] = 'Attestoodle trainings list';
+$string['backto_trainings_list_btn_text'] = 'Back to Attestoodle trainings list';
+$string['backto_training_detail_btn_text'] = 'Back to the training details';
+$string['backto_training_learners_list_btn_text'] = 'Back to the students list';
+$string['unknown_training_id'] = 'No training with the ID: {$a}';
+$string['unknown_learner_id'] = 'No student with the ID: {$a}';
 
 // Training list page strings.
-$string['training_details_btn_text'] = 'Détails';
+$string['training_details_btn_text'] = 'Details';
 
 // Training details page strings.
-$string['training_details_learners_list_btn_text'] = 'Etudiants de la formation';
-$string['training_details_unknown_training_id'] = "Aucune formation ayant l'ID : ";
+$string['training_details_learners_list_btn_text'] = "Training's students";
+$string['training_details_unknown_training_id'] = "No training with the ID: ";
 
 // Training learners list page strings.
-$string['training_learners_list_heading'] = '{$a} étudiants dans la formation';
-$string['learner_details_btn_text'] = 'Détails';
+$string['training_learners_list_heading'] = '{$a} students in the training';
+$string['learner_details_btn_text'] = 'Details';
 
 // Learner details page strings.
-$string['learner_details_unknown_training_id'] = "Aucune formation ayant l'ID : ";
-$string['learner_details_unknown_learner_id'] = "Aucun étudiant ayant l'ID : ";
-$string['download_certificate_btn_text'] = "Télécharger attestation";
+$string['learner_details_unknown_training_id'] = "No training with the ID: ";
+$string['learner_details_unknown_learner_id'] = "No student with the ID: ";
+$string['download_certificate_btn_text'] = "Download certificate";
 
 // Unknown strings.
 // @TODO review these strings.
