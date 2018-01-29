@@ -169,6 +169,100 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
             $pdf->Cell($pdf->GetPageWidth() - 10, 0, "Signature responsable de formation", 0, 0, 'R');
         }
 
-        $pdf->Output($filename, "D");
+        $fs = get_file_storage();
+        $usercontext = context_user::instance($userid);
+//var_dump($usercontext);
+//         Prepare file record object
+        $fileinfo = array(
+            'contextid' => $usercontext->id, // ID of context
+            'component' => 'block_attestoodle', // usually = table name
+            'filearea' => 'certificates', // usually = table name
+            'filepath' => '/',
+            'itemid' => 0, // usually = ID of row in table
+//            'itemid' => $offlinequiz->id, // usually = ID of row in table
+            'filename' => $filename); // any filename
+//
+        if ($oldfile = $fs->get_file(
+                $fileinfo['contextid'],
+                $fileinfo['component'],
+                $fileinfo['filearea'],
+                $fileinfo['itemid'],
+                $fileinfo['filepath'],
+                $fileinfo['filename'])) {
+            /*echo "<pre>ANCIEN FILE";
+            var_dump($oldfile);
+            echo "</pre>";*/
+            echo "<p>Une attestation avec les mêmes paramètres a été trouvée sur le serveur. Cette attestation va être supprimée et remplacée par la nouvelle</p>";
+            $oldfile->delete();
+        }
+        $pdfstring = $pdf->Output('', 'S');
+//        echo "<pre>PDF FILE\n";
+//        echo $pdfstring;
+//        echo "</pre>";
+//        echo "</pre>";
+        $file = $fs->create_file_from_string($fileinfo, $pdfstring);
+        // Prepare file record object
+//        $fileinfofake = array(
+//            'contextid' => $usercontext->id, // ID of context
+//            'component' => 'block_attestoodle', // usually = table name
+//            'filearea' => 'certificates', // usually = table name
+//            'filepath' => '/',
+//            'itemid' => 0, // usually = ID of row in table
+////            'itemid' => $offlinequiz->id, // usually = ID of row in table
+//            'filename' => "filetoberemovediffound.txt"); // any filename
+//        $filefake = $fs->create_file_from_string($fileinfofake, "ceci est un text de test");
+//var_dump($fileinfo);
+//var_dump($pdfstring);
+
+//$fs = get_file_storage();
+//
+//// Prepare file record object
+//$fileinfo = array(
+//    'contextid' => $usercontext->id, // ID of context
+//    'component' => 'mod_mymodule',     // usually = table name
+//    'filearea' => 'myarea',     // usually = table name
+//    'itemid' => 0,               // usually = ID of row in table
+//    'filepath' => '/',           // any path beginning and ending in /
+//    'filename' => 'myfile2.txt'); // any filename
+
+// Create file containing text 'hello world'
+//$fs->create_file_from_string($fileinfo, 'hello world');
+
+
+//        $pdf->Output($filename, "D");
+//        echo "<pre>FILE JUST CREATED";
+//        var_dump($filefake);
+//        echo $filefake->get_contextid() . "\n";
+//        echo $filefake->get_component() . "\n";
+//        echo $filefake->get_filearea() . "\n";
+//        echo $filefake->get_itemid() . "\n";
+//        echo $filefake->get_filepath() . "\n";
+//        echo $filefake->get_filename() . "\n";
+//        echo "</pre>";
+//        $url = moodle_url::make_pluginfile_url(
+//                $filefake->get_contextid(),
+//                $filefake->get_component(),
+//                $filefake->get_filearea(),
+//                null,
+//                $filefake->get_filepath(),
+//                $filefake->get_filename());
+        /*echo "<pre>FILE JUST CREATED";
+        var_dump($file);
+        echo $file->get_contextid() . "\n";
+        echo $file->get_component() . "\n";
+        echo $file->get_filearea() . "\n";
+        echo $file->get_itemid() . "\n";
+        echo $file->get_filepath() . "\n";
+        echo $file->get_filename() . "\n";
+        echo "</pre>";*/
+        $url = moodle_url::make_pluginfile_url(
+                $file->get_contextid(),
+                $file->get_component(),
+                $file->get_filearea(),
+                null,
+                $file->get_filepath(),
+                $file->get_filename());
+        echo "<p>L'attestation a été générée et stockée sur le serveur</p>";
+        echo "<a href='" . $url . "'>Télécharger le fichier</a>";
     }
 }
