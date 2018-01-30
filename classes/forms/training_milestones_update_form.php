@@ -24,7 +24,9 @@
 
 namespace block_attestoodle\forms;
 
-// \moodleform is defined in formslib.php
+defined('MOODLE_INTERNAL') || die;
+
+// Class \moodleform is defined in formslib.php.
 require_once("$CFG->libdir/formslib.php");
 
 class training_milestones_update_form extends \moodleform {
@@ -38,17 +40,17 @@ class training_milestones_update_form extends \moodleform {
         $mform = $this->_form;
 
         // For each course we set a collapsible fieldset.
-        foreach($courses as $course) {
+        foreach ($courses as $course) {
             $mform->addElement('header', $course->get_id(), $course->get_name());
 
             // For each activity in this course we add a form input element.
-            foreach($course->get_activities() as $activity) {
+            foreach ($course->get_activities() as $activity) {
                 $name = $inputnameprefix  . $activity->get_id();
                 $label = $activity->get_name();
                 $type = $activity->get_type();
                 $marker = $activity->get_marker();
 
-                $mform->addElement("text", $name, "{$label} ({$type})", array('size' => 5)); // max 5 char.
+                $mform->addElement("text", $name, "{$label} ({$type})", array('size' => 5)); // Max 5 char.
                 $mform->setType($name, PARAM_INT); // Parsing the value in INT after submit.
                 $mform->addRule($name, null, 'numeric', null, 'client'); // Handle error in JS (must be numeric)
                 $mform->setDefault($name, $marker); // Set default value to the current milestone value.
@@ -58,7 +60,7 @@ class training_milestones_update_form extends \moodleform {
         $this->add_action_buttons();
     }
 
-    // Custom validation should be added here
+    // Custom validation should be added here.
     function validation($data, $files) {
         $errors = parent::validation($data, $files);
         return $errors;

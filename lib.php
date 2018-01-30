@@ -187,32 +187,32 @@ function parse_datetime_to_readable_format($datetime) {
 }
 
 function block_attestoodle_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options=array()) {
-//    echo "Dans block_attestoodle_pluginfile \n";
+    // echo "Dans block_attestoodle_pluginfile \n";
     // Check the contextlevel is as expected - if your plugin is a block, this becomes CONTEXT_BLOCK, etc.
     if ($context->contextlevel != CONTEXT_USER) {
-//        echo "mauvais context level : {$context->contextlevel} \n";
-//        die();
+        /* echo "mauvais context level : {$context->contextlevel} \n";
+        die(); */
         return false;
     }
 
     // Make sure the filearea is one of those used by the plugin.
     if ($filearea !== 'certificates') {
-//        echo "mauvaise filearea : {$filearea} \n";
-//        die();
+        /* echo "mauvaise filearea : {$filearea} \n";
+        die(); */
         return false;
     }
 
     // Make sure the user is logged in and has access to the module (plugins that are not course modules should leave out the 'cm' part).
-//    require_login($course, true, $cm);
-//    require_login($course, true);
+    /* require_login($course, true, $cm);
+    require_login($course, true);*/
 
     // Check the relevant capabilities - these may vary depending on the filearea being accessed.
-//    if (!has_capability('blocks/attestoodle:download_certificate', $context)) {
-//        return false;
-//    }
+    /* if (!has_capability('blocks/attestoodle:download_certificate', $context)) {
+         return false;
+    } */
 
     // Leave this line out if you set the itemid to null in make_pluginfile_url (set $itemid to 0 instead).
-//    $itemid = array_shift($args); // The first item in the $args array.
+    // $itemid = array_shift($args); // The first item in the $args array.
     $itemid = 0;
 
     // Use the itemid to retrieve any relevant data records and perform any security checks to see if the
@@ -225,27 +225,27 @@ function block_attestoodle_pluginfile($course, $cm, $context, $filearea, $args, 
     } else {
         $filepath = '/'.implode('/', $args).'/'; // $args contains elements of the filepath
     }
-//    $filepath = "/";
+    // $filepath = "/";
 
     // Retrieve the file from the Files API.
     $fs = get_file_storage();
-//    echo "<pre>INFOS A CHERCHER\n";
-//    echo "context : " . $context->id . "\n";
-//    echo "block : " . 'block_attestoodle' . "\n";
-//    echo "filearea : " . $filearea . "\n";
-//    echo "itemid : " . $itemid . "\n";
-//    echo "filepath : " . $filepath . "\n";
-//    echo "filename : " . $filename . "\n";
+    // echo "<pre>INFOS A CHERCHER\n";
+    // echo "context : " . $context->id . "\n";
+    // echo "block : " . 'block_attestoodle' . "\n";
+    // echo "filearea : " . $filearea . "\n";
+    // echo "itemid : " . $itemid . "\n";
+    // echo "filepath : " . $filepath . "\n";
+    // echo "filename : " . $filename . "\n";
     $file = $fs->get_file($context->id, 'block_attestoodle', $filearea, $itemid, $filepath, $filename);
     if (!$file) {
-//        echo "pas de file \n";
-//        die();
+        // echo "pas de file \n";
+        // die();
         return false; // The file does not exist.
     }
 
     // We can now send the file back to the browser - in this case with a cache lifetime of 1 day and no filtering.
     // From Moodle 2.3, use send_stored_file instead.
-//    echo "le file\n";
-//    var_dump($file->get_content());
+    // echo "le file\n";
+    // var_dump($file->get_content());
     send_stored_file($file, 1, 0, $forcedownload, $options);
 }
