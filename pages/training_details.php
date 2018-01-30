@@ -100,21 +100,35 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
                                         if ($i % 3 == 0) {
                                             throw new \Exception();
                                         }
+                                        // Try to persist activity in DB.
                                         $activity->persist();
-                                        $fromstring = $oldmarkervalue == null
-                                                ? "<b>[no marker]</b>"
-                                                : "<b>{$oldmarkervalue}</b> minutes";
-                                        $tostring = $activity->get_marker() == null
-                                                ? "<b>[no marker]</b>"
-                                                : "<b>{$activity->get_marker()}</b> minutes";
-                                        echo "Activity updated: <b>{$activity->get_name()}</b> from {$fromstring} to {$tostring}. <br />";
+
+                                        // Instanciate the output for the user.
+                                        if ($oldmarkervalue == null) {
+                                                $fromstring = "<b>[no marker]</b>";
+                                        } else {
+                                                $fromstring = "<b>{$oldmarkervalue}</b> minutes";
+                                        }
+                                        if ($activity->get_marker() == null) {
+                                                $tostring = "<b>[no marker]</b>";
+                                        } else {
+                                                $tostring =  "<b>{$activity->get_marker()}</b> minutes";
+                                        }
+                                        echo "Activity updated: <b>{$activity->get_name()}</b> "
+                                                . "from {$fromstring} to {$tostring}. <br />";
                                     } catch (Exception $ex) {
+                                        // If record in DB failed, re-set the old value.
                                         $activity->set_marker($oldmarkervalue);
-                                        $oldstring =
-                                                $activity->get_marker() == null ?
-                                                "<b>[no marker]</b>" :
-                                                "<b>{$activity->get_marker()}</b> minutes";
-                                        echo "An error occured while attempting to save <b>{$activity->get_name()}</b> activity in DB. Kept the old value of {$oldstring}. <br />";
+
+                                        // Output a warning to the user.
+                                        if ($activity->get_marker() == null) {
+                                                $oldstring = "<b>[no marker]</b>" ;
+                                        } else {
+                                            "<b>{$activity->get_marker()}</b> minutes";
+                                        }
+                                        echo "An error occured while attempting to save "
+                                                . "<b>{$activity->get_name()}</b> activity in DB. "
+                                                . "Kept the old value of {$oldstring}. <br />";
                                     }
                                 }
                             }
