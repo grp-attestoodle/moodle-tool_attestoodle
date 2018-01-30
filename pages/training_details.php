@@ -35,7 +35,7 @@ require_once($CFG->dirroot.'/blocks/attestoodle/classes/forms/training_milestone
 use block_attestoodle\factories\trainings_factory;
 use block_attestoodle\forms\training_milestones_update_form;
 
-// @todo Make a real header.
+// @TODO Make a real header.
 echo $OUTPUT->header();
 
 // Link to the trainings list.
@@ -97,22 +97,19 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
                                 $oldmarkervalue = $activity->get_marker();
                                 if ($activity->set_marker($value)) {
                                     try {
-                                        if ($i % 3 == 0) {
-                                            throw new \Exception();
-                                        }
                                         // Try to persist activity in DB.
                                         $activity->persist();
 
                                         // Instanciate the output for the user.
                                         if ($oldmarkervalue == null) {
-                                                $fromstring = "<b>[no marker]</b>";
+                                            $fromstring = "<b>[no marker]</b>";
                                         } else {
-                                                $fromstring = "<b>{$oldmarkervalue}</b> minutes";
+                                            $fromstring = "<b>{$oldmarkervalue}</b> minutes";
                                         }
                                         if ($activity->get_marker() == null) {
-                                                $tostring = "<b>[no marker]</b>";
+                                            $tostring = "<b>[no marker]</b>";
                                         } else {
-                                                $tostring =  "<b>{$activity->get_marker()}</b> minutes";
+                                            $tostring = "<b>{$activity->get_marker()}</b> minutes";
                                         }
                                         echo "Activity updated: <b>{$activity->get_name()}</b> "
                                                 . "from {$fromstring} to {$tostring}. <br />";
@@ -122,7 +119,7 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
 
                                         // Output a warning to the user.
                                         if ($activity->get_marker() == null) {
-                                                $oldstring = "<b>[no marker]</b>" ;
+                                            $oldstring = "<b>[no marker]</b>";
                                         } else {
                                             "<b>{$activity->get_marker()}</b> minutes";
                                         }
