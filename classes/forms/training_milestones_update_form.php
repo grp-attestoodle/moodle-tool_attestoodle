@@ -61,7 +61,7 @@ class training_milestones_update_form extends \moodleform {
     }
 
     // Custom validation should be added here.
-    function validation($data, $files) {
+    public function validation($data, $files) {
         $errors = parent::validation($data, $files);
         return $errors;
     }

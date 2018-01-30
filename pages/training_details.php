@@ -101,14 +101,12 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
                                             throw new \Exception();
                                         }
                                         $activity->persist();
-                                        $fromstring =
-                                                $oldmarkervalue == null ?
-                                                "<b>[no marker]</b>" :
-                                                "<b>{$oldmarkervalue}</b> minutes";
-                                        $tostring =
-                                                $activity->get_marker() == null ?
-                                                "<b>[no marker]</b>" :
-                                                "<b>{$activity->get_marker()}</b> minutes";
+                                        $fromstring = $oldmarkervalue == null
+                                                ? "<b>[no marker]</b>"
+                                                : "<b>{$oldmarkervalue}</b> minutes";
+                                        $tostring = $activity->get_marker() == null
+                                                ? "<b>[no marker]</b>"
+                                                : "<b>{$activity->get_marker()}</b> minutes";
                                         echo "Activity updated: <b>{$activity->get_name()}</b> from {$fromstring} to {$tostring}. <br />";
                                     } catch (Exception $ex) {
                                         $activity->set_marker($oldmarkervalue);
