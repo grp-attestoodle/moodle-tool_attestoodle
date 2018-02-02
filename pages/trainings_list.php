@@ -29,11 +29,20 @@ require_once($CFG->dirroot.'/blocks/attestoodle/classes/validated_activity.php')
 
 use block_attestoodle\factories\trainings_factory;
 
+$PAGE->set_url(new moodle_url('/blocks/attestoodle/pages/trainings_list.php'));
+// @todo May be replaced by "require_login(...)"
+$PAGE->set_context(context_system::instance());
+
+// @todo Make a translation string.
+$PAGE->set_title("Moodle - Attestoodle - Liste des formations");
+// @todo Make a translation string.
+$PAGE->set_heading("Liste des formations");
+
 // @todo Make a real header.
 echo $OUTPUT->header();
 
 // @todo Make a translation string.
-echo $OUTPUT->heading('Liste des formations :');
+// echo $OUTPUT->heading('Liste des formations :');
 // Print des formations dans un tableau.
 trainings_factory::get_instance()->create_trainings();
 $databrut = trainings_factory::get_instance()->get_trainings();

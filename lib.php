@@ -130,9 +130,9 @@ function parse_learners_as_stdclass($data, $trainingid) {
                     'user' => $stdclass->id);
             $url = new moodle_url('/blocks/attestoodle/pages/learner_details.php', $parameters);
             $label = get_string('learner_details_btn_text', 'block_attestoodle');
-            $options = array('class' => 'attestoodle-button');
+            $attributes = array('class' => 'attestoodle-button');
 
-            $stdclass->link = $OUTPUT->single_button($url, $label, 'get', $options);
+            $stdclass->link = html_writer::link($url, $label, $attributes);
 
             return $stdclass;
     }, $data);
@@ -151,11 +151,11 @@ function parse_trainings_as_stdclass($data) {
             $stdclass = $o->get_object_as_stdclass();
 
             $parameters = array('id' => $stdclass->id);
-            $url = new moodle_url('/blocks/attestoodle/pages/training_details.php', $parameters);
+            $url = new moodle_url('/blocks/attestoodle/pages/training_learners_list.php', $parameters);
             $label = get_string('training_details_btn_text', 'block_attestoodle');
-            $options = array('class' => 'attestoodle-button');
+            $attributes = array('class' => 'attestoodle-button');
 
-            $stdclass->link = $OUTPUT->single_button($url, $label, 'get', $options);
+            $stdclass->link = html_writer::link($url, $label, $attributes);
 
             return $stdclass;
     }, $data);

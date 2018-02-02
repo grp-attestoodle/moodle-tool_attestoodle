@@ -47,6 +47,7 @@ class block_attestoodle extends block_base {
         $this->content->items = array();
         $this->content->icons = array();
         $this->content->footer = '';
+        $this->content->text = '';
 
         // File user/index.php expect course context, so get one if page has module context.
         $currentcontext = $this->page->context->get_course_context(false);
@@ -55,28 +56,20 @@ class block_attestoodle extends block_base {
             $this->content->text = $this->config->text;
         }
 
-        $this->content = '';
         if (empty($currentcontext)) {
             return $this->content;
         }
         if ($this->page->course->id == SITEID) {
-            $this->content->text .= "site context";
+            // Probably useless.
         }
-
-        if (!empty($this->config->text)) {
-            $this->content->text .= $this->config->text;
-        }
-
-        // $this->content->text = get_string('hello', 'block_attestoodle') . ' ' . $USER->firstname;
-        $this->content->text = "";
 
         $parameters = array();
         $url = new moodle_url('/blocks/attestoodle/pages/trainings_list.php', $parameters);
-        $label = get_string('trainings_list_btn_text', 'block_attestoodle');
-        $options = array('class' => 'attestoodle-button');
+        $label = get_string('plugin_access', 'block_attestoodle');
+        $attributes = array('class' => 'attestoodle-button');
         // Bouton vers un liens vers une autre page où le
         // ...mode 'get' offre la visu de l'url (debug).
-        $this->content->text .= $OUTPUT->single_button($url, $label, 'get', $options);
+        $this->content->text .= html_writer::link($url, $label, $attributes);
 
         return $this->content;
     }
@@ -93,7 +86,7 @@ class block_attestoodle extends block_base {
     }
 
     public function instance_allow_multiple() {
-        return true;
+        return false;
     }
 
     public function has_config() {

@@ -33,6 +33,7 @@ $string['settings_student_role_helper'] = 'Id du rôle Etudiant dans la base de 
 
 // Block strings.
 $string['hello'] = 'Bonjour';
+$string['plugin_access'] = 'Accès au plug-in';
 
 // Shared strings.
 $string['courses_list_btn_text'] = 'Liste des cours Attestoodle';
@@ -57,7 +58,8 @@ $string['learner_details_btn_text'] = 'Détails';
 // Learner details page strings.
 $string['learner_details_unknown_training_id'] = "Aucune formation ayant l'ID : ";
 $string['learner_details_unknown_learner_id'] = "Aucun étudiant ayant l'ID : ";
-$string['download_certificate_btn_text'] = "Télécharger attestation";
+$string['generate_certificate_link_text'] = "Générer l'attestation";
+$string['download_certificate_file_link_text'] = "Télécharger le fichier";
 
 // Unknown strings.
 // @todo review these strings.

@@ -32,31 +32,45 @@ require_once($CFG->dirroot.'/blocks/attestoodle/classes/validated_activity.php')
 
 use block_attestoodle\factories\trainings_factory;
 
+$PAGE->set_url(new moodle_url('/blocks/attestoodle/pages/training_learners_list.php', array('id' => $trainingid)));
+// @todo May be replaced by "require_login(...)"
+$PAGE->set_context(context_coursecat::instance($trainingid));
+// @todo Make a translation string.
+$PAGE->set_title("Moodle - Attestoodle - Liste des étudiants");
+
+$trainingexist = trainings_factory::get_instance()->has_training($trainingid);
+
+if ($trainingexist) {
+    $training = trainings_factory::get_instance()->retrieve_training($trainingid);
+    // @todo Make a translation string.
+    $PAGE->set_heading("Etudiants de la formation {$training->get_name()}");
+} else {
+    // @todo Make a translation string.
+    $PAGE->set_heading("Erreur !");
+}
+
 echo $OUTPUT->header();
 
-if (!trainings_factory::get_instance()->has_training($trainingid)) {
-    // Link to the trainings list.
-    echo $OUTPUT->single_button(
-            new moodle_url('/blocks/attestoodle/pages/trainings_list.php', array()),
-            get_string('trainings_list_btn_text', 'block_attestoodle'),
-            'get',
-            array('class' => 'attestoodle-button'));
+// Link to the trainings list.
+echo html_writer::link(
+        new moodle_url('/blocks/attestoodle/pages/trainings_list.php', array()),
+        get_string('trainings_list_btn_text', 'block_attestoodle'),
+        array('class' => 'attestoodle-button'));
 
+if (!$trainingexist) {
     $warningunknownid = get_string('training_details_unknown_training_id', 'block_attestoodle') . $trainingid;
     echo $warningunknownid;
 } else {
     // Link to the training details.
-    echo $OUTPUT->single_button(
+    echo html_writer::link(
             new moodle_url('/blocks/attestoodle/pages/training_details.php', array('id' => $trainingid)),
-            get_string('backto_training_detail_btn_text', 'block_attestoodle'),
-            'get',
+            get_string('edit_training_link_text', 'block_attestoodle'),
             array('class' => 'attestoodle-button'));
 
-    // Retrieve current training.
-    $training = trainings_factory::get_instance()->retrieve_training($trainingid);
-    $data = parse_learners_as_stdclass($training->get_learners());
+    $data = parse_learners_as_stdclass($training->get_learners(), $trainingid);
     $table = new html_table();
-    $table->head = array('ID', 'Nom', 'Prénom', 'Activités validées', 'Total jalons', '');
+    // @todo translations
+    $table->head = array('ID', 'Prénom', 'Nom', 'Activités validées', 'Total jalons', '');
     $table->data = $data;
 
     echo $OUTPUT->heading(get_string('training_learners_list_heading', 'block_attestoodle', count($data)));

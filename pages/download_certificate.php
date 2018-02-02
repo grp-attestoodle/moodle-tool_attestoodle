@@ -263,7 +263,8 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
                 null,
                 $file->get_filepath(),
                 $file->get_filename());
+        // @todo translations
         echo "<p>L'attestation a été générée et stockée sur le serveur</p>";
-        echo "<a href='" . $url . "'>Télécharger le fichier</a>";
+        echo "<a href='" . $url . "'>" . get_string('download_certificate_file_link_text', 'block_attestoodle') . "</a>";
     }
 }

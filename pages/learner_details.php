@@ -34,15 +34,31 @@ require_once($CFG->dirroot.'/blocks/attestoodle/classes/validated_activity.php')
 use block_attestoodle\factories\trainings_factory;
 use block_attestoodle\factories\learners_factory;
 
+$PAGE->set_url(new moodle_url(
+        '/blocks/attestoodle/pages/learner_details.php',
+        array('training' => $trainingid, 'user' => $userid)));
+// @todo May be replaced by "require_login(...)" + seems a bad context choice.
+$PAGE->set_context(context_coursecat::instance($trainingid));
+// @todo Make a translation string.
+$PAGE->set_title("Moodle - Attestoodle - Détail de l'étudiant");
+
+$trainingexists = trainings_factory::get_instance()->has_training($trainingid);
+$learnerexists = learners_factory::get_instance()->has_learner($userid);
+
+if (!$trainingexists || !$learnerexists) {
+    $PAGE->set_heading("Erreur !");
+} else {
+    $learner = learners_factory::get_instance()->retrieve_learner($userid);
+    $PAGE->set_heading($learner->get_fullname());
+}
 echo $OUTPUT->header();
 
 // Verifying training id.
-if (!trainings_factory::get_instance()->has_training($trainingid)) {
+if (!$trainingexists) {
     // Link to the trainings list if the training id is not valid.
-    echo $OUTPUT->single_button(
+    echo html_writer::link(
             new moodle_url('/blocks/attestoodle/pages/trainings_list.php', array()),
             get_string('backto_trainings_list_btn_text', 'block_attestoodle'),
-            'get',
             array('class' => 'attestoodle-button'));
 
     $warningunknowntrainingid = get_string('unknown_training_id', 'block_attestoodle', $trainingid);
@@ -50,19 +66,17 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
 } else {
     // If the training id is valid...
     // Link to the training learners list.
-    echo $OUTPUT->single_button(
+    echo html_writer::link(
             new moodle_url('/blocks/attestoodle/pages/training_learners_list.php', array('id' => $trainingid)),
             get_string('backto_training_learners_list_btn_text', 'block_attestoodle'),
-            'get',
             array('class' => 'attestoodle-button'));
 
     // Verifying learner id.
-    if (!learners_factory::get_instance()->has_learner($userid)) {
+    if (!$learnerexists) {
         $warningunknownlearnerid = get_string('unknown_learner_id', 'block_attestoodle', $userid);
         echo $warningunknownlearnerid;
     } else {
         // If the learner id is valid...
-        $learner = learners_factory::get_instance()->retrieve_learner($userid);
         $counternomarker = 0;
         // Print validated activities informations (with marker only).
         foreach ($learner->get_validated_activities() as $vact) {
@@ -87,12 +101,11 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
 
         $certificateinfos = $learner->get_certificate_informations();
 
-        echo $OUTPUT->single_button(
+        echo html_writer::link(
             new moodle_url('/blocks/attestoodle/pages/download_certificate.php', array(
                     'training' => $trainingid,
                     'user' => $userid)),
-            get_string('download_certificate_btn_text', 'block_attestoodle'),
-            'get',
+            get_string('generate_certificate_link_text', 'block_attestoodle'),
             array('class' => 'attestoodle-button'));
     }
 }

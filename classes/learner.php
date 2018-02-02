@@ -123,6 +123,15 @@ class learner {
     }
 
     /**
+     * Get the full name of the learner
+     *
+     * @return string The full name formatted as "FirstName LastName"
+     */
+    public function get_fullname() {
+        return $this->firstname . " " . $this->lastname;
+    }
+
+    /**
      * Getter for $validatedactivities property
      *
      * @return validated_activity[] Validated activities of the learner

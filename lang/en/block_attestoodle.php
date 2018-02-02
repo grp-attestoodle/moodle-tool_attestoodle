@@ -32,7 +32,8 @@ $string['settings_student_role_label'] = 'Student role ID';
 $string['settings_student_role_helper'] = 'Id of the student role in database';
 
 // Block strings.
-$string['hello'] = 'Salut';
+$string['hello'] = 'Hello';
+$string['plugin_access'] = 'Access to plugin';
 
 // Shared strings.
 $string['courses_list_btn_text'] = 'Attestoodle courses list';
@@ -53,11 +54,13 @@ $string['training_details_unknown_training_id'] = "No training with the ID: ";
 // Training learners list page strings.
 $string['training_learners_list_heading'] = '{$a} students in the training';
 $string['learner_details_btn_text'] = 'Details';
+$string['edit_training_link_text'] = 'Editer la formation';
 
 // Learner details page strings.
 $string['learner_details_unknown_training_id'] = "No training with the ID: ";
 $string['learner_details_unknown_learner_id'] = "No student with the ID: ";
-$string['download_certificate_btn_text'] = "Download certificate";
+$string['generate_certificate_link_text'] = "Generate certificate";
+$string['download_certificate_file_link_text'] = "Download file";
 
 // Unknown strings.
 // @TODO review these strings.

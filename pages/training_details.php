@@ -35,29 +35,32 @@ require_once($CFG->dirroot.'/blocks/attestoodle/classes/forms/training_milestone
 use block_attestoodle\factories\trainings_factory;
 use block_attestoodle\forms\training_milestones_update_form;
 
-// @TODO Make a real header.
+$PAGE->set_url(new moodle_url('/blocks/attestoodle/pages/training_learners_list.php', array('id' => $trainingid)));
+// @todo May be replaced by "require_login(...)"
+$PAGE->set_context(context_coursecat::instance($trainingid));
+
+// @todo make a translation
+$PAGE->set_title("Moodle - Attestoodle - Détail de la formation");
+$PAGE->set_heading("Erreur !");
+
+$trainingexist = trainings_factory::get_instance()->has_training($trainingid);
+if ($trainingexist) {
+    // Retrieve the current training.
+    $training = trainings_factory::get_instance()->retrieve_training($trainingid);
+    $PAGE->set_heading($training->get_name());
+}
+
 echo $OUTPUT->header();
 
-// Link to the trainings list.
-echo $OUTPUT->single_button(
-        new moodle_url('/blocks/attestoodle/pages/trainings_list.php', array()),
-        get_string('trainings_list_btn_text', 'block_attestoodle'),
-        'get',
-        array('class' => 'attestoodle-button'));
-
-if (!trainings_factory::get_instance()->has_training($trainingid)) {
+if (!$trainingexist) {
     $warningunknownid = get_string('training_details_unknown_training_id', 'block_attestoodle') . $trainingid;
     echo $warningunknownid;
 } else {
     // Link to the training learners list.
-    echo $OUTPUT->single_button(
+    echo html_writer::link(
             new moodle_url('/blocks/attestoodle/pages/training_learners_list.php', array('id' => $trainingid)),
             get_string('training_details_learners_list_btn_text', 'block_attestoodle'),
-            'get',
             array('class' => 'attestoodle-button'));
-
-    // Retrieve the current training.
-    $training = trainings_factory::get_instance()->retrieve_training($trainingid);
 
     // Instanciate the custom form.
     $mform = new training_milestones_update_form(
