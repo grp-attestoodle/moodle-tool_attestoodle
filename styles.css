@@ -55,3 +55,7 @@ div.editor_atto_content > span.tps_jalon::after {
     visibility: visible;
     font-weight: normal;
 }
+
+.attestoodle-button {
+    float: right;
+}

@@ -54,7 +54,7 @@ $string['training_details_unknown_training_id'] = "No training with the ID: ";
 // Training learners list page strings.
 $string['training_learners_list_heading'] = '{$a} students in the training';
 $string['learner_details_btn_text'] = 'Details';
-$string['edit_training_link_text'] = 'Editer la formation';
+$string['edit_training_link_text'] = 'Manage training';
 
 // Learner details page strings.
 $string['learner_details_unknown_training_id'] = "No training with the ID: ";

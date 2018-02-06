@@ -36,7 +36,7 @@ $PAGE->set_context(context_system::instance());
 // @todo Make a translation string.
 $PAGE->set_title("Moodle - Attestoodle - Liste des formations");
 // @todo Make a translation string.
-$PAGE->set_heading("Liste des formations");
+$PAGE->set_heading("Formations Attestoodle");
 
 // @todo Make a real header.
 echo $OUTPUT->header();

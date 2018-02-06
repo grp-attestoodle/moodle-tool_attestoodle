@@ -51,13 +51,15 @@ if ($trainingexist) {
 
 echo $OUTPUT->header();
 
+echo html_writer::start_div('clearfix');
 // Link to the trainings list.
 echo html_writer::link(
         new moodle_url('/blocks/attestoodle/pages/trainings_list.php', array()),
         get_string('trainings_list_btn_text', 'block_attestoodle'),
-        array('class' => 'attestoodle-button'));
+        array('class' => 'attestoodle-link'));
 
 if (!$trainingexist) {
+    echo html_writer::end_div();
     $warningunknownid = get_string('training_details_unknown_training_id', 'block_attestoodle') . $trainingid;
     echo $warningunknownid;
 } else {
@@ -65,7 +67,8 @@ if (!$trainingexist) {
     echo html_writer::link(
             new moodle_url('/blocks/attestoodle/pages/training_details.php', array('id' => $trainingid)),
             get_string('edit_training_link_text', 'block_attestoodle'),
-            array('class' => 'attestoodle-button'));
+            array('class' => 'btn btn-default attestoodle-button'));
+    echo html_writer::end_div();
 
     $data = parse_learners_as_stdclass($training->get_learners(), $trainingid);
     $table = new html_table();

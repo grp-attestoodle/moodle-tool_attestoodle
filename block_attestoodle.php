@@ -59,16 +59,16 @@ class block_attestoodle extends block_base {
         if (empty($currentcontext)) {
             return $this->content;
         }
+        /*
         if ($this->page->course->id == SITEID) {
             // Probably useless.
-        }
+        }*/
 
+        // Link to the plug-in main page.
         $parameters = array();
         $url = new moodle_url('/blocks/attestoodle/pages/trainings_list.php', $parameters);
         $label = get_string('plugin_access', 'block_attestoodle');
-        $attributes = array('class' => 'attestoodle-button');
-        // Bouton vers un liens vers une autre page où le
-        // ...mode 'get' offre la visu de l'url (debug).
+        $attributes = array('class' => 'attestoodle-link');
         $this->content->text .= html_writer::link($url, $label, $attributes);
 
         return $this->content;

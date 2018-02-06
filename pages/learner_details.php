@@ -46,30 +46,36 @@ $trainingexists = trainings_factory::get_instance()->has_training($trainingid);
 $learnerexists = learners_factory::get_instance()->has_learner($userid);
 
 if (!$trainingexists || !$learnerexists) {
+    // @todo translations
     $PAGE->set_heading("Erreur !");
 } else {
     $learner = learners_factory::get_instance()->retrieve_learner($userid);
-    $PAGE->set_heading($learner->get_fullname());
+    // @todo translations
+    $PAGE->set_heading("Jalons validés par {$learner->get_fullname()}");
 }
 echo $OUTPUT->header();
 
 // Verifying training id.
 if (!$trainingexists) {
+    echo html_writer::start_div('clearfix');
     // Link to the trainings list if the training id is not valid.
     echo html_writer::link(
             new moodle_url('/blocks/attestoodle/pages/trainings_list.php', array()),
             get_string('backto_trainings_list_btn_text', 'block_attestoodle'),
-            array('class' => 'attestoodle-button'));
+            array('class' => 'attestoodle-link'));
+    echo html_writer::end_div();
 
     $warningunknowntrainingid = get_string('unknown_training_id', 'block_attestoodle', $trainingid);
     echo $warningunknowntrainingid;
 } else {
     // If the training id is valid...
+    echo html_writer::start_div('clearfix');
     // Link to the training learners list.
     echo html_writer::link(
             new moodle_url('/blocks/attestoodle/pages/training_learners_list.php', array('id' => $trainingid)),
             get_string('backto_training_learners_list_btn_text', 'block_attestoodle'),
-            array('class' => 'attestoodle-button'));
+            array('class' => 'attestoodle-link'));
+    echo html_writer::end_div();
 
     // Verifying learner id.
     if (!$learnerexists) {
@@ -101,12 +107,14 @@ if (!$trainingexists) {
 
         $certificateinfos = $learner->get_certificate_informations();
 
+        echo html_writer::start_div('clearfix');
         echo html_writer::link(
             new moodle_url('/blocks/attestoodle/pages/download_certificate.php', array(
                     'training' => $trainingid,
                     'user' => $userid)),
             get_string('generate_certificate_link_text', 'block_attestoodle'),
-            array('class' => 'attestoodle-button'));
+            array('class' => 'attestoodle-link'));
+        echo html_writer::end_div();
     }
 }
 
