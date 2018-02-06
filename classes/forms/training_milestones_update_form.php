@@ -41,7 +41,8 @@ class training_milestones_update_form extends \moodleform {
 
         // For each course we set a collapsible fieldset.
         foreach ($courses as $course) {
-            $mform->addElement('header', $course->get_id(), $course->get_name());
+            $totalmilestones = parse_minutes_to_hours($course->get_total_milestones());
+            $mform->addElement('header', $course->get_id(), "{$course->get_name()} : {$totalmilestones}");
 
             // For each activity in this course we add a form input element.
             foreach ($course->get_activities() as $activity) {
@@ -51,8 +52,8 @@ class training_milestones_update_form extends \moodleform {
                 $marker = $activity->get_marker();
 
                 $mform->addElement("text", $name, "{$label} ({$type})", array('size' => 5)); // Max 5 char.
-                $mform->setType($name, PARAM_INT); // Parsing the value in INT after submit.
-                $mform->addRule($name, null, 'numeric', null, 'client'); // Handle error in JS (must be numeric)
+                $mform->setType($name, PARAM_ALPHANUM); // Parsing the value in INT after submit.
+                $mform->addRule($name, null, 'numeric', null, 'client'); // Handle error in JS (must be numeric).
                 $mform->setDefault($name, $marker); // Set default value to the current milestone value.
             }
         }

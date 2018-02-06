@@ -35,33 +35,33 @@ require_once($CFG->dirroot.'/blocks/attestoodle/classes/forms/training_milestone
 use block_attestoodle\factories\trainings_factory;
 use block_attestoodle\forms\training_milestones_update_form;
 
-$PAGE->set_url(new moodle_url('/blocks/attestoodle/pages/training_learners_list.php', array('id' => $trainingid)));
-// @todo May be replaced by "require_login(...)"
-$PAGE->set_context(context_coursecat::instance($trainingid));
+$currenturl = new moodle_url('/blocks/attestoodle/pages/training_details.php', array('id' => $trainingid));
+$PAGE->set_url($currenturl);
+/* @todo May be replaced by "require_login(...)" + context_system
+ * because coursecat throw  an error if id is not valid */
+$PAGE->set_context(context_system::instance());
 
 // @todo make a translation
 $PAGE->set_title("Moodle - Attestoodle - Détail de la formation");
-$PAGE->set_heading("Erreur !");
+//$PAGE->set_heading("Erreur !");
 
 $trainingexist = trainings_factory::get_instance()->has_training($trainingid);
 if ($trainingexist) {
     // Retrieve the current training.
     $training = trainings_factory::get_instance()->retrieve_training($trainingid);
-    $PAGE->set_heading($training->get_name());
+//    $totaltrainingmilestones = parse_minutes_to_hours($training->get_total_milestones());
+//    // @todo translations
+//    $PAGE->set_heading("Gestion de la formation {$training->get_name()} : {$totaltrainingmilestones}");
 }
 
-echo $OUTPUT->header();
+//echo $OUTPUT->header();
 
 if (!$trainingexist) {
+    $PAGE->set_heading("Error!");
+    echo $OUTPUT->header();
     $warningunknownid = get_string('training_details_unknown_training_id', 'block_attestoodle') . $trainingid;
     echo $warningunknownid;
 } else {
-    // Link to the training learners list.
-    echo html_writer::link(
-            new moodle_url('/blocks/attestoodle/pages/training_learners_list.php', array('id' => $trainingid)),
-            get_string('training_details_learners_list_btn_text', 'block_attestoodle'),
-            array('class' => 'attestoodle-button'));
-
     // Instanciate the custom form.
     $mform = new training_milestones_update_form(
             "?id={$trainingid}",
@@ -74,24 +74,29 @@ if (!$trainingexist) {
     // Form processing and displaying is done here.
     if ($mform->is_cancelled()) {
         // Handle form cancel operation.
-        echo "Form has been cancelled <br />";
+//        echo "Form has been cancelled <br />";
         // @todo Redirect to training students detail.
+        $message = "Form cancelled";
+//        redirect($currenturl, $message, null, \core\output\notification::NOTIFY_SUCCESS);
+        \core\notification::info($message);
     } else if ($mform->is_submitted()) {
         // Handle form submit operation.
-        echo "Form has been submitted <br />";
         // Check the data validity.
         if (!$mform->is_validated()) {
-            echo "Form is not valid <br />";
-            // Redisplaying the form.
-            $mform->display();
+            // If not valid, warn the user.
+            // @todo translations
+            \core\notification::error("Form is not valid");
         } else {
-            echo "Form is valid <br />";
-            echo "processing update... <br />";
-            // Data are valid, try to retrieve them.
+            // If data are valid, process persistance.
+            // Try to retrieve the submitted data.
             if ($datafromform = $mform->get_submitted_data()) {
-                $i = 0;
+                // Instanciate global variables to output to the user.
+                $updatecounter = 0;
+                $errorcounter = 0;
+                $successlist = "Activities updated:<ul>";
+                $errorlist = "Activities not updated:<ul>";
+
                 foreach ($datafromform as $key => $value) {
-                    $i++;
                     $regexp = "/attestoodle_activity_id_(.+)/";
                     if (preg_match($regexp, $key, $matches)) {
                         $idactivity = $matches[1];
@@ -102,6 +107,9 @@ if (!$trainingexist) {
                                     try {
                                         // Try to persist activity in DB.
                                         $activity->persist();
+
+                                        // If no Exception has been thrown by DB update.
+                                        $updatecounter++;
 
                                         // Instanciate the output for the user.
                                         if ($oldmarkervalue == null) {
@@ -114,38 +122,75 @@ if (!$trainingexist) {
                                         } else {
                                             $tostring = "<b>{$activity->get_marker()}</b> minutes";
                                         }
-                                        echo "Activity updated: <b>{$activity->get_name()}</b> "
-                                                . "from {$fromstring} to {$tostring}. <br />";
+
+                                        $successlist .= "<li><b>{$activity->get_name()}</b> "
+                                                . "from {$fromstring} to {$tostring}. </li>";
                                     } catch (Exception $ex) {
                                         // If record in DB failed, re-set the old value.
                                         $activity->set_marker($oldmarkervalue);
+                                        $errorcounter++;
 
                                         // Output a warning to the user.
                                         if ($activity->get_marker() == null) {
                                             $oldstring = "<b>[no marker]</b>";
                                         } else {
-                                            "<b>{$activity->get_marker()}</b> minutes";
+                                            $oldstring = "<b>{$activity->get_marker()}</b> minutes";
                                         }
-                                        echo "An error occured while attempting to save "
-                                                . "<b>{$activity->get_name()}</b> activity in DB. "
-                                                . "Kept the old value of {$oldstring}. <br />";
+
+                                        $errorlist .= "<li><b>{$activity->get_name()}</b>. "
+                                                . "Kept the old value of {$oldstring}. </li>";
                                     }
                                 }
                             }
                         }
                     }
                 }
+                $successlist .= "</ul>";
+                $errorlist .= "</ul>";
+
+                $message = "";
+                if ($errorcounter == 0) {
+                    $message .= "Form submitted. <br />"
+                            . "{$updatecounter} activities updated <br />";
+                    $message .= $successlist;
+                    \core\notification::success($message);
+                } else {
+                    $message .= "Form submitted with errors. <br />"
+                            . "{$updatecounter} activities updated <br />"
+                            . "{$errorcounter} errors (activities not updated in database).<br />";
+                    $message .= $successlist . $errorlist;
+                    \core\notification::warning($message);
+                }
+                // Reinstanciate the form to update training and courses total milestones.
+                $mform = new training_milestones_update_form(
+                        "?id={$trainingid}", array(
+                    'data' => $training->get_courses(),
+                    'input_name_prefix' => "attestoodle_activity_id_"
+                ));
             } else {
                 // No submitted data.
-                echo "no submitted data";
-                // Redisplaying the form.
-                $mform->display();
+                // @todo translations
+                \core\notification::warning("No submitted data");
             }
         }
-    } else {
-        // First render of the form.
-        $mform->display();
     }
+
+    // Setting the total hours after potential form submission.
+    $totaltrainingmilestones = parse_minutes_to_hours($training->get_total_milestones());
+    $PAGE->set_heading("Gestion de la formation {$training->get_name()} : {$totaltrainingmilestones}");
+    echo $OUTPUT->header();
+
+    echo html_writer::start_div('clearfix');
+    // Link to the training learners list.
+    echo html_writer::link(
+            new moodle_url('/blocks/attestoodle/pages/training_learners_list.php', array('id' => $trainingid)),
+            get_string('training_details_learners_list_btn_text', 'block_attestoodle'),
+            array('class' => 'attestoodle-link'));
+    echo html_writer::end_div();
+
+    // Displaying the form in any case but invalid training ID.
+    $mform->display();
 }
 
+// Output footer in any case.
 echo $OUTPUT->footer();

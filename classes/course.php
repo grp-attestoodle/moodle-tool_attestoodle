@@ -163,6 +163,22 @@ class course {
     }
 
     /**
+     * Method that computes the total amount of milestones included in
+     * the activities of the current course.
+     *
+     * @return integer The total amount of milestones in minutes
+     */
+    public function get_total_milestones() {
+        $total = 0;
+        foreach ($this->activities as $act) {
+            if ($act->has_marker()) {
+                $total += $act->get_marker();
+            }
+        }
+        return $total;
+    }
+
+    /**
      * Setter for $id property
      *
      * @param string $prop Id to set for the course

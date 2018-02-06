@@ -161,6 +161,20 @@ class training {
     }
 
     /**
+     * Method that computes the total amount of milestones included in
+     * the courses of the current training.
+     *
+     * @return integer The total amount of milestones in minutes
+     */
+    public function get_total_milestones() {
+        $total = 0;
+        foreach ($this->courses as $course) {
+            $total += $course->get_total_milestones();
+        }
+        return $total;
+    }
+
+    /**
      * Setter for $id property
      *
      * @param string $prop Id to set for the training
