@@ -199,11 +199,82 @@ class learner {
     /**
      * Method that return certificate informations for the learner
      *
+     * @TODO to be replaced by the get_certificate_informations_dated() method
+     *
      * @return \stdClass Informations structured in a stdClass object
      */
     public function get_certificate_informations() {
         $validatedactivitieswithmarker = $this->get_validated_activities_with_marker();
         $filteredvalidatedactivities = $validatedactivitieswithmarker;
+
+        // Retrieve activities informations in an array structure.
+        $activitiesstructured = array();
+        foreach ($filteredvalidatedactivities as $fva) {
+            // Retrieve activity.
+            $activity = $fva->get_activity();
+
+            // Retrieve current activity training.
+            $trainingname = $activity->get_course()->get_training()->get_name();
+
+            // Instanciate the training in the global array if needed.
+            if (!array_key_exists($trainingname, $activitiesstructured)) {
+                $activitiesstructured[$trainingname] = array(
+                        "totalminutes" => 0,
+                        "activities" => array()
+                    );
+            }
+
+            // Increment total minutes for the training.
+            $activitiesstructured[$trainingname]["totalminutes"] += $activity->get_marker();
+
+            // Retrieve current activity type.
+            $activitytype = $activity->get_type();
+
+            // Instanciate activity type in the training array if needed.
+            if (!array_key_exists($activitytype, $activitiesstructured[$trainingname]["activities"])) {
+                $activitiesstructured[$trainingname]["activities"][$activitytype] = 0;
+            }
+            // Increment total minutes for the activity type in the training.
+            $activitiesstructured[$trainingname]["activities"][$activitytype] += $activity->get_marker();
+        }
+        // Retrieve global informations.
+        $learnername = $this->firstname . " " . $this->lastname;
+        $period = "unknown period";
+
+        $certificateinformations = new \stdClass();
+        $certificateinformations->learnername = $learnername;
+        $certificateinformations->period = $period;
+        $certificateinformations->certificates = $activitiesstructured;
+
+        return $certificateinformations;
+    }
+
+    /**
+     * Method that return certificate informations for the learner
+     *
+     * @param
+     * @return \stdClass Informations structured in a stdClass object
+     */
+
+    /**
+     * Method that return certificate informations for the learner between
+     * two specified dates.
+     *
+     * @param \DateTime $begindate Limit begin date to get information from (included)
+     * @param \DateTime $enddate Limit end date to get information from (included)
+     * @return \stdClass Informations structured in a stdClass object
+     */
+    public function get_certificate_informations_dated($begindate, $enddate) {
+        $validatedactivitieswithmarker = $this->get_validated_activities_with_marker();
+
+        $filteredvalidatedactivities = array_filter($validatedactivitieswithmarker, function($va) use($begindate, $enddate){
+            $dt = $va->get_datetime();
+            if ($dt < $begindate || $dt > $enddate) {
+                return false;
+            } else {
+                return true;
+            }
+        });
 
         // Retrieve activities informations in an array structure.
         $activitiesstructured = array();
