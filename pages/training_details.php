@@ -43,18 +43,8 @@ $PAGE->set_context(context_system::instance());
 
 // @todo make a translation
 $PAGE->set_title("Moodle - Attestoodle - Détail de la formation");
-//$PAGE->set_heading("Erreur !");
 
 $trainingexist = trainings_factory::get_instance()->has_training($trainingid);
-if ($trainingexist) {
-    // Retrieve the current training.
-    $training = trainings_factory::get_instance()->retrieve_training($trainingid);
-//    $totaltrainingmilestones = parse_minutes_to_hours($training->get_total_milestones());
-//    // @todo translations
-//    $PAGE->set_heading("Gestion de la formation {$training->get_name()} : {$totaltrainingmilestones}");
-}
-
-//echo $OUTPUT->header();
 
 if (!$trainingexist) {
     $PAGE->set_heading("Error!");
@@ -62,6 +52,7 @@ if (!$trainingexist) {
     $warningunknownid = get_string('training_details_unknown_training_id', 'block_attestoodle') . $trainingid;
     echo $warningunknownid;
 } else {
+    $training = trainings_factory::get_instance()->retrieve_training($trainingid);
     // Instanciate the custom form.
     $mform = new training_milestones_update_form(
             "?id={$trainingid}",
@@ -74,11 +65,10 @@ if (!$trainingexist) {
     // Form processing and displaying is done here.
     if ($mform->is_cancelled()) {
         // Handle form cancel operation.
-//        echo "Form has been cancelled <br />";
-        // @todo Redirect to training students detail.
+        $redirecturl = new moodle_url('/blocks/attestoodle/pages/training_learners_list.php', array('id' => $trainingid));
+        // @todo translation.
         $message = "Form cancelled";
-//        redirect($currenturl, $message, null, \core\output\notification::NOTIFY_SUCCESS);
-        \core\notification::info($message);
+        redirect($redirecturl, $message, null, \core\output\notification::NOTIFY_INFO);
     } else if ($mform->is_submitted()) {
         // Handle form submit operation.
         // Check the data validity.
@@ -169,7 +159,7 @@ if (!$trainingexist) {
                 ));
             } else {
                 // No submitted data.
-                // @todo translations
+                // @todo translations.
                 \core\notification::warning("No submitted data");
             }
         }

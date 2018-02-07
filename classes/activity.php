@@ -221,7 +221,7 @@ class activity {
             if (preg_match($regexp, $desc)) {
                 $desc = preg_replace($regexp, "<span class=\"tps_jalon\">{$marker}</span>", $desc);
             } else {
-                $desc = $desc . "\n\n" . "<span class=\"tps_jalon\">{$marker}</span>";
+                $desc = $desc . "<span class=\"tps_jalon\">{$marker}</span>";
             }
         }
 

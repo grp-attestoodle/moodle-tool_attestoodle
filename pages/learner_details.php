@@ -109,11 +109,16 @@ if (!$trainingexists) {
 
         echo html_writer::start_div('clearfix');
         echo html_writer::link(
-            new moodle_url('/blocks/attestoodle/pages/download_certificate.php', array(
-                    'training' => $trainingid,
-                    'user' => $userid)),
-            get_string('generate_certificate_link_text', 'block_attestoodle'),
-            array('class' => 'attestoodle-link'));
+                new moodle_url(
+                        '/blocks/attestoodle/pages/download_certificate.php',
+                        array(
+                                'training' => $trainingid,
+                                'user' => $userid
+                        )
+                ),
+                get_string('generate_certificate_link_text', 'block_attestoodle'),
+                array('class' => 'attestoodle-link')
+        );
         echo html_writer::end_div();
     }
 }
