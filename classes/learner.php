@@ -145,9 +145,30 @@ class learner {
      *
      * @return validated_activity[] Validated activities with marker of the learner
      */
-    public function get_validated_activities_with_marker() {
-        return array_filter($this->validatedactivities, function($va) {
-            return $va->get_activity()->has_marker();
+
+    /**
+     * Method that returns the validated activities with marker in an optional
+     * period of time
+     *
+     * @param \DateTime $begindate The begining date to filter the activities
+     * @param \DateTime $enddate The ending date to filter the activities
+     * @return validated_activity[] Validated activities with marker of the learner
+     */
+    public function get_validated_activities_with_marker($begindate = null, $enddate = null) {
+        return array_filter($this->validatedactivities, function($va) use ($begindate, $enddate) {
+            if ($va->get_activity()->has_marker()) {
+                if (!$begindate || $va->get_datetime() > $begindate) {
+                    if (!$enddate || $va->get_datetime() < $enddate) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
         });
     }
 
@@ -250,13 +271,6 @@ class learner {
     }
 
     /**
-     * Method that return certificate informations for the learner
-     *
-     * @param
-     * @return \stdClass Informations structured in a stdClass object
-     */
-
-    /**
      * Method that return certificate informations for the learner between
      * two specified dates.
      *
@@ -267,6 +281,7 @@ class learner {
     public function get_certificate_informations_dated($begindate, $enddate) {
         $validatedactivitieswithmarker = $this->get_validated_activities_with_marker();
 
+        // Filtering activities based on validation time.
         $filteredvalidatedactivities = array_filter($validatedactivitieswithmarker, function($va) use($begindate, $enddate){
             $dt = $va->get_datetime();
             if ($dt < $begindate || $dt > $enddate) {
@@ -308,7 +323,8 @@ class learner {
         }
         // Retrieve global informations.
         $learnername = $this->firstname . " " . $this->lastname;
-        $period = "unknown period";
+//        $period = "unknown period";
+        $period = "Du {$begindate->format("d/m/Y")} au {$enddate->format("d/m/Y")}";
 
         $certificateinformations = new \stdClass();
         $certificateinformations->learnername = $learnername;

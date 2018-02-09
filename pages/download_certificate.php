@@ -20,6 +20,8 @@ require_once($CFG->libdir.'/pdflib.php');
 
 $trainingid = required_param('training', PARAM_INT);
 $userid = required_param('user', PARAM_INT);
+$begindatestr = required_param('begindate', PARAM_ALPHANUM);
+$enddatestr = required_param('enddate', PARAM_ALPHANUM);
 
 require_once($CFG->dirroot . '/blocks/attestoodle/lib.php');
 
@@ -76,8 +78,8 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
         $learner = learners_factory::get_instance()->retrieve_learner($userid);
 
         // @TODO dynamic date
-        $begindate = new \DateTime("2018-02-01");
-        $enddate = new \DateTime("2018-02-28");
+        $begindate = new \DateTime($begindatestr);
+        $enddate = new \DateTime($enddatestr);
         $certificateinfos = $learner->get_certificate_informations_dated($begindate, $enddate);
         // @todo to be removed
         // $certificateinfos = $learner->get_certificate_informations();
