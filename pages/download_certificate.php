@@ -25,17 +25,23 @@ $enddatestr = required_param('enddate', PARAM_ALPHANUM);
 
 require_once($CFG->dirroot . '/blocks/attestoodle/lib.php');
 
+require_once($CFG->dirroot . '/blocks/attestoodle/classes/factories/categories_factory.php');
 require_once($CFG->dirroot . '/blocks/attestoodle/classes/factories/trainings_factory.php');
 require_once($CFG->dirroot . '/blocks/attestoodle/classes/factories/courses_factory.php');
 require_once($CFG->dirroot . '/blocks/attestoodle/classes/factories/activities_factory.php');
 require_once($CFG->dirroot . '/blocks/attestoodle/classes/factories/learners_factory.php');
 
+require_once($CFG->dirroot . '/blocks/attestoodle/classes/category.php');
+require_once($CFG->dirroot . '/blocks/attestoodle/classes/training_from_category.php');
 require_once($CFG->dirroot . '/blocks/attestoodle/classes/course.php');
 require_once($CFG->dirroot . '/blocks/attestoodle/classes/activity.php');
 require_once($CFG->dirroot . '/blocks/attestoodle/classes/validated_activity.php');
 
+use block_attestoodle\factories\categories_factory;
 use block_attestoodle\factories\trainings_factory;
 use block_attestoodle\factories\learners_factory;
+
+categories_factory::get_instance()->create_categories();
 
 // Verifying training id.
 if (!trainings_factory::get_instance()->has_training($trainingid)) {
@@ -84,7 +90,9 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
         // @todo to be removed
         // $certificateinfos = $learner->get_certificate_informations();
 
-        $filename = "certificate_{$learner->get_firstname()}{$learner->get_lastname()}.pdf";
+        $filename = "certificate_{$learner->get_firstname()}{$learner->get_lastname()}_";
+        $filename .= $begindate->format("Ymd") . "_" . $enddate->format("Ymd");
+        $filename .= ".pdf";
 
         // PDF Class instanciation.
         $pdf = new pdf();
@@ -191,6 +199,8 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
             // 'itemid' => $offlinequiz->id, // usually = ID of row in table
             'filename' => $filename); // any filename
 
+        $bodystring = "";
+
         if ($oldfile = $fs->get_file(
                 $fileinfo['contextid'],
                 $fileinfo['component'],
@@ -201,7 +211,7 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
             /*echo "<pre>ANCIEN FILE";
             var_dump($oldfile);
             echo "</pre>";*/
-            echo "<p>Une attestation avec les mêmes paramètres a été trouvée sur le serveur. Cette attestation va être supprimée et remplacée par la nouvelle</p>";
+            $bodystring .= "<p>Une attestation avec les mêmes paramètres a été trouvée sur le serveur. Cette attestation va être supprimée et remplacée par la nouvelle</p>";
             $oldfile->delete();
         }
         $pdfstring = $pdf->Output('', 'S');
@@ -272,8 +282,18 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
                 null,
                 $file->get_filepath(),
                 $file->get_filename());
+
         // @todo translations
-        echo "<p>L'attestation a été générée et stockée sur le serveur</p>";
-        echo "<a href='" . $url . "'>" . get_string('download_certificate_file_link_text', 'block_attestoodle') . "</a>";
+        $PAGE->set_url(new moodle_url(
+                '/blocks/attestoodle/pages/download_certificate.php',
+                array('training' => $trainingid, 'user' => $userid)));
+        $PAGE->set_context(context_coursecat::instance($trainingid));
+        $PAGE->set_title("Moodle - Attestoodle - Génération d'attestation");
+        $PAGE->set_heading("Génération d'attestation");
+        echo $OUTPUT->header();
+        $bodystring .= "<p>L'attestation a été générée et stockée sur le serveur</p>";
+        echo $bodystring;
+        echo "<a href='" . $url . "' target='_blank'>" . get_string('download_certificate_file_link_text', 'block_attestoodle') . "</a>";
+        echo $OUTPUT->footer();
     }
 }

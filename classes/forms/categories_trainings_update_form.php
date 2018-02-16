@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This is the class that handle the filtering of learner milestones by period.
+ * This is the class that handle the modification of milestones values.
  *
  * @package    block_attestoodle
  * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
@@ -29,18 +29,25 @@ defined('MOODLE_INTERNAL') || die;
 // Class \moodleform is defined in formslib.php.
 require_once("$CFG->libdir/formslib.php");
 
-class learner_details_period_form extends \moodleform {
+class categories_trainings_update_form extends \moodleform {
     // Add elements to form.
     public function definition() {
+        global $CFG;
+
+        $inputnameprefix = $this->_customdata['input_name_prefix'];
+        $categories = $this->_customdata['data'];
+
         $mform = $this->_form;
 
-        $datesselectoroptions = array(
-                'startyear' => 2000,
-                'stopyear' => 2040
-        );
+        // For each category we set a new input.
+        foreach ($categories as $cat) {
+            $name = $inputnameprefix  . $cat->get_id();
+            $label = $cat->get_name();
+            $istraining = $cat->is_training();
 
-        $mform->addElement('date_selector', 'begindate', "Début", $datesselectoroptions);
-        $mform->addElement('date_selector', 'enddate', "Fin", $datesselectoroptions);
+            $mform->addElement("advcheckbox", $name, $label);
+            $mform->setDefault($name, $istraining);
+        }
 
         $this->add_action_buttons();
     }

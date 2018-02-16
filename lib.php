@@ -249,3 +249,8 @@ function block_attestoodle_pluginfile($course, $cm, $context, $filearea, $args, 
     // var_dump($file->get_content());
     send_stored_file($file, 1, 0, $forcedownload, $options);
 }
+
+function my_autoloader($class) {
+    require_once($CFG->dirroot . "/blocks/attestoodle/classes/{$class}.php");
+//    include 'classes/' . $class . '.class.php';
+}

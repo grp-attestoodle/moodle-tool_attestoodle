@@ -48,6 +48,15 @@ class db_accessor extends singleton {
      *
      * @return stdClass
      */
+    public function get_all_categories() {
+        $result = self::$db->get_records('course_categories', null, null, 'id, name, description, parent');
+        return $result;
+    }
+
+    /**
+     *
+     * @return stdClass
+     */
     public function get_all_trainings() {
         $result = self::$db->get_records('course_categories');
         return $result;

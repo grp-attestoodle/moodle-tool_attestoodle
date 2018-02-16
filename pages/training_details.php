@@ -21,17 +21,21 @@ $trainingid = required_param('id', PARAM_INT);
 
 require_once($CFG->dirroot.'/blocks/attestoodle/lib.php');
 
+require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/categories_factory.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/trainings_factory.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/courses_factory.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/activities_factory.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/learners_factory.php');
 
+require_once($CFG->dirroot.'/blocks/attestoodle/classes/training_from_category.php');
+require_once($CFG->dirroot.'/blocks/attestoodle/classes/category.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/course.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/activity.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/validated_activity.php');
 
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/forms/training_milestones_update_form.php');
 
+use block_attestoodle\factories\categories_factory;
 use block_attestoodle\factories\trainings_factory;
 use block_attestoodle\forms\training_milestones_update_form;
 
@@ -44,6 +48,7 @@ $PAGE->set_context(context_system::instance());
 // @todo make a translation
 $PAGE->set_title("Moodle - Attestoodle - Détail de la formation");
 
+categories_factory::get_instance()->create_categories();
 $trainingexist = trainings_factory::get_instance()->has_training($trainingid);
 
 if (!$trainingexist) {

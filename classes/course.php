@@ -39,7 +39,10 @@ class course {
     /** @var learner[] Learners registered for the course */
     private $learners;
 
-    /** @var training Training corresponding to the course */
+    /**
+     * @var training Training corresponding to the course
+     * @todo Replace by the ID of the training to avoid bijective relation
+     */
     private $training;
 
     /**

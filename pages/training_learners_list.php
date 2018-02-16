@@ -21,23 +21,27 @@ $trainingid = required_param('id', PARAM_INT);
 
 require_once($CFG->dirroot.'/blocks/attestoodle/lib.php');
 
+require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/categories_factory.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/trainings_factory.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/courses_factory.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/activities_factory.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/learners_factory.php');
 
+require_once($CFG->dirroot.'/blocks/attestoodle/classes/training_from_category.php');
+require_once($CFG->dirroot.'/blocks/attestoodle/classes/category.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/course.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/activity.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/validated_activity.php');
 
 use block_attestoodle\factories\trainings_factory;
+use block_attestoodle\factories\categories_factory;
 
 $PAGE->set_url(new moodle_url('/blocks/attestoodle/pages/training_learners_list.php', array('id' => $trainingid)));
 // @todo May be replaced by "require_login(...)"
 $PAGE->set_context(context_coursecat::instance($trainingid));
 // @todo Make a translation string.
 $PAGE->set_title("Moodle - Attestoodle - Liste des étudiants");
-
+categories_factory::get_instance()->create_categories();
 $trainingexist = trainings_factory::get_instance()->has_training($trainingid);
 
 if ($trainingexist) {

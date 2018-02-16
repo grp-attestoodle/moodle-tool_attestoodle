@@ -43,19 +43,23 @@ if ($enddate) {
 require_once($CFG->dirroot.'/blocks/attestoodle/lib.php');
 
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/trainings_factory.php');
+require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/categories_factory.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/courses_factory.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/activities_factory.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/learners_factory.php');
 
+require_once($CFG->dirroot.'/blocks/attestoodle/classes/training_from_category.php');
+require_once($CFG->dirroot.'/blocks/attestoodle/classes/category.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/course.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/activity.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/validated_activity.php');
 
-require_once($CFG->dirroot.'/blocks/attestoodle/classes/forms/learner_details_period_form.php');
+// require_once($CFG->dirroot.'/blocks/attestoodle/classes/forms/learner_details_period_form.php');
 
+use block_attestoodle\factories\categories_factory;
 use block_attestoodle\factories\trainings_factory;
 use block_attestoodle\factories\learners_factory;
-//use block_attestoodle\forms\learner_details_period_form;
+// use block_attestoodle\forms\learner_details_period_form;
 
 $PAGE->set_url(new moodle_url(
         '/blocks/attestoodle/pages/learner_details.php',
@@ -66,6 +70,7 @@ $PAGE->set_context(context_coursecat::instance($trainingid));
 // @todo Make a translation string.
 $PAGE->set_title("Moodle - Attestoodle - Détail de l'étudiant");
 
+categories_factory::get_instance()->create_categories();
 $trainingexists = trainings_factory::get_instance()->has_training($trainingid);
 $learnerexists = learners_factory::get_instance()->has_learner($userid);
 

@@ -44,11 +44,14 @@ class activity {
 
     /**
      * @var integer Marker time (in minutes) of the activity
-     * @todo Replace by an inherited class "Milestone" with e specific marker property
+     * @todo Replace by a class "Milestone" with a specific marker propertys
      */
     private $marker;
 
-    /** @var course The course corresponding to the activity */
+    /**
+     * @var course The course corresponding to the activity
+     * @todo Replace by the ID of the course to avoid bijective relation
+     */
     private $course;
 
     /**
