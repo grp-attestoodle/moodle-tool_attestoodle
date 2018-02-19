@@ -44,23 +44,58 @@ $string['backto_training_learners_list_btn_text'] = 'Back to the students list';
 $string['unknown_training_id'] = 'No training with the ID: {$a}';
 $string['unknown_learner_id'] = 'No student with the ID: {$a}';
 
-// Training list page strings.
-$string['training_details_btn_text'] = 'Details';
+// Trainings list page strings.
+$string['trainings_list_page_title'] = 'Moodle - Attestoodle - Trainings list';
+$string['trainings_list_main_title'] = 'Attestoodle trainings';
+$string['trainings_list_manage_trainings_link'] = 'Manage trainings';
+$string['trainings_list_table_header_column_id'] = 'ID';
+$string['trainings_list_table_header_column_name'] = 'Name';
+$string['trainings_list_table_header_column_hierarchy'] = 'Hierarchy';
+$string['trainings_list_table_header_column_description'] = 'Description';
+$string['trainings_list_table_link_details'] = 'Details';
+$string['trainings_list_warning_no_trainings'] = 'No trainings registered';
 
-// Training details page strings.
-$string['training_details_learners_list_btn_text'] = "Training's students";
-$string['training_details_unknown_training_id'] = "No training with the ID: ";
+// Trainings management page strings.
+$string['trainings_management_page_title'] = 'Moodle - Attestoodle - Trainings management';
+$string['trainings_management_main_title'] = 'Trainings management';
+$string['trainings_management_trainings_list_link'] = 'Back to trainings list';
+$string['trainings_management_warning_no_submitted_data'] = 'No submitted data';
+$string['trainings_management_warning_invalid_form'] = 'The form is not valid';
+$string['trainings_management_info_form_canceled'] = 'The form has been canceled';
 
 // Training learners list page strings.
+$string['training_learners_list_page_title'] = 'Moodle - Attestoodle - Liste des étudiants';
+$string['training_learners_list_main_title'] = 'Students of the training {$a}';
+$string['training_learners_list_main_title_error'] = 'Error!';
 $string['training_learners_list_heading'] = '{$a} students in the training';
-$string['learner_details_btn_text'] = 'Details';
-$string['edit_training_link_text'] = 'Manage training';
+$string['training_learners_list_edit_training_link'] = 'Manage training';
+$string['training_learners_list_table_link_details'] = 'Details';
+$string['training_learners_list_table_header_column_id'] = 'ID';
+$string['training_learners_list_table_header_column_firstname'] = 'Firstname';
+$string['training_learners_list_table_header_column_lastname'] = 'Lastname';
+$string['training_learners_list_table_header_column_validated_activities'] = 'Validated activities';
+$string['training_learners_list_table_header_column_total_milestones'] = 'Total milestones';
+
+// Training details page strings.
+$string['training_details_page_title'] = "Moodle - Attestoodle - Training details";
+$string['training_details_main_title'] = 'Management of the training {$a}: ';
+$string['training_details_main_title_error'] = "Error!";
+$string['training_details_learners_list_btn_text'] = "Training's students";
+$string['training_details_unknown_training_id'] = "No training with the ID: ";
+$string['training_details_warning_no_submitted_data'] = 'No submitted data';
+$string['training_details_error_invalid_form'] = 'The form is not valid';
+$string['training_details_info_form_canceled'] = 'The form has been canceled';
 
 // Learner details page strings.
+$string['learner_details_page_title'] = "Moodle - Attestoodle - Learner details";
+$string['learner_details_main_title'] = 'Milestones validated by {$a}';
+$string['learner_details_main_title_error'] = "Error!";
 $string['learner_details_unknown_training_id'] = "No training with the ID: ";
 $string['learner_details_unknown_learner_id'] = "No student with the ID: ";
-$string['generate_certificate_link_text'] = "Generate certificate";
-$string['download_certificate_file_link_text'] = "Download file";
+$string['learner_details_begin_date_label'] = "Begin date: ";
+$string['learner_details_end_date_label'] = "End date: ";
+$string['learner_details_submit_button_value'] = "Filter";
+$string['learner_details_generate_certificate_link'] = "Generate certificate";
 
 // Unknown strings.
 // @TODO review these strings.

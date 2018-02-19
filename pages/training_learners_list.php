@@ -39,18 +39,16 @@ use block_attestoodle\factories\categories_factory;
 $PAGE->set_url(new moodle_url('/blocks/attestoodle/pages/training_learners_list.php', array('id' => $trainingid)));
 // @todo May be replaced by "require_login(...)"
 $PAGE->set_context(context_coursecat::instance($trainingid));
-// @todo Make a translation string.
-$PAGE->set_title("Moodle - Attestoodle - Liste des étudiants");
+$PAGE->set_title(get_string('training_learners_list_page_title', 'block_attestoodle'));
+
 categories_factory::get_instance()->create_categories();
 $trainingexist = trainings_factory::get_instance()->has_training($trainingid);
 
 if ($trainingexist) {
     $training = trainings_factory::get_instance()->retrieve_training($trainingid);
-    // @todo Make a translation string.
-    $PAGE->set_heading("Etudiants de la formation {$training->get_name()}");
+    $PAGE->set_heading(get_string('training_learners_list_main_title', 'block_attestoodle', $training->get_name()));
 } else {
-    // @todo Make a translation string.
-    $PAGE->set_heading("Erreur !");
+    $PAGE->set_heading(get_string('training_learners_list_main_title_error', 'block_attestoodle'));
 }
 
 echo $OUTPUT->header();
@@ -70,14 +68,19 @@ if (!$trainingexist) {
     // Link to the training details.
     echo html_writer::link(
             new moodle_url('/blocks/attestoodle/pages/training_details.php', array('id' => $trainingid)),
-            get_string('edit_training_link_text', 'block_attestoodle'),
+            get_string('training_learners_list_edit_training_link', 'block_attestoodle'),
             array('class' => 'btn btn-default attestoodle-button'));
     echo html_writer::end_div();
 
     $data = parse_learners_as_stdclass($training->get_learners(), $trainingid);
     $table = new html_table();
-    // @todo translations
-    $table->head = array('ID', 'Prénom', 'Nom', 'Activités validées', 'Total jalons', '');
+    $table->head = array(
+        get_string('training_learners_list_table_header_column_id', 'block_attestoodle'),
+        get_string('training_learners_list_table_header_column_firstname', 'block_attestoodle'),
+        get_string('training_learners_list_table_header_column_lastname', 'block_attestoodle'),
+        get_string('training_learners_list_table_header_column_validated_activities', 'block_attestoodle'),
+        get_string('training_learners_list_table_header_column_total_milestones', 'block_attestoodle'),
+        '');
     $table->data = $data;
 
     echo $OUTPUT->heading(get_string('training_learners_list_heading', 'block_attestoodle', count($data)));

@@ -43,8 +43,7 @@ $PAGE->set_url($currenturl);
  * because coursecat throw  an error if id is not valid */
 $PAGE->set_context(context_system::instance());
 
-// @todo make a translation
-$PAGE->set_title("Moodle - Attestoodle - Gestion des formations");
+$PAGE->set_title(get_string('trainings_management_page_title', 'block_attestoodle'));
 
 categories_factory::get_instance()->create_categories();
 // Instanciate the custom form.
@@ -60,16 +59,14 @@ $mform = new categories_trainings_update_form(
 if ($mform->is_cancelled()) {
     // Handle form cancel operation.
     $redirecturl = new moodle_url('/blocks/attestoodle/pages/trainings_list.php');
-    // @todo translation.
-    $message = "Form cancelled";
+    $message = get_string('trainings_management_info_form_canceled', 'block_attestoodle');
     redirect($redirecturl, $message, null, \core\output\notification::NOTIFY_INFO);
 } else if ($mform->is_submitted()) {
     // Handle form submit operation.
     // Check the data validity.
     if (!$mform->is_validated()) {
         // If not valid, warn the user.
-        // @todo translations
-        \core\notification::error("Form is not valid");
+        \core\notification::error(get_string('trainings_management_warning_invalid_form', 'block_attestoodle'));
     } else {
         // If data are valid, process persistance.
         // Try to retrieve the submitted data.
@@ -118,25 +115,24 @@ if ($mform->is_cancelled()) {
             }
         } else {
             // No submitted data.
-            // @todo translations.
-            \core\notification::warning("No submitted data");
+            \core\notification::warning(get_string('trainings_management_warning_no_submitted_data', 'block_attestoodle'));
         }
     }
 }
 
-// Setting the total hours after potential form submission.
-$PAGE->set_heading("Gestion des formations");
+// Setting the main title in the heading.
+$PAGE->set_heading(get_string('trainings_management_main_title', 'block_attestoodle'));
 echo $OUTPUT->header();
 
 echo html_writer::start_div('clearfix');
 // Link to the trainings list.
 echo html_writer::link(
         new moodle_url('/blocks/attestoodle/pages/trainings_list.php'),
-        get_string('trainings_list_btn_text', 'block_attestoodle'),
+        get_string('trainings_management_trainings_list_link', 'block_attestoodle'),
         array('class' => 'attestoodle-link'));
 echo html_writer::end_div();
 
-// Displaying the form in any case but invalid training ID.
+// Displaying the form in any case.
 $mform->display();
 
 // Output footer in any case.

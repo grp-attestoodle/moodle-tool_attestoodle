@@ -37,19 +37,16 @@ $PAGE->set_url(new moodle_url('/blocks/attestoodle/pages/trainings_list.php'));
 // @todo May be replaced by "require_login(...)"
 $PAGE->set_context(context_system::instance());
 
-// @todo Make a translation string.
-$PAGE->set_title("Moodle - Attestoodle - Liste des formations");
-// @todo Make a translation string.
-$PAGE->set_heading("Formations Attestoodle");
+$PAGE->set_title(get_string('trainings_list_page_title', 'block_attestoodle'));
+$PAGE->set_heading(get_string('trainings_list_main_title', 'block_attestoodle'));
 
 echo $OUTPUT->header();
 
 echo html_writer::start_div('clearfix');
-// Link to the trainings list.
+// Link to the trainings management page.
 echo html_writer::link(
         new moodle_url('/blocks/attestoodle/pages/trainings_management.php'),
-//        get_string('edit_training_link_text', 'block_attestoodle'),
-        "Manage trainings",
+        get_string('trainings_list_manage_trainings_link', 'block_attestoodle'),
         array('class' => 'btn btn-default attestoodle-button'));
 echo html_writer::end_div();
 
@@ -65,13 +62,18 @@ if (count($databrut) > 0) {
     $data = parse_trainings_as_stdclass($databrut);
 
     $table = new html_table();
-//    $table->head = array('ID', 'Nom', 'Description', '');
-    $table->head = array('ID', 'Nom', 'Hierarchy', 'Description', '');
+    $table->head = array(
+        get_string('trainings_list_table_header_column_id', 'block_attestoodle'),
+        get_string('trainings_list_table_header_column_name', 'block_attestoodle'),
+        get_string('trainings_list_table_header_column_hierarchy', 'block_attestoodle'),
+        get_string('trainings_list_table_header_column_description', 'block_attestoodle'),
+        '');
     $table->data = $data;
 
     echo html_writer::table($table);
 } else {
-    echo "No trainings registered";
+    $message = get_string('trainings_list_warning_no_trainings', 'block_attestoodle');
+    echo $message;
 }
 
 echo $OUTPUT->footer();

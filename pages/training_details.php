@@ -44,15 +44,13 @@ $PAGE->set_url($currenturl);
 /* @todo May be replaced by "require_login(...)" + context_system
  * because coursecat throw  an error if id is not valid */
 $PAGE->set_context(context_system::instance());
-
-// @todo make a translation
-$PAGE->set_title("Moodle - Attestoodle - Détail de la formation");
+$PAGE->set_title(get_string('training_details_page_title', 'block_attestoodle'));
 
 categories_factory::get_instance()->create_categories();
 $trainingexist = trainings_factory::get_instance()->has_training($trainingid);
 
 if (!$trainingexist) {
-    $PAGE->set_heading("Error!");
+    $PAGE->set_heading(get_string('training_details_main_title_error', 'block_attestoodle'));
     echo $OUTPUT->header();
     $warningunknownid = get_string('training_details_unknown_training_id', 'block_attestoodle') . $trainingid;
     echo $warningunknownid;
@@ -71,16 +69,14 @@ if (!$trainingexist) {
     if ($mform->is_cancelled()) {
         // Handle form cancel operation.
         $redirecturl = new moodle_url('/blocks/attestoodle/pages/training_learners_list.php', array('id' => $trainingid));
-        // @todo translation.
-        $message = "Form cancelled";
+        $message = get_string('training_details_info_form_canceled', 'block_attestoodle');
         redirect($redirecturl, $message, null, \core\output\notification::NOTIFY_INFO);
     } else if ($mform->is_submitted()) {
         // Handle form submit operation.
         // Check the data validity.
         if (!$mform->is_validated()) {
             // If not valid, warn the user.
-            // @todo translations
-            \core\notification::error("Form is not valid");
+            \core\notification::error(get_string('training_details_error_invalid_form', 'block_attestoodle'));
         } else {
             // If data are valid, process persistance.
             // Try to retrieve the submitted data.
@@ -164,15 +160,14 @@ if (!$trainingexist) {
                 ));
             } else {
                 // No submitted data.
-                // @todo translations.
-                \core\notification::warning("No submitted data");
+                \core\notification::warning(get_string('training_details_warning_no_submitted_data', 'block_attestoodle'));
             }
         }
     }
 
     // Setting the total hours after potential form submission.
     $totaltrainingmilestones = parse_minutes_to_hours($training->get_total_milestones());
-    $PAGE->set_heading("Gestion de la formation {$training->get_name()} : {$totaltrainingmilestones}");
+    $PAGE->set_heading(get_string('training_details_main_title', 'block_attestoodle', $training->get_name()) . $totaltrainingmilestones);
     echo $OUTPUT->header();
 
     echo html_writer::start_div('clearfix');

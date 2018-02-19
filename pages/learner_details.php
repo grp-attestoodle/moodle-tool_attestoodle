@@ -54,12 +54,9 @@ require_once($CFG->dirroot.'/blocks/attestoodle/classes/course.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/activity.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/validated_activity.php');
 
-// require_once($CFG->dirroot.'/blocks/attestoodle/classes/forms/learner_details_period_form.php');
-
 use block_attestoodle\factories\categories_factory;
 use block_attestoodle\factories\trainings_factory;
 use block_attestoodle\factories\learners_factory;
-// use block_attestoodle\forms\learner_details_period_form;
 
 $PAGE->set_url(new moodle_url(
         '/blocks/attestoodle/pages/learner_details.php',
@@ -67,20 +64,17 @@ $PAGE->set_url(new moodle_url(
 // @todo May be replaced by "require_login(...)" + seems a bad context choice +
 // throw error if param is not a valid course category id.
 $PAGE->set_context(context_coursecat::instance($trainingid));
-// @todo Make a translation string.
-$PAGE->set_title("Moodle - Attestoodle - Détail de l'étudiant");
+$PAGE->set_title(get_string('learner_details_page_title', 'block_attestoodle'));
 
 categories_factory::get_instance()->create_categories();
 $trainingexists = trainings_factory::get_instance()->has_training($trainingid);
 $learnerexists = learners_factory::get_instance()->has_learner($userid);
 
 if (!$trainingexists || !$learnerexists) {
-    // @todo translations
-    $PAGE->set_heading("Erreur !");
+    $PAGE->set_heading(get_string('learner_details_main_title_error', 'block_attestoodle'));
 } else {
     $learner = learners_factory::get_instance()->retrieve_learner($userid);
-    // @todo translations
-    $PAGE->set_heading("Jalons validés par {$learner->get_fullname()}");
+    $PAGE->set_heading(get_string('learner_details_main_title', 'block_attestoodle', $learner->get_fullname()));
 }
 echo $OUTPUT->header();
 
@@ -119,17 +113,17 @@ if (!$trainingexists) {
         echo '<form action="?" class="filterform"><div>'
                 . '<input type="hidden" name="training" value="'.$trainingid.'" />'
                 . '<input type="hidden" name="user" value="'.$userid.'" />';
-        echo '<label for="input_begin_date">Begin date: </label>'
+        echo '<label for="input_begin_date">'. get_string('learner_details_begin_date_label', 'block_attestoodle') .'</label>'
                 .'<input type="text" id="input_begin_date" name="begindate" value="'.$begindate.'" placeholder="ex: '.(new \DateTime('now'))->format('Y-m-d').'" />';
         if ($begindateerror) {
             echo "<span class='error'>Erreur de format</span>";
         }
-        echo '<label for="input_end_date">End date: </label>'
+        echo '<label for="input_end_date">' . get_string('learner_details_end_date_label', 'block_attestoodle') . '</label>'
                 .'<input type="text" id="input_end_date" name="enddate" value="'.$enddate.'" placeholder="ex: '.(new \DateTime('now'))->format('Y-m-d').'" />';
         if ($enddateerror) {
             echo "<span class='error'>Erreur de format</span>";
         }
-        echo '<input type="submit" value="Filtrer" /></div></form>'."\n";
+        echo '<input type="submit" value="' . get_string('learner_details_submit_button_value', 'block_attestoodle').'" /></div></form>' . "\n";
 
         echo "<hr />";
 
@@ -163,7 +157,7 @@ if (!$trainingexists) {
                         '/blocks/attestoodle/pages/download_certificate.php',
                         $dlcertifoptions
                 ),
-                get_string('generate_certificate_link_text', 'block_attestoodle'),
+                get_string('learner_details_generate_certificate_link', 'block_attestoodle'),
                 array('class' => 'attestoodle-link')
         );
         echo html_writer::end_div();
