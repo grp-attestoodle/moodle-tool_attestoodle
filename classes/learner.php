@@ -234,11 +234,11 @@ class learner {
      * @return \stdClass Informations structured in a stdClass object
      */
     public function get_certificate_informations_dated($begindate, $enddate) {
-        $validatedactivitieswithmarker = $this->get_validated_activities_with_marker();
+        $validatedmilestones = $this->get_validated_activities_with_marker();
         $searchenddate = clone $enddate;
         $searchenddate->modify('+1 day');
         // Filtering activities based on validation time.
-        $filteredvalidatedactivities = array_filter($validatedactivitieswithmarker, function($va) use($begindate, $searchenddate){
+        $filteredmilestones = array_filter($validatedmilestones, function($va) use($begindate, $searchenddate){
             $dt = $va->get_datetime();
             if ($dt < $begindate || $dt > $searchenddate) {
                 return false;
@@ -249,7 +249,7 @@ class learner {
 
         // Retrieve activities informations in an array structure.
         $activitiesstructured = array();
-        foreach ($filteredvalidatedactivities as $fva) {
+        foreach ($filteredmilestones as $fva) {
             // Retrieve activity.
             $activity = $fva->get_activity();
 
@@ -282,11 +282,11 @@ class learner {
         // @todo translations.
         $period = "Du {$begindate->format("d/m/Y")} au {$enddate->format("d/m/Y")}";
 
-        $certificateinformations = new \stdClass();
-        $certificateinformations->learnername = $learnername;
-        $certificateinformations->period = $period;
-        $certificateinformations->certificates = $activitiesstructured;
+        $certificateinfos = new \stdClass();
+        $certificateinfos->learnername = $learnername;
+        $certificateinfos->period = $period;
+        $certificateinfos->certificates = $activitiesstructured;
 
-        return $certificateinformations;
+        return $certificateinfos;
     }
 }

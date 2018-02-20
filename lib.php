@@ -146,7 +146,7 @@ function parse_learners_as_stdclass($data, $trainingid) {
  */
 function parse_trainings_as_stdclass($data) {
     $newdata = array_map(function($o) {
-            global $OUTPUT;
+            // global $OUTPUT;
             $stdclass = $o->get_object_as_stdclass();
 
             $parameters = array('id' => $stdclass->id);
@@ -186,18 +186,13 @@ function parse_datetime_to_readable_format($datetime) {
 }
 
 function block_attestoodle_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options=array()) {
-    // echo "Dans block_attestoodle_pluginfile \n";
     // Check the contextlevel is as expected - if your plugin is a block, this becomes CONTEXT_BLOCK, etc.
     if ($context->contextlevel != CONTEXT_USER) {
-        /* echo "mauvais context level : {$context->contextlevel} \n";
-        die(); */
         return false;
     }
 
     // Make sure the filearea is one of those used by the plugin.
     if ($filearea !== 'certificates') {
-        /* echo "mauvaise filearea : {$filearea} \n";
-        die(); */
         return false;
     }
 
@@ -237,15 +232,11 @@ function block_attestoodle_pluginfile($course, $cm, $context, $filearea, $args, 
     // echo "filename : " . $filename . "\n";
     $file = $fs->get_file($context->id, 'block_attestoodle', $filearea, $itemid, $filepath, $filename);
     if (!$file) {
-        // echo "pas de file \n";
-        // die();
         return false; // The file does not exist.
     }
 
     // We can now send the file back to the browser - in this case with a cache lifetime of 1 day and no filtering.
     // From Moodle 2.3, use send_stored_file instead.
-    // echo "le file\n";
-    // var_dump($file->get_content());
     send_stored_file($file, 1, 0, $forcedownload, $options);
 }
 

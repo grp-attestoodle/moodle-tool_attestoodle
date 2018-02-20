@@ -32,7 +32,7 @@ class block_attestoodle extends block_base {
 
     // Méthode appelée au moment de l'affichage.
     public function get_content() {
-        global $OUTPUT, $USER;
+        // global $OUTPUT, $USER;
 
         if ($this->content !== null) {
             return $this->content;

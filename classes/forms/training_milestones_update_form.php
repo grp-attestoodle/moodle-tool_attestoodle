@@ -32,7 +32,7 @@ require_once("$CFG->libdir/formslib.php");
 class training_milestones_update_form extends \moodleform {
     // Add elements to form.
     public function definition() {
-        global $CFG;
+        // global $CFG;
 
         $inputnameprefix = $this->_customdata['input_name_prefix'];
         $courses = $this->_customdata['data'];
