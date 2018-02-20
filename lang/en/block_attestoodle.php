@@ -32,7 +32,6 @@ $string['settings_student_role_label'] = 'Student role ID';
 $string['settings_student_role_helper'] = 'Id of the student role in database';
 
 // Block strings.
-$string['hello'] = 'Hello';
 $string['plugin_access'] = 'Access to plugin';
 
 // Shared strings.
@@ -64,8 +63,8 @@ $string['trainings_management_warning_invalid_form'] = 'The form is not valid';
 $string['trainings_management_info_form_canceled'] = 'The form has been canceled';
 
 // Training learners list page strings.
-$string['training_learners_list_page_title'] = 'Moodle - Attestoodle - Liste des étudiants';
-$string['training_learners_list_main_title'] = 'Students of the training {$a}';
+$string['training_learners_list_page_title'] = 'Moodle - Attestoodle - Learners list';
+$string['training_learners_list_main_title'] = 'Learners of the training {$a}';
 $string['training_learners_list_main_title_error'] = 'Error!';
 $string['training_learners_list_heading'] = '{$a} students in the training';
 $string['training_learners_list_edit_training_link'] = 'Manage training';
@@ -96,6 +95,9 @@ $string['learner_details_begin_date_label'] = "Begin date: ";
 $string['learner_details_end_date_label'] = "End date: ";
 $string['learner_details_submit_button_value'] = "Filter";
 $string['learner_details_generate_certificate_link'] = "Generate certificate";
+
+// Download certificate page strings.
+$string['download_certificate_file_link_text'] = "Download file";
 
 // Unknown strings.
 // @TODO review these strings.
