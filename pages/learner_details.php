@@ -65,7 +65,13 @@ use block_attestoodle\factories\learners_factory;
 
 $PAGE->set_url(new moodle_url(
         '/blocks/attestoodle/pages/learner_details.php',
-        array('training' => $trainingid, 'user' => $userid)));
+        array(
+                'training' => $trainingid,
+                'user' => $userid,
+                'begindate' => $begindate,
+                'enddate' => $enddate
+        )
+));
 // @todo May be replaced by "require_login(...)" + seems a bad context choice +
 // throw error if param is not a valid course category id.
 $PAGE->set_context(context_coursecat::instance($trainingid));
@@ -133,39 +139,61 @@ if (!$trainingexists) {
         echo "<hr />";
 
         // If the learner id is valid...
-        $counternomarker = 0;
         // Print validated activities informations (with marker only).
-        foreach ($learner->get_validated_activities_with_marker($actualbegindate, $searchenddate) as $vact) {
-            $act = $vact->get_activity();
-            echo "<h1>" . $act->get_course()->get_training()->get_name() . "</h1>";
-            echo "<h2>" . $act->get_name() . "</h2>";
-            echo "<h3>" . $act->get_type(). " (" . parse_minutes_to_hours($act->get_marker())
-                    . ") - Validée le " . parse_datetime_to_readable_format($vact->get_datetime())
-                    . "</h3>";
+        $validatedactivities = $learner->get_validated_activities_with_marker($actualbegindate, $searchenddate);
+        if (count($validatedactivities) == 0) {
+            echo get_string('learner_details_no_validated_activities', 'block_attestoodle');
+        } else {
+            // Generate table listing the activities.
+            $table = new html_table();
+
+            $table->head = array(
+                    get_string('learner_details_table_header_column_name', 'block_attestoodle'),
+                    get_string('learner_details_table_header_column_type', 'block_attestoodle'),
+                    get_string('learner_details_table_header_column_training_name', 'block_attestoodle'),
+                    get_string('learner_details_table_header_column_validated_time', 'block_attestoodle'),
+                    get_string('learner_details_table_header_column_milestones', 'block_attestoodle')
+            );
+
+            $data = array();
+            foreach ($validatedactivities as $vact) {
+                $act = $vact->get_activity();
+                $stdclassact = new \stdClass();
+
+                $stdclassact->name = $act->get_name();
+                $stdclassact->type = $act->get_type();
+                $stdclassact->trainingname = $act->get_course()->get_training()->get_name();
+                $stdclassact->validatedtime = parse_datetime_to_readable_format($vact->get_datetime());
+                $stdclassact->milestone = parse_minutes_to_hours($act->get_marker());
+
+                $data[] = $stdclassact;
+            }
+            $table->data = $data;
+
+            echo html_writer::table($table);
+
+            echo "<hr />";
+
+            // Instanciate the "Generate certificate" link with specified filters.
+            $dlcertifoptions = array('training' => $trainingid, 'user' => $userid);
+            if ($actualbegindate) {
+                $dlcertifoptions['begindate'] = $actualbegindate->format('Y-m-d');
+            }
+            if ($actualenddate) {
+                $dlcertifoptions['enddate'] = $actualenddate->format('Y-m-d');
+            }
+            // Print the "Generate certificate" link.
+            echo html_writer::start_div('clearfix');
+            echo html_writer::link(
+                    new moodle_url(
+                            '/blocks/attestoodle/pages/download_certificate.php',
+                            $dlcertifoptions
+                    ),
+                    get_string('learner_details_generate_certificate_link', 'block_attestoodle'),
+                    array('class' => 'attestoodle-link')
+            );
+            echo html_writer::end_div();
         }
-
-        echo "<hr />";
-
-        $certificateinfos = $learner->get_certificate_informations();
-
-        $dlcertifoptions = array('training' => $trainingid, 'user' => $userid);
-        if ($actualbegindate) {
-            $dlcertifoptions['begindate'] = $actualbegindate->format('Y-m-d');
-        }
-        if ($actualenddate) {
-            $dlcertifoptions['enddate'] = $actualenddate->format('Y-m-d');
-        }
-
-        echo html_writer::start_div('clearfix');
-        echo html_writer::link(
-                new moodle_url(
-                        '/blocks/attestoodle/pages/download_certificate.php',
-                        $dlcertifoptions
-                ),
-                get_string('learner_details_generate_certificate_link', 'block_attestoodle'),
-                array('class' => 'attestoodle-link')
-        );
-        echo html_writer::end_div();
     }
 }
 

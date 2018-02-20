@@ -94,6 +94,12 @@ $string['learner_details_unknown_learner_id'] = "No student with the ID: ";
 $string['learner_details_begin_date_label'] = "Begin date: ";
 $string['learner_details_end_date_label'] = "End date: ";
 $string['learner_details_submit_button_value'] = "Filter";
+$string['learner_details_no_validated_activities'] = "No validated activities within the specified period";
+$string['learner_details_table_header_column_name'] = "Name";
+$string['learner_details_table_header_column_type'] = "Type";
+$string['learner_details_table_header_column_training_name'] = "Training";
+$string['learner_details_table_header_column_validated_time'] = "Validated time";
+$string['learner_details_table_header_column_milestones'] = "Milestone credit";
 $string['learner_details_generate_certificate_link'] = "Generate certificate";
 
 // Download certificate page strings.

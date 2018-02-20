@@ -94,6 +94,12 @@ $string['learner_details_unknown_learner_id'] = "Pas d'apprenant avec l'identifi
 $string['learner_details_begin_date_label'] = "Date de début : ";
 $string['learner_details_end_date_label'] = "Date de fin : ";
 $string['learner_details_submit_button_value'] = "Filtrer";
+$string['learner_details_no_validated_activities'] = "Aucune activités validées dans la période sélectionnée";
+$string['learner_details_table_header_column_name'] = "Nom";
+$string['learner_details_table_header_column_type'] = "Type";
+$string['learner_details_table_header_column_training_name'] = "Formation";
+$string['learner_details_table_header_column_validated_time'] = "Validé le";
+$string['learner_details_table_header_column_milestones'] = "Temps jalon crédité";
 $string['learner_details_generate_certificate_link'] = "Générer l'attestation";
 
 // Download certificate page strings.
