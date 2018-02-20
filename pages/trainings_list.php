@@ -34,7 +34,7 @@ use block_attestoodle\factories\trainings_factory;
 use block_attestoodle\factories\categories_factory;
 
 $PAGE->set_url(new moodle_url('/blocks/attestoodle/pages/trainings_list.php'));
-// @todo May be replaced by "require_login(...)"
+// ...@todo May be replaced by "require_login(...)"
 $PAGE->set_context(context_system::instance());
 
 $PAGE->set_title(get_string('trainings_list_page_title', 'block_attestoodle'));
@@ -50,12 +50,10 @@ echo html_writer::link(
         array('class' => 'btn btn-default attestoodle-button'));
 echo html_writer::end_div();
 
-// Create the trainings.
-// trainings_factory::get_instance()->create_trainings();
+// Create categories and trainings.
 categories_factory::get_instance()->create_categories();
 
 // Retrieve the trainings.
-// $databrut = trainings_factory::get_instance()->get_trainings();
 $databrut = trainings_factory::get_instance()->get_trainings_from_categories();
 
 if (count($databrut) > 0) {

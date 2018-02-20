@@ -279,7 +279,7 @@ class learner {
         }
         // Retrieve global informations.
         $learnername = $this->firstname . " " . $this->lastname;
-        // @todo translations.
+        // HERE @todo translations.
         $period = "Du {$begindate->format("d/m/Y")} au {$enddate->format("d/m/Y")}";
 
         $certificateinfos = new \stdClass();

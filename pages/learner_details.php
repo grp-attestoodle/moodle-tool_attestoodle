@@ -72,8 +72,8 @@ $PAGE->set_url(new moodle_url(
                 'enddate' => $enddate
         )
 ));
-// @todo May be replaced by "require_login(...)" + seems a bad context choice +
-// throw error if param is not a valid course category id.
+// ...@todo May be replaced by "require_login(...)" + seems a bad context choice +
+// ...throw error if param is not a valid course category id.
 $PAGE->set_context(context_coursecat::instance($trainingid));
 $PAGE->set_title(get_string('learner_details_page_title', 'block_attestoodle'));
 
@@ -120,21 +120,25 @@ if (!$trainingexists) {
         $warningunknownlearnerid = get_string('unknown_learner_id', 'block_attestoodle', $userid);
         echo $warningunknownlearnerid;
     } else {
-        // Basic form to allow user filtering the validated activities by begin and end dates
+        // Basic form to allow user filtering the validated activities by begin and end dates.
         echo '<form action="?" class="filterform"><div>'
                 . '<input type="hidden" name="training" value="'.$trainingid.'" />'
                 . '<input type="hidden" name="user" value="'.$userid.'" />';
-        echo '<label for="input_begin_date">'. get_string('learner_details_begin_date_label', 'block_attestoodle') .'</label>'
-                .'<input type="text" id="input_begin_date" name="begindate" value="'.$begindate.'" placeholder="ex: '.(new \DateTime('now'))->format('Y-m-d').'" />';
+        echo '<label for="input_begin_date">'
+                . get_string('learner_details_begin_date_label', 'block_attestoodle') .'</label>'
+                .'<input type="text" id="input_begin_date" name="begindate" value="'.$begindate.'" '
+                . 'placeholder="ex: '.(new \DateTime('now'))->format('Y-m-d').'" />';
         if ($begindateerror) {
             echo "<span class='error'>Erreur de format</span>";
         }
         echo '<label for="input_end_date">' . get_string('learner_details_end_date_label', 'block_attestoodle') . '</label>'
-                .'<input type="text" id="input_end_date" name="enddate" value="'.$enddate.'" placeholder="ex: '.(new \DateTime('now'))->format('Y-m-d').'" />';
+                .'<input type="text" id="input_end_date" name="enddate" value="'.$enddate.'" '
+                . 'placeholder="ex: '.(new \DateTime('now'))->format('Y-m-d').'" />';
         if ($enddateerror) {
             echo "<span class='error'>Erreur de format</span>";
         }
-        echo '<input type="submit" value="' . get_string('learner_details_submit_button_value', 'block_attestoodle').'" /></div></form>' . "\n";
+        echo '<input type="submit" value="' . get_string('learner_details_submit_button_value', 'block_attestoodle').'" />'
+                . '</div></form>' . "\n";
 
         echo "<hr />";
 

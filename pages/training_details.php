@@ -167,7 +167,9 @@ if (!$trainingexist) {
 
     // Setting the total hours after potential form submission.
     $totaltrainingmilestones = parse_minutes_to_hours($training->get_total_milestones());
-    $PAGE->set_heading(get_string('training_details_main_title', 'block_attestoodle', $training->get_name()) . $totaltrainingmilestones);
+    $PAGE->set_heading(
+            get_string('training_details_main_title', 'block_attestoodle', $training->get_name())
+            . $totaltrainingmilestones);
     echo $OUTPUT->header();
 
     echo html_writer::start_div('clearfix');
