@@ -280,11 +280,12 @@ class learner {
      */
     public function get_certificate_informations_dated($begindate, $enddate) {
         $validatedactivitieswithmarker = $this->get_validated_activities_with_marker();
-
+        $searchenddate = clone $enddate;
+        $searchenddate->modify('+1 day');
         // Filtering activities based on validation time.
-        $filteredvalidatedactivities = array_filter($validatedactivitieswithmarker, function($va) use($begindate, $enddate){
+        $filteredvalidatedactivities = array_filter($validatedactivitieswithmarker, function($va) use($begindate, $searchenddate){
             $dt = $va->get_datetime();
-            if ($dt < $begindate || $dt > $enddate) {
+            if ($dt < $begindate || $dt > $searchenddate) {
                 return false;
             } else {
                 return true;

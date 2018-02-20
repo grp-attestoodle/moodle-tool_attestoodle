@@ -86,6 +86,7 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
         // @TODO dynamic date
         $begindate = new \DateTime($begindatestr);
         $enddate = new \DateTime($enddatestr);
+
         $certificateinfos = $learner->get_certificate_informations_dated($begindate, $enddate);
         // @todo to be removed
         // $certificateinfos = $learner->get_certificate_informations();
@@ -211,7 +212,10 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
             /*echo "<pre>ANCIEN FILE";
             var_dump($oldfile);
             echo "</pre>";*/
-            $bodystring .= "<p>Une attestation avec les mêmes paramètres a été trouvée sur le serveur. Cette attestation va être supprimée et remplacée par la nouvelle</p>";
+            $bodystring .= "<p>Une attestation avec les mêmes "
+                    . "paramètres a été trouvée sur le serveur. "
+                    . "Cette attestation va être supprimée et remplacée "
+                    . "par la nouvelle</p>";
             $oldfile->delete();
         }
         $pdfstring = $pdf->Output('', 'S');

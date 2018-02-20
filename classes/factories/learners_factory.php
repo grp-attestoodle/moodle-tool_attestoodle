@@ -77,7 +77,7 @@ class learners_factory extends singleton {
     private function retrieve_validated_activities(&$learner) {
         $learner->set_validated_activities(array());
         $dbactivities = db_accessor::get_instance()->get_activities_validated_by_learner($learner);
-        
+
         foreach ($dbactivities as $dbactivity) {
             $activity = trainings_factory::get_instance()->retrieve_activity($dbactivity->coursemoduleid);
             if (isset($activity)) {

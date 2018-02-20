@@ -50,12 +50,12 @@ echo html_writer::link(
         array('class' => 'btn btn-default attestoodle-button'));
 echo html_writer::end_div();
 
-// Create the trainings
-//trainings_factory::get_instance()->create_trainings();
+// Create the trainings.
+// trainings_factory::get_instance()->create_trainings();
 categories_factory::get_instance()->create_categories();
 
-// Retrieve the trainings
-//$databrut = trainings_factory::get_instance()->get_trainings();
+// Retrieve the trainings.
+// $databrut = trainings_factory::get_instance()->get_trainings();
 $databrut = trainings_factory::get_instance()->get_trainings_from_categories();
 
 if (count($databrut) > 0) {

@@ -25,20 +25,25 @@ $begindate = optional_param('begindate', null, PARAM_ALPHANUMEXT);
 $enddate = optional_param('enddate', null, PARAM_ALPHANUMEXT);
 $actualbegindate = $actualenddate = null;
 $begindateerror = $enddateerror = false;
-if ($begindate) {
-    try {
-        $actualbegindate = new \DateTime($begindate);
-    } catch (Exception $ex) {
-        $begindateerror = true;
-    }
+if (!$begindate) {
+    $begindate = (new \DateTime('first day of January ' . date('Y')))->format('Y-m-d');
 }
-if ($enddate) {
-    try {
-        $actualenddate = (new \DateTime($enddate))->modify('+1 day');;
-    } catch (Exception $ex) {
-        $enddateerror = true;
-    }
+try {
+    $actualbegindate = new \DateTime($begindate);
+} catch (Exception $ex) {
+    $begindateerror = true;
 }
+if (!$enddate) {
+    $enddate = (new \DateTime('last day of December ' . date('Y')))->format('Y-m-d');
+}
+try {
+    $actualenddate = new \DateTime($enddate);
+    $searchenddate = clone $actualenddate;
+    $searchenddate->modify('+1 day');
+} catch (Exception $ex) {
+    $enddateerror = true;
+}
+
 
 require_once($CFG->dirroot.'/blocks/attestoodle/lib.php');
 
@@ -130,7 +135,7 @@ if (!$trainingexists) {
         // If the learner id is valid...
         $counternomarker = 0;
         // Print validated activities informations (with marker only).
-        foreach ($learner->get_validated_activities_with_marker($actualbegindate, $actualenddate) as $vact) {
+        foreach ($learner->get_validated_activities_with_marker($actualbegindate, $searchenddate) as $vact) {
             $act = $vact->get_activity();
             echo "<h1>" . $act->get_course()->get_training()->get_name() . "</h1>";
             echo "<h2>" . $act->get_name() . "</h2>";

@@ -40,7 +40,7 @@ class trainings_factory extends singleton {
     /** @var training[] Array containing all the trainings */
     private $trainings;
     /** @var training_from_category[] Array containing all the trainings */
-    private $trainings_from_categories;
+    private $trainingsfromcategories;
 
     /**
      * Constructor method
@@ -48,7 +48,7 @@ class trainings_factory extends singleton {
     protected function __construct() {
         parent::__construct();
         $this->trainings = array();
-        $this->trainings_from_categories = array();
+        $this->trainingsfromcategories = array();
     }
 
     /**
@@ -80,7 +80,7 @@ class trainings_factory extends singleton {
     public function create_from_category($category) {
         $trainingtoadd = new training_from_category($category);
 
-        $this->trainings_from_categories[] = $trainingtoadd;
+        $this->trainingsfromcategories[] = $trainingtoadd;
 
         $courses = courses_factory::get_instance()->retrieve_courses_by_training($category->get_id());
         /* @todo: adding courses one by one with ->add_course method
@@ -114,7 +114,7 @@ class trainings_factory extends singleton {
         return $this->trainings;
     }
     public function get_trainings_from_categories() {
-        return $this->trainings_from_categories;
+        return $this->trainingsfromcategories;
     }
 
     /**
@@ -140,7 +140,7 @@ class trainings_factory extends singleton {
         $this->create_trainings();
 
         $training = null;
-        foreach ($this->trainings_from_categories as $t) {
+        foreach ($this->trainingsfromcategories as $t) {
             if ($t->get_id() == $id) {
                 $training = $t;
                 break;
@@ -157,7 +157,7 @@ class trainings_factory extends singleton {
      */
     public function retrieve_activity($idactivity) {
         $activity = null;
-        foreach ($this->trainings_from_categories as $training) {
+        foreach ($this->trainingsfromcategories as $training) {
             $activity = $training->retrieve_activity($idactivity);
             if (isset($activity)) {
                 break;

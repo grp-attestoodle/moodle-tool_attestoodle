@@ -252,5 +252,4 @@ function block_attestoodle_pluginfile($course, $cm, $context, $filearea, $args, 
 
 function my_autoloader($class) {
     require_once($CFG->dirroot . "/blocks/attestoodle/classes/{$class}.php");
-//    include 'classes/' . $class . '.class.php';
 }
