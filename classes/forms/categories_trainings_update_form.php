@@ -42,7 +42,7 @@ class categories_trainings_update_form extends \moodleform {
         // For each category we set a new input.
         foreach ($categories as $cat) {
             $name = $inputnameprefix  . $cat->get_id();
-            $label = $cat->get_name();
+            $label = $cat->get_hierarchy();
             $istraining = $cat->is_training();
 
             $mform->addElement("advcheckbox", $name, $label);
