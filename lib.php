@@ -121,9 +121,8 @@ function block_attestoodle_get_activities_with_intro($activities) {
  * @return type
  */
 function parse_learners_as_stdclass($data, $trainingid) {
-    $newdata = array_map(function($o) {
-            global $OUTPUT, $trainingid;
-            $stdclass = $o->get_object_as_stdclass();
+    $newdata = array_map(function($o) use ($trainingid) {
+            $stdclass = $o->get_object_as_stdclass($trainingid);
 
             $parameters = array(
                     'training' => $trainingid,

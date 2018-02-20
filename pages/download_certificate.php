@@ -83,13 +83,10 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
         // If the learner id is valid, process the PDF generation.
         $learner = learners_factory::get_instance()->retrieve_learner($userid);
 
-        // @TODO dynamic date
         $begindate = new \DateTime($begindatestr);
         $enddate = new \DateTime($enddatestr);
 
         $certificateinfos = $learner->get_certificate_informations_dated($begindate, $enddate);
-        // @todo to be removed
-        // $certificateinfos = $learner->get_certificate_informations();
 
         $filename = "certificate_{$learner->get_firstname()}{$learner->get_lastname()}_";
         $filename .= $begindate->format("Ymd") . "_" . $enddate->format("Ymd");

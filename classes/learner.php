@@ -58,15 +58,16 @@ class learner {
      * @TODO used to display in a moodle html_table object. It has to be
      * made in a specific UI class
      *
+     * @param string $trainingid The training to retrieve the infos for
      * @return stdClass The stdClass containing the learner informations
      */
-    public function get_object_as_stdclass() {
+    public function get_object_as_stdclass($trainingid = null) {
         $obj = new \stdClass();
         $obj->id = $this->id;
         $obj->firstname = $this->firstname;
         $obj->lastname = $this->lastname;
         $obj->nbvalidatedactivities = $this->get_total_validated_activities();
-        $obj->totalmarkers = parse_minutes_to_hours($this->get_total_markers());
+        $obj->totalmarkers = parse_minutes_to_hours($this->get_total_markers($trainingid));
 
         return $obj;
     }
@@ -81,15 +82,22 @@ class learner {
     }
 
     /**
-     * Methods that return the total of markers validated by the learner
+     * Methods that return the total of markers validated by the learner in
+     * an optional specified training
      *
-     * @return integer The total amount of minutes validated by the learner
+     * @param string $trainingid Id of the training to filter the activities
+     * @return integer The total amount of minutes validated by the learner in
+     * the specified training or all trainings if not specified
      */
-    public function get_total_markers() {
+    public function get_total_markers($trainingid = null) {
         $totalminutes = 0;
         foreach ($this->validatedactivities as $validatedactivity) {
-            if ($validatedactivity->get_activity()->has_marker()) {
-                $totalminutes += $validatedactivity->get_activity()->get_marker();
+            $act = $validatedactivity->get_activity();
+            if (!isset($trainingid) ||
+                    $act->get_course()->get_training()->get_id() == $trainingid) {
+                if ($act->has_marker()) {
+                    $totalminutes += $act->get_marker();
+                }
             }
         }
         return $totalminutes;
@@ -215,59 +223,6 @@ class learner {
      */
     public function add_validated_activity($validatedactivity) {
         $this->validatedactivities[] = $validatedactivity;
-    }
-
-    /**
-     * Method that return certificate informations for the learner
-     *
-     * @TODO to be replaced by the get_certificate_informations_dated() method
-     *
-     * @return \stdClass Informations structured in a stdClass object
-     */
-    public function get_certificate_informations() {
-        $validatedactivitieswithmarker = $this->get_validated_activities_with_marker();
-        $filteredvalidatedactivities = $validatedactivitieswithmarker;
-
-        // Retrieve activities informations in an array structure.
-        $activitiesstructured = array();
-        foreach ($filteredvalidatedactivities as $fva) {
-            // Retrieve activity.
-            $activity = $fva->get_activity();
-
-            // Retrieve current activity training.
-            $trainingname = $activity->get_course()->get_training()->get_name();
-
-            // Instanciate the training in the global array if needed.
-            if (!array_key_exists($trainingname, $activitiesstructured)) {
-                $activitiesstructured[$trainingname] = array(
-                        "totalminutes" => 0,
-                        "activities" => array()
-                    );
-            }
-
-            // Increment total minutes for the training.
-            $activitiesstructured[$trainingname]["totalminutes"] += $activity->get_marker();
-
-            // Retrieve current activity type.
-            $activitytype = $activity->get_type();
-
-            // Instanciate activity type in the training array if needed.
-            if (!array_key_exists($activitytype, $activitiesstructured[$trainingname]["activities"])) {
-                $activitiesstructured[$trainingname]["activities"][$activitytype] = 0;
-            }
-            // Increment total minutes for the activity type in the training.
-            $activitiesstructured[$trainingname]["activities"][$activitytype] += $activity->get_marker();
-        }
-        // Retrieve global informations.
-        $learnername = $this->firstname . " " . $this->lastname;
-        $period = "unknown period";
-
-        $certificateinformations = new \stdClass();
-        $certificateinformations->learnername = $learnername;
-        $certificateinformations->period = $period;
-        $certificateinformations->certificates = $activitiesstructured;
-
-        return $certificateinformations;
     }
 
     /**
