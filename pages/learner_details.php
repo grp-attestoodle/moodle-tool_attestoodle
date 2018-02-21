@@ -152,9 +152,10 @@ if (!$trainingexists) {
             $table = new html_table();
 
             $table->head = array(
+                    get_string('learner_details_table_header_column_training_name', 'block_attestoodle'),
+                    get_string('learner_details_table_header_column_course_name', 'block_attestoodle'),
                     get_string('learner_details_table_header_column_name', 'block_attestoodle'),
                     get_string('learner_details_table_header_column_type', 'block_attestoodle'),
-                    get_string('learner_details_table_header_column_training_name', 'block_attestoodle'),
                     get_string('learner_details_table_header_column_validated_time', 'block_attestoodle'),
                     get_string('learner_details_table_header_column_milestones', 'block_attestoodle')
             );
@@ -164,9 +165,10 @@ if (!$trainingexists) {
                 $act = $vact->get_activity();
                 $stdclassact = new \stdClass();
 
-                $stdclassact->name = $act->get_name();
-                $stdclassact->type = $act->get_type();
                 $stdclassact->trainingname = $act->get_course()->get_training()->get_name();
+                $stdclassact->coursename = $act->get_course()->get_name();
+                $stdclassact->name = $act->get_name();
+                $stdclassact->type = get_string('modulename', $act->get_type());
                 $stdclassact->validatedtime = parse_datetime_to_readable_format($vact->get_datetime());
                 $stdclassact->milestone = parse_minutes_to_hours($act->get_marker());
 

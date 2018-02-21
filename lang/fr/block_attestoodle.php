@@ -99,6 +99,7 @@ $string['learner_details_no_validated_activities'] = "Aucune activités validée
 $string['learner_details_table_header_column_name'] = "Jalon";
 $string['learner_details_table_header_column_type'] = "Type";
 $string['learner_details_table_header_column_training_name'] = "Formation";
+$string['learner_details_table_header_column_course_name'] = "Cours";
 $string['learner_details_table_header_column_validated_time'] = "Validé le";
 $string['learner_details_table_header_column_milestones'] = "Temps jalon crédité";
 $string['learner_details_generate_certificate_link'] = "Générer l'attestation";

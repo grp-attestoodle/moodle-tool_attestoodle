@@ -99,6 +99,7 @@ $string['learner_details_no_validated_activities'] = "No validated activities wi
 $string['learner_details_table_header_column_name'] = "Milestone";
 $string['learner_details_table_header_column_type'] = "Type";
 $string['learner_details_table_header_column_training_name'] = "Training";
+$string['learner_details_table_header_column_course_name'] = "Course";
 $string['learner_details_table_header_column_validated_time'] = "Validated time";
 $string['learner_details_table_header_column_milestones'] = "Milestone credit";
 $string['learner_details_generate_certificate_link'] = "Generate certificate";

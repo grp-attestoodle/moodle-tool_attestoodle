@@ -193,7 +193,7 @@ function parse_minutes_to_hours($minutes) {
  * @return string the readable format
  */
 function parse_datetime_to_readable_format($datetime) {
-    return $datetime->format("d/m/Y à G:i:s");
+    return $datetime->format("d/m/Y");
 }
 
 function block_attestoodle_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options=array()) {
