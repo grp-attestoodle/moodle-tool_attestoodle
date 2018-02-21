@@ -49,9 +49,9 @@ $string['trainings_list_main_title'] = 'Formations Attestoodle';
 $string['trainings_list_manage_trainings_link'] = 'Gérer les formations';
 $string['trainings_list_table_header_column_id'] = 'ID';
 $string['trainings_list_table_header_column_name'] = 'Nom';
-$string['trainings_list_table_header_column_hierarchy'] = 'Hiérarchie';
+$string['trainings_list_table_header_column_hierarchy'] = 'Arborescence';
 $string['trainings_list_table_header_column_description'] = 'Description';
-$string['trainings_list_table_link_details'] = 'Détails';
+$string['trainings_list_table_link_details'] = 'Suivi des étudiants';
 $string['trainings_list_warning_no_trainings'] = 'Pas de formations enregistrées';
 
 // Trainings management page strings.
@@ -64,7 +64,7 @@ $string['trainings_management_info_form_canceled'] = 'Le formulaire a été annu
 
 // Training learners list page strings.
 $string['training_learners_list_page_title'] = 'Moodle - Attestoodle - Liste des apprenants';
-$string['training_learners_list_main_title'] = 'Apprenants de la formation {$a}';
+$string['training_learners_list_main_title'] = 'Rapport formation {$a}';
 $string['training_learners_list_main_title_error'] = 'Erreur !';
 $string['training_learners_list_heading'] = '{$a} apprenants dans la formation';
 $string['training_learners_list_edit_training_link'] = 'Gérer la formation';
@@ -96,7 +96,7 @@ $string['learner_details_begin_date_label'] = "Date de début : ";
 $string['learner_details_end_date_label'] = "Date de fin : ";
 $string['learner_details_submit_button_value'] = "Filtrer";
 $string['learner_details_no_validated_activities'] = "Aucune activités validées dans la période sélectionnée";
-$string['learner_details_table_header_column_name'] = "Nom";
+$string['learner_details_table_header_column_name'] = "Jalon";
 $string['learner_details_table_header_column_type'] = "Type";
 $string['learner_details_table_header_column_training_name'] = "Formation";
 $string['learner_details_table_header_column_validated_time'] = "Validé le";
