@@ -75,9 +75,8 @@ if (!$trainingexist) {
     $data = parse_learners_as_stdclass($training->get_learners(), $trainingid);
     $table = new html_table();
     $table->head = array(
-        get_string('training_learners_list_table_header_column_id', 'block_attestoodle'),
-        get_string('training_learners_list_table_header_column_firstname', 'block_attestoodle'),
         get_string('training_learners_list_table_header_column_lastname', 'block_attestoodle'),
+        get_string('training_learners_list_table_header_column_firstname', 'block_attestoodle'),
         get_string('training_learners_list_table_header_column_validated_activities', 'block_attestoodle'),
         get_string('training_learners_list_table_header_column_total_milestones', 'block_attestoodle'),
         '');

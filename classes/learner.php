@@ -64,8 +64,8 @@ class learner {
     public function get_object_as_stdclass($trainingid = null) {
         $obj = new \stdClass();
         $obj->id = $this->id;
-        $obj->firstname = $this->firstname;
         $obj->lastname = $this->lastname;
+        $obj->firstname = $this->firstname;
         $obj->nbvalidatedactivities = $this->get_total_validated_activities();
         $obj->totalmarkers = parse_minutes_to_hours($this->get_total_markers($trainingid));
 

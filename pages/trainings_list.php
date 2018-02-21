@@ -61,7 +61,6 @@ if (count($databrut) > 0) {
 
     $table = new html_table();
     $table->head = array(
-        get_string('trainings_list_table_header_column_id', 'block_attestoodle'),
         get_string('trainings_list_table_header_column_name', 'block_attestoodle'),
         get_string('trainings_list_table_header_column_hierarchy', 'block_attestoodle'),
         get_string('trainings_list_table_header_column_description', 'block_attestoodle'),

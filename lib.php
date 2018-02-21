@@ -122,15 +122,20 @@ function block_attestoodle_get_activities_with_intro($activities) {
  */
 function parse_learners_as_stdclass($data, $trainingid) {
     $newdata = array_map(function($o) use ($trainingid) {
-            $stdclass = $o->get_object_as_stdclass($trainingid);
+            $learnerinfos = $o->get_object_as_stdclass($trainingid);
+            $stdclass = new \stdClass();
 
             $parameters = array(
                     'training' => $trainingid,
-                    'user' => $stdclass->id);
+                    'user' => $learnerinfos->id);
             $url = new moodle_url('/blocks/attestoodle/pages/learner_details.php', $parameters);
             $label = get_string('training_learners_list_table_link_details', 'block_attestoodle');
             $attributes = array('class' => 'attestoodle-button');
 
+            $stdclass->lastname = $learnerinfos->lastname;
+            $stdclass->firstname = $learnerinfos->firstname;
+            $stdclass->nbvalidatedactivities = $learnerinfos->nbvalidatedactivities;
+            $stdclass->totalmarkers = $learnerinfos->totalmarkers;
             $stdclass->link = html_writer::link($url, $label, $attributes);
 
             return $stdclass;
@@ -147,13 +152,19 @@ function parse_learners_as_stdclass($data, $trainingid) {
 function parse_trainings_as_stdclass($data) {
     $newdata = array_map(function($o) {
             // global $OUTPUT;
-            $stdclass = $o->get_object_as_stdclass();
+            $traininginfos = $o->get_object_as_stdclass();
+            $stdclass = new \stdClass();
 
-            $parameters = array('id' => $stdclass->id);
+            $parameters = array('id' => $traininginfos->id);
             $url = new moodle_url('/blocks/attestoodle/pages/training_learners_list.php', $parameters);
             $label = get_string('trainings_list_table_link_details', 'block_attestoodle');
             $attributes = array('class' => 'attestoodle-button');
 
+            $categorylink = new moodle_url("/course/index.php", array("categoryid" => $traininginfos->id));
+
+            $stdclass->name = "<a href='{$categorylink}'>{$traininginfos->name}</a>";
+            $stdclass->hierarchy = $traininginfos->hierarchy;
+            $stdclass->desc = $traininginfos->desc;
             $stdclass->link = html_writer::link($url, $label, $attributes);
 
             return $stdclass;
