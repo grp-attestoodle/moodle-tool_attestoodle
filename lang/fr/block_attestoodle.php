@@ -84,6 +84,7 @@ $string['training_details_unknown_training_id'] = "Aucune formation avec l'ident
 $string['training_details_warning_no_submitted_data'] = 'Aucune donnée envoyée';
 $string['training_details_error_invalid_form'] = "Le formulaire n'est pas valide";
 $string['training_details_info_form_canceled'] = "Le formulaire a été annulé";
+$string['training_details_form_input_suffix'] = "min.";
 
 // Learner details page strings.
 $string['learner_details_page_title'] = "Moodle - Attestoodle - Détail d'un apprenant";

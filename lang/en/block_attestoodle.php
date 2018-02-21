@@ -84,6 +84,7 @@ $string['training_details_unknown_training_id'] = "No training with the ID: ";
 $string['training_details_warning_no_submitted_data'] = 'No submitted data';
 $string['training_details_error_invalid_form'] = 'The form is not valid';
 $string['training_details_info_form_canceled'] = 'The form has been canceled';
+$string['training_details_form_input_suffix'] = 'min.';
 
 // Learner details page strings.
 $string['learner_details_page_title'] = "Moodle - Attestoodle - Learner details";

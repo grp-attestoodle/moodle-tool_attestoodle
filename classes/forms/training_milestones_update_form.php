@@ -47,14 +47,23 @@ class training_milestones_update_form extends \moodleform {
             // For each activity in this course we add a form input element.
             foreach ($course->get_activities() as $activity) {
                 $name = $inputnameprefix  . $activity->get_id();
+                $groupname = "group_" . $name;
                 $label = $activity->get_name();
+                $suffix = get_string("training_details_form_input_suffix", "block_attestoodle");
                 $type = $activity->get_type();
                 $marker = $activity->get_marker();
 
-                $mform->addElement("text", $name, "{$label} ({$type})", array('size' => 5)); // Max 5 char.
+                $group = array();
+                $group[] =& $mform->createElement("text", $name, null, array("size" => 5)); // Max 5 char.
                 $mform->setType($name, PARAM_ALPHANUM); // Parsing the value in INT after submit.
-                $mform->addRule($name, null, 'numeric', null, 'client'); // Handle error in JS (must be numeric).
                 $mform->setDefault($name, $marker); // Set default value to the current milestone value.
+                $group[] =& $mform->createElement("static", null, null, "<span>{$suffix}</span>");
+                $mform->addGroup($group, $groupname, "{$label} ({$type})", array(' '), false);
+                $mform->addGroupRule($groupname, array(
+                        $name => array(
+                                array(null, 'numeric', null, 'client')
+                        )
+                ));
             }
         }
 
