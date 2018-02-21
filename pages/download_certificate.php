@@ -150,7 +150,7 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
             $pdf->SetFont('helvetica', 'B', 10);
             $pdf->SetFillColor(210, 210, 210);
             $pdf->SetXY(10, 110);
-            $pdf->Cell(140, 15, "Type d'apprentissage", 1, 0, 'C', true);
+            $pdf->Cell(140, 15, "Cours suivis", 1, 0, 'C', true);
             // Column title "total hours".
             $pdf->SetXY(150, 110);
             $pdf->Cell(50, 15, "Total heures", 1, 0, 'C', true);
@@ -159,16 +159,28 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
             $y = 125;
             $lineheight = 8;
             $pdf->SetFont('helvetica', '', 10);
-            foreach ($certificate["activities"] as $type => $total) {
+            foreach ($certificate["activities"] as $course => $obj) {
+                $coursename = $obj["coursename"];
+                $total = $obj["totalminutes"];
                 $pdf->SetXY(10, $y);
                 // Activity type.
-                $pdf->Cell(140, $lineheight, $type, 0, 0, 'L');
+                $pdf->Cell(140, $lineheight, $coursename, 0, 0, 'L');
                 // Activity total hours
                 $pdf->SetXY(150, $y);
                 $pdf->Cell(50, $lineheight, parse_minutes_to_hours($total), 0, 0, 'C');
                 $y += $lineheight;
                 $pdf->Line(10, $y, 200, $y);
             }
+//            foreach ($certificate["activities"] as $type => $total) {
+//                $pdf->SetXY(10, $y);
+//                // Activity type.
+//                $pdf->Cell(140, $lineheight, $type, 0, 0, 'L');
+//                // Activity total hours
+//                $pdf->SetXY(150, $y);
+//                $pdf->Cell(50, $lineheight, parse_minutes_to_hours($total), 0, 0, 'C');
+//                $y += $lineheight;
+//                $pdf->Line(10, $y, 200, $y);
+//            }
 
             // Legal clause.
             $pdf->SetLineWidth(0.1);

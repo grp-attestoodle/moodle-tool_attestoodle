@@ -268,22 +268,35 @@ class learner {
             $activitiesstructured[$trainingname]["totalminutes"] += $activity->get_marker();
 
             // Retrieve current activity type.
-            $activitytype = $activity->get_type();
+//            $activitytype = $activity->get_type();
+            $course = $activity->get_course();
+            $courseid = $course->get_id();
+            $coursename = $course->get_name();
+
+//            // Instanciate activity type in the training array if needed.
+//            if (!array_key_exists($activitytype, $activitiesstructured[$trainingname]["activities"])) {
+//                $activitiesstructured[$trainingname]["activities"][$activitytype] = 0;
+//            }
+//            // Increment total minutes for the activity type in the training.
+//            $activitiesstructured[$trainingname]["activities"][$activitytype] += $activity->get_marker();
+
 
             // Instanciate activity type in the training array if needed.
-            if (!array_key_exists($activitytype, $activitiesstructured[$trainingname]["activities"])) {
-                $activitiesstructured[$trainingname]["activities"][$activitytype] = 0;
+            if (!array_key_exists($courseid, $activitiesstructured[$trainingname]["activities"])) {
+                $activitiesstructured[$trainingname]["activities"][$courseid] = array(
+                        "totalminutes" => 0,
+                        "coursename" => $coursename
+                    );
             }
-            // Increment total minutes for the activity type in the training.
-            $activitiesstructured[$trainingname]["activities"][$activitytype] += $activity->get_marker();
+            // Increment total minutes for the course id in the training.
+            $activitiesstructured[$trainingname]["activities"][$courseid]["totalminutes"] += $activity->get_marker();
         }
         // Retrieve global informations.
-        $learnername = $this->firstname . " " . $this->lastname;
         // HERE @todo translations.
         $period = "Du {$begindate->format("d/m/Y")} au {$enddate->format("d/m/Y")}";
 
         $certificateinfos = new \stdClass();
-        $certificateinfos->learnername = $learnername;
+        $certificateinfos->learnername = $this->get_fullname();
         $certificateinfos->period = $period;
         $certificateinfos->certificates = $activitiesstructured;
 
