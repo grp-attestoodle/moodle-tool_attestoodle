@@ -43,6 +43,7 @@ class training_milestones_update_form extends \moodleform {
         foreach ($courses as $course) {
             $totalmilestones = parse_minutes_to_hours($course->get_total_milestones());
             $mform->addElement('header', $course->get_id(), "{$course->get_name()} : {$totalmilestones}");
+            $mform->setExpanded($course->get_id(), false);
 
             // For each activity in this course we add a form input element.
             foreach ($course->get_activities() as $activity) {
