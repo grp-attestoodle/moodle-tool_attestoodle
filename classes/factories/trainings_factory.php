@@ -98,7 +98,6 @@ class trainings_factory extends singleton {
      */
     public function retrieve_training($id) {
         // TODO: problem with the training list cache (no cache).
-//        $this->create_trainings();
         categories_factory::get_instance()->create_categories();
 
         $training = null;

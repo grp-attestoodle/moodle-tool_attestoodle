@@ -149,12 +149,6 @@ class learner {
     }
 
     /**
-     * Method that return the validated activities with marker
-     *
-     * @return validated_activity[] Validated activities with marker of the learner
-     */
-
-    /**
      * Method that returns the validated activities with marker in an optional
      * period of time
      *
@@ -267,19 +261,10 @@ class learner {
             // Increment total minutes for the training.
             $activitiesstructured[$trainingname]["totalminutes"] += $activity->get_marker();
 
-            // Retrieve current activity type.
-//            $activitytype = $activity->get_type();
+            // Retrieve current activity informations.
             $course = $activity->get_course();
             $courseid = $course->get_id();
             $coursename = $course->get_name();
-
-//            // Instanciate activity type in the training array if needed.
-//            if (!array_key_exists($activitytype, $activitiesstructured[$trainingname]["activities"])) {
-//                $activitiesstructured[$trainingname]["activities"][$activitytype] = 0;
-//            }
-//            // Increment total minutes for the activity type in the training.
-//            $activitiesstructured[$trainingname]["activities"][$activitytype] += $activity->get_marker();
-
 
             // Instanciate activity type in the training array if needed.
             if (!array_key_exists($courseid, $activitiesstructured[$trainingname]["activities"])) {

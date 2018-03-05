@@ -151,7 +151,6 @@ function parse_learners_as_stdclass($data, $trainingid) {
  */
 function parse_trainings_as_stdclass($data) {
     $newdata = array_map(function($o) {
-            // global $OUTPUT;
             $traininginfos = $o->get_object_as_stdclass();
             $stdclass = new \stdClass();
 
@@ -207,15 +206,6 @@ function block_attestoodle_pluginfile($course, $cm, $context, $filearea, $args, 
         return false;
     }
 
-    // Make sure the user is logged in and has access to the module (plugins that are not course modules should leave out the 'cm' part).
-    /* require_login($course, true, $cm);
-    require_login($course, true);*/
-
-    // Check the relevant capabilities - these may vary depending on the filearea being accessed.
-    /* if (!has_capability('blocks/attestoodle:download_certificate', $context)) {
-         return false;
-    } */
-
     // Leave this line out if you set the itemid to null in make_pluginfile_url (set $itemid to 0 instead).
     // $itemid = array_shift($args); // The first item in the $args array.
     $itemid = 0;
@@ -226,21 +216,13 @@ function block_attestoodle_pluginfile($course, $cm, $context, $filearea, $args, 
     // Extract the filename / filepath from the $args array.
     $filename = array_pop($args); // The last item in the $args array.
     if (!$args) {
-        $filepath = '/'; // $args is empty => the path is '/'
+        $filepath = '/'; // If $args is empty => the path is '/'.
     } else {
-        $filepath = '/'.implode('/', $args).'/'; // $args contains elements of the filepath
+        $filepath = '/'.implode('/', $args).'/'; // Var $args contains elements of the filepath.
     }
-    // $filepath = "/";
 
     // Retrieve the file from the Files API.
     $fs = get_file_storage();
-    // echo "<pre>INFOS A CHERCHER\n";
-    // echo "context : " . $context->id . "\n";
-    // echo "block : " . 'block_attestoodle' . "\n";
-    // echo "filearea : " . $filearea . "\n";
-    // echo "itemid : " . $itemid . "\n";
-    // echo "filepath : " . $filepath . "\n";
-    // echo "filename : " . $filename . "\n";
     $file = $fs->get_file($context->id, 'block_attestoodle', $filearea, $itemid, $filepath, $filename);
     if (!$file) {
         return false; // The file does not exist.

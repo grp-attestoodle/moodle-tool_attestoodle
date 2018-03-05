@@ -102,7 +102,7 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
         $pdf->SetAutoPagebreak(false);
         $pdf->SetMargins(0, 0, 0);
 
-        // @Todo: Do the translations.
+        // TODO translations.
         foreach ($certificateinfos->certificates as $certificatekey => $certificate) {
             $pdf->AddPage();
 
@@ -164,22 +164,12 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
                 $pdf->SetXY(10, $y);
                 // Activity type.
                 $pdf->Cell(140, $lineheight, $coursename, 0, 0, 'L');
-                // Activity total hours
+                // Activity total hours.
                 $pdf->SetXY(150, $y);
                 $pdf->Cell(50, $lineheight, parse_minutes_to_hours($total), 0, 0, 'C');
                 $y += $lineheight;
                 $pdf->Line(10, $y, 200, $y);
             }
-//            foreach ($certificate["activities"] as $type => $total) {
-//                $pdf->SetXY(10, $y);
-//                // Activity type.
-//                $pdf->Cell(140, $lineheight, $type, 0, 0, 'L');
-//                // Activity total hours
-//                $pdf->SetXY(150, $y);
-//                $pdf->Cell(50, $lineheight, parse_minutes_to_hours($total), 0, 0, 'C');
-//                $y += $lineheight;
-//                $pdf->Line(10, $y, 200, $y);
-//            }
 
             // Legal clause.
             $pdf->SetLineWidth(0.1);
@@ -197,16 +187,15 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
 
         $fs = get_file_storage();
         $usercontext = context_user::instance($userid);
-        // var_dump($usercontext);
+
         // Prepare file record object
         $fileinfo = array(
-            'contextid' => $usercontext->id, // ID of context
-            'component' => 'block_attestoodle', // usually = table name
-            'filearea' => 'certificates', // usually = table name
+            'contextid' => $usercontext->id,
+            'component' => 'block_attestoodle',
+            'filearea' => 'certificates',
             'filepath' => '/',
-            'itemid' => 0, // usually = ID of row in table
-            // 'itemid' => $offlinequiz->id, // usually = ID of row in table
-            'filename' => $filename); // any filename
+            'itemid' => 0,
+            'filename' => $filename);
 
         $bodystring = "";
 
@@ -217,9 +206,6 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
                 $fileinfo['itemid'],
                 $fileinfo['filepath'],
                 $fileinfo['filename'])) {
-            /*echo "<pre>ANCIEN FILE";
-            var_dump($oldfile);
-            echo "</pre>";*/
             $bodystring .= "<p>Une attestation avec les mêmes "
                     . "paramètres a été trouvée sur le serveur. "
                     . "Cette attestation va être supprimée et remplacée "
@@ -227,66 +213,9 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
             $oldfile->delete();
         }
         $pdfstring = $pdf->Output('', 'S');
-        /* echo "<pre>PDF FILE\n";
-        echo $pdfstring;
-        echo "</pre>";
-        echo "</pre>"; */
         $file = $fs->create_file_from_string($fileinfo, $pdfstring);
-        // Prepare file record object
-        /*
-        $fileinfofake = array(
-            'contextid' => $usercontext->id, // ID of context
-            'component' => 'block_attestoodle', // usually = table name
-            'filearea' => 'certificates', // usually = table name
-            'filepath' => '/',
-            'itemid' => 0, // usually = ID of row in table
-            // 'itemid' => $offlinequiz->id, // usually = ID of row in table
-            'filename' => "filetoberemovediffound.txt"); // any filename
-        $filefake = $fs->create_file_from_string($fileinfofake, "ceci est un text de test");
-        var_dump($fileinfo);
-        var_dump($pdfstring);
 
-        $fs = get_file_storage();
-
-        // Prepare file record object
-        $fileinfo = array(
-            'contextid' => $usercontext->id, // ID of context
-            'component' => 'mod_mymodule',     // usually = table name
-            'filearea' => 'myarea',     // usually = table name
-            'itemid' => 0,               // usually = ID of row in table
-            'filepath' => '/',           // any path beginning and ending in /
-            'filename' => 'myfile2.txt'); // any filename
-
-        // Create file containing text 'hello world'
-        $fs->create_file_from_string($fileinfo, 'hello world');
-
-
-        $pdf->Output($filename, "D");
-        echo "<pre>FILE JUST CREATED";
-        var_dump($filefake);
-        echo $filefake->get_contextid() . "\n";
-        echo $filefake->get_component() . "\n";
-        echo $filefake->get_filearea() . "\n";
-        echo $filefake->get_itemid() . "\n";
-        echo $filefake->get_filepath() . "\n";
-        echo $filefake->get_filename() . "\n";
-        echo "</pre>";
-        $url = moodle_url::make_pluginfile_url(
-                $filefake->get_contextid(),
-                $filefake->get_component(),
-                $filefake->get_filearea(),
-                null,
-                $filefake->get_filepath(),
-                $filefake->get_filename()); */
-        /* echo "<pre>FILE JUST CREATED";
-        var_dump($file);
-        echo $file->get_contextid() . "\n";
-        echo $file->get_component() . "\n";
-        echo $file->get_filearea() . "\n";
-        echo $file->get_itemid() . "\n";
-        echo $file->get_filepath() . "\n";
-        echo $file->get_filename() . "\n";
-        echo "</pre>";*/
+        // Prepare file URL.
         $url = moodle_url::make_pluginfile_url(
                 $file->get_contextid(),
                 $file->get_component(),
@@ -295,7 +224,7 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
                 $file->get_filepath(),
                 $file->get_filename());
 
-        // @todo translations
+        // TODO translations.
         $PAGE->set_url(new moodle_url(
                 '/blocks/attestoodle/pages/download_certificate.php',
                 array('training' => $trainingid, 'user' => $userid)));
@@ -305,7 +234,9 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
         echo $OUTPUT->header();
         $bodystring .= "<p>L'attestation a été générée et stockée sur le serveur</p>";
         echo $bodystring;
-        echo "<a href='" . $url . "' target='_blank'>" . get_string('download_certificate_file_link_text', 'block_attestoodle') . "</a>";
+        echo "<a href='" . $url . "' target='_blank'>" .
+                get_string('download_certificate_file_link_text', 'block_attestoodle') .
+                "</a>";
         echo $OUTPUT->footer();
     }
 }
