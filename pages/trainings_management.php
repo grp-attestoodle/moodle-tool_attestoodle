@@ -25,7 +25,6 @@ require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/courses_factor
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/activities_factory.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/learners_factory.php');
 
-require_once($CFG->dirroot.'/blocks/attestoodle/classes/training_from_category.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/category.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/course.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/activity.php');

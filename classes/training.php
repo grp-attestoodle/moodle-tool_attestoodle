@@ -29,14 +29,8 @@ use block_attestoodle\factories\courses_factory;
 defined('MOODLE_INTERNAL') || die;
 
 class training {
-    /** @var string Id of the training */
-    private $id;
-
-    /** @var string Name of the training */
-    private $name;
-
-    /** @var string Description of the training */
-    private $description;
+    /** @var category Category corresponding to the training */
+    private $category;
 
     /** @var course[] Courses of the training */
     private $courses;
@@ -48,10 +42,8 @@ class training {
      * @param string $name Name of the training
      * @param string $description Description of the training
      */
-    public function __construct($id, $name, $description) {
-        $this->id = $id;
-        $this->name = $name;
-        $this->description = $description;
+    public function __construct($category) {
+        $this->category = $category;
         $this->courses = array();
     }
 
@@ -65,9 +57,9 @@ class training {
      */
     public function get_data_as_table() {
         return [
-                $this->id,
-                $this->name,
-                $this->description
+                $this->get_id(),
+                $this->get_name(),
+                $this->get_description()
             ];
     }
 
@@ -81,9 +73,10 @@ class training {
      */
     public function get_object_as_stdclass() {
         $obj = new \stdClass();
-        $obj->id = $this->id;
-        $obj->name = $this->name;
-        $obj->desc = $this->description;
+        $obj->id = $this->get_id();
+        $obj->name = $this->get_name();
+        $obj->hierarchy = $this->get_hierarchy();
+        $obj->desc = $this->get_description();
 
         return $obj;
     }
@@ -130,7 +123,7 @@ class training {
      * @return string Id of the training
      */
     public function get_id() {
-        return $this->id;
+        return $this->category->get_id();
     }
 
     /**
@@ -139,7 +132,10 @@ class training {
      * @return string Name of the training
      */
     public function get_name() {
-        return $this->name;
+        return $this->category->get_name();
+    }
+    public function get_hierarchy() {
+        return $this->category->get_hierarchy();
     }
 
     /**
@@ -148,7 +144,7 @@ class training {
      * @return string Description of the training
      */
     public function get_description() {
-        return $this->description;
+        return $this->category->get_description();
     }
 
     /**
@@ -180,7 +176,7 @@ class training {
      * @param string $prop Id to set for the training
      */
     public function set_id($prop) {
-        $this->id = $prop;
+        $this->category->set_id($prop);
     }
 
     /**
@@ -189,7 +185,7 @@ class training {
      * @param string $prop Name to set for the training
      */
     public function set_name($prop) {
-        $this->name = $prop;
+        $this->category->set_name($prop);
     }
 
     /**
@@ -198,7 +194,7 @@ class training {
      * @param string $prop Description to set for the training
      */
     public function set_description($prop) {
-        $this->description = $prop;
+        $this->category->set_description($prop);
     }
 
     /**

@@ -50,17 +50,26 @@ class categories_factory extends singleton {
         $dbcategories = db_accessor::get_instance()->get_all_categories();
 
         foreach ($dbcategories as $dbcat) {
-            $category = $this->retrieve_category($dbcat->id, true);
             $desc = $dbcat->description;
             $istraining = $this->extract_training($desc);
+
+            $category = $this->retrieve_category($dbcat->id);
+            if (!isset($category)) {
+                $category = $this->create($dbcat->id);
+
+                if ($istraining) {
+                    trainings_factory::get_instance()->create($category);
+                }
+            }
+
             $parent = null;
             if ($dbcat->parent > 0) {
-                $parent = $this->retrieve_category($dbcat->parent, true);
+                $parent = $this->retrieve_category($dbcat->parent);
+                if (!isset($parent)) {
+                    $parent = $this->create($dbcat->parent);
+                }
             }
             $category->feed($dbcat->name, $desc, $istraining, $parent);
-            if ($istraining) {
-                trainings_factory::get_instance()->create_from_category($category);
-            }
         }
     }
 
@@ -70,16 +79,13 @@ class categories_factory extends singleton {
         return $istraining;
     }
 
-    public function retrieve_category($id, $forcecreate = false) {
+    public function retrieve_category($id) {
         $category = null;
         foreach ($this->categories as $cat) {
             if ($cat->get_id() == $id) {
                 $category = $cat;
                 break;
             }
-        }
-        if (!isset($category) && $forcecreate) {
-            $category = $this->create($id);
         }
         return $category;
     }

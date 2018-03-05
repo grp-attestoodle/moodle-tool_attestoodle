@@ -53,7 +53,6 @@ require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/courses_factor
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/activities_factory.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/learners_factory.php');
 
-require_once($CFG->dirroot.'/blocks/attestoodle/classes/training_from_category.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/category.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/course.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/activity.php');
@@ -78,6 +77,8 @@ $PAGE->set_context(context_coursecat::instance($trainingid));
 $PAGE->set_title(get_string('learner_details_page_title', 'block_attestoodle'));
 
 categories_factory::get_instance()->create_categories();
+$chips = categories_factory::get_instance();
+$prout = trainings_factory::get_instance();
 $trainingexists = trainings_factory::get_instance()->has_training($trainingid);
 $learnerexists = learners_factory::get_instance()->has_learner($userid);
 

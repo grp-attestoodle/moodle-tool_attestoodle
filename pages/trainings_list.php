@@ -24,7 +24,6 @@ require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/courses_factor
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/activities_factory.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/learners_factory.php');
 
-require_once($CFG->dirroot.'/blocks/attestoodle/classes/training_from_category.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/category.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/course.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/activity.php');
@@ -54,7 +53,7 @@ echo html_writer::end_div();
 categories_factory::get_instance()->create_categories();
 
 // Retrieve the trainings.
-$databrut = trainings_factory::get_instance()->get_trainings_from_categories();
+$databrut = trainings_factory::get_instance()->get_trainings();
 
 if (count($databrut) > 0) {
     $data = parse_trainings_as_stdclass($databrut);
