@@ -71,6 +71,9 @@ class categories_factory extends singleton {
             }
             $category->feed($dbcat->name, $desc, $istraining, $parent);
         }
+        // Waiting for all the courses being instanciate to retrieve the...
+        // ...validated activities for each learner.
+        learners_factory::get_instance()->retrieve_all_validated_activities();
     }
 
     private function extract_training($string) {
