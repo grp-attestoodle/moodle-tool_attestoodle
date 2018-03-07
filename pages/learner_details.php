@@ -71,9 +71,16 @@ $PAGE->set_url(new moodle_url(
                 'enddate' => $enddate
         )
 ));
+
+require_login();
+
+$context = context_coursecat::instance($trainingid);
+// $userhascapability = has_capability('block/attestoodle:managetrainings', $context);
+// require_capability('block/attestoodle:managetrainings', $context);
+
 // ...@todo May be replaced by "require_login(...)" + seems a bad context choice +
 // ...throw error if param is not a valid course category id.
-$PAGE->set_context(context_coursecat::instance($trainingid));
+$PAGE->set_context($context);
 $PAGE->set_title(get_string('learner_details_page_title', 'block_attestoodle'));
 
 categories_factory::get_instance()->create_categories();

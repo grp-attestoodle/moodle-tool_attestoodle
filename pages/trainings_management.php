@@ -38,9 +38,16 @@ use block_attestoodle\forms\categories_trainings_update_form;
 
 $currenturl = new moodle_url('/blocks/attestoodle/pages/trainings_management.php');
 $PAGE->set_url($currenturl);
-/* @todo May be replaced by "require_login(...)" + context_system
+
+require_login();
+
+$context = context_system::instance();
+$userhascapability = has_capability('block/attestoodle:managetrainings', $context);
+require_capability('block/attestoodle:managetrainings', $context);
+/* @todo (old) May be replaced by "require_login(...)" + context_system
  * because coursecat throw  an error if id is not valid */
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context($context);
+
 
 $PAGE->set_title(get_string('trainings_management_page_title', 'block_attestoodle'));
 

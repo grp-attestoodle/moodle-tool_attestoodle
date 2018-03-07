@@ -25,27 +25,25 @@
 defined('MOODLE_INTERNAL') || die();
 
 $capabilities = array(
+        /*'block/attestoodle:addinstance' => array(
+            'riskbitmask' => RISK_SPAM | RISK_XSS,
 
-    'block/attestoodle:myaddinstance' => array(
-        'captype' => 'write',
-        'contextlevel' => CONTEXT_SYSTEM,
-        'archetypes' => array(
-            'user' => CAP_ALLOW
-        ),
+            'captype' => 'write',
+            'contextlevel' => CONTEXT_SYSTEM,
+            'archetypes' => array(
+                'editingteacher' => CAP_ALLOW,
+                'manager' => CAP_ALLOW
+            ),
 
-        'clonepermissionsfrom' => 'moodle/my:manageblocks'
-    ),
+            'clonepermissionsfrom' => 'moodle/site:manageblocks'
+        )*/
+        'block/attestoodle:managetrainings' => array(
+                'riskbitmask' => RISK_CONFIG | RISK_DATALOSS,
 
-    'block/attestoodle:addinstance' => array(
-        'riskbitmask' => RISK_SPAM | RISK_XSS,
-
-        'captype' => 'write',
-        'contextlevel' => CONTEXT_BLOCK,
-        'archetypes' => array(
-            'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        ),
-
-        'clonepermissionsfrom' => 'moodle/site:manageblocks'
-    ),
+                'captype' => 'write',
+                'contextlevel' => CONTEXT_SYSTEM,
+                'archetypes' => array(
+                        'manager' => CAP_ALLOW
+                )
+        )
 );

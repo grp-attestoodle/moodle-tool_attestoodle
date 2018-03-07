@@ -224,11 +224,18 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
                 $file->get_filepath(),
                 $file->get_filename());
 
-        // TODO translations.
+        // TODO translations + to put somewhere above
         $PAGE->set_url(new moodle_url(
                 '/blocks/attestoodle/pages/download_certificate.php',
                 array('training' => $trainingid, 'user' => $userid)));
-        $PAGE->set_context(context_coursecat::instance($trainingid));
+
+        require_login();
+
+        $context = context_coursecat::instance($trainingid);
+        // $userhascapability = has_capability('block/attestoodle:managetrainings', $context);
+        // require_capability('block/attestoodle:managetrainings', $context);
+
+        $PAGE->set_context($context);
         $PAGE->set_title("Moodle - Attestoodle - Génération d'attestation");
         $PAGE->set_heading("Génération d'attestation");
         echo $OUTPUT->header();

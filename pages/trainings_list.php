@@ -33,8 +33,13 @@ use block_attestoodle\factories\trainings_factory;
 use block_attestoodle\factories\categories_factory;
 
 $PAGE->set_url(new moodle_url('/blocks/attestoodle/pages/trainings_list.php'));
+require_login();
+
+$context = context_system::instance();
+// $userhascapability = has_capability('block/attestoodle:managetrainings', $context);
+// require_capability('block/attestoodle:managetrainings', $context);
 // ...@todo May be replaced by "require_login(...)"
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context($context);
 
 $PAGE->set_title(get_string('trainings_list_page_title', 'block_attestoodle'));
 $PAGE->set_heading(get_string('trainings_list_main_title', 'block_attestoodle'));

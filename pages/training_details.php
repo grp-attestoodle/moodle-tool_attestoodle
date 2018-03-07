@@ -40,9 +40,15 @@ use block_attestoodle\forms\training_milestones_update_form;
 
 $currenturl = new moodle_url('/blocks/attestoodle/pages/training_details.php', array('id' => $trainingid));
 $PAGE->set_url($currenturl);
+
+require_login();
+
+$context = context_system::instance();
+// $userhascapability = has_capability('block/attestoodle:managetrainings', $context);
+// require_capability('block/attestoodle:managetrainings', $context);
 /* @todo May be replaced by "require_login(...)" + context_system
  * because coursecat throw  an error if id is not valid */
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context($context);
 $PAGE->set_title(get_string('training_details_page_title', 'block_attestoodle'));
 
 categories_factory::get_instance()->create_categories();
