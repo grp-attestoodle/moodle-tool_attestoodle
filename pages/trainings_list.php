@@ -36,8 +36,8 @@ $PAGE->set_url(new moodle_url('/blocks/attestoodle/pages/trainings_list.php'));
 require_login();
 
 $context = context_system::instance();
-// $userhascapability = has_capability('block/attestoodle:managetrainings', $context);
-// require_capability('block/attestoodle:managetrainings', $context);
+$userhascapability = has_capability('block/attestoodle:displaytrainings', $context);
+require_capability('block/attestoodle:displaytrainings', $context);
 // ...@todo May be replaced by "require_login(...)"
 $PAGE->set_context($context);
 

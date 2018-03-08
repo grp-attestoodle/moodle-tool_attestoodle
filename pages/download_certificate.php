@@ -232,8 +232,8 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
         require_login();
 
         $context = context_coursecat::instance($trainingid);
-        // $userhascapability = has_capability('block/attestoodle:managetrainings', $context);
-        // require_capability('block/attestoodle:managetrainings', $context);
+        $userhascapability = has_capability('block/attestoodle:downloadcertificate', $context);
+        require_capability('block/attestoodle:downloadcertificate', $context);
 
         $PAGE->set_context($context);
         $PAGE->set_title("Moodle - Attestoodle - Génération d'attestation");

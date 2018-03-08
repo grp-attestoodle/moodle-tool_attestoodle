@@ -45,5 +45,59 @@ $capabilities = array(
                 'archetypes' => array(
                         'manager' => CAP_ALLOW
                 )
-        )
+        ),
+        'block/attestoodle:displaytrainings' => array(
+                'riskbitmask' => RISK_PERSONAL,
+
+                'captype' => 'read',
+                'contextlevel' => CONTEXT_SYSTEM,
+                'archetypes' => array(
+                        'manager' => CAP_ALLOW
+                )
+        ),
+        'block/attestoodle:trainingdetails' => array(
+                'riskbitmask' => RISK_PERSONAL,
+
+                'captype' => 'read',
+                'contextlevel' => CONTEXT_SYSTEM,
+                'archetypes' => array(
+                        'manager' => CAP_ALLOW
+                )
+        ),
+        'block/attestoodle:managetraining' => array(
+                'riskbitmask' => RISK_CONFIG | RISK_DATALOSS,
+
+                'captype' => 'write',
+                'contextlevel' => CONTEXT_SYSTEM,
+                'archetypes' => array(
+                        'manager' => CAP_ALLOW
+                )
+        ),
+        'block/attestoodle:displaylearnerslist' => array(
+                'riskbitmask' => RISK_PERSONAL,
+
+                'captype' => 'read',
+                'contextlevel' => CONTEXT_COURSECAT,
+                'archetypes' => array(
+                        'manager' => CAP_ALLOW
+                )
+        ),
+        'block/attestoodle:learnerdetails' => array(
+                'riskbitmask' => RISK_PERSONAL,
+
+                'captype' => 'read',
+                'contextlevel' => CONTEXT_COURSECAT,
+                'archetypes' => array(
+                        'manager' => CAP_ALLOW
+                )
+        ),
+        'block/attestoodle:downloadcertificate' => array(
+                'riskbitmask' => RISK_CONFIG | RISK_DATALOSS | RISK_PERSONAL,
+
+                'captype' => 'read write',
+                'contextlevel' => CONTEXT_COURSECAT,
+                'archetypes' => array(
+                        'manager' => CAP_ALLOW
+                )
+        ),
 );

@@ -44,8 +44,8 @@ $PAGE->set_url($currenturl);
 require_login();
 
 $context = context_system::instance();
-// $userhascapability = has_capability('block/attestoodle:managetrainings', $context);
-// require_capability('block/attestoodle:managetrainings', $context);
+$userhascapability = has_capability('block/attestoodle:trainingdetails', $context);
+require_capability('block/attestoodle:trainingdetails', $context);
 /* @todo May be replaced by "require_login(...)" + context_system
  * because coursecat throw  an error if id is not valid */
 $PAGE->set_context($context);
@@ -76,7 +76,7 @@ if (!$trainingexist) {
         $redirecturl = new moodle_url('/blocks/attestoodle/pages/training_learners_list.php', array('id' => $trainingid));
         $message = get_string('training_details_info_form_canceled', 'block_attestoodle');
         redirect($redirecturl, $message, null, \core\output\notification::NOTIFY_INFO);
-    } else if ($mform->is_submitted()) {
+    } else if ($mform->is_submitted() && has_capability('block/attestoodle:managetraining', $context)) {
         // Handle form submit operation.
         // Check the data validity.
         if (!$mform->is_validated()) {

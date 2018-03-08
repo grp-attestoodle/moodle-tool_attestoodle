@@ -75,8 +75,8 @@ $PAGE->set_url(new moodle_url(
 require_login();
 
 $context = context_coursecat::instance($trainingid);
-// $userhascapability = has_capability('block/attestoodle:managetrainings', $context);
-// require_capability('block/attestoodle:managetrainings', $context);
+$userhascapability = has_capability('block/attestoodle:learnerdetails', $context);
+require_capability('block/attestoodle:learnerdetails', $context);
 
 // ...@todo May be replaced by "require_login(...)" + seems a bad context choice +
 // ...throw error if param is not a valid course category id.
