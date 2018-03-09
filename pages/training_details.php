@@ -21,18 +21,18 @@ $trainingid = required_param('id', PARAM_INT);
 
 require_once($CFG->dirroot.'/blocks/attestoodle/lib.php');
 
-require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/categories_factory.php');
-require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/trainings_factory.php');
-require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/courses_factory.php');
-require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/activities_factory.php');
-require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/learners_factory.php');
-
-require_once($CFG->dirroot.'/blocks/attestoodle/classes/category.php');
-require_once($CFG->dirroot.'/blocks/attestoodle/classes/course.php');
-require_once($CFG->dirroot.'/blocks/attestoodle/classes/activity.php');
-require_once($CFG->dirroot.'/blocks/attestoodle/classes/validated_activity.php');
-
-require_once($CFG->dirroot.'/blocks/attestoodle/classes/forms/training_milestones_update_form.php');
+//require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/categories_factory.php');
+//require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/trainings_factory.php');
+//require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/courses_factory.php');
+//require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/activities_factory.php');
+//require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/learners_factory.php');
+//
+//require_once($CFG->dirroot.'/blocks/attestoodle/classes/category.php');
+//require_once($CFG->dirroot.'/blocks/attestoodle/classes/course.php');
+//require_once($CFG->dirroot.'/blocks/attestoodle/classes/activity.php');
+//require_once($CFG->dirroot.'/blocks/attestoodle/classes/validated_activity.php');
+//
+//require_once($CFG->dirroot.'/blocks/attestoodle/classes/forms/training_milestones_update_form.php');
 
 use block_attestoodle\factories\categories_factory;
 use block_attestoodle\factories\trainings_factory;

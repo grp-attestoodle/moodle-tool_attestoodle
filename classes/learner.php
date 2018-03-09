@@ -266,7 +266,7 @@ class learner {
             $courseid = $course->get_id();
             $coursename = $course->get_name();
 
-            // Instanciate activity type in the training array if needed.
+            // Instanciate course under training in the global array if needed.
             if (!array_key_exists($courseid, $activitiesstructured[$trainingname]["activities"])) {
                 $activitiesstructured[$trainingname]["activities"][$courseid] = array(
                         "totalminutes" => 0,
@@ -277,7 +277,7 @@ class learner {
             $activitiesstructured[$trainingname]["activities"][$courseid]["totalminutes"] += $activity->get_marker();
         }
         // Retrieve global informations.
-        // HERE @todo translations.
+        // ...@todo translations.
         $period = "Du {$begindate->format("d/m/Y")} au {$enddate->format("d/m/Y")}";
 
         $certificateinfos = new \stdClass();
