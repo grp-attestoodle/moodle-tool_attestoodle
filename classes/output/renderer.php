@@ -1,0 +1,38 @@
+<?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * Test renderer class
+ */
+namespace block_attestoodle\output;
+
+defined('MOODLE_INTERNAL') || die;
+
+class renderer extends \plugin_renderer_base {
+
+    // Automagically called
+    public function render_renderer_with_template_page(renderer_with_template_page $page) {
+        $data = $page->export_for_template($this);
+        return parent::render_from_template('block_attestoodle/renderer_template', $data);
+    }
+
+    // Automagically called
+    public function render_renderer_simple_page(renderer_simple_page $page) {
+        $out = $this->output->heading($page->training->get_name());
+        $out .= $this->output->container($page->sometext);
+        return $out;
+    }
+}
