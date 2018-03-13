@@ -115,6 +115,7 @@ function block_attestoodle_get_activities_with_intro($activities) {
 
 /**
  * @todo To replace with a specific UI class
+ * ----> To do in the renderable class
  *
  * @param type $data
  * @param type $trainingid
@@ -145,6 +146,7 @@ function parse_learners_as_stdclass($data, $trainingid) {
 
 /**
  * @todo To replace with a specific UI class
+ * ---> To do in the renderable class
  *
  * @param type $data
  * @return type
@@ -154,8 +156,10 @@ function parse_trainings_as_stdclass($data) {
             $traininginfos = $o->get_object_as_stdclass();
             $stdclass = new \stdClass();
 
-            $parameters = array('id' => $traininginfos->id);
-            $url = new moodle_url('/blocks/attestoodle/pages/training_learners_list.php', $parameters);
+            $parameters = array(
+                    'page' => 'learners',
+                    'training' => $traininginfos->id);
+            $url = new moodle_url('/blocks/attestoodle/', $parameters);
             $label = get_string('trainings_list_table_link_details', 'block_attestoodle');
             $attributes = array('class' => 'attestoodle-button');
 

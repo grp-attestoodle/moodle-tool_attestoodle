@@ -18,7 +18,7 @@
  * This is the class describing a training in Attestoodle
  *
  * @package    block_attestoodle
- * @copyright  2017 Pole de Ressource Numerique de l'Université du Mans
+ * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

@@ -41,7 +41,7 @@ $PAGE->set_context($context);
 $PAGE->set_title($title);
 $PAGE->set_heading($title . "(heading)");
 
-// Automagically search in block_attestoodle/output/renderer.php
+// Automagically search in ????? block_attestoodle/output/renderer.php ????
 $output = $PAGE->get_renderer('block_attestoodle');
 
 echo $output->header();

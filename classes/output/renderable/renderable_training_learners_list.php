@@ -15,15 +15,17 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Test renderer class
+ * Renderable page that computes infos to give to the template
  */
-namespace block_attestoodle;
 
-defined('MOODLE_INTERNAL') || die;
+namespace block_attestoodle\output\renderable;
 
-class block_attestoodle_renderer extends \plugin_renderer_base {
-    public function render_renderer_test_page(renderer_test_page $page) {
-        $data = $page->export_for_template($this);
-        return parent::render_from_template('block_attestoodle/renderer_template', $data);
+use \renderable;
+
+class renderable_training_learners_list implements renderable {
+    var $training = null;
+
+    public function __construct($training) {
+        $this->training = $training;
     }
 }
