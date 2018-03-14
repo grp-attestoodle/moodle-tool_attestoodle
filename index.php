@@ -30,11 +30,13 @@ require_once($CFG->dirroot.'/blocks/attestoodle/lib.php');
 //require_once($CFG->dirroot.'/blocks/attestoodle/classes/validated_activity.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/renderable_trainings_list.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/renderable_training_learners_list.php');
+require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/renderable_learner_details.php');
 
 use block_attestoodle\factories\trainings_factory;
 use block_attestoodle\factories\categories_factory;
 use block_attestoodle\output\renderable\renderable_trainings_list;
 use block_attestoodle\output\renderable\renderable_training_learners_list;
+use block_attestoodle\output\renderable\renderable_learner_details;
 
 $page = optional_param('page', '', PARAM_ALPHA);
 
@@ -43,6 +45,7 @@ $PAGE->set_context($context);
 
 require_login();
 
+$renderer = $PAGE->get_renderer('block_attestoodle');
 // Always create categories.
 categories_factory::get_instance()->create_categories();
 
@@ -56,7 +59,6 @@ switch($page) {
         $userhascapability = has_capability('block/attestoodle:managetrainings', $context);
         require_capability('block/attestoodle:managetrainings', $context);
 
-        $output = $PAGE->get_renderer('block_attestoodle');
         $renderable = new renderable_trainings_management(trainings_factory::get_instance()->get_trainings());
         break;
     case 'learners':
@@ -77,8 +79,35 @@ switch($page) {
             $PAGE->set_heading(get_string('training_learners_list_main_title_error', 'block_attestoodle'));
         }
 
-        $output = $PAGE->get_renderer('block_attestoodle');
         $renderable = new renderable_training_learners_list($training);
+        break;
+    case 'learnerdetails':
+        // Required params.
+        $trainingid = required_param('training', PARAM_INT);
+        $learnerid = required_param('learner', PARAM_INT);
+        // Optional params.
+        $begindate = optional_param('begindate', null, PARAM_ALPHANUMEXT);
+        $enddate = optional_param('enddate', null, PARAM_ALPHANUMEXT);
+
+        $PAGE->set_url(new moodle_url(
+                '/blocks/attestoodle/pages/learner_details.php',
+                array(
+                        'training' => $trainingid,
+                        'learner' => $learnerid,
+                        'begindate' => $begindate,
+                        'enddate' => $enddate
+                )
+        ));
+
+        // Checking capabilities.
+        $userhascapability = has_capability('block/attestoodle:learnerdetails', $context);
+        require_capability('block/attestoodle:learnerdetails', $context);
+
+        // Set page title.
+        $PAGE->set_title(get_string('learner_details_page_title', 'block_attestoodle'));
+
+        $renderable = new renderable_learner_details($learnerid, $trainingid, $begindate, $enddate);
+        $PAGE->set_heading($renderable->get_heading());
         break;
     case 'trainingslist':
     default:
@@ -89,7 +118,6 @@ switch($page) {
         $userhascapability = has_capability('block/attestoodle:displaytrainings', $context);
         require_capability('block/attestoodle:displaytrainings', $context);
 
-        $output = $PAGE->get_renderer('block_attestoodle');
         $renderable = new renderable_trainings_list(trainings_factory::get_instance()->get_trainings());
 }
 
@@ -99,6 +127,6 @@ echo $OUTPUT->header();
 // ... to be callable by the output->render method bellow.
 // Note: the method automagically call the method "render_[renderable_class]"
 // ...defined in the renderer object (here $output)
-echo $output->render($renderable);
+echo $renderer->render($renderable);
 
 echo $OUTPUT->footer();

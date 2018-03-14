@@ -84,8 +84,6 @@ $PAGE->set_context($context);
 $PAGE->set_title(get_string('learner_details_page_title', 'block_attestoodle'));
 
 categories_factory::get_instance()->create_categories();
-$chips = categories_factory::get_instance();
-$prout = trainings_factory::get_instance();
 $trainingexists = trainings_factory::get_instance()->has_training($trainingid);
 $learnerexists = learners_factory::get_instance()->has_learner($userid);
 

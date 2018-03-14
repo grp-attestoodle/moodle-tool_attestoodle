@@ -127,9 +127,10 @@ function parse_learners_as_stdclass($data, $trainingid) {
             $stdclass = new \stdClass();
 
             $parameters = array(
+                    'page' => 'learnerdetails',
                     'training' => $trainingid,
-                    'user' => $learnerinfos->id);
-            $url = new moodle_url('/blocks/attestoodle/pages/learner_details.php', $parameters);
+                    'learner' => $learnerinfos->id);
+            $url = new moodle_url('/blocks/attestoodle/', $parameters);
             $label = get_string('training_learners_list_table_link_details', 'block_attestoodle');
             $attributes = array('class' => 'attestoodle-button');
 
