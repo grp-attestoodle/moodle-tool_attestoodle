@@ -63,8 +63,8 @@ class block_attestoodle extends block_base {
         }*/
 
         // Link to the plug-in main page.
-        $parameters = array();
-        $url = new moodle_url('/blocks/attestoodle/pages/trainings_list.php', $parameters);
+        $parameters = array('page' => 'trainingslist');
+        $url = new moodle_url('/blocks/attestoodle/index.php', $parameters);
         $label = get_string('plugin_access', 'block_attestoodle');
         $attributes = array('class' => 'attestoodle-link');
         $this->content->text .= html_writer::link($url, $label, $attributes);
