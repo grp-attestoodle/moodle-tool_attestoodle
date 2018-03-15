@@ -38,20 +38,6 @@ use block_attestoodle\forms\training_milestones_update_form;
 defined('MOODLE_INTERNAL') || die;
 
 class renderer extends \plugin_renderer_base {
-
-    // Automagically called
-    public function render_renderer_with_template_page(renderer_with_template_page $page) {
-        $data = $page->export_for_template($this);
-        return parent::render_from_template('block_attestoodle/renderer_template', $data);
-    }
-
-    // Automagically called
-    public function render_renderer_simple_page(renderer_simple_page $page) {
-        $out = $this->output->heading($page->training->get_name());
-        $out .= $this->output->container($page->sometext);
-        return $out;
-    }
-
     /**
      *
      * @param renderable_trainings_list $data Useful data to display on the page
