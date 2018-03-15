@@ -28,12 +28,14 @@ require_once($CFG->dirroot.'/blocks/attestoodle/lib.php');
 //require_once($CFG->dirroot.'/blocks/attestoodle/classes/course.php');
 //require_once($CFG->dirroot.'/blocks/attestoodle/classes/activity.php');
 //require_once($CFG->dirroot.'/blocks/attestoodle/classes/validated_activity.php');
+require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/renderable_trainings_management.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/renderable_trainings_list.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/renderable_training_learners_list.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/renderable_learner_details.php');
 
 use block_attestoodle\factories\trainings_factory;
 use block_attestoodle\factories\categories_factory;
+use block_attestoodle\output\renderable\renderable_trainings_management;
 use block_attestoodle\output\renderable\renderable_trainings_list;
 use block_attestoodle\output\renderable\renderable_training_learners_list;
 use block_attestoodle\output\renderable\renderable_learner_details;
@@ -59,11 +61,12 @@ switch($page) {
         $userhascapability = has_capability('block/attestoodle:managetrainings', $context);
         require_capability('block/attestoodle:managetrainings', $context);
 
-        $renderable = new renderable_trainings_management(trainings_factory::get_instance()->get_trainings());
+        $renderable = new renderable_trainings_management(categories_factory::get_instance()->get_categories());
         break;
     case 'learners':
         $trainingid = required_param('training', PARAM_INT);
-        $PAGE->set_url(new moodle_url('/blocks/attestoodle/index.php',
+        $PAGE->set_url(new moodle_url(
+                '/blocks/attestoodle/index.php',
                 ['page' => $page, 'training' => $trainingid]));
         $PAGE->set_title(get_string('training_learners_list_page_title', 'block_attestoodle'));
 
@@ -90,8 +93,9 @@ switch($page) {
         $enddate = optional_param('enddate', null, PARAM_ALPHANUMEXT);
 
         $PAGE->set_url(new moodle_url(
-                '/blocks/attestoodle/pages/learner_details.php',
+                '/blocks/attestoodle/index.php',
                 array(
+                        'page' => $page,
                         'training' => $trainingid,
                         'learner' => $learnerid,
                         'begindate' => $begindate,

@@ -58,7 +58,7 @@ class renderable_learner_details implements \renderable {
             $this->searchenddate = clone $this->actualenddate;
             $this->searchenddate->modify('+1 day');
             $this->enddateerror = false;
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             $this->enddateerror = true;
         }
     }
