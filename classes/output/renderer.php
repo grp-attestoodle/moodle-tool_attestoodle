@@ -25,13 +25,15 @@
  */
 namespace block_attestoodle\output;
 
-use block_attestoodle\output\renderable\renderable_trainings_management;
 use block_attestoodle\output\renderable\renderable_trainings_list;
+use block_attestoodle\output\renderable\renderable_trainings_management;
 use block_attestoodle\output\renderable\renderable_training_learners_list;
+use block_attestoodle\output\renderable\renderable_training_milestones;
 use block_attestoodle\output\renderable\renderable_learner_details;
 
 use block_attestoodle\factories\categories_factory;
 use block_attestoodle\forms\categories_trainings_update_form;
+use block_attestoodle\forms\training_milestones_update_form;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -48,6 +50,43 @@ class renderer extends \plugin_renderer_base {
         $out = $this->output->heading($page->training->get_name());
         $out .= $this->output->container($page->sometext);
         return $out;
+    }
+
+    /**
+     *
+     * @param renderable_trainings_list $data Useful data to display on the page
+     */
+    public function render_renderable_trainings_list(renderable_trainings_list $obj) {
+        // create and return the output
+        $trainings = $obj->trainings;
+        $output = "";
+
+        $output .= \html_writer::start_div('clearfix');
+        // Link to the trainings management page.
+        $output .= \html_writer::link(
+                new \moodle_url('/blocks/attestoodle/index.php', ['page' => 'trainingsmanagement']),
+                get_string('trainings_list_manage_trainings_link', 'block_attestoodle'),
+                array('class' => 'btn btn-default attestoodle-button'));
+        $output .= \html_writer::end_div();
+
+        if (count($trainings) > 0) {
+            $data = parse_trainings_as_stdclass($trainings);
+
+            $table = new \html_table();
+            $table->head = array(
+                get_string('trainings_list_table_header_column_name', 'block_attestoodle'),
+                get_string('trainings_list_table_header_column_hierarchy', 'block_attestoodle'),
+                get_string('trainings_list_table_header_column_description', 'block_attestoodle'),
+                '');
+            $table->data = $data;
+
+            $output .= \html_writer::table($table);
+        } else {
+            $message = get_string('trainings_list_warning_no_trainings', 'block_attestoodle');
+            $output .= $message;
+        }
+
+        return $output;
     }
 
     /**
@@ -150,43 +189,6 @@ class renderer extends \plugin_renderer_base {
 
     /**
      *
-     * @param renderable_trainings_list $data Useful data to display on the page
-     */
-    public function render_renderable_trainings_list(renderable_trainings_list $obj) {
-        // create and return the output
-        $trainings = $obj->trainings;
-        $output = "";
-
-        $output .= \html_writer::start_div('clearfix');
-        // Link to the trainings management page.
-        $output .= \html_writer::link(
-                new \moodle_url('/blocks/attestoodle/index.php', ['page' => 'trainingsmanagement']),
-                get_string('trainings_list_manage_trainings_link', 'block_attestoodle'),
-                array('class' => 'btn btn-default attestoodle-button'));
-        $output .= \html_writer::end_div();
-
-        if (count($trainings) > 0) {
-            $data = parse_trainings_as_stdclass($trainings);
-
-            $table = new \html_table();
-            $table->head = array(
-                get_string('trainings_list_table_header_column_name', 'block_attestoodle'),
-                get_string('trainings_list_table_header_column_hierarchy', 'block_attestoodle'),
-                get_string('trainings_list_table_header_column_description', 'block_attestoodle'),
-                '');
-            $table->data = $data;
-
-            $output .= \html_writer::table($table);
-        } else {
-            $message = get_string('trainings_list_warning_no_trainings', 'block_attestoodle');
-            $output .= $message;
-        }
-
-        return $output;
-    }
-
-    /**
-     *
      * @param renderable_training_learners_list $obj
      */
     public function render_renderable_training_learners_list(renderable_training_learners_list $obj) {
@@ -210,8 +212,8 @@ class renderer extends \plugin_renderer_base {
             // Link to the training details.
             $output .= \html_writer::link(
                     new \moodle_url(
-                            '/blocks/attestoodle/pages/training_details.php',
-                            array('id' => $trainingid)),
+                            '/blocks/attestoodle/index.php',
+                            ['page' => 'trainingmilestones', 'training' => $trainingid]),
                     get_string('training_learners_list_edit_training_link', 'block_attestoodle'),
                     array('class' => 'btn btn-default attestoodle-button'));
             $output .= \html_writer::end_div();
@@ -233,6 +235,156 @@ class renderer extends \plugin_renderer_base {
         return $output;
     }
 
+    /**
+     * Page training management (declare milestones)
+     *
+     * @param \block_attestoodle\output\renderable_training_milestones $obj
+     * @return string
+     */
+    public function render_renderable_training_milestones(renderable_training_milestones $obj) {
+        $output = "";
+
+        if (!$obj->training_exists()) {
+            $output .= get_string('training_details_unknown_training_id', 'block_attestoodle') . $obj->get_trainingid();
+        } else {
+            $training = $obj->get_training();
+            // Instanciate the custom form.
+            $mform = new training_milestones_update_form(
+                    new \moodle_url(
+                            '/blocks/attestoodle/index.php',
+                            ['page' => 'trainingmilestones', 'training' => $training->get_id()]),
+                    array(
+                        'data' => $training->get_courses(),
+                        'input_name_prefix' => "attestoodle_activity_id_"
+                    )
+            );
+
+            // Form processing and displaying is done here.
+            if ($mform->is_cancelled()) {
+                // Handle form cancel operation.
+                $redirecturl = new \moodle_url(
+                        '/blocks/attestoodle/index.php',
+                        ['page' => 'learners', 'training' => $training->get_id()]);
+                // TODO rename string variable
+                $message = get_string('training_details_info_form_canceled', 'block_attestoodle');
+                redirect($redirecturl, $message, null, \core\output\notification::NOTIFY_INFO);
+            } else if ($mform->is_submitted() && has_capability('block/attestoodle:managetraining', \context_system::instance())) {
+                // Handle form submit operation.
+                // Check the data validity.
+                if (!$mform->is_validated()) {
+                    // If not valid, warn the user.
+                    \core\notification::error(get_string('training_details_error_invalid_form', 'block_attestoodle'));
+                } else {
+                    // If data are valid, process persistance.
+                    // Try to retrieve the submitted data.
+                    if ($datafromform = $mform->get_submitted_data()) {
+                        // Instanciate global variables to output to the user.
+                        $updatecounter = 0;
+                        $errorcounter = 0;
+                        $successlist = "Activities updated:<ul>";
+                        $errorlist = "Activities not updated:<ul>";
+
+                        foreach ($datafromform as $key => $value) {
+                            $regexp = "/attestoodle_activity_id_(.+)/";
+                            if (preg_match($regexp, $key, $matches)) {
+                                $idactivity = $matches[1];
+                                if (!empty($idactivity)) {
+                                    if ($activity = $training->retrieve_activity($idactivity)) {
+                                        $oldmarkervalue = $activity->get_marker();
+                                        if ($activity->set_marker($value)) {
+                                            try {
+                                                // Try to persist activity in DB.
+                                                $activity->persist();
+
+                                                // If no Exception has been thrown by DB update.
+                                                $updatecounter++;
+
+                                                // Instanciate the output for the user.
+                                                if ($oldmarkervalue == null) {
+                                                    $fromstring = "<b>[no marker]</b>";
+                                                } else {
+                                                    $fromstring = "<b>{$oldmarkervalue}</b> minutes";
+                                                }
+                                                if ($activity->get_marker() == null) {
+                                                    $tostring = "<b>[no marker]</b>";
+                                                } else {
+                                                    $tostring = "<b>{$activity->get_marker()}</b> minutes";
+                                                }
+
+                                                $successlist .= "<li><b>{$activity->get_name()}</b> "
+                                                        . "from {$fromstring} to {$tostring}. </li>";
+                                            } catch (\Exception $ex) {
+                                                // If record in DB failed, re-set the old value.
+                                                $activity->set_marker($oldmarkervalue);
+                                                $errorcounter++;
+
+                                                // Output a warning to the user.
+                                                if ($activity->get_marker() == null) {
+                                                    $oldstring = "<b>[no marker]</b>";
+                                                } else {
+                                                    $oldstring = "<b>{$activity->get_marker()}</b> minutes";
+                                                }
+
+                                                $errorlist .= "<li><b>{$activity->get_name()}</b>. "
+                                                        . "Kept the old value of {$oldstring}. </li>";
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        $successlist .= "</ul>";
+                        $errorlist .= "</ul>";
+
+                        $message = "";
+                        if ($errorcounter == 0) {
+                            $message .= "Form submitted. <br />"
+                                    . "{$updatecounter} activities updated <br />";
+                            $message .= $successlist;
+                            \core\notification::success($message);
+                        } else {
+                            $message .= "Form submitted with errors. <br />"
+                                    . "{$updatecounter} activities updated <br />"
+                                    . "{$errorcounter} errors (activities not updated in database).<br />";
+                            $message .= $successlist . $errorlist;
+                            \core\notification::warning($message);
+                        }
+                        // Reinstanciate the form to update training and courses total milestones.
+                        $mform = new training_milestones_update_form(
+                                new \moodle_url(
+                                        '/blocks/attestoodle/index.php',
+                                        ['page' => 'trainingmilestones', 'training' => $training->get_id()]
+                                ),
+                                array(
+                                        'data' => $training->get_courses(),
+                                        'input_name_prefix' => "attestoodle_activity_id_"
+                                )
+                        );
+                    } else {
+                        // No submitted data.
+                        \core\notification::warning(get_string('training_details_warning_no_submitted_data', 'block_attestoodle'));
+                    }
+                }
+            }
+
+            $output .= \html_writer::start_div('clearfix');
+            // Link to the training learners list.
+            $output .= \html_writer::link(
+                    new \moodle_url(
+                            '/blocks/attestoodle/index.php',
+                            ['page' => 'learners', 'training' => $training->get_id()]
+                    ),
+                    get_string('training_details_learners_list_btn_text', 'block_attestoodle'),
+                    array('class' => 'attestoodle-link'));
+            $output .= \html_writer::end_div();
+
+            // Displaying the form in any case but invalid training ID.
+            $output .= $mform->render();
+        }
+
+        return $output;
+    }
+
     public function render_renderable_learner_details(renderable_learner_details $obj) {
         $output = "";
 
@@ -241,9 +393,7 @@ class renderer extends \plugin_renderer_base {
             $output .= \html_writer::start_div('clearfix');
             // Link to the trainings list if the training id is not valid.
             $output .= \html_writer::link(
-                    new \moodle_url(
-                            '/blocks/attestoodle/pages/trainings_list.php',
-                            array()),
+                    new \moodle_url('/blocks/attestoodle/index.php', ['page' => 'trainingslist']),
                     get_string('backto_trainings_list_btn_text', 'block_attestoodle'),
                     array('class' => 'attestoodle-link'));
             $output .= \html_writer::end_div();
@@ -255,8 +405,8 @@ class renderer extends \plugin_renderer_base {
             // Link to the training learners list.
             $output .= \html_writer::link(
                     new \moodle_url(
-                            '/blocks/attestoodle/pages/training_learners_list.php',
-                            array('id' => $obj->get_trainingid())),
+                            '/blocks/attestoodle/index.php',
+                            ['page' => 'learners', 'training' => $obj->get_trainingid()]),
                     \get_string('backto_training_learners_list_btn_text', 'block_attestoodle'),
                     array('class' => 'attestoodle-link'));
             $output .= \html_writer::end_div();

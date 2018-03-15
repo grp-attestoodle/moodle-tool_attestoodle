@@ -28,16 +28,18 @@ require_once($CFG->dirroot.'/blocks/attestoodle/lib.php');
 //require_once($CFG->dirroot.'/blocks/attestoodle/classes/course.php');
 //require_once($CFG->dirroot.'/blocks/attestoodle/classes/activity.php');
 //require_once($CFG->dirroot.'/blocks/attestoodle/classes/validated_activity.php');
-require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/renderable_trainings_management.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/renderable_trainings_list.php');
+require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/renderable_trainings_management.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/renderable_training_learners_list.php');
+require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/renderable_training_milestones.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/renderable_learner_details.php');
 
 use block_attestoodle\factories\trainings_factory;
 use block_attestoodle\factories\categories_factory;
-use block_attestoodle\output\renderable\renderable_trainings_management;
 use block_attestoodle\output\renderable\renderable_trainings_list;
+use block_attestoodle\output\renderable\renderable_trainings_management;
 use block_attestoodle\output\renderable\renderable_training_learners_list;
+use block_attestoodle\output\renderable\renderable_training_milestones;
 use block_attestoodle\output\renderable\renderable_learner_details;
 
 $page = optional_param('page', '', PARAM_ALPHA);
@@ -63,6 +65,20 @@ switch($page) {
 
         $renderable = new renderable_trainings_management(categories_factory::get_instance()->get_categories());
         break;
+    case 'trainingmilestones':
+        $trainingid = required_param('training', PARAM_INT);
+        $PAGE->set_url(new moodle_url('/blocks/attestoodle/index.php',
+                ['page' => $page, 'training' => $trainingid]));
+        // TODO rename the string variable.
+        $PAGE->set_title(get_string('training_details_page_title', 'block_attestoodle'));
+
+        // TODO rename the capability.
+        $userhascapability = has_capability('block/attestoodle:trainingdetails', $context);
+        require_capability('block/attestoodle:trainingdetails', $context);
+
+        $renderable = new renderable_training_milestones($trainingid);
+        $PAGE->set_heading($renderable->get_heading());
+        break;
     case 'learners':
         $trainingid = required_param('training', PARAM_INT);
         $PAGE->set_url(new moodle_url(
@@ -73,6 +89,7 @@ switch($page) {
         $userhascapability = has_capability('block/attestoodle:displaylearnerslist', $context);
         require_capability('block/attestoodle:displaylearnerslist', $context);
 
+        // TODO instanciate the training in the renderer
         $training = null;
         $trainingexist = trainings_factory::get_instance()->has_training($trainingid);
         if ($trainingexist) {
@@ -103,12 +120,12 @@ switch($page) {
                 )
         ));
 
+        // Set page title.
+        $PAGE->set_title(get_string('learner_details_page_title', 'block_attestoodle'));
+
         // Checking capabilities.
         $userhascapability = has_capability('block/attestoodle:learnerdetails', $context);
         require_capability('block/attestoodle:learnerdetails', $context);
-
-        // Set page title.
-        $PAGE->set_title(get_string('learner_details_page_title', 'block_attestoodle'));
 
         $renderable = new renderable_learner_details($learnerid, $trainingid, $begindate, $enddate);
         $PAGE->set_heading($renderable->get_heading());
