@@ -25,95 +25,6 @@
 defined('MOODLE_INTERNAL') || die;
 
 /**
- * Returns the courses stored in database
- *
- * @todo To be supress
- *
- * @param boolean completionenabled Set to true if we need only the courses where completion is enabled
- * @return array Array of courses retrieved in DB
- */
-function block_attestoodle_get_courses() {
-    global $DB;
-    $completionenabled = true;
-    $result = $DB->get_records('course',
-                            array('enablecompletion' => (int)$completionenabled),
-                            null,
-                            'id, fullname, enablecompletion');
-
-    return $result;
-}
-
-/**
- * Returns an associated array containing the id and name of the modules in DB
- *
- * @todo To be supress
- *
- * @return array The associated array (id => name)
- */
-function block_attestoodle_get_modules() {
-    global $DB;
-    $result = $DB->get_records_menu('modules', null, null, 'id, name');
-
-    return $result;
-}
-
-/**
- * Returns an array of modules associated to a list of courses
- *
- * @todo To be supress
- *
- * @param array courses List of courses that need to be match before returning the courses_modules
- * @return array The courses modules
- */
-function block_attestoodle_get_courses_modules($courses) {
-    global $DB;
-
-    // On filtre les courses pour ne récupérer que les id.
-    $idcourses = array_map(function ($results) {
-        return $results->id;
-    }, $courses);
-
-    if (count($idcourses) > 0) {
-        $stridcourses = implode(",", $idcourses);
-
-        $request = "SELECT DISTINCT module FROM {course_modules} WHERE course IN ({$stridcourses})";
-        $results = $DB->get_records_sql($request);
-
-        $modulesresults = array_map(function ($results) {
-            return $results->module;
-        }, $results);
-        return $modulesresults;
-    } else {
-        return array();
-    }
-}
-
-/**
- * @todo To be supress
- *
- * @global type $DB
- * @param type $activities
- * @return array
- */
-function block_attestoodle_get_activities_with_intro($activities) {
-    global $DB;
-
-    $arrayreturn = array();
-
-    foreach ($activities as $tablename) {
-        $request = "SELECT * FROM {" . $tablename . "} WHERE intro LIKE '%<span class=\"tps_jalon\">%</span>%'";
-        $results = $DB->get_records_sql($request);
-        if (count($results) > 0) {
-            foreach ($results as $result) {
-                array_push($arrayreturn, $result);
-            }
-        }
-    }
-
-    return $arrayreturn;
-}
-
-/**
  * @todo To replace with a specific UI class
  * ----> To do in the renderable class
  *
@@ -236,8 +147,4 @@ function block_attestoodle_pluginfile($course, $cm, $context, $filearea, $args, 
     // We can now send the file back to the browser - in this case with a cache lifetime of 1 day and no filtering.
     // From Moodle 2.3, use send_stored_file instead.
     send_stored_file($file, 1, 0, $forcedownload, $options);
-}
-
-function my_autoloader($class) {
-    require_once($CFG->dirroot . "/blocks/attestoodle/classes/{$class}.php");
 }

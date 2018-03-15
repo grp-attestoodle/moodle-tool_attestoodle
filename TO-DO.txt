@@ -2,7 +2,7 @@ TO-DO:
  * Make every string translatable
  * Auto-loader to avoid require_once() on every pages
  * Make templates for redundant code (such as Error pages, ex. "training id invalid")
- * Define the capabilities and use them in the code
+ * (Done but to improve) Define the capabilities and use them in the code
  * Code review (useless methods, redundant code, hard coded functions, ...)
  * Modify trainings instanciation to find courses under sub-categories
  * 
