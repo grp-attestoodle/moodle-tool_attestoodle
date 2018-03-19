@@ -25,7 +25,7 @@
  */
 namespace block_attestoodle\output;
 
-use block_attestoodle\output\renderable\renderable_trainings_list;
+use block_attestoodle\output\renderable;
 use block_attestoodle\output\renderable\renderable_trainings_management;
 use block_attestoodle\output\renderable\renderable_training_learners_list;
 use block_attestoodle\output\renderable\renderable_training_milestones;
@@ -40,36 +40,21 @@ defined('MOODLE_INTERNAL') || die;
 class renderer extends \plugin_renderer_base {
     /**
      *
-     * @param renderable_trainings_list $data Useful data to display on the page
+     * @param renderable\trainings_list $obj Useful data to display on the page
      */
-    public function render_renderable_trainings_list(renderable_trainings_list $obj) {
-        // create and return the output
-        $trainings = $obj->trainings;
+    public function render_trainings_list(renderable\trainings_list $obj) {
         $output = "";
 
-        $output .= \html_writer::start_div('clearfix');
-        // Link to the trainings management page.
-        $output .= \html_writer::link(
-                new \moodle_url('/blocks/attestoodle/index.php', ['page' => 'trainingsmanagement']),
-                get_string('trainings_list_manage_trainings_link', 'block_attestoodle'),
-                array('class' => 'btn btn-default attestoodle-button'));
-        $output .= \html_writer::end_div();
+        $output .= $obj->get_header();
 
-        if (count($trainings) > 0) {
-            $data = parse_trainings_as_stdclass($trainings);
-
+        if (count($obj->trainings) > 0) {
             $table = new \html_table();
-            $table->head = array(
-                get_string('trainings_list_table_header_column_name', 'block_attestoodle'),
-                get_string('trainings_list_table_header_column_hierarchy', 'block_attestoodle'),
-                get_string('trainings_list_table_header_column_description', 'block_attestoodle'),
-                '');
-            $table->data = $data;
+            $table->head = $obj->get_table_head();
+            $table->data = $obj->get_table_content();
 
             $output .= \html_writer::table($table);
         } else {
-            $message = get_string('trainings_list_warning_no_trainings', 'block_attestoodle');
-            $output .= $message;
+            $output .= $obj->get_no_training_message();
         }
 
         return $output;

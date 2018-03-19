@@ -28,7 +28,7 @@ require_once($CFG->dirroot.'/blocks/attestoodle/lib.php');
 //require_once($CFG->dirroot.'/blocks/attestoodle/classes/course.php');
 //require_once($CFG->dirroot.'/blocks/attestoodle/classes/activity.php');
 //require_once($CFG->dirroot.'/blocks/attestoodle/classes/validated_activity.php');
-require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/renderable_trainings_list.php');
+require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/trainings_list.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/renderable_trainings_management.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/renderable_training_learners_list.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/renderable_training_milestones.php');
@@ -36,7 +36,7 @@ require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/render
 
 use block_attestoodle\factories\trainings_factory;
 use block_attestoodle\factories\categories_factory;
-use block_attestoodle\output\renderable\renderable_trainings_list;
+use block_attestoodle\output\renderable;
 use block_attestoodle\output\renderable\renderable_trainings_management;
 use block_attestoodle\output\renderable\renderable_training_learners_list;
 use block_attestoodle\output\renderable\renderable_training_milestones;
@@ -139,7 +139,8 @@ switch($page) {
         $userhascapability = has_capability('block/attestoodle:displaytrainings', $context);
         require_capability('block/attestoodle:displaytrainings', $context);
 
-        $renderable = new renderable_trainings_list(trainings_factory::get_instance()->get_trainings());
+//        $renderable = new renderable_trainings_list(trainings_factory::get_instance()->get_trainings());
+        $renderable = new renderable\trainings_list(trainings_factory::get_instance()->get_trainings());
 }
 
 
