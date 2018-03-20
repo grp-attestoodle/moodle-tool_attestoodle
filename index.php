@@ -30,16 +30,15 @@ require_once($CFG->dirroot.'/blocks/attestoodle/lib.php');
 //require_once($CFG->dirroot.'/blocks/attestoodle/classes/validated_activity.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/trainings_list.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/training_learners_list.php');
+require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/learner_details.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/renderable_trainings_management.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/renderable_training_milestones.php');
-require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/renderable_learner_details.php');
 
 use block_attestoodle\factories\trainings_factory;
 use block_attestoodle\factories\categories_factory;
 use block_attestoodle\output\renderable;
 use block_attestoodle\output\renderable\renderable_trainings_management;
 use block_attestoodle\output\renderable\renderable_training_milestones;
-use block_attestoodle\output\renderable\renderable_learner_details;
 
 $page = optional_param('page', '', PARAM_ALPHA);
 
@@ -126,7 +125,7 @@ switch($page) {
         $userhascapability = has_capability('block/attestoodle:learnerdetails', $context);
         require_capability('block/attestoodle:learnerdetails', $context);
 
-        $renderable = new renderable_learner_details($learnerid, $trainingid, $begindate, $enddate);
+        $renderable = new renderable\learner_details($learnerid, $trainingid, $begindate, $enddate);
         $PAGE->set_heading($renderable->get_heading());
         break;
     case 'trainingslist':

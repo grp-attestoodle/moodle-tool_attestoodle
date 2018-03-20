@@ -28,7 +28,6 @@ namespace block_attestoodle\output;
 use block_attestoodle\output\renderable;
 use block_attestoodle\output\renderable\renderable_trainings_management;
 use block_attestoodle\output\renderable\renderable_training_milestones;
-use block_attestoodle\output\renderable\renderable_learner_details;
 
 use block_attestoodle\factories\categories_factory;
 use block_attestoodle\forms\categories_trainings_update_form;
@@ -38,8 +37,10 @@ defined('MOODLE_INTERNAL') || die;
 
 class renderer extends \plugin_renderer_base {
     /**
+     * Page trainings list (default page)
      *
-     * @param renderable\trainings_list $obj Useful data to display on the page
+     * @param \block_attestoodle\output\renderable\trainings_list $obj Useful informations to display
+     * @return string HTML content of the page
      */
     public function render_trainings_list(renderable\trainings_list $obj) {
         $output = "";
@@ -158,8 +159,10 @@ class renderer extends \plugin_renderer_base {
     }
 
     /**
+     * Page training learners list
      *
-     * @param renderable\training_learners_list $obj
+     * @param \block_attestoodle\output\renderable\training_learners_list $obj Useful informations to display
+     * @return string HTML content of the page
      */
     public function render_training_learners_list(renderable\training_learners_list $obj) {
         $output = "";
@@ -183,8 +186,8 @@ class renderer extends \plugin_renderer_base {
     /**
      * Page training management (declare milestones)
      *
-     * @param \block_attestoodle\output\renderable_training_milestones $obj
-     * @return string
+     * @param \block_attestoodle\output\renderable_training_milestones $obj Useful informations to display
+     * @return string HTML content of the page
      */
     public function render_renderable_training_milestones(renderable_training_milestones $obj) {
         $output = "";
@@ -330,118 +333,33 @@ class renderer extends \plugin_renderer_base {
         return $output;
     }
 
-    public function render_renderable_learner_details(renderable_learner_details $obj) {
+    /**
+     * Page learner details
+     *
+     * @param \block_attestoodle\output\renderable\learner_details $obj Useful informations to display
+     * @return string HTML content of the page
+     */
+    public function render_learner_details(renderable\learner_details $obj) {
         $output = "";
 
-        // Verifying training id.
-        if (!$obj->training_exists()) {
-            $output .= \html_writer::start_div('clearfix');
-            // Link to the trainings list if the training id is not valid.
-            $output .= \html_writer::link(
-                    new \moodle_url('/blocks/attestoodle/index.php', ['page' => 'trainingslist']),
-                    get_string('backto_trainings_list_btn_text', 'block_attestoodle'),
-                    array('class' => 'attestoodle-link'));
-            $output .= \html_writer::end_div();
-            $output .= "<hr />";
-            $output .= get_string('unknown_training_id', 'block_attestoodle', $obj->get_trainingid());
-        } else {
-            // If the training id is valid...
-            $output .= \html_writer::start_div('clearfix');
-            // Link to the training learners list.
-            $output .= \html_writer::link(
-                    new \moodle_url(
-                            '/blocks/attestoodle/index.php',
-                            ['page' => 'learners', 'training' => $obj->get_trainingid()]),
-                    \get_string('backto_training_learners_list_btn_text', 'block_attestoodle'),
-                    array('class' => 'attestoodle-link'));
-            $output .= \html_writer::end_div();
+        $output .= $obj->get_header();
 
-            $output .= "<hr />";
+        if ($obj->training_exists() && $obj->learner_exists()) {
+            // If the training and learner ids are valid...
+            // Print validated activities informations (with marker only).
+            if (count($obj->get_learner_validated_activities()) > 0) {
+                $table = new \html_table();
+                $table->head = $obj->get_table_head();
+                $table->data = $obj->get_table_content();
 
-            // Verifying learner id.
-            if (!$obj->learner_exists()) {
-                $output .= \get_string('unknown_learner_id', 'block_attestoodle', $obj->get_learnerid());
-            } else {
-                // Basic form to allow user filtering the validated activities by begin and end dates.
-                $output .= '<form action="?" class="filterform"><div>'
-                        . '<input type="hidden" name="page" value="learnerdetails" />'
-                        . '<input type="hidden" name="training" value="' . $obj->get_trainingid() . '" />'
-                        . '<input type="hidden" name="learner" value="' . $obj->get_learnerid() . '" />';
-                $output .= '<label for="input_begin_date">'
-                        . get_string('learner_details_begin_date_label', 'block_attestoodle') . '</label>'
-                        . '<input type="text" id="input_begin_date" name="begindate" value="' . $obj->get_begindate() . '" '
-                        . 'placeholder="ex: ' . (new \DateTime('now'))->format('Y-m-d') . '" />';
-                if ($obj->has_begindateerror()) {
-                    echo "<span class='error'>Erreur de format</span>";
-                }
-                $output .= '<label for="input_end_date">' . get_string('learner_details_end_date_label', 'block_attestoodle') . '</label>'
-                        . '<input type="text" id="input_end_date" name="enddate" value="' . $obj->get_enddate() . '" '
-                        . 'placeholder="ex: ' . (new \DateTime('now'))->format('Y-m-d') . '" />';
-                if ($obj->has_enddateerror()) {
-                    $output .= "<span class='error'>Erreur de format</span>";
-                }
-                $output .= '<input type="submit" value="'
-                        . get_string('learner_details_submit_button_value', 'block_attestoodle') . '" />'
-                        . '</div></form>' . "\n";
+                $output .= \html_writer::table($table);
 
                 $output .= "<hr />";
 
-                // If the learner id is valid...
-                // Print validated activities informations (with marker only).
-                $validatedactivities = $obj->get_learner()->get_validated_activities_with_marker($obj->get_actualbegindate(), $obj->get_searchenddate());
-                if (count($validatedactivities) == 0) {
-                    $output .= get_string('learner_details_no_validated_activities', 'block_attestoodle');
-                } else {
-                    // Generate table listing the activities.
-                    $table = new \html_table();
-
-                    $table->head = array(
-                        get_string('learner_details_table_header_column_training_name', 'block_attestoodle'),
-                        get_string('learner_details_table_header_column_course_name', 'block_attestoodle'),
-                        get_string('learner_details_table_header_column_name', 'block_attestoodle'),
-                        get_string('learner_details_table_header_column_type', 'block_attestoodle'),
-                        get_string('learner_details_table_header_column_validated_time', 'block_attestoodle'),
-                        get_string('learner_details_table_header_column_milestones', 'block_attestoodle')
-                    );
-
-                    $data = array();
-                    foreach ($validatedactivities as $vact) {
-                        $act = $vact->get_activity();
-                        $stdclassact = new \stdClass();
-
-                        $stdclassact->trainingname = $act->get_course()->get_training()->get_name();
-                        $stdclassact->coursename = $act->get_course()->get_name();
-                        $stdclassact->name = $act->get_name();
-                        $stdclassact->type = get_string('modulename', $act->get_type());
-                        $stdclassact->validatedtime = parse_datetime_to_readable_format($vact->get_datetime());
-                        $stdclassact->milestone = parse_minutes_to_hours($act->get_marker());
-
-                        $data[] = $stdclassact;
-                    }
-                    $table->data = $data;
-
-                    $output .= \html_writer::table($table);
-
-                    $output .= "<hr />";
-
-                    // Instanciate the "Generate certificate" link with specified filters.
-                    $dlcertifoptions = array('training' => $obj->get_trainingid(), 'user' => $obj->get_learnerid());
-                    if ($obj->get_actualbegindate()) {
-                        $dlcertifoptions['begindate'] = $obj->get_actualbegindate()->format('Y-m-d');
-                    }
-                    if ($obj->get_actualenddate()) {
-                        $dlcertifoptions['enddate'] = $obj->get_actualenddate()->format('Y-m-d');
-                    }
-                    // Print the "Generate certificate" link.
-                    $output .= \html_writer::start_div('clearfix');
-                    $output .= \html_writer::link(
-                            new \moodle_url(
-                                    '/blocks/attestoodle/pages/download_certificate.php',
-                                     $dlcertifoptions),
-                            get_string('learner_details_generate_certificate_link', 'block_attestoodle'),
-                            array('class' => 'attestoodle-link'));
-                    $output .= \html_writer::end_div();
-                }
+                // TODO footer should be displayed even if there is no validated activities
+                $output .= $obj->get_footer();
+            } else {
+                $output .= $obj->get_no_validated_activities_message();
             }
         }
 
