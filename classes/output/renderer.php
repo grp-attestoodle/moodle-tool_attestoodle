@@ -27,7 +27,6 @@ namespace block_attestoodle\output;
 
 use block_attestoodle\output\renderable;
 use block_attestoodle\output\renderable\renderable_trainings_management;
-use block_attestoodle\output\renderable\renderable_training_learners_list;
 use block_attestoodle\output\renderable\renderable_training_milestones;
 use block_attestoodle\output\renderable\renderable_learner_details;
 
@@ -160,47 +159,22 @@ class renderer extends \plugin_renderer_base {
 
     /**
      *
-     * @param renderable_training_learners_list $obj
+     * @param renderable\training_learners_list $obj
      */
-    public function render_renderable_training_learners_list(renderable_training_learners_list $obj) {
-         $training = $obj->training;
-         $trainingexist = isset($training);
-         $output = "";
+    public function render_training_learners_list(renderable\training_learners_list $obj) {
+        $output = "";
 
-        $output .= \html_writer::start_div('clearfix');
-        // Link to the trainings list.
-        $output .= \html_writer::link(
-                new \moodle_url('/blocks/attestoodle/index.php'),
-                get_string('trainings_list_btn_text', 'block_attestoodle'),
-                array('class' => 'attestoodle-link'));
+        $output .= $obj->get_header();
 
-        if (!$trainingexist) {
-            $output .= \html_writer::end_div();
-            $warningunknownid = get_string('training_details_unknown_training_id', 'block_attestoodle');
-            $output .= $warningunknownid;
-        } else {
-            $trainingid = $training->get_id();
-            // Link to the training details.
-            $output .= \html_writer::link(
-                    new \moodle_url(
-                            '/blocks/attestoodle/index.php',
-                            ['page' => 'trainingmilestones', 'training' => $trainingid]),
-                    get_string('training_learners_list_edit_training_link', 'block_attestoodle'),
-                    array('class' => 'btn btn-default attestoodle-button'));
-            $output .= \html_writer::end_div();
-
-            $data = parse_learners_as_stdclass($training->get_learners(), $trainingid);
+        if ($obj->training_exists()) {
             $table = new \html_table();
-            $table->head = array(
-                get_string('training_learners_list_table_header_column_lastname', 'block_attestoodle'),
-                get_string('training_learners_list_table_header_column_firstname', 'block_attestoodle'),
-                get_string('training_learners_list_table_header_column_validated_activities', 'block_attestoodle'),
-                get_string('training_learners_list_table_header_column_total_milestones', 'block_attestoodle'),
-                '');
-            $table->data = $data;
+            $table->head = $obj->get_table_head();
+            $table->data = $obj->get_table_content();
 
-            $output .= $this->output->heading(get_string('training_learners_list_heading', 'block_attestoodle', count($data)));
+            $output .= $this->output->heading(get_string('training_learners_list_heading', 'block_attestoodle', count($obj->training->get_learners())));
             $output .= \html_writer::table($table);
+        } else {
+            $output .= $obj->get_unknown_training_message();
         }
 
         return $output;
