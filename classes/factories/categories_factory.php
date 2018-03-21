@@ -82,6 +82,11 @@ class categories_factory extends singleton {
         return $istraining;
     }
 
+    public function has_category($id) {
+        $c = $this->retrieve_category($id);
+        return isset($c);
+    }
+
     public function retrieve_category($id) {
         $category = null;
         foreach ($this->categories as $cat) {

@@ -26,11 +26,8 @@
 namespace block_attestoodle\output;
 
 use block_attestoodle\output\renderable;
-use block_attestoodle\output\renderable\renderable_trainings_management;
 use block_attestoodle\output\renderable\renderable_training_milestones;
 
-use block_attestoodle\factories\categories_factory;
-use block_attestoodle\forms\categories_trainings_update_form;
 use block_attestoodle\forms\training_milestones_update_form;
 
 defined('MOODLE_INTERNAL') || die;
@@ -60,100 +57,12 @@ class renderer extends \plugin_renderer_base {
         return $output;
     }
 
-    /**
-     * Page trainings management
-     *
-     * @param renderable_trainings_management $obj
-     * @return type
-     */
-    public function render_renderable_trainings_management(renderable_trainings_management $obj) {
+    public function render_trainings_management(renderable\trainings_management $obj) {
         $output = "";
 
-        $mform = new categories_trainings_update_form(
-                new \moodle_url('/blocks/attestoodle/index.php', ['page' => 'trainingsmanagement']),
-                array(
-                        'data' => $obj->get_categories(),
-                        'input_name_prefix' => "attestoodle_category_id_"
-                )
-        );
+        $output .= $obj->get_header();
 
-        // Form processing and displaying is done here.
-        if ($mform->is_cancelled()) {
-            // Handle form cancel operation.
-            $redirecturl = new \moodle_url('/blocks/attestoodle/index.php', ['page' => 'trainingslist']);
-            $message = get_string('trainings_management_info_form_canceled', 'block_attestoodle');
-            redirect($redirecturl, $message, null, \core\output\notification::NOTIFY_INFO);
-        } else if ($mform->is_submitted()) {
-            // Handle form submit operation.
-            // Check the data validity.
-            if (!$mform->is_validated()) {
-                // If not valid, warn the user.
-                \core\notification::error(get_string('trainings_management_warning_invalid_form', 'block_attestoodle'));
-            } else {
-                // If data are valid, process persistance.
-                // Try to retrieve the submitted data.
-                if ($datafromform = $mform->get_submitted_data()) {
-                    // Instanciate global variables to output to the user.
-                    $updatecounter = 0;
-                    $errorcounter = 0;
-                    $successlist = "Categories updated:<ul>";
-                    $errorlist = "Categories not updated:<ul>";
-
-                    foreach ($datafromform as $key => $value) {
-                        $regexp = "/attestoodle_category_id_(.+)/";
-                        if (preg_match($regexp, $key, $matches)) {
-                            $idcategory = $matches[1];
-                            if (!empty($idcategory)) {
-                                if ($category = categories_factory::get_instance()->retrieve_category($idcategory)) {
-                                    $oldistrainingvalue = $category->is_training();
-                                    $boolvalue = boolval($value);
-                                    if ($category->set_istraining($boolvalue)) {
-                                        try {
-                                            // Try to persist activity in DB.
-                                            $category->persist();
-
-                                            // If no Exception has been thrown by DB update.
-                                            $updatecounter++;
-                                        } catch (Exception $ex) {
-                                            // If record in DB failed, re-set the old value.
-                                            $category->set_istraining($oldistrainingvalue);
-                                            $errorcounter++;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    $message = "";
-                    if ($errorcounter == 0) {
-                        $message .= "Form submitted. <br />"
-                                . "{$updatecounter} categories updated <br />";
-                        \core\notification::success($message);
-                    } else {
-                        $message .= "Form submitted with errors. <br />"
-                                . "{$updatecounter} categories updated <br />"
-                                . "{$errorcounter} errors (categories not updated in database).<br />";
-                        \core\notification::warning($message);
-                    }
-                } else {
-                    // No submitted data.
-                    \core\notification::warning(get_string('trainings_management_warning_no_submitted_data', 'block_attestoodle'));
-                }
-            }
-        }
-
-        $output .= \html_writer::start_div('clearfix');
-        // Link to the trainings list.
-        $output .= \html_writer::link(
-                new \moodle_url(
-                        '/blocks/attestoodle/index.php',
-                        ['page' => 'trainingslist']),
-                get_string('trainings_management_trainings_list_link', 'block_attestoodle'),
-                array('class' => 'attestoodle-link'));
-        $output .= \html_writer::end_div();
-
-        // Displaying the form in any case.
-        $output .= $mform->render();
+        $output .= $obj->get_content();
 
         return $output;
     }
