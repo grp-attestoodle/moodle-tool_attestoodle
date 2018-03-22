@@ -82,8 +82,8 @@ class trainings_management implements \renderable {
         $errorcounter = 0;
 
         foreach ($datafromform as $key => $value) {
+            $matches = [];
             $regexp = "/attestoodle_category_id_(.+)/";
-            $matches;
             if (preg_match($regexp, $key, $matches)) {
                 $idcategory = $matches[1];
                 if (!empty($idcategory) && categories_factory::get_instance()->has_category($idcategory)) {

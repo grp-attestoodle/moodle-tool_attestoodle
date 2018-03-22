@@ -232,4 +232,9 @@ class training {
         }
         return $activity;
     }
+
+    public function has_activity($idactivity) {
+        $a = $this->retrieve_activity($idactivity);
+        return isset($a);
+    }
 }

@@ -32,12 +32,11 @@ require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/traini
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/trainings_management.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/training_learners_list.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/learner_details.php');
-require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/renderable_training_milestones.php');
+require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/training_milestones.php');
 
 use block_attestoodle\factories\trainings_factory;
 use block_attestoodle\factories\categories_factory;
 use block_attestoodle\output\renderable;
-use block_attestoodle\output\renderable\renderable_training_milestones;
 
 $page = optional_param('page', '', PARAM_ALPHA);
 
@@ -73,7 +72,7 @@ switch($page) {
         $userhascapability = has_capability('block/attestoodle:trainingdetails', $context);
         require_capability('block/attestoodle:trainingdetails', $context);
 
-        $renderable = new renderable_training_milestones($trainingid);
+        $renderable = new renderable\training_milestones($trainingid);
         $PAGE->set_heading($renderable->get_heading());
         break;
     case 'learners':
