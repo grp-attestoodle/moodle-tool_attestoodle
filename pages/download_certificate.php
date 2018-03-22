@@ -23,18 +23,6 @@ $userid = required_param('user', PARAM_INT);
 $begindatestr = required_param('begindate', PARAM_ALPHANUM);
 $enddatestr = required_param('enddate', PARAM_ALPHANUM);
 
-
-//require_once($CFG->dirroot . '/blocks/attestoodle/classes/factories/categories_factory.php');
-//require_once($CFG->dirroot . '/blocks/attestoodle/classes/factories/trainings_factory.php');
-//require_once($CFG->dirroot . '/blocks/attestoodle/classes/factories/courses_factory.php');
-//require_once($CFG->dirroot . '/blocks/attestoodle/classes/factories/activities_factory.php');
-//require_once($CFG->dirroot . '/blocks/attestoodle/classes/factories/learners_factory.php');
-//
-//require_once($CFG->dirroot . '/blocks/attestoodle/classes/category.php');
-//require_once($CFG->dirroot . '/blocks/attestoodle/classes/course.php');
-//require_once($CFG->dirroot . '/blocks/attestoodle/classes/activity.php');
-//require_once($CFG->dirroot . '/blocks/attestoodle/classes/validated_activity.php');
-
 use block_attestoodle\factories\categories_factory;
 use block_attestoodle\factories\trainings_factory;
 use block_attestoodle\factories\learners_factory;
@@ -106,7 +94,7 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
             $pdf->AddPage();
 
             // Logo : 80 de largeur et 55 de hauteur.
-            // $pdf->Image('logo_societe.png', 10, 10, 80, 55);
+            // To add logo : $pdf->Image('logo_societe.png', 10, 10, 80, 55);
             // Title.
             $title = "Attestation mensuelle : temps d'apprentissage";
             $pdf->SetFont("helvetica", "", 14);
@@ -187,7 +175,7 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
         $fs = get_file_storage();
         $usercontext = context_user::instance($userid);
 
-        // Prepare file record object
+        // Prepare file record object.
         $fileinfo = array(
             'contextid' => $usercontext->id,
             'component' => 'block_attestoodle',
@@ -223,7 +211,7 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
                 $file->get_filepath(),
                 $file->get_filename());
 
-        // TODO translations + to put somewhere above
+        // TODO translations + to put somewhere above.
         $PAGE->set_url(new moodle_url(
                 '/blocks/attestoodle/pages/download_certificate.php',
                 array('training' => $trainingid, 'user' => $userid)));

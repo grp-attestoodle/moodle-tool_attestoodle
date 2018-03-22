@@ -22,6 +22,8 @@
 
 namespace block_attestoodle\output\renderable;
 
+defined('MOODLE_INTERNAL') || die;
+
 use block_attestoodle\factories\trainings_factory;
 use block_attestoodle\forms\training_milestones_update_form;
 
@@ -67,7 +69,7 @@ class training_milestones implements \renderable {
                 '/blocks/attestoodle/index.php',
                 ['page' => 'learners', 'training' => $this->training->get_id()]
         );
-        // TODO rename string variable
+        // TODO rename string variable.
         $message = get_string('training_details_info_form_canceled', 'block_attestoodle');
         redirect($redirecturl, $message, null, \core\output\notification::NOTIFY_INFO);
     }

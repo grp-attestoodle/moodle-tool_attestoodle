@@ -20,6 +20,8 @@
 
 namespace block_attestoodle\output\renderable;
 
+defined('MOODLE_INTERNAL') || die;
+
 use block_attestoodle\factories\learners_factory;
 use block_attestoodle\factories\trainings_factory;
 
@@ -134,7 +136,8 @@ class learner_details implements \renderable {
                 if ($this->begindateerror) {
                     echo "<span class='error'>Erreur de format</span>";
                 }
-                $output .= '<label for="input_end_date">' . get_string('learner_details_end_date_label', 'block_attestoodle') . '</label>'
+                $output .= '<label for="input_end_date">'
+                        . get_string('learner_details_end_date_label', 'block_attestoodle') . '</label>'
                         . '<input type="text" id="input_end_date" name="enddate" value="' . $this->enddate . '" '
                         . 'placeholder="ex: ' . (new \DateTime('now'))->format('Y-m-d') . '" />';
                 if ($this->enddateerror) {

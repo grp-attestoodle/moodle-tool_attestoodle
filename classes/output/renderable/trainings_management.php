@@ -20,6 +20,8 @@
 
 namespace block_attestoodle\output\renderable;
 
+defined('MOODLE_INTERNAL') || die;
+
 use block_attestoodle\factories\categories_factory;
 use block_attestoodle\forms\categories_trainings_update_form;
 

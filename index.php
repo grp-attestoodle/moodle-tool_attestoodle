@@ -16,18 +16,10 @@
 
 // Importation de la config $CFG qui importe égalment $DB et $OUTPUT.
 // @todo create an autoloader.
+
 require_once(dirname(__FILE__) . '/../../config.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/lib.php');
-//require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/trainings_factory.php');
-//require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/categories_factory.php');
-//require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/courses_factory.php');
-//require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/activities_factory.php');
-//require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/learners_factory.php');
 
-//require_once($CFG->dirroot.'/blocks/attestoodle/classes/category.php');
-//require_once($CFG->dirroot.'/blocks/attestoodle/classes/course.php');
-//require_once($CFG->dirroot.'/blocks/attestoodle/classes/activity.php');
-//require_once($CFG->dirroot.'/blocks/attestoodle/classes/validated_activity.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/trainings_list.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/trainings_management.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/training_learners_list.php');
@@ -85,7 +77,7 @@ switch($page) {
         $userhascapability = has_capability('block/attestoodle:displaylearnerslist', $context);
         require_capability('block/attestoodle:displaylearnerslist', $context);
 
-        // TODO instanciate the training in the renderable
+        // TODO instanciate the training in the renderable.
         $training = null;
         $trainingexist = trainings_factory::get_instance()->has_training($trainingid);
         if ($trainingexist) {
@@ -142,7 +134,7 @@ switch($page) {
 echo $OUTPUT->header();
 
 // ... to be callable by the output->render method bellow.
-// Note: the method automagically call the method "render_[renderable_class]"
+// Note: the method automagically call the method "render_[renderable_class]"...
 // ...defined in the renderer object (here $output)
 echo $renderer->render($renderable);
 

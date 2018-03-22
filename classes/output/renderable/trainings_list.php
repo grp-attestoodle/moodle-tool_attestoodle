@@ -20,10 +20,12 @@
 
 namespace block_attestoodle\output\renderable;
 
+defined('MOODLE_INTERNAL') || die;
+
 use \renderable;
 
 class trainings_list implements renderable {
-    var $trainings = [];
+    private $trainings = [];
 
     public function __construct($trainings) {
         $this->trainings = $trainings;

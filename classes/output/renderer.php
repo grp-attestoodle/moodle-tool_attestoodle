@@ -25,11 +25,9 @@
  */
 namespace block_attestoodle\output;
 
-use block_attestoodle\output\renderable;
-
-use block_attestoodle\forms\training_milestones_update_form;
-
 defined('MOODLE_INTERNAL') || die;
+
+use block_attestoodle\output\renderable;
 
 class renderer extends \plugin_renderer_base {
     /**
@@ -81,7 +79,11 @@ class renderer extends \plugin_renderer_base {
             $table->head = $obj->get_table_head();
             $table->data = $obj->get_table_content();
 
-            $output .= $this->output->heading(get_string('training_learners_list_heading', 'block_attestoodle', count($obj->training->get_learners())));
+            $output .= $this->output->heading(get_string(
+                    'training_learners_list_heading',
+                    'block_attestoodle',
+                    count($obj->training->get_learners())
+            ));
             $output .= \html_writer::table($table);
         } else {
             $output .= $obj->get_unknown_training_message();
@@ -126,7 +128,7 @@ class renderer extends \plugin_renderer_base {
 
                 $output .= "<hr />";
 
-                // TODO footer should be displayed even if there is no validated activities
+                // TODO footer should be displayed even if there is no validated activities.
                 $output .= $obj->get_footer();
             } else {
                 $output .= $obj->get_no_validated_activities_message();
