@@ -41,7 +41,7 @@ class renderer extends \plugin_renderer_base {
 
         $output .= $obj->get_header();
 
-        if (count($obj->trainings) > 0) {
+        if (count($obj->get_trainings()) > 0) {
             $table = new \html_table();
             $table->head = $obj->get_table_head();
             $table->data = $obj->get_table_content();

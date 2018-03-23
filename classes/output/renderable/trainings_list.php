@@ -84,4 +84,8 @@ class trainings_list implements renderable {
     public function get_no_training_message() {
         return get_string('trainings_list_warning_no_trainings', 'block_attestoodle');
     }
+
+    public function get_trainings() {
+        return $this->trainings;
+    }
 }
