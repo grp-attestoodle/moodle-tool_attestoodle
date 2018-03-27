@@ -130,12 +130,11 @@ switch($page) {
         $renderable = new renderable\trainings_list(trainings_factory::get_instance()->get_trainings());
 }
 
-
 echo $OUTPUT->header();
 
 // ... to be callable by the output->render method bellow.
 // Note: the method automagically call the method "render_[renderable_class]"...
-// ...defined in the renderer object (here $output)
+// ...defined in the renderer object (here $output).
 echo $renderer->render($renderable);
 
 echo $OUTPUT->footer();
