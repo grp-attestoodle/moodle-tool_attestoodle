@@ -168,8 +168,8 @@ if (!trainings_factory::get_instance()->has_training($trainingid)) {
             // Signatures.
             $pdf->SetXY(10, 250);
             $pdf->SetFont('helvetica', '', 10);
-            $pdf->Cell($pdf->GetPageWidth() - 10, 0, "Signature stagiaire", 0, 1, 'L');
-            $pdf->Cell($pdf->GetPageWidth() - 10, 0, "Signature responsable de formation", 0, 0, 'R');
+            $pdf->Cell($pdf->GetPageWidth() / 2 - 10, 0, "Signature stagiaire", 0, 0, 'L');
+            $pdf->Cell($pdf->GetPageWidth() / 2 - 10, 0, "Signature responsable de formation", 0, 0, 'R');
         }
 
         $fs = get_file_storage();
