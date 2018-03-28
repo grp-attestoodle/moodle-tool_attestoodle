@@ -103,6 +103,7 @@ $string['learner_details_table_header_column_course_name'] = "Cours";
 $string['learner_details_table_header_column_validated_time'] = "Validé le";
 $string['learner_details_table_header_column_milestones'] = "Temps jalon crédité";
 $string['learner_details_generate_certificate_link'] = "Générer l'attestation";
+$string['learner_details_regenerate_certificate_link'] = "Générer une nouvelle attestation";
 
 // Download certificate page strings.
 $string['download_certificate_file_link_text'] = "Télécharger le fichier";

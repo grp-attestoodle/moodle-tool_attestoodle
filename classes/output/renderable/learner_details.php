@@ -24,6 +24,7 @@ defined('MOODLE_INTERNAL') || die;
 
 use block_attestoodle\factories\learners_factory;
 use block_attestoodle\factories\trainings_factory;
+use block_attestoodle\certificate;
 
 class learner_details implements \renderable {
     public $learnerid;
@@ -37,6 +38,7 @@ class learner_details implements \renderable {
     public $actualenddate;
     public $searchenddate;
     public $enddateerror;
+    private $certificate;
 
     public function __construct($learnerid, $trainingid, $begindate, $enddate) {
         $this->learnerid = $learnerid;
@@ -63,6 +65,8 @@ class learner_details implements \renderable {
         } catch (\Exception $ex) {
             $this->enddateerror = true;
         }
+
+        $this->certificate = new certificate($this->learner, $this->training, $this->actualbegindate, $this->actualenddate);
     }
 
     public function learner_exists() {
@@ -71,6 +75,10 @@ class learner_details implements \renderable {
 
     public function training_exists() {
         return isset($this->training);
+    }
+
+    public function generate_certificate_file() {
+        $this->certificate->create_file_on_server();
     }
 
     public function get_learner_validated_activities() {
@@ -191,9 +199,23 @@ class learner_details implements \renderable {
 
     public function get_footer() {
         $output = "";
+        $generatecertificatelinktext = get_string('learner_details_generate_certificate_link', 'block_attestoodle');
+
+        // If the file already exists, add a link to it.
+        if ($this->certificate->file_exists()) {
+            $output .= "<a href='" . $this->certificate->get_existing_file_url() . "' target='_blank'>" .
+                    get_string('download_certificate_file_link_text', 'block_attestoodle') .
+                    "</a>";
+            $generatecertificatelinktext = get_string('learner_details_regenerate_certificate_link', 'block_attestoodle');
+        }
 
         // Instanciate the "Generate certificate" link with specified filters.
-        $dlcertifoptions = array('training' => $this->trainingid, 'user' => $this->learnerid);
+        $dlcertifoptions = array(
+                'page' => 'learnerdetails',
+                'action' => 'generatecertificate',
+                'training' => $this->trainingid,
+                'learner' => $this->learnerid
+        );
         if ($this->actualbegindate) {
             $dlcertifoptions['begindate'] = $this->actualbegindate->format('Y-m-d');
         }
@@ -204,10 +226,10 @@ class learner_details implements \renderable {
         $output .= \html_writer::start_div('clearfix');
         $output .= \html_writer::link(
                 new \moodle_url(
-                        '/blocks/attestoodle/pages/download_certificate.php',
+                        '/blocks/attestoodle/index.php',
                         $dlcertifoptions
                 ),
-                get_string('learner_details_generate_certificate_link', 'block_attestoodle'),
+                $generatecertificatelinktext,
                 array('class' => 'attestoodle-link')
         );
         $output .= \html_writer::end_div();

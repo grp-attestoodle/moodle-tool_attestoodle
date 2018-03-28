@@ -220,6 +220,7 @@ class learner {
     }
 
     /**
+     * TODO Replacing by certificate->get_pdf_informations() method
      * Method that return certificate informations for the learner between
      * two specified dates.
      *

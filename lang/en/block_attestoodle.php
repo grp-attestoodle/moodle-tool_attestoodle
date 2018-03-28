@@ -103,6 +103,7 @@ $string['learner_details_table_header_column_course_name'] = "Course";
 $string['learner_details_table_header_column_validated_time'] = "Validated time";
 $string['learner_details_table_header_column_milestones'] = "Milestone credit";
 $string['learner_details_generate_certificate_link'] = "Generate certificate";
+$string['learner_details_regenerate_certificate_link'] = "Generate a new certificate";
 
 // Download certificate page strings.
 $string['download_certificate_file_link_text'] = "Download file";

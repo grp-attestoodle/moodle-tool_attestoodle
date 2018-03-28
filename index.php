@@ -18,6 +18,7 @@
 // @todo create an autoloader.
 
 require_once(dirname(__FILE__) . '/../../config.php');
+require_once($CFG->libdir.'/pdflib.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/lib.php');
 
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/trainings_list.php');
@@ -26,11 +27,14 @@ require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/traini
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/learner_details.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/training_milestones.php');
 
+require_once($CFG->dirroot.'/blocks/attestoodle/classes/certificate.php');
+
 use block_attestoodle\factories\trainings_factory;
 use block_attestoodle\factories\categories_factory;
 use block_attestoodle\output\renderable;
 
 $page = optional_param('page', '', PARAM_ALPHA);
+$action = optional_param('action', '', PARAM_ALPHA);
 
 $context = context_system::instance();
 $PAGE->set_context($context);
@@ -101,6 +105,7 @@ switch($page) {
                 '/blocks/attestoodle/index.php',
                 array(
                         'page' => $page,
+                        'action' => $action,
                         'training' => $trainingid,
                         'learner' => $learnerid,
                         'begindate' => $begindate,
@@ -116,6 +121,9 @@ switch($page) {
         require_capability('block/attestoodle:learnerdetails', $context);
 
         $renderable = new renderable\learner_details($learnerid, $trainingid, $begindate, $enddate);
+        if ($action == 'generatecertificate') {
+            $renderable->generate_certificate_file();
+        }
         $PAGE->set_heading($renderable->get_heading());
         break;
     case 'trainingslist':
