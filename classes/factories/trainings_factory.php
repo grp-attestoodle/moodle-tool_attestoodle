@@ -59,7 +59,15 @@ class trainings_factory extends singleton {
 
         $this->trainings[] = $trainingtoadd;
 
-        $courses = courses_factory::get_instance()->retrieve_courses_by_training($category->get_id());
+        // Direct courses.
+        $courses = courses_factory::get_instance()->retrieve_courses_by_training($trainingtoadd->get_id());
+        // Courses of sub categories.
+        $subcategories = categories_factory::get_instance()->retrieve_sub_categories($trainingtoadd->get_id());
+        foreach ($subcategories as $subcat) {
+            $subcatcourses = courses_factory::get_instance()->retrieve_courses_by_training($subcat->get_id());
+            $courses = array_merge($courses, $subcatcourses);
+        }
+
         /* @todo: adding courses one by one with ->add_course method
         seems stupid */
         foreach ($courses as $course) {

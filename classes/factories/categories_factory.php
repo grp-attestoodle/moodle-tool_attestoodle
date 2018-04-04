@@ -56,10 +56,6 @@ class categories_factory extends singleton {
             $category = $this->retrieve_category($dbcat->id);
             if (!isset($category)) {
                 $category = $this->create($dbcat->id);
-
-                if ($istraining) {
-                    trainings_factory::get_instance()->create($category);
-                }
             }
 
             $parent = null;
@@ -71,6 +67,14 @@ class categories_factory extends singleton {
             }
             $category->feed($dbcat->name, $desc, $istraining, $parent);
         }
+        // Waiting for all the categories being instanciate to instanciate...
+        // ... the trainings and all the courses of a training.
+        foreach ($this->categories as $cat) {
+            if ($cat->is_training()) {
+                trainings_factory::get_instance()->create($cat);
+            }
+        }
+
         // Waiting for all the courses being instanciate to retrieve the...
         // ...validated activities for each learner.
         learners_factory::get_instance()->retrieve_all_validated_activities();
@@ -96,6 +100,18 @@ class categories_factory extends singleton {
             }
         }
         return $category;
+    }
+
+    public function retrieve_sub_categories($id) {
+        $categories = array();
+        foreach ($this->categories as $cat) {
+            if ($cat->has_parent() && ($cat->get_parent()->get_id() == $id)) {
+                $categories[] = $cat;
+                $categories = array_merge($categories, $this->retrieve_sub_categories($cat->get_id()));
+                break;
+            }
+        }
+        return $categories;
     }
 
     private function create($id) {
