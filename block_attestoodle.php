@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -27,14 +26,12 @@ defined('MOODLE_INTERNAL') || die();
 
 class block_attestoodle extends block_base {
 
-    function init() {
+    public function init() {
         $this->title = get_string('pluginname', 'block_attestoodle');
     }
 
-    // méthode appelée au moment de l'affichage
-    function get_content() {
-        global $CFG, $OUTPUT, $USER;
-
+    // Méthode appelée au moment de l'affichage.
+    public function get_content() {
         if ($this->content !== null) {
             return $this->content;
         }
@@ -48,40 +45,34 @@ class block_attestoodle extends block_base {
         $this->content->items = array();
         $this->content->icons = array();
         $this->content->footer = '';
+        $this->content->text = '';
 
-        // user/index.php expect course context, so get one if page has module context.
+        // File user/index.php expect course context, so get one if page has module context.
         $currentcontext = $this->page->context->get_course_context(false);
 
         if (!empty($this->config->text)) {
             $this->content->text = $this->config->text;
         }
 
-        $this->content = '';
         if (empty($currentcontext)) {
             return $this->content;
         }
+        /*
         if ($this->page->course->id == SITEID) {
-            $this->content->text .= "site context";
-        }
+            // Probably useless.
+        }*/
 
-        if (!empty($this->config->text)) {
-            $this->content->text .= $this->config->text;
-        }
-
-        $this->content->text = get_string('hello', 'block_attestoodle') . ' ' . $USER->firstname;
-
-        $parameters = array();
-        $url = new moodle_url('/blocks/attestoodle/course_list_page.php', $parameters);
-        $label = get_string('course_list_btn_text', 'block_attestoodle');
-        $options = array('class' => 'attestoodle-button');
-        // bouton vers un liens vers une autre page //  $this->content->text .= $OUTPUT->single_button($url, $label, 'post', $options);
-        // mode get offre la visu de l'url (debug)
-        $this->content->text .= $OUTPUT->single_button($url, $label, 'get', $options);
+        // Link to the plug-in main page.
+        $parameters = array('page' => 'trainingslist');
+        $url = new moodle_url('/blocks/attestoodle/index.php', $parameters);
+        $label = get_string('plugin_access', 'block_attestoodle');
+        $attributes = array('class' => 'attestoodle-link');
+        $this->content->text .= html_writer::link($url, $label, $attributes);
 
         return $this->content;
     }
 
-    // my moodle can only have SITEID and it's redundant here, so take it away
+    // My moodle can only have SITEID and it's redundant here, so take it away.
     public function applicable_formats() {
         return array('all' => false,
             'site' => true,
@@ -93,10 +84,10 @@ class block_attestoodle extends block_base {
     }
 
     public function instance_allow_multiple() {
-        return true;
+        return false;
     }
 
-    function has_config() {
+    public function has_config() {
         return true;
     }
 

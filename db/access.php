@@ -25,27 +25,79 @@
 defined('MOODLE_INTERNAL') || die();
 
 $capabilities = array(
+        /*'block/attestoodle:addinstance' => array(
+            'riskbitmask' => RISK_SPAM | RISK_XSS,
 
-    'block/attestoodle:myaddinstance' => array(
-        'captype' => 'write',
-        'contextlevel' => CONTEXT_SYSTEM,
-        'archetypes' => array(
-            'user' => CAP_ALLOW
+            'captype' => 'write',
+            'contextlevel' => CONTEXT_SYSTEM,
+            'archetypes' => array(
+                'editingteacher' => CAP_ALLOW,
+                'manager' => CAP_ALLOW
+            ),
+
+            'clonepermissionsfrom' => 'moodle/site:manageblocks'
+        )*/
+        'block/attestoodle:managetrainings' => array(
+                'riskbitmask' => RISK_CONFIG | RISK_DATALOSS,
+
+                'captype' => 'write',
+                'contextlevel' => CONTEXT_SYSTEM,
+                'archetypes' => array(
+                        'manager' => CAP_ALLOW
+                )
         ),
+        'block/attestoodle:displaytrainings' => array(
+                'riskbitmask' => RISK_PERSONAL,
 
-        'clonepermissionsfrom' => 'moodle/my:manageblocks'
-    ),
-
-    'block/attestoodle:addinstance' => array(
-        'riskbitmask' => RISK_SPAM | RISK_XSS,
-
-        'captype' => 'write',
-        'contextlevel' => CONTEXT_BLOCK,
-        'archetypes' => array(
-            'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
+                'captype' => 'read',
+                'contextlevel' => CONTEXT_SYSTEM,
+                'archetypes' => array(
+                        'manager' => CAP_ALLOW
+                )
         ),
+        'block/attestoodle:trainingdetails' => array(
+                'riskbitmask' => RISK_PERSONAL,
 
-        'clonepermissionsfrom' => 'moodle/site:manageblocks'
-    ),
+                'captype' => 'read',
+                'contextlevel' => CONTEXT_SYSTEM,
+                'archetypes' => array(
+                        'manager' => CAP_ALLOW
+                )
+        ),
+        'block/attestoodle:managetraining' => array(
+                'riskbitmask' => RISK_CONFIG | RISK_DATALOSS,
+
+                'captype' => 'write',
+                'contextlevel' => CONTEXT_SYSTEM,
+                'archetypes' => array(
+                        'manager' => CAP_ALLOW
+                )
+        ),
+        'block/attestoodle:displaylearnerslist' => array(
+                'riskbitmask' => RISK_PERSONAL,
+
+                'captype' => 'read',
+                'contextlevel' => CONTEXT_SYSTEM,
+                'archetypes' => array(
+                        'manager' => CAP_ALLOW
+                )
+        ),
+        'block/attestoodle:learnerdetails' => array(
+                'riskbitmask' => RISK_PERSONAL,
+
+                'captype' => 'read',
+                'contextlevel' => CONTEXT_SYSTEM,
+                'archetypes' => array(
+                        'manager' => CAP_ALLOW
+                )
+        ),
+        'block/attestoodle:downloadcertificate' => array(
+                'riskbitmask' => RISK_CONFIG | RISK_DATALOSS | RISK_PERSONAL,
+
+                'captype' => 'read write',
+                'contextlevel' => CONTEXT_SYSTEM,
+                'archetypes' => array(
+                        'manager' => CAP_ALLOW
+                )
+        ),
 );

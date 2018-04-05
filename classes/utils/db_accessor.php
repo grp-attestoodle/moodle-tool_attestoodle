@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -33,7 +32,7 @@ class db_accessor extends singleton {
     protected static $instance;
 
     /** @var $DB Instance of the $DB Moodle variable */
-    private static $DB;
+    private static $db;
 
     /**
      * Constructor of the db_accessor singleton
@@ -42,15 +41,109 @@ class db_accessor extends singleton {
     protected function __construct() {
         global $DB;
         parent::__construct();
-        self::$DB = $DB;
+        self::$db = $DB;
     }
 
     /**
-     * 
+     *
+     * @return stdClass
+     */
+    public function get_all_categories() {
+        $result = self::$db->get_records('course_categories', null, null, 'id, name, description, parent');
+        return $result;
+    }
+
+    /**
+     *
      * @return stdClass
      */
     public function get_all_trainings() {
-        $result = self::$DB->get_records('course_categories');
+        $result = self::$db->get_records('course_categories');
+        return $result;
+    }
+
+    /**
+     * Retrieve the courses under a specific course category (training)
+     *
+     * @todo Improve to get a recursive exploration
+     *
+     * @param integer $id Id of the course category to retrieve courses for
+     * @return stdClass Standard Moodle DB object
+     */
+    public function get_courses_by_training($id) {
+        $result = self::$db->get_records('course', array('category' => $id));
+        return $result;
+    }
+
+    /**
+     *
+     * @param int $id
+     * @return stdClass
+     */
+    public function get_course_modules_by_course($id) {
+        $result = self::$db->get_records('course_modules', array('course' => $id));
+        return $result;
+    }
+
+    /**
+     *
+     * @param int $courseid
+     * @return stdClass
+     */
+    public function get_learners_by_course($courseid) {
+        $studentroleid = get_config('attestoodle', 'student_role_id');
+        $request = "
+                SELECT u.id, u.firstname, u.lastname
+                FROM mdl_user u
+                JOIN mdl_role_assignments ra
+                    ON u.id = ra.userid
+                JOIN mdl_context cx
+                    ON ra.contextid = cx.id
+                JOIN mdl_course c
+                    ON cx.instanceid = c.id
+                    AND cx.contextlevel = 50
+                WHERE 1=1
+                    AND c.id = ?
+                    AND ra.roleid = ?
+                ORDER BY u.lastname
+            ";
+        $result = self::$db->get_records_sql($request, array($courseid, $studentroleid));
+
+        return $result;
+    }
+
+    /**
+     *
+     * @param type $learner
+     * @return stdClass
+     */
+    public function get_activities_validated_by_learner($learner) {
+        $result = self::$db->get_records(
+                'course_modules_completion',
+                array(
+                    'userid' => $learner->get_id(),
+                    'completionstate' => 1
+                ));
+        return $result;
+    }
+
+    /**
+     *
+     * @param int $id
+     * @return stdClass
+     */
+    public function get_module_table_name($id) {
+        $result = self::$db->get_record('modules', array('id' => $id), "name");
+        return $result->name;
+    }
+
+    /**
+     *
+     * @param int $id
+     * @return stdClass
+     */
+    public function get_course_modules_infos($instanceid, $tablename) {
+        $result = self::$db->get_record($tablename, array('id' => $instanceid));
         return $result;
     }
 }
