@@ -76,7 +76,23 @@ class learner_details implements \renderable {
     public function generate_certificate_file($trainingid) {
         $training = trainings_factory::get_instance()->retrieve_training($trainingid);
         $certificate = new certificate($this->learner, $training, $this->actualbegindate, $this->actualenddate);
-        $certificate->create_file_on_server();
+        $status = $certificate->create_file_on_server();
+        $notificationmessage = "";
+
+        switch ($status) {
+            case 0:
+                $notificationmessage .= "File not generated (an error occured).";
+                \core\notification::error($notificationmessage);
+                break;
+            case 1:
+                $notificationmessage .= "New file generated.";
+                \core\notification::success($notificationmessage);
+                break;
+            case 2:
+                $notificationmessage .= "File generated (overwritten).";
+                \core\notification::success($notificationmessage);
+                break;
+        }
     }
 
     public function get_learner_registered_trainings() {
