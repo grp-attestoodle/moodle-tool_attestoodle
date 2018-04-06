@@ -31,6 +31,15 @@ $string['settings_description'] = 'Allow you to modify some configuration of the
 $string['settings_student_role_label'] = 'Student role ID';
 $string['settings_student_role_helper'] = 'Id of the student role in database';
 
+// Capabilities strings.
+$string['attestoodle:displaytrainings'] = "Display trainings list";
+$string['attestoodle:managetraining'] = "Modify milestones";
+$string['attestoodle:managetrainings'] = "Modify trainings";
+$string['attestoodle:trainingdetails'] = "Display training details";
+$string['attestoodle:displaylearnerslist'] = "Display training details";
+$string['attestoodle:downloadcertificate'] = "Generate/Download certificates";
+$string['attestoodle:learnerdetails'] = "Display learner details";
+
 // Block strings.
 $string['plugin_access'] = 'Access to plugin';
 

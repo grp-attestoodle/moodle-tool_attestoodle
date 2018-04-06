@@ -31,6 +31,15 @@ $string['settings_description'] = "Vous permet de modifier certains paramètres 
 $string['settings_student_role_label'] = 'Id du rôle Etudiant';
 $string['settings_student_role_helper'] = 'Id du rôle Etudiant dans la base de données';
 
+// Capabilities strings.
+$string['attestoodle:displaytrainings'] = "Afficher les formations";
+$string['attestoodle:managetraining'] = "Modifier les jalons";
+$string['attestoodle:managetrainings'] = "Modifier les formations";
+$string['attestoodle:trainingdetails'] = "Afficher les détails d'une formation";
+$string['attestoodle:displaylearnerslist'] = "Afficher les détails d'une formation";
+$string['attestoodle:downloadcertificate'] = "Générer/Télécharger les attestations";
+$string['attestoodle:learnerdetails'] = "Afficher les détails d'un apprenant";
+
 // Block strings.
 $string['plugin_access'] = 'Accès au plug-in';
 
