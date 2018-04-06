@@ -23,12 +23,39 @@ namespace block_attestoodle\output\renderable;
 defined('MOODLE_INTERNAL') || die;
 
 use \renderable;
+use block_attestoodle\certificate;
 
 class training_learners_list implements renderable {
     public $training = null;
+    public $begindate;
+    public $actualbegindate;
+    public $begindateerror;
+    public $enddate;
+    public $actualenddate;
+    public $searchenddate;
+    public $enddateerror;
 
-    public function __construct($training) {
+    public function __construct($training, $begindate, $enddate) {
         $this->training = $training;
+
+        $this->begindate = isset($begindate) ? $begindate : (new \DateTime('first day of January ' . date('Y')))->format('Y-m-d');
+        $this->enddate = isset($enddate) ? $enddate : (new \DateTime('last day of December ' . date('Y')))->format('Y-m-d');
+        // Parsing begin date.
+        try {
+            $this->actualbegindate = new \DateTime($this->begindate);
+            $this->begindateerror = false;
+        } catch (\Exception $ex) {
+            $this->begindateerror = true;
+        }
+        // Parsing end date.
+        try {
+            $this->actualenddate = new \DateTime($this->enddate);
+            $this->searchenddate = clone $this->actualenddate;
+            $this->searchenddate->modify('+1 day');
+            $this->enddateerror = false;
+        } catch (\Exception $ex) {
+            $this->enddateerror = true;
+        }
     }
 
     public function training_exists() {
@@ -77,10 +104,15 @@ class training_learners_list implements renderable {
     public function get_table_content() {
         return array_map(function(\block_attestoodle\learner $o) {
             $stdclass = new \stdClass();
+            $totalmarkerperiod = $o->get_total_markers_period(
+                    $this->training->get_id(),
+                    $this->actualbegindate,
+                    $this->actualenddate
+            );
 
             $stdclass->lastname = $o->get_lastname();
             $stdclass->firstname = $o->get_firstname();
-            $stdclass->totalmarkers = parse_minutes_to_hours($o->get_total_markers());
+            $stdclass->totalmarkers = parse_minutes_to_hours($totalmarkerperiod);
 
             $parameters = array(
                 'page' => 'learnerdetails',
@@ -97,5 +129,30 @@ class training_learners_list implements renderable {
 
     public function get_unknown_training_message() {
         return get_string('training_details_unknown_training_id', 'block_attestoodle');
+    }
+
+    public function send_certificates_zipped() {
+        $zipper = \get_file_packer('application/zip');
+        $certificates = array();
+
+        foreach ($this->training->get_learners() as $learner) {
+            $certificate = new certificate($learner, $this->training, $this->actualbegindate, $this->actualenddate);
+
+            if ($certificate->file_exists()) {
+                $file = $certificate->retrieve_file();
+                $certificates[$file->get_filename()] = $file;
+            }
+        }
+
+        $filename = "certificates_{$this->training->get_name()}_";
+        $filename .= $this->actualbegindate->format("Ymd") . "_" . $this->actualenddate->format("Ymd");
+        $filename .= ".zip";
+        $temppath = make_request_directory() . $filename;
+
+        if ($zipper->archive_to_pathname($certificates, $temppath)) {
+            send_temp_file($temppath, $filename);
+        } else {
+            print_error("An error occured: impossible to send ZIP file.");
+        }
     }
 }

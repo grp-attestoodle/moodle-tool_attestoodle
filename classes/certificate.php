@@ -125,7 +125,7 @@ class certificate {
         return $certificateinfos;
     }
 
-    private function retrieve_file() {
+    public function retrieve_file() {
         $fs = get_file_storage();
         $fileinfos = $this->get_file_infos();
 
