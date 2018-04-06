@@ -156,34 +156,27 @@ class certificate {
     }
 
     public function create_file_on_server() {
-        $notificationmessage = "";
+        $status = 1;
         $fs = get_file_storage();
 
-        $fileinfos = $this->get_file_infos();
+        try {
+            $fileinfos = $this->get_file_infos();
 
-        if ($this->file_exists()) {
-            $oldfile = $this->retrieve_file();
-            $oldfile->delete();
-            $notificationmessage .= "L'ancien fichier d'attestation a été supprimé du serveur. <br />";
+            if ($this->file_exists()) {
+                $oldfile = $this->retrieve_file();
+                $oldfile->delete();
+                $status = 2;
+            }
+
+            $pdf = $this->generate_pdf_object();
+            $pdfstring = $pdf->Output('', 'S');
+
+            $file = $fs->create_file_from_string($fileinfos, $pdfstring);
+        } catch (\Exception $e) {
+            $status = 0;
         }
 
-        $pdf = $this->generate_pdf_object();
-        $pdfstring = $pdf->Output('', 'S');
-
-        $file = $fs->create_file_from_string($fileinfos, $pdfstring);
-        $notificationmessage .= "Le nouveau fichier d'attestation a été généré et stocké sur le serveur.";
-
-        // Prepare file URL.
-        $url = \moodle_url::make_pluginfile_url(
-                $file->get_contextid(),
-                $file->get_component(),
-                $file->get_filearea(),
-                null,
-                $file->get_filepath(),
-                $file->get_filename());
-        \core\notification::success($notificationmessage);
-
-        return $url;
+        return $status;
     }
 
     // TODO translations.

@@ -110,6 +110,38 @@ class training_learners_list implements renderable {
                     . get_string('learner_details_submit_button_value', 'block_attestoodle') . '" />'
                     . '</div></form>' . "\n";
 
+            // Certicates related links.
+            $output .= \html_writer::start_div('clearfix');
+            // Download ZIP link.
+            $output .= \html_writer::link(
+                    new \moodle_url(
+                            '/blocks/attestoodle/index.php',
+                            array(
+                                    'page' => 'learners',
+                                    'action' => 'downloadzip',
+                                    'training' => $this->training->get_id(),
+                                    'begindate' => $this->begindate,
+                                    'enddate' => $this->enddate
+                            )
+                    ),
+                    get_string('training_learners_list_download_zip_link', 'block_attestoodle'),
+                    array('class' => 'btn btn-default attestoodle-button'));
+            // Generate all certificates link.
+            $output .= \html_writer::link(
+                    new \moodle_url(
+                            '/blocks/attestoodle/index.php',
+                            array(
+                                    'page' => 'learners',
+                                    'action' => 'generatecertificates',
+                                    'training' => $this->training->get_id(),
+                                    'begindate' => $this->begindate,
+                                    'enddate' => $this->enddate
+                            )
+                    ),
+                    get_string('training_learners_list_generate_certificates_link', 'block_attestoodle'),
+                    array('class' => 'btn btn-default attestoodle-button'));
+            $output .= \html_writer::end_div();
+
             $output .= "<hr />";
         }
 
@@ -157,7 +189,52 @@ class training_learners_list implements renderable {
     }
 
     public function generate_certificates() {
-        // TODO (waiting for one certificate by training by learner in learner).
+        $errorcounter = 0;
+        $newfilecounter = 0;
+        $fileoverwrittencounter = 0;
+
+        $notificationmessage = "";
+
+        foreach ($this->training->get_learners() as $learner) {
+            $certificate = new certificate($learner, $this->training, $this->actualbegindate, $this->actualenddate);
+            $status = $certificate->create_file_on_server();
+            switch ($status) {
+                case 0:
+                    // Error.
+                    $errorcounter++;
+                    break;
+                case 1:
+                    // New file.
+                    $newfilecounter++;
+                    break;
+                case 2:
+                    // File overwritten.
+                    $fileoverwrittencounter++;
+                    break;
+            }
+        }
+        if ($newfilecounter > 0 || $fileoverwrittencounter > 0) {
+            if ($errorcounter > 0) {
+                $notificationmessage .= "Certificates generated with errors: <br />";
+                $notificationmessage .= "{$newfilecounter} new files <br />";
+                $notificationmessage .= "{$fileoverwrittencounter} files overwritten <br />";
+                $notificationmessage .= "{$errorcounter} errors.";
+                \core\notification::warning($notificationmessage);
+            } else {
+                $notificationmessage .= "Certificates generated! <br />";
+                $notificationmessage .= "{$newfilecounter} new files <br />";
+                $notificationmessage .= "{$fileoverwrittencounter} files overwritten <br />";
+                \core\notification::success($notificationmessage);
+            }
+        } else if ($errorcounter > 0) {
+            $notificationmessage .= "Problem with certificates generation! <br />";
+            $notificationmessage .= "{$errorcounter} errors.";
+            \core\notification::error($notificationmessage);
+        } else {
+            // No file generated.
+            $notificationmessage .= "No file created.";
+            \core\notification::warning($notificationmessage);
+        }
     }
 
     public function send_certificates_zipped() {
