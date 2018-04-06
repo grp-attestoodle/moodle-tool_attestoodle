@@ -73,7 +73,7 @@ $string['training_learners_list_table_header_column_id'] = 'ID';
 $string['training_learners_list_table_header_column_firstname'] = 'Firstname';
 $string['training_learners_list_table_header_column_lastname'] = 'Lastname';
 $string['training_learners_list_table_header_column_validated_activities'] = 'Validated activities';
-$string['training_learners_list_table_header_column_total_milestones'] = 'Total milestones';
+$string['training_learners_list_table_header_column_total_milestones'] = 'Total milestones within period';
 
 // Training details page strings.
 $string['training_details_page_title'] = "Moodle - Attestoodle - Training details";

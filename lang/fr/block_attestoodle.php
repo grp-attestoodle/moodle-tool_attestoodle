@@ -73,7 +73,7 @@ $string['training_learners_list_table_header_column_id'] = 'ID';
 $string['training_learners_list_table_header_column_firstname'] = 'Prénom';
 $string['training_learners_list_table_header_column_lastname'] = 'Nom';
 $string['training_learners_list_table_header_column_validated_activities'] = 'Activités validées';
-$string['training_learners_list_table_header_column_total_milestones'] = 'Total temps jalons validés';
+$string['training_learners_list_table_header_column_total_milestones'] = 'Total temps jalons validés sur la période';
 
 // Training details page strings.
 $string['training_details_page_title'] = "Moodle - Attestoodle - Gestion d'une formation";

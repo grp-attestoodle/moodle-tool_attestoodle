@@ -120,7 +120,13 @@ class learner_details implements \renderable {
             $output .= \html_writer::link(
                     new \moodle_url(
                             '/blocks/attestoodle/index.php',
-                            ['page' => 'learners', 'training' => $this->trainingid]),
+                            array(
+                                    'page' => 'learners',
+                                    'training' => $this->trainingid,
+                                    'begindate' =>$this->begindate,
+                                    'enddate' =>$this->enddate
+                            )
+                    ),
                     \get_string('backto_training_learners_list_btn_text', 'block_attestoodle'),
                     array('class' => 'attestoodle-link'));
             $output .= \html_writer::end_div();

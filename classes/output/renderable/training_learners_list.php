@@ -75,8 +75,6 @@ class training_learners_list implements renderable {
 
         if (!$this->training_exists()) {
             $output .= \html_writer::end_div();
-
-            $output .= get_string('training_details_unknown_training_id', 'block_attestoodle');
         } else {
             // Link to the training details (management).
             $output .= \html_writer::link(
@@ -87,6 +85,32 @@ class training_learners_list implements renderable {
                     get_string('training_learners_list_edit_training_link', 'block_attestoodle'),
                     array('class' => 'btn btn-default attestoodle-button'));
             $output .= \html_writer::end_div();
+            $output .= "<hr />";
+
+            // Basic form to allow user filtering the validated activities by begin and end dates.
+            // TODO use a moodle_quickform ?
+            $output .= '<form action="?" class="filterform"><div>'
+                    . '<input type="hidden" name="page" value="learners" />'
+                    . '<input type="hidden" name="training" value="' . $this->training->get_id() . '" />';
+            $output .= '<label for="input_begin_date">'
+                    . get_string('learner_details_begin_date_label', 'block_attestoodle') . '</label>'
+                    . '<input type="text" id="input_begin_date" name="begindate" value="' . $this->begindate . '" '
+                    . 'placeholder="ex: ' . (new \DateTime('now'))->format('Y-m-d') . '" />';
+            if ($this->begindateerror) {
+                echo "<span class='error'>Erreur de format</span>";
+            }
+            $output .= '<label for="input_end_date">'
+                    . get_string('learner_details_end_date_label', 'block_attestoodle') . '</label>'
+                    . '<input type="text" id="input_end_date" name="enddate" value="' . $this->enddate . '" '
+                    . 'placeholder="ex: ' . (new \DateTime('now'))->format('Y-m-d') . '" />';
+            if ($this->enddateerror) {
+                $output .= "<span class='error'>Erreur de format</span>";
+            }
+            $output .= '<input type="submit" value="'
+                    . get_string('learner_details_submit_button_value', 'block_attestoodle') . '" />'
+                    . '</div></form>' . "\n";
+
+            $output .= "<hr />";
         }
 
         return $output;
@@ -117,7 +141,9 @@ class training_learners_list implements renderable {
             $parameters = array(
                 'page' => 'learnerdetails',
                 'training' => $this->training->get_id(),
-                'learner' => $o->get_id());
+                'learner' => $o->get_id(),
+                'begindate' => $this->begindate,
+                'enddate' => $this->enddate);
             $url = new \moodle_url('/blocks/attestoodle/index.php', $parameters);
             $label = get_string('training_learners_list_table_link_details', 'block_attestoodle');
             $attributes = array('class' => 'attestoodle-button');
@@ -129,6 +155,10 @@ class training_learners_list implements renderable {
 
     public function get_unknown_training_message() {
         return get_string('training_details_unknown_training_id', 'block_attestoodle');
+    }
+
+    public function generate_certificates() {
+        // TODO (waiting for one certificate by training by learner in learner).
     }
 
     public function send_certificates_zipped() {
