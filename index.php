@@ -21,6 +21,7 @@ require_once(dirname(__FILE__) . '/../../config.php');
 require_once($CFG->libdir.'/pdflib.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/lib.php');
 
+require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/learners_factory.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/trainings_list.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/trainings_management.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/training_learners_list.php');
@@ -29,9 +30,11 @@ require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/traini
 
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/certificate.php');
 
+use block_attestoodle\factories\learners_factory;
 use block_attestoodle\factories\trainings_factory;
 use block_attestoodle\factories\categories_factory;
 use block_attestoodle\output\renderable;
+use block_attestoodle\certificate;
 
 $page = optional_param('page', '', PARAM_ALPHA);
 $action = optional_param('action', '', PARAM_ALPHA);
@@ -72,10 +75,22 @@ switch($page) {
         $PAGE->set_heading($renderable->get_heading());
         break;
     case 'learners':
+        // Required params.
         $trainingid = required_param('training', PARAM_INT);
+        // Optional params.
+        $begindate = optional_param('begindate', null, PARAM_ALPHANUMEXT);
+        $enddate = optional_param('enddate', null, PARAM_ALPHANUMEXT);
+
         $PAGE->set_url(new moodle_url(
                 '/blocks/attestoodle/index.php',
-                ['page' => $page, 'training' => $trainingid]));
+                array(
+                        'page' => $page,
+                        'action' => $action,
+                        'training' => $trainingid,
+                        'begindate' => $begindate,
+                        'enddate' => $enddate
+                )
+        ));
         $PAGE->set_title(get_string('training_learners_list_page_title', 'block_attestoodle'));
 
         $userhascapability = has_capability('block/attestoodle:displaylearnerslist', $context);
@@ -91,12 +106,18 @@ switch($page) {
             $PAGE->set_heading(get_string('training_learners_list_main_title_error', 'block_attestoodle'));
         }
 
-        $renderable = new renderable\training_learners_list($training);
+        $renderable = new renderable\training_learners_list($training, $begindate, $enddate);
+
+        if ($action == 'downloadzip') {
+            $renderable->send_certificates_zipped();
+        } else if ($action == 'generatecertificates') {
+            $renderable->generate_certificates();
+        }
         break;
     case 'learnerdetails':
-        // Required params.
-        $trainingid = required_param('training', PARAM_INT);
+        // Required param.
         $learnerid = required_param('learner', PARAM_INT);
+
         // Optional params.
         $begindate = optional_param('begindate', null, PARAM_ALPHANUMEXT);
         $enddate = optional_param('enddate', null, PARAM_ALPHANUMEXT);
@@ -106,7 +127,6 @@ switch($page) {
                 array(
                         'page' => $page,
                         'action' => $action,
-                        'training' => $trainingid,
                         'learner' => $learnerid,
                         'begindate' => $begindate,
                         'enddate' => $enddate
@@ -120,9 +140,10 @@ switch($page) {
         $userhascapability = has_capability('block/attestoodle:learnerdetails', $context);
         require_capability('block/attestoodle:learnerdetails', $context);
 
-        $renderable = new renderable\learner_details($learnerid, $trainingid, $begindate, $enddate);
+        $renderable = new renderable\learner_details($learnerid, $begindate, $enddate);
         if ($action == 'generatecertificate') {
-            $renderable->generate_certificate_file();
+            $trainingid = required_param('training', PARAM_INT);
+            $renderable->generate_certificate_file($trainingid);
         }
         $PAGE->set_heading($renderable->get_heading());
         break;

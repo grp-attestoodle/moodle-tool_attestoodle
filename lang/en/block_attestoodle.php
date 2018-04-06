@@ -31,6 +31,15 @@ $string['settings_description'] = 'Allow you to modify some configuration of the
 $string['settings_student_role_label'] = 'Student role ID';
 $string['settings_student_role_helper'] = 'Id of the student role in database';
 
+// Capabilities strings.
+$string['attestoodle:displaytrainings'] = "Display trainings list";
+$string['attestoodle:managetraining'] = "Modify milestones";
+$string['attestoodle:managetrainings'] = "Modify trainings";
+$string['attestoodle:trainingdetails'] = "Display training details";
+$string['attestoodle:displaylearnerslist'] = "Display training details";
+$string['attestoodle:downloadcertificate'] = "Generate/Download certificates";
+$string['attestoodle:learnerdetails'] = "Display learner details";
+
 // Block strings.
 $string['plugin_access'] = 'Access to plugin';
 
@@ -66,14 +75,16 @@ $string['trainings_management_info_form_canceled'] = 'The form has been canceled
 $string['training_learners_list_page_title'] = 'Moodle - Attestoodle - Learners list';
 $string['training_learners_list_main_title'] = 'Training {$a} report';
 $string['training_learners_list_main_title_error'] = 'Error!';
-$string['training_learners_list_heading'] = '{$a} students in the training';
 $string['training_learners_list_edit_training_link'] = 'Manage training';
+$string['training_learners_list_download_zip_link'] = 'Download existing certificates';
+$string['training_learners_list_generate_certificates_link'] = 'Generate all certificates';
+$string['training_learners_list_heading'] = '{$a} students in the training';
 $string['training_learners_list_table_link_details'] = 'Details';
 $string['training_learners_list_table_header_column_id'] = 'ID';
 $string['training_learners_list_table_header_column_firstname'] = 'Firstname';
 $string['training_learners_list_table_header_column_lastname'] = 'Lastname';
 $string['training_learners_list_table_header_column_validated_activities'] = 'Validated activities';
-$string['training_learners_list_table_header_column_total_milestones'] = 'Total milestones';
+$string['training_learners_list_table_header_column_total_milestones'] = 'Total milestones within period';
 
 // Training details page strings.
 $string['training_details_page_title'] = "Moodle - Attestoodle - Training details";
@@ -95,7 +106,8 @@ $string['learner_details_unknown_learner_id'] = "No student with the ID: ";
 $string['learner_details_begin_date_label'] = "Begin date: ";
 $string['learner_details_end_date_label'] = "End date: ";
 $string['learner_details_submit_button_value'] = "Filter";
-$string['learner_details_no_validated_activities'] = "No validated activities within the specified period";
+$string['learner_details_no_training_registered'] = "Selected learner is not registered to any training.";
+$string['learner_details_no_validated_activities'] = "No validated activity within the specified period for this training.";
 $string['learner_details_table_header_column_name'] = "Milestone";
 $string['learner_details_table_header_column_type'] = "Type";
 $string['learner_details_table_header_column_training_name'] = "Training";
@@ -105,8 +117,8 @@ $string['learner_details_table_header_column_milestones'] = "Milestone credit";
 $string['learner_details_generate_certificate_link'] = "Generate certificate";
 $string['learner_details_regenerate_certificate_link'] = "Generate a new certificate";
 
-// Download certificate page strings.
-$string['download_certificate_file_link_text'] = "Download file";
+// Download certificate page strings. @TODO move to learner details strings.
+$string['download_certificate_file_link_text'] = "Download certificate";
 
 // Unknown strings.
 // @TODO review these strings.

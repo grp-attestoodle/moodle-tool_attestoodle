@@ -26,6 +26,8 @@ namespace block_attestoodle;
 
 defined('MOODLE_INTERNAL') || die;
 
+use block_attestoodle\factories\trainings_factory;
+
 class learner {
     /** @var string Id of the learner */
     private $id;
@@ -82,7 +84,7 @@ class learner {
     }
 
     /**
-     * Methods that return the total of markers validated by the learner in
+     * Methods that return the total amount of markers validated by the learner in
      * an optional specified training
      *
      * @param string $trainingid Id of the training to filter the activities
@@ -101,6 +103,49 @@ class learner {
             }
         }
         return $totalminutes;
+    }
+
+    /**
+     * Methods that return the total amount of markers validated by the learner
+     * within a training and an optional period of time
+     *
+     * @param string $trainingid Id of the training to filter the activities
+     * @param \DateTime $begindate The begining date to filter the activities
+     * @param \DateTime $enddate The ending date to filter the activities
+     * @return integer The total amount of minutes validated by the learner in
+     * the specified training and the specified period of time
+     */
+    public function get_total_markers_period($trainingid, $begindate = null, $enddate = null) {
+        $totalminutes = 0;
+        $validatedactivities = $this->get_validated_activities_with_marker($begindate, $enddate);
+        foreach ($validatedactivities as $va) {
+            $act = $va->get_activity();
+            if ($act->get_course()->get_training()->get_id() == $trainingid) {
+                $totalminutes += $act->get_marker();
+            }
+        }
+        return $totalminutes;
+    }
+
+    /**
+     * Methods that return all the trainings where the learner is registered in.
+     *
+     * @return training[] The trainings registered by the learner.
+     */
+    public function retrieve_training_registered() {
+        $trainingsregistered = array();
+
+        $alltraining = trainings_factory::get_instance()->get_trainings();
+        foreach ($alltraining as $t) {
+            $alllearners = $t->get_learners();
+            foreach ($alllearners as $l) {
+                if ($l->get_id() == $this->id) {
+                    $trainingsregistered[$t->get_id()] = $t;
+                }
+            }
+        }
+
+        return $trainingsregistered;
     }
 
     /**

@@ -31,6 +31,15 @@ $string['settings_description'] = "Vous permet de modifier certains paramètres 
 $string['settings_student_role_label'] = 'Id du rôle Etudiant';
 $string['settings_student_role_helper'] = 'Id du rôle Etudiant dans la base de données';
 
+// Capabilities strings.
+$string['attestoodle:displaytrainings'] = "Afficher les formations";
+$string['attestoodle:managetraining'] = "Modifier les jalons";
+$string['attestoodle:managetrainings'] = "Modifier les formations";
+$string['attestoodle:trainingdetails'] = "Afficher les détails d'une formation";
+$string['attestoodle:displaylearnerslist'] = "Afficher les détails d'une formation";
+$string['attestoodle:downloadcertificate'] = "Générer/Télécharger les attestations";
+$string['attestoodle:learnerdetails'] = "Afficher les détails d'un apprenant";
+
 // Block strings.
 $string['plugin_access'] = 'Accès au plug-in';
 
@@ -66,14 +75,16 @@ $string['trainings_management_info_form_canceled'] = 'Le formulaire a été annu
 $string['training_learners_list_page_title'] = 'Moodle - Attestoodle - Liste des apprenants';
 $string['training_learners_list_main_title'] = 'Rapport formation {$a}';
 $string['training_learners_list_main_title_error'] = 'Erreur !';
-$string['training_learners_list_heading'] = '{$a} apprenants dans la formation';
 $string['training_learners_list_edit_training_link'] = 'Gérer la formation';
+$string['training_learners_list_download_zip_link'] = 'Télécharger les attestations existantes';
+$string['training_learners_list_generate_certificates_link'] = 'Générer toutes les attestations';
+$string['training_learners_list_heading'] = '{$a} apprenants dans la formation';
 $string['training_learners_list_table_link_details'] = 'Détails';
 $string['training_learners_list_table_header_column_id'] = 'ID';
 $string['training_learners_list_table_header_column_firstname'] = 'Prénom';
 $string['training_learners_list_table_header_column_lastname'] = 'Nom';
 $string['training_learners_list_table_header_column_validated_activities'] = 'Activités validées';
-$string['training_learners_list_table_header_column_total_milestones'] = 'Total temps jalons validés';
+$string['training_learners_list_table_header_column_total_milestones'] = 'Total temps jalons validés sur la période';
 
 // Training details page strings.
 $string['training_details_page_title'] = "Moodle - Attestoodle - Gestion d'une formation";
@@ -95,7 +106,8 @@ $string['learner_details_unknown_learner_id'] = "Pas d'apprenant avec l'identifi
 $string['learner_details_begin_date_label'] = "Date de début : ";
 $string['learner_details_end_date_label'] = "Date de fin : ";
 $string['learner_details_submit_button_value'] = "Filtrer";
-$string['learner_details_no_validated_activities'] = "Aucune activités validées dans la période sélectionnée";
+$string['learner_details_no_training_registered'] = "L'apprenant n'est inscrit à aucune formation.";
+$string['learner_details_no_validated_activities'] = "Aucune activité validée dans la période sélectionnée pour cette formation.";
 $string['learner_details_table_header_column_name'] = "Jalon";
 $string['learner_details_table_header_column_type'] = "Type";
 $string['learner_details_table_header_column_training_name'] = "Formation";
@@ -105,8 +117,8 @@ $string['learner_details_table_header_column_milestones'] = "Temps jalon crédit
 $string['learner_details_generate_certificate_link'] = "Générer l'attestation";
 $string['learner_details_regenerate_certificate_link'] = "Générer une nouvelle attestation";
 
-// Download certificate page strings.
-$string['download_certificate_file_link_text'] = "Télécharger le fichier";
+// Download certificate page strings. @TODO move to learner details strings.
+$string['download_certificate_file_link_text'] = "Télécharger l'attestation";
 
 // Unknown strings.
 // @todo review these strings.
