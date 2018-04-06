@@ -95,7 +95,8 @@ $string['learner_details_unknown_learner_id'] = "No student with the ID: ";
 $string['learner_details_begin_date_label'] = "Begin date: ";
 $string['learner_details_end_date_label'] = "End date: ";
 $string['learner_details_submit_button_value'] = "Filter";
-$string['learner_details_no_validated_activities'] = "No validated activities within the specified period";
+$string['learner_details_no_training_registered'] = "Selected learner is not registered to any training.";
+$string['learner_details_no_validated_activities'] = "No validated activity within the specified period for this training.";
 $string['learner_details_table_header_column_name'] = "Milestone";
 $string['learner_details_table_header_column_type'] = "Type";
 $string['learner_details_table_header_column_training_name'] = "Training";
@@ -105,8 +106,8 @@ $string['learner_details_table_header_column_milestones'] = "Milestone credit";
 $string['learner_details_generate_certificate_link'] = "Generate certificate";
 $string['learner_details_regenerate_certificate_link'] = "Generate a new certificate";
 
-// Download certificate page strings.
-$string['download_certificate_file_link_text'] = "Download file";
+// Download certificate page strings. @TODO move to learner details strings.
+$string['download_certificate_file_link_text'] = "Download certificate";
 
 // Unknown strings.
 // @TODO review these strings.

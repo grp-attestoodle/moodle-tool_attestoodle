@@ -140,7 +140,6 @@ class training_learners_list implements renderable {
 
             $parameters = array(
                 'page' => 'learnerdetails',
-                'training' => $this->training->get_id(),
                 'learner' => $o->get_id(),
                 'begindate' => $this->begindate,
                 'enddate' => $this->enddate);

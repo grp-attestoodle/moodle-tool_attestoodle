@@ -116,22 +116,32 @@ class renderer extends \plugin_renderer_base {
 
         $output .= $obj->get_header();
 
-        if ($obj->training_exists() && $obj->learner_exists()) {
+        if ($obj->learner_exists()) {
             // If the training and learner ids are valid...
             // Print validated activities informations (with marker only).
-            if (count($obj->get_learner_validated_activities()) > 0) {
-                $table = new \html_table();
-                $table->head = $obj->get_table_head();
-                $table->data = $obj->get_table_content();
+            $trainingsregistered = $obj->get_learner_registered_trainings();
 
-                $output .= \html_writer::table($table);
+            if (count($trainingsregistered) > 0) {
+                foreach ($trainingsregistered as $tr) {
+                    $trainingname = $tr->get_name();
+                    $output .= $obj->get_table_heading($tr);
 
-                $output .= "<hr />";
+                    if ($obj->training_has_validated_activites($tr)) {
+                        $table = new \html_table();
+                        $table->head = $obj->get_table_head();
+                        $table->data = $obj->get_table_content($tr);
 
-                // TODO footer should be displayed even if there is no validated activities.
-                $output .= $obj->get_footer();
+                        $output .= \html_writer::table($table);
+                    } else {
+                        $output .= $obj->get_no_validated_activities_message();
+                        $output .= "<br />";
+                    }
+
+                    $output .= $obj->get_footer($tr);
+                    $output .= "<hr />";
+                }
             } else {
-                $output .= $obj->get_no_validated_activities_message();
+                $output .= $obj->get_no_training_registered_message();
             }
         }
 

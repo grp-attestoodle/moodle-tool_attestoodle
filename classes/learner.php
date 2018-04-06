@@ -26,6 +26,8 @@ namespace block_attestoodle;
 
 defined('MOODLE_INTERNAL') || die;
 
+use block_attestoodle\factories\trainings_factory;
+
 class learner {
     /** @var string Id of the learner */
     private $id;
@@ -123,6 +125,27 @@ class learner {
             }
         }
         return $totalminutes;
+    }
+
+    /**
+     * Methods that return all the trainings where the learner is registered in.
+     *
+     * @return training[] The trainings registered by the learner.
+     */
+    public function retrieve_training_registered() {
+        $trainingsregistered = array();
+
+        $alltraining = trainings_factory::get_instance()->get_trainings();
+        foreach ($alltraining as $t) {
+            $alllearners = $t->get_learners();
+            foreach($alllearners as $l) {
+                if ($l->get_id() == $this->id) {
+                    $trainingsregistered[$t->get_id()] = $t;
+                }
+            }
+        }
+
+        return $trainingsregistered;
     }
 
     /**

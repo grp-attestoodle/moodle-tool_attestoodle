@@ -26,7 +26,6 @@
 namespace block_attestoodle\factories;
 
 use block_attestoodle\utils\singleton;
-use block_attestoodle\utils\db_accessor;
 use block_attestoodle\factories\categories_factory;
 use block_attestoodle\training;
 

@@ -110,12 +110,14 @@ switch($page) {
 
         if ($action == 'downloadzip') {
             $renderable->send_certificates_zipped();
+        } else if ($action == 'generatecertificates') {
+            $renderable->generate_certificates();
         }
         break;
     case 'learnerdetails':
-        // Required params.
-        $trainingid = required_param('training', PARAM_INT);
+        // Required param.
         $learnerid = required_param('learner', PARAM_INT);
+
         // Optional params.
         $begindate = optional_param('begindate', null, PARAM_ALPHANUMEXT);
         $enddate = optional_param('enddate', null, PARAM_ALPHANUMEXT);
@@ -125,7 +127,6 @@ switch($page) {
                 array(
                         'page' => $page,
                         'action' => $action,
-                        'training' => $trainingid,
                         'learner' => $learnerid,
                         'begindate' => $begindate,
                         'enddate' => $enddate
@@ -139,9 +140,10 @@ switch($page) {
         $userhascapability = has_capability('block/attestoodle:learnerdetails', $context);
         require_capability('block/attestoodle:learnerdetails', $context);
 
-        $renderable = new renderable\learner_details($learnerid, $trainingid, $begindate, $enddate);
+        $renderable = new renderable\learner_details($learnerid, $begindate, $enddate);
         if ($action == 'generatecertificate') {
-            $renderable->generate_certificate_file();
+            $trainingid = required_param('training', PARAM_INT);
+            $renderable->generate_certificate_file($trainingid);
         }
         $PAGE->set_heading($renderable->get_heading());
         break;

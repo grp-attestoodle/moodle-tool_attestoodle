@@ -57,24 +57,29 @@ class certificate {
 
     private function get_file_name() {
         $filename = "certificate_{$this->learner->get_firstname()}{$this->learner->get_lastname()}_";
-        $filename .= $this->begindate->format("Ymd") . "_" . $this->enddate->format("Ymd");
+        $filename .= "{$this->begindate->format("Ymd")}_{$this->enddate->format("Ymd")}_";
+        $filename .= $this->training->get_name();
         $filename .= ".pdf";
 
         return $filename;
     }
 
     private function get_pdf_informations() {
-        $validatedmilestones = $this->learner->get_validated_activities_with_marker();
         $begindate = clone $this->begindate;
         $searchenddate = clone $this->enddate;
         $searchenddate->modify('+1 day');
-        // Filtering activities based on validation time.
-        $filteredmilestones = array_filter($validatedmilestones, function($va) use($begindate, $searchenddate) {
-            $dt = $va->get_datetime();
-            if ($dt < $begindate || $dt > $searchenddate) {
-                return false;
-            } else {
+        $trainingid = $this->training->get_id();
+        $trainingname = $this->training->get_name();
+        $totalminutes = 0;
+
+        $validatedmilestones = $this->learner->get_validated_activities_with_marker($begindate, $searchenddate);
+        // Filtering activities based on the training.
+        $filteredmilestones = array_filter($validatedmilestones, function($va) use($trainingid) {
+            $act = $va->get_activity();
+            if ($act->get_course()->get_training()->get_id() == $trainingid) {
                 return true;
+            } else {
+                return false;
             }
         });
 
@@ -84,43 +89,34 @@ class certificate {
             // Retrieve activity.
             $activity = $fva->get_activity();
 
-            // Retrieve current activity training.
-            $trainingname = $activity->get_course()->get_training()->get_name();
-
-            // Instanciate the training in the global array if needed.
-            if (!array_key_exists($trainingname, $activitiesstructured)) {
-                $activitiesstructured[$trainingname] = array(
-                    "totalminutes" => 0,
-                    "activities" => array()
-                );
-            }
-
             // Increment total minutes for the training.
-            $activitiesstructured[$trainingname]["totalminutes"] += $activity->get_marker();
+            $totalminutes += $activity->get_marker();
 
             // Retrieve current activity informations.
             $course = $activity->get_course();
             $courseid = $course->get_id();
             $coursename = $course->get_name();
 
-            // Instanciate course under training in the global array if needed.
-            if (!array_key_exists($courseid, $activitiesstructured[$trainingname]["activities"])) {
-                $activitiesstructured[$trainingname]["activities"][$courseid] = array(
+            // Instanciate course in the global array if needed.
+            if (!array_key_exists($courseid, $activitiesstructured)) {
+                $activitiesstructured[$courseid] = array(
                     "totalminutes" => 0,
                     "coursename" => $coursename
                 );
             }
             // Increment total minutes for the course id in the training.
-            $activitiesstructured[$trainingname]["activities"][$courseid]["totalminutes"] += $activity->get_marker();
+            $activitiesstructured[$courseid]["totalminutes"] += $activity->get_marker();
         }
         // Retrieve global informations.
-        // ...@todo translations.
+        // ...@TODO translations.
         $period = "Du {$this->begindate->format("d/m/Y")} au {$this->enddate->format("d/m/Y")}";
 
         $certificateinfos = new \stdClass();
         $certificateinfos->learnername = $this->learner->get_fullname();
+        $certificateinfos->trainingname = $trainingname;
+        $certificateinfos->totalminutes = $totalminutes;
         $certificateinfos->period = $period;
-        $certificateinfos->certificates = $activitiesstructured;
+        $certificateinfos->activities = $activitiesstructured;
 
         return $certificateinfos;
     }
@@ -190,6 +186,7 @@ class certificate {
         return $url;
     }
 
+    // TODO translations.
     private function generate_pdf_object() {
         // PDF Class instanciation.
         $pdf = new \pdf();
@@ -204,88 +201,85 @@ class certificate {
         $pdf->SetAutoPagebreak(false);
         $pdf->SetMargins(0, 0, 0);
 
-        // TODO translations.
-        foreach ($certificateinfos->certificates as $certificatekey => $certificate) {
-            $pdf->AddPage();
+        $pdf->AddPage();
 
-            // Logo : 80 de largeur et 55 de hauteur.
-            // To add logo : $pdf->Image('logo_societe.png', 10, 10, 80, 55);
-            // Title.
-            $title = "Attestation mensuelle : temps d'apprentissage";
-            $pdf->SetFont("helvetica", "", 14);
-            $pdf->SetXY(0, 74);
-            $pdf->Cell($pdf->GetPageWidth(), 0, $title, 0, 0, "C");
+        // Logo : 80 de largeur et 55 de hauteur.
+        // To add logo : $pdf->Image('logo_societe.png', 10, 10, 80, 55);
+        // Title.
+        $title = "Attestation mensuelle : temps d'apprentissage";
+        $pdf->SetFont("helvetica", "", 14);
+        $pdf->SetXY(0, 74);
+        $pdf->Cell($pdf->GetPageWidth(), 0, $title, 0, 0, "C");
 
-            // Period.
-            $period = $certificateinfos->period;
-            $pdf->SetFont("helvetica", "B", 14);
-            $pdf->SetXY(0, 80);
-            $pdf->Cell($pdf->GetPageWidth(), 0, $period, 0, 0, "C");
+        // Period.
+        $period = $certificateinfos->period;
+        $pdf->SetFont("helvetica", "B", 14);
+        $pdf->SetXY(0, 80);
+        $pdf->Cell($pdf->GetPageWidth(), 0, $period, 0, 0, "C");
 
-            // Learner name.
-            $learnername = "Nom du stagiaire : " . $this->learner->get_fullname();
-            $pdf->SetFont("helvetica", "", 10);
-            $pdf->SetXY(10, 90);
-            $pdf->Cell($pdf->GetStringWidth($learnername), 0, $learnername, 0, "L");
+        // Learner name.
+        $learnername = "Nom du stagiaire : " . $certificateinfos->learnername;
+        $pdf->SetFont("helvetica", "", 10);
+        $pdf->SetXY(10, 90);
+        $pdf->Cell($pdf->GetStringWidth($learnername), 0, $learnername, 0, "L");
 
-            // Training name.
-            $trainingname = "Intitulé de la formation : " . $certificatekey;
-            $pdf->SetXY(10, 95);
-            $pdf->Cell($pdf->GetStringWidth($trainingname), 0, $trainingname, 0, "L");
+        // Training name.
+        $trainingname = "Intitulé de la formation : " . $certificateinfos->trainingname;
+        $pdf->SetXY(10, 95);
+        $pdf->Cell($pdf->GetStringWidth($trainingname), 0, $trainingname, 0, "L");
 
-            // Total amount of learning time.
-            $totalvalidatedtime = "Temps total validé sur la période : " . parse_minutes_to_hours($certificate["totalminutes"]);
-            $pdf->SetXY(10, 100);
-            $pdf->Cell($pdf->GetStringWidth($totalvalidatedtime), 0, $totalvalidatedtime, 0, "L");
+        // Total amount of learning time.
+        $totalvalidatedtime = "Temps total validé sur la période : " . parse_minutes_to_hours($certificateinfos->totalminutes);
+        $pdf->SetXY(10, 100);
+        $pdf->Cell($pdf->GetStringWidth($totalvalidatedtime), 0, $totalvalidatedtime, 0, "L");
 
-            // Validated activities details.
-            $pdf->SetXY(10, 110);
-            // Main borders.
-            $pdf->SetLineWidth(0.1);
-            $pdf->Rect(10, 110, 190, 90, "D");
-            // Header border.
-            $pdf->Line(10, 125, 200, 125);
-            // Columns.
-            $pdf->Line(150, 110, 150, 200);
-            // Column title "type".
-            $pdf->SetFont('helvetica', 'B', 10);
-            $pdf->SetFillColor(210, 210, 210);
-            $pdf->SetXY(10, 110);
-            $pdf->Cell(140, 15, "Cours suivis", 1, 0, 'C', true);
-            // Column title "total hours".
-            $pdf->SetXY(150, 110);
-            $pdf->Cell(50, 15, "Total heures", 1, 0, 'C', true);
+        // Validated activities details.
+        $pdf->SetXY(10, 110);
+        // Main borders.
+        $pdf->SetLineWidth(0.1);
+        $pdf->Rect(10, 110, 190, 90, "D");
+        // Header border.
+        $pdf->Line(10, 125, 200, 125);
+        // Columns.
+        $pdf->Line(150, 110, 150, 200);
+        // Column title "type".
+        $pdf->SetFont('helvetica', 'B', 10);
+        $pdf->SetFillColor(210, 210, 210);
+        $pdf->SetXY(10, 110);
+        $pdf->Cell(140, 15, "Cours suivis", 1, 0, 'C', true);
+        // Column title "total hours".
+        $pdf->SetXY(150, 110);
+        $pdf->Cell(50, 15, "Total heures", 1, 0, 'C', true);
 
-            // Activities lines.
-            $y = 125;
-            $lineheight = 8;
-            $pdf->SetFont('helvetica', '', 10);
-            foreach ($certificate["activities"] as $course => $obj) {
-                $coursename = $obj["coursename"];
-                $total = $obj["totalminutes"];
-                $pdf->SetXY(10, $y);
-                // Activity type.
-                $pdf->Cell(140, $lineheight, $coursename, 0, 0, 'L');
-                // Activity total hours.
-                $pdf->SetXY(150, $y);
-                $pdf->Cell(50, $lineheight, parse_minutes_to_hours($total), 0, 0, 'C');
-                $y += $lineheight;
-                $pdf->Line(10, $y, 200, $y);
-            }
-
-            // Legal clause.
-            $pdf->SetLineWidth(0.1);
-            $pdf->Rect(5, 240, 200, 6, "D");
-            $pdf->SetXY(0, 240);
-            $pdf->SetFont('helvetica', '', 7);
-            $pdf->Cell($pdf->GetPageWidth(), 7, "Cette attestation est faite pour servir et valoir ce que de droit", 0, 0, 'C');
-
-            // Signatures.
-            $pdf->SetXY(10, 250);
-            $pdf->SetFont('helvetica', '', 10);
-            $pdf->Cell($pdf->GetPageWidth() / 2 - 10, 0, "Signature stagiaire", 0, 0, 'L');
-            $pdf->Cell($pdf->GetPageWidth() / 2 - 10, 0, "Signature responsable de formation", 0, 0, 'R');
+        // Activities lines.
+        $y = 125;
+        $lineheight = 8;
+        $pdf->SetFont('helvetica', '', 10);
+        foreach ($certificateinfos->activities as $course) {
+            $coursename = $course["coursename"];
+            $totalminutes = $course["totalminutes"];
+            $pdf->SetXY(10, $y);
+            // Activity type.
+            $pdf->Cell(140, $lineheight, $coursename, 0, 0, 'L');
+            // Activity total hours.
+            $pdf->SetXY(150, $y);
+            $pdf->Cell(50, $lineheight, parse_minutes_to_hours($totalminutes), 0, 0, 'C');
+            $y += $lineheight;
+            $pdf->Line(10, $y, 200, $y);
         }
+
+        // Legal clause.
+        $pdf->SetLineWidth(0.1);
+        $pdf->Rect(5, 240, 200, 6, "D");
+        $pdf->SetXY(0, 240);
+        $pdf->SetFont('helvetica', '', 7);
+        $pdf->Cell($pdf->GetPageWidth(), 7, "Cette attestation est faite pour servir et valoir ce que de droit", 0, 0, 'C');
+
+        // Signatures.
+        $pdf->SetXY(10, 250);
+        $pdf->SetFont('helvetica', '', 10);
+        $pdf->Cell($pdf->GetPageWidth() / 2 - 10, 0, "Signature stagiaire", 0, 0, 'L');
+        $pdf->Cell($pdf->GetPageWidth() / 2 - 10, 0, "Signature responsable de formation", 0, 0, 'R');
 
         return $pdf;
     }

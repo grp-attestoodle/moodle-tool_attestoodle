@@ -95,7 +95,8 @@ $string['learner_details_unknown_learner_id'] = "Pas d'apprenant avec l'identifi
 $string['learner_details_begin_date_label'] = "Date de début : ";
 $string['learner_details_end_date_label'] = "Date de fin : ";
 $string['learner_details_submit_button_value'] = "Filtrer";
-$string['learner_details_no_validated_activities'] = "Aucune activités validées dans la période sélectionnée";
+$string['learner_details_no_training_registered'] = "L'apprenant n'est inscrit à aucune formation.";
+$string['learner_details_no_validated_activities'] = "Aucune activité validée dans la période sélectionnée pour cette formation.";
 $string['learner_details_table_header_column_name'] = "Jalon";
 $string['learner_details_table_header_column_type'] = "Type";
 $string['learner_details_table_header_column_training_name'] = "Formation";
@@ -105,8 +106,8 @@ $string['learner_details_table_header_column_milestones'] = "Temps jalon crédit
 $string['learner_details_generate_certificate_link'] = "Générer l'attestation";
 $string['learner_details_regenerate_certificate_link'] = "Générer une nouvelle attestation";
 
-// Download certificate page strings.
-$string['download_certificate_file_link_text'] = "Télécharger le fichier";
+// Download certificate page strings. @TODO move to learner details strings.
+$string['download_certificate_file_link_text'] = "Télécharger l'attestation";
 
 // Unknown strings.
 // @todo review these strings.
