@@ -138,7 +138,7 @@ class learner {
         $alltraining = trainings_factory::get_instance()->get_trainings();
         foreach ($alltraining as $t) {
             $alllearners = $t->get_learners();
-            foreach($alllearners as $l) {
+            foreach ($alllearners as $l) {
                 if ($l->get_id() == $this->id) {
                     $trainingsregistered[$t->get_id()] = $t;
                 }
