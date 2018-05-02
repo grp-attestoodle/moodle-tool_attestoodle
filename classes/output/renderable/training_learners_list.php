@@ -191,7 +191,7 @@ class training_learners_list implements renderable {
     public function generate_certificates() {
         $errorcounter = 0;
         $newfilecounter = 0;
-        $fileoverwrittencounter = 0;
+        $overwrittencounter = 0;
 
         $notificationmessage = "";
 
@@ -209,21 +209,21 @@ class training_learners_list implements renderable {
                     break;
                 case 2:
                     // File overwritten.
-                    $fileoverwrittencounter++;
+                    $overwrittencounter++;
                     break;
             }
         }
-        if ($newfilecounter > 0 || $fileoverwrittencounter > 0) {
+        if ($newfilecounter > 0 || $overwrittencounter > 0) {
             if ($errorcounter > 0) {
                 $notificationmessage .= "Certificates generated with errors: <br />";
                 $notificationmessage .= "{$newfilecounter} new files <br />";
-                $notificationmessage .= "{$fileoverwrittencounter} files overwritten <br />";
+                $notificationmessage .= "{$overwrittencounter} files overwritten <br />";
                 $notificationmessage .= "{$errorcounter} errors.";
                 \core\notification::warning($notificationmessage);
             } else {
                 $notificationmessage .= "Certificates generated! <br />";
                 $notificationmessage .= "{$newfilecounter} new files <br />";
-                $notificationmessage .= "{$fileoverwrittencounter} files overwritten <br />";
+                $notificationmessage .= "{$overwrittencounter} files overwritten <br />";
                 \core\notification::success($notificationmessage);
             }
         } else if ($errorcounter > 0) {

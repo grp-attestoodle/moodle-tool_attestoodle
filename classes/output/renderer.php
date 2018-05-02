@@ -123,7 +123,6 @@ class renderer extends \plugin_renderer_base {
 
             if (count($trainingsregistered) > 0) {
                 foreach ($trainingsregistered as $tr) {
-                    $trainingname = $tr->get_name();
                     $output .= $obj->get_table_heading($tr);
 
                     if ($obj->training_has_validated_activites($tr)) {

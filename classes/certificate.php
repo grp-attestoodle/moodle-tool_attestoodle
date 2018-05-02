@@ -172,6 +172,10 @@ class certificate {
             $pdfstring = $pdf->Output('', 'S');
 
             $file = $fs->create_file_from_string($fileinfos, $pdfstring);
+
+            if (!$file) {
+                $status = 0;
+            }
         } catch (\Exception $e) {
             $status = 0;
         }

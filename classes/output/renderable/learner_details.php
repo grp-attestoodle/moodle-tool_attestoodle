@@ -216,14 +216,14 @@ class learner_details implements \renderable {
     public function get_footer($training) {
         $output = "";
 
-        $generatecertificatelinktext = get_string('learner_details_generate_certificate_link', 'block_attestoodle');
+        $linktext = get_string('learner_details_generate_certificate_link', 'block_attestoodle');
         $certificate = new certificate($this->learner, $training, $this->actualbegindate, $this->actualenddate);
 
         $output .= \html_writer::start_div('clearfix');
 
         // If the file already exists, add a link to it.
         if ($certificate->file_exists()) {
-            $generatecertificatelinktext = get_string('learner_details_regenerate_certificate_link', 'block_attestoodle');
+            $linktext = get_string('learner_details_regenerate_certificate_link', 'block_attestoodle');
 
             $output .= "<a href='" . $certificate->get_existing_file_url() . "' target='_blank'>" .
                     get_string('download_certificate_file_link_text', 'block_attestoodle') .
@@ -250,7 +250,7 @@ class learner_details implements \renderable {
                         '/blocks/attestoodle/index.php',
                         $dlcertifoptions
                 ),
-                $generatecertificatelinktext,
+                $linktext,
                 array('class' => 'attestoodle-link')
         );
         $output .= \html_writer::end_div();

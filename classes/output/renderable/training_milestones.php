@@ -190,10 +190,10 @@ class training_milestones implements \renderable {
             // TODO rename string variable.
             $heading = \get_string('training_details_main_title_error', 'block_attestoodle');
         } else {
-            $totaltrainingmilestones = parse_minutes_to_hours($this->training->get_total_milestones());
+            $totalhours = parse_minutes_to_hours($this->training->get_total_milestones());
             // TODO rename string variable.
             $heading = \get_string('training_details_main_title', 'block_attestoodle', $this->training->get_name());
-            $heading .= $totaltrainingmilestones;
+            $heading .= $totalhours;
         }
         return $heading;
     }
