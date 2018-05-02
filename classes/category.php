@@ -71,39 +71,6 @@ class category {
     }
 
     /**
-     * Returns the current category informations in an array
-     *
-     * @todo Used to display in a moodle html_table object. It has to be
-     * made in a specific UI class
-     *
-     * @return array The array containing the category informations
-     */
-    public function get_data_as_table() {
-        return [
-                $this->id,
-                $this->name,
-                $this->description
-            ];
-    }
-
-    /**
-     * Returns the current category informations as an stdClass object
-     *
-     * @todo Used to display in a moodle html_table object. It has to be
-     * made in a specific UI class
-     *
-     * @return stdClass The stdClass containing the category informations
-     */
-    public function get_object_as_stdclass() {
-        $obj = new \stdClass();
-        $obj->id = $this->id;
-        $obj->name = $this->name;
-        $obj->desc = $this->description;
-
-        return $obj;
-    }
-
-    /**
      * Update the current category data into the database.
      */
     public function persist() {
