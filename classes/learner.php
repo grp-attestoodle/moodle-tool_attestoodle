@@ -56,25 +56,6 @@ class learner {
     }
 
     /**
-     * Returns the current learner informations as an stdClass object
-     * @TODO used to display in a moodle html_table object. It has to be
-     * made in a specific UI class
-     *
-     * @param string $trainingid The training to retrieve the infos for
-     * @return stdClass The stdClass containing the learner informations
-     */
-    public function get_object_as_stdclass($trainingid = null) {
-        $obj = new \stdClass();
-        $obj->id = $this->id;
-        $obj->lastname = $this->lastname;
-        $obj->firstname = $this->firstname;
-        $obj->nbvalidatedactivities = $this->get_total_validated_activities();
-        $obj->totalmarkers = parse_minutes_to_hours($this->get_total_markers($trainingid));
-
-        return $obj;
-    }
-
-    /**
      * Methods that return the number of activities validated by the learner
      *
      * @return integer The number of activities validated by the learner
@@ -262,75 +243,5 @@ class learner {
      */
     public function add_validated_activity($validatedactivity) {
         $this->validatedactivities[] = $validatedactivity;
-    }
-
-    /**
-     * TODO Replacing by certificate->get_pdf_informations() method
-     * Method that return certificate informations for the learner between
-     * two specified dates.
-     *
-     * @param \DateTime $begindate Limit begin date to get information from (included)
-     * @param \DateTime $enddate Limit end date to get information from (included)
-     * @return \stdClass Informations structured in a stdClass object
-     */
-    public function get_certificate_informations_dated($begindate, $enddate) {
-        $validatedmilestones = $this->get_validated_activities_with_marker();
-        $searchenddate = clone $enddate;
-        $searchenddate->modify('+1 day');
-        // Filtering activities based on validation time.
-        $filteredmilestones = array_filter($validatedmilestones, function($va) use($begindate, $searchenddate){
-            $dt = $va->get_datetime();
-            if ($dt < $begindate || $dt > $searchenddate) {
-                return false;
-            } else {
-                return true;
-            }
-        });
-
-        // Retrieve activities informations in an array structure.
-        $activitiesstructured = array();
-        foreach ($filteredmilestones as $fva) {
-            // Retrieve activity.
-            $activity = $fva->get_activity();
-
-            // Retrieve current activity training.
-            $trainingname = $activity->get_course()->get_training()->get_name();
-
-            // Instanciate the training in the global array if needed.
-            if (!array_key_exists($trainingname, $activitiesstructured)) {
-                $activitiesstructured[$trainingname] = array(
-                        "totalminutes" => 0,
-                        "activities" => array()
-                    );
-            }
-
-            // Increment total minutes for the training.
-            $activitiesstructured[$trainingname]["totalminutes"] += $activity->get_marker();
-
-            // Retrieve current activity informations.
-            $course = $activity->get_course();
-            $courseid = $course->get_id();
-            $coursename = $course->get_name();
-
-            // Instanciate course under training in the global array if needed.
-            if (!array_key_exists($courseid, $activitiesstructured[$trainingname]["activities"])) {
-                $activitiesstructured[$trainingname]["activities"][$courseid] = array(
-                        "totalminutes" => 0,
-                        "coursename" => $coursename
-                    );
-            }
-            // Increment total minutes for the course id in the training.
-            $activitiesstructured[$trainingname]["activities"][$courseid]["totalminutes"] += $activity->get_marker();
-        }
-        // Retrieve global informations.
-        // ...@todo translations.
-        $period = "Du {$begindate->format("d/m/Y")} au {$enddate->format("d/m/Y")}";
-
-        $certificateinfos = new \stdClass();
-        $certificateinfos->learnername = $this->get_fullname();
-        $certificateinfos->period = $period;
-        $certificateinfos->certificates = $activitiesstructured;
-
-        return $certificateinfos;
     }
 }
