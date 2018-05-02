@@ -25,69 +25,6 @@
 defined('MOODLE_INTERNAL') || die;
 
 /**
- * @todo To replace with a specific UI class
- * ----> To do in the renderable class
- *
- * @param type $data
- * @param type $trainingid
- * @return type
- */
-function parse_learners_as_stdclass($data, $trainingid) {
-    $newdata = array_map(function($o) use ($trainingid) {
-            $learnerinfos = $o->get_object_as_stdclass($trainingid);
-            $stdclass = new \stdClass();
-
-            $parameters = array(
-                    'page' => 'learnerdetails',
-                    'training' => $trainingid,
-                    'learner' => $learnerinfos->id);
-            $url = new moodle_url('/blocks/attestoodle/index.php', $parameters);
-            $label = get_string('training_learners_list_table_link_details', 'block_attestoodle');
-            $attributes = array('class' => 'attestoodle-button');
-
-            $stdclass->lastname = $learnerinfos->lastname;
-            $stdclass->firstname = $learnerinfos->firstname;
-            $stdclass->nbvalidatedactivities = $learnerinfos->nbvalidatedactivities;
-            $stdclass->totalmarkers = $learnerinfos->totalmarkers;
-            $stdclass->link = html_writer::link($url, $label, $attributes);
-
-            return $stdclass;
-    }, $data);
-    return $newdata;
-}
-
-/**
- * @todo To replace with a specific UI class
- * ---> To do in the renderable class
- *
- * @param type $data
- * @return type
- */
-function parse_trainings_as_stdclass($data) {
-    $newdata = array_map(function($o) {
-            $traininginfos = $o->get_object_as_stdclass();
-            $stdclass = new \stdClass();
-
-            $parameters = array(
-                    'page' => 'learners',
-                    'training' => $traininginfos->id);
-            $url = new moodle_url('/blocks/attestoodle/index.php', $parameters);
-            $label = get_string('trainings_list_table_link_details', 'block_attestoodle');
-            $attributes = array('class' => 'attestoodle-button');
-
-            $categorylink = new moodle_url("/course/index.php", array("categoryid" => $traininginfos->id));
-
-            $stdclass->name = "<a href='{$categorylink}'>{$traininginfos->name}</a>";
-            $stdclass->hierarchy = $traininginfos->hierarchy;
-            $stdclass->desc = $traininginfos->desc;
-            $stdclass->link = html_writer::link($url, $label, $attributes);
-
-            return $stdclass;
-    }, $data);
-    return $newdata;
-}
-
-/**
  * Parse a number of minutes into a hours string
  *
  * @param integer $minutes The number of minutes to parse
