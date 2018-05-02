@@ -83,24 +83,6 @@ class activity {
     }
 
     /**
-     * Returns the current activity informations as an stdClass object
-     *
-     * @todo used to display in a moodle html_table object. It has to be
-     * made in a specific UI class
-     *
-     * @return stdClass The stdClass containing the activity informations
-     */
-    public function get_object_as_stdclass() {
-        $obj = new \stdClass();
-        $obj->id = $this->id;
-        $obj->type = $this->type;
-        $obj->name = $this->name;
-        $obj->marker = $this->has_marker() ? parse_minutes_to_hours($this->marker) . " ({$this->marker} min)" : 'Non';
-
-        return $obj;
-    }
-
-    /**
      * Update the current activity data into the database.
      */
     public function persist() {
