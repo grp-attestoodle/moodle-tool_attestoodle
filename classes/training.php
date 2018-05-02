@@ -48,40 +48,6 @@ class training {
     }
 
     /**
-     * Returns the current training informations in an array
-     *
-     * @todo Used to display in a moodle html_table object. It has to be
-     * made in a specific UI class
-     *
-     * @return array The array containing the training informations
-     */
-    public function get_data_as_table() {
-        return [
-                $this->get_id(),
-                $this->get_name(),
-                $this->get_description()
-            ];
-    }
-
-    /**
-     * Returns the current training informations as an stdClass object
-     *
-     * @todo Used to display in a moodle html_table object. It has to be
-     * made in a specific UI class
-     *
-     * @return stdClass The stdClass containing the training informations
-     */
-    public function get_object_as_stdclass() {
-        $obj = new \stdClass();
-        $obj->id = $this->get_id();
-        $obj->name = $this->get_name();
-        $obj->hierarchy = $this->get_hierarchy();
-        $obj->desc = $this->get_description();
-
-        return $obj;
-    }
-
-    /**
      * Returns the learners registered to at least one course of the training
      *
      * @return learner[] The array containing the learners of the training
@@ -96,25 +62,9 @@ class training {
                     $learners[] = $courselearner;
                 }
             }
-
         }
 
         return $learners;
-    }
-
-    /**
-     * Returns the current training learners informations as an array of
-     * stdClass object
-     *
-     * @todo Used to display in a moodle html_table object. It has to be
-     * made in a specific UI class
-     *
-     * @return stdClass[] The array containing the training learners informations
-     */
-    public function get_learners_as_stdclass() {
-        return array_map(function ($l) {
-            return $l->get_object_as_stdclass();
-        }, $this->get_learners());
     }
 
     /**
