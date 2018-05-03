@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This is the class describing an activity validated by a learner in Attestoodle
+ * This is the class describing a certificate in Attestoodle
  *
  * @package    block_attestoodle
- * @copyright  2017 Pole de Ressource Numerique de l'Université du Mans
+ * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -27,11 +27,23 @@ namespace block_attestoodle;
 defined('MOODLE_INTERNAL') || die;
 
 class certificate {
+    /** @var learner Learner for whom the certificate is */
     private $learner;
+    /** @var training Learner for which the certificate is */
     private $training;
+    /** @var \DateTime Begining date for the certificate infos */
     private $begindate;
+    /** @var \DateTime End date for the certificate infos */
     private $enddate;
 
+    /**
+     * Constructor of the class
+     *
+     * @param learner $learner The learner of the certificate
+     * @param training $training The training of the certificate
+     * @param \DateTime $begindate The begin date of the certificate
+     * @param \DateTime $enddate The end date of the certificate
+     */
     public function __construct($learner, $training, $begindate, $enddate) {
         $this->learner = $learner;
         $this->training = $training;
@@ -39,6 +51,12 @@ class certificate {
         $this->enddate = $enddate;
     }
 
+    /**
+     * Methods that return the file info within moodledata, parsed in
+     * the array that moodle needs to retrieve/create the actual file.
+     *
+     * @return array The array containing the infos well formed
+     */
     private function get_file_infos() {
         $usercontext = \context_user::instance($this->learner->get_id());
 
@@ -55,8 +73,16 @@ class certificate {
         return $fileinfos;
     }
 
+    /**
+     * Methods that generate the actual file name within moodledata,
+     * depending on the learner, training and period
+     *
+     * @return string The file name formated as
+     * "certificate_[learner last name][learner first name]_[begin date]_[end date]_[training name].pdf"
+     * where the begin and end dates format is YYYYMMDD
+     */
     private function get_file_name() {
-        $filename = "certificate_{$this->learner->get_firstname()}{$this->learner->get_lastname()}_";
+        $filename = "certificate_{$this->learner->get_lastname()}{$this->learner->get_firstname()}_";
         $filename .= "{$this->begindate->format("Ymd")}_{$this->enddate->format("Ymd")}_";
         $filename .= $this->training->get_name();
         $filename .= ".pdf";
@@ -64,6 +90,21 @@ class certificate {
         return $filename;
     }
 
+    /**
+     * Methods that parses all the variable informations needed in the actual
+     * certificate file such as learner name, period, etc.
+     *
+     * @return \stdClass A standard class object containing the following infos:
+     * $obj->learnername = The learner full name
+     * $obj->trainingname = The training name
+     * $obj->totalminutes = The total amount of validated milestones in minutes
+     * $obj->period = The period (begin and end date) in a readable format
+     * $obj->activities = An array of key => value where the keys are the courses id
+     * where at least one milestone has been validated, and the value is another
+     * key => value array. This second array contain two fixed infos: the course
+     * name and the course total validated milestones (in minutes). This last
+     * property may be a void array.
+     */
     private function get_pdf_informations() {
         $begindate = clone $this->begindate;
         $searchenddate = clone $this->enddate;
@@ -121,6 +162,12 @@ class certificate {
         return $certificateinfos;
     }
 
+    /**
+     * Methods that tries to retrieve the actual certificate file in moodledata
+     * corresponding to the current certificate object.
+     *
+     * @return \stored_file|bool stored_file instance if exists, false if not
+     */
     public function retrieve_file() {
         $fs = get_file_storage();
         $fileinfos = $this->get_file_infos();
@@ -137,10 +184,20 @@ class certificate {
         return $file;
     }
 
+    /**
+     * Methods that checks if the actual certificate file exists within moodledata
+     *
+     * @return boolean False if the file exists, true if not. Or maybe vice versa, I'm not sure...
+     */
     public function file_exists() {
         return $this->retrieve_file() ? true : false;
     }
 
+    /**
+     * Methods that generate the actual file URL using moodle make_pluginfile_url helper
+     *
+     * @return string The actual file URL on the server
+     */
     public function get_existing_file_url() {
         $file = $this->retrieve_file();
 
@@ -155,6 +212,15 @@ class certificate {
         return $url;
     }
 
+    /**
+     * Method that creates the certificate file on the server
+     *
+     * @return int The status of the file creation:
+     *  0 = An error occured while attempting to create the file
+     *  1 = The file has been created normally
+     *  2 = A certificate with the same informations has been found
+     * on the server: the old file has been replaced by the new one
+     */
     public function create_file_on_server() {
         $status = 1;
         $fs = get_file_storage();
@@ -183,7 +249,14 @@ class certificate {
         return $status;
     }
 
-    // TODO translations.
+    /**
+     * Methods that create the virtual PDF file which can be "print" on an
+     * actual PDF file within moodledata
+     *
+     * @todo translations
+     *
+     * @return \pdf The virtual pdf file using the moodle pdf class
+     */
     private function generate_pdf_object() {
         // PDF Class instanciation.
         $pdf = new \pdf();
