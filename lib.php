@@ -50,7 +50,8 @@ function parse_datetime_to_readable_format($datetime) {
 
 function block_attestoodle_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options=array()) {
     if ($course && $cm) {
-        // This is OK.
+        $cm = $cm;
+        $course = $course;
     }
     // Check the contextlevel is as expected - if your plugin is a block, this becomes CONTEXT_BLOCK, etc.
     if ($context->contextlevel != CONTEXT_USER) {
