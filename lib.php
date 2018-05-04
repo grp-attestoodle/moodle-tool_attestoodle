@@ -15,20 +15,20 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- *
+ * Useful global functions for Attestoodle.
  *
  * @package    block_attestoodle
- * @copyright  2017 Pole de Ressource Numerique de l'Université du Mans
+ * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die;
 
 /**
- * Parse a number of minutes into a hours string
+ * Parse a number of minutes into a readable hours string.
  *
  * @param integer $minutes The number of minutes to parse
- * @return string The hourse corresponding (formating 'XhYY')
+ * @return string The hourse corresponding (formatted as 'XhYY')
  */
 function parse_minutes_to_hours($minutes) {
     $h = floor($minutes / 60);
@@ -39,15 +39,21 @@ function parse_minutes_to_hours($minutes) {
 }
 
 /**
- * Parse a datetime object to a readable format
+ * Parse a DateTime object into a readable format like "DD/MM/YYYY".
  *
- * @param \DateTime $datetime The datetime object
- * @return string the readable format
+ * @param \DateTime $datetime The DateTime object to parse
+ * @return string The date in a readable format
  */
 function parse_datetime_to_readable_format($datetime) {
     return $datetime->format("d/m/Y");
 }
 
+/**
+ * Function automagically called by moodle to retrieve a file on the server that
+ * the plug-in can interact with.
+ *
+ * @link See doc at https://docs.moodle.org/dev/File_API#Serving_files_to_users 
+ */
 function block_attestoodle_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options=array()) {
     if ($course && $cm) {
         $cm = $cm;

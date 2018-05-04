@@ -19,7 +19,7 @@
  * courses used by Attestoodle
  *
  * @package    block_attestoodle
- * @copyright  2017 Pole de Ressource Numerique de l'Université du Mans
+ * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -40,7 +40,7 @@ class courses_factory extends singleton {
      * to the array then return it
      *
      * @param stdClass $dbcourse Standard object from the Moodle request
-     * @return course The course created
+     * @return course The course newly created
      */
     private function create($dbcourse) {
         $id = $dbcourse->id;
@@ -50,6 +50,7 @@ class courses_factory extends singleton {
 
         /* @todo: adding activities one by one with ->add_activity method
         seems stupid */
+        // Retrieve the activities of the course being created.
         $activities = activities_factory::get_instance()->retrieve_activities_by_course($id);
         foreach ($activities as $activity) {
             $coursetoadd->add_activity($activity);
@@ -57,6 +58,7 @@ class courses_factory extends singleton {
 
         /* @todo: adding learners one by one with ->add_learner method
         seems stupid */
+        // Retrieve the learners registered to the course being created.
         $learners = learners_factory::get_instance()->retrieve_learners_by_course($id);
         foreach ($learners as $learner) {
             $coursetoadd->add_learner($learner);
@@ -68,7 +70,7 @@ class courses_factory extends singleton {
     /**
      * Function that retrieves the courses corresponding to a specific training
      *
-     * @param string $id Id of the training to search courses for
+     * @param integer $id Id of the training to search courses for
      * @return course[] Array containing the courses objects
      */
     public function retrieve_courses_by_training($id) {

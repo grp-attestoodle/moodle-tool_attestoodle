@@ -15,7 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This is the class that handle the modification of milestones values.
+ * This is the class that handles the modification of milestones values through
+ * a moodle moodleform object.
  *
  * @package    block_attestoodle
  * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
@@ -30,7 +31,10 @@ defined('MOODLE_INTERNAL') || die;
 require_once("$CFG->libdir/formslib.php");
 
 class training_milestones_update_form extends \moodleform {
-    // Add elements to form.
+    /**
+     * Method automagically called when the form is instanciated. It defines
+     * all the elements (inputs, titles, buttons, ...) in the form.
+     */
     public function definition() {
         $inputnameprefix = $this->_customdata['input_name_prefix'];
         $courses = $this->_customdata['data'];
@@ -52,6 +56,7 @@ class training_milestones_update_form extends \moodleform {
                 $type = get_string('modulename', $activity->get_type());
                 $milestone = $activity->get_milestone();
 
+                // The group contains the input, the label and a fixed span (required to have more complex form lines).
                 $group = array();
                 $group[] =& $mform->createElement("text", $name, null, array("size" => 5)); // Max 5 char.
                 $mform->setType($name, PARAM_ALPHANUM); // Parsing the value in INT after submit.
@@ -69,7 +74,13 @@ class training_milestones_update_form extends \moodleform {
         $this->add_action_buttons();
     }
 
-    // Custom validation should be added here.
+    /**
+     * Custom validation function automagically called when the form
+     * is submitted. The standard validations, such as required inputs or
+     * value type check, are done by the parent validation() method.
+     *
+     * See validation() method in moodleform class for more details.
+     */
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);
         return $errors;

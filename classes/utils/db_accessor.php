@@ -15,11 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This is the class that allow other classes to access the database and
- * manipulate data
+ * This is the singleton class that allows other classes to access the
+ * database and manipulate its data.
  *
  * @package    block_attestoodle
- * @copyright  2017 Pole de Ressource Numerique de l'Université du Mans
+ * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -35,8 +35,9 @@ class db_accessor extends singleton {
     private static $db;
 
     /**
-     * Constructor of the db_accessor singleton
-     * @global type $DB
+     * Protected constructor to avoid external instanciation.
+     *
+     * @global type $DB The global moodle $DB object
      */
     protected function __construct() {
         global $DB;

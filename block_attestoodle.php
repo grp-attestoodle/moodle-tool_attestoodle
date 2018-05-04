@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Attestoodle block caps.
+ * Attestoodle block definition extending moodle block_base class.
  *
  * @package    block_attestoodle
- * @copyright  Guillaume GIRARD <dev.guillaume.girard@gmail.com>
+ * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -26,11 +26,18 @@ defined('MOODLE_INTERNAL') || die();
 
 class block_attestoodle extends block_base {
 
+    /**
+     * Block initialisation.
+     */
     public function init() {
         $this->title = get_string('pluginname', 'block_attestoodle');
     }
 
-    // Méthode appelée au moment de l'affichage.
+    /**
+     * Method called to retrieve the HTML content of the block.
+     *
+     * @return string The HTML content
+     */
     public function get_content() {
         if ($this->content !== null) {
             return $this->content;
@@ -57,10 +64,6 @@ class block_attestoodle extends block_base {
         if (empty($currentcontext)) {
             return $this->content;
         }
-        /*
-        if ($this->page->course->id == SITEID) {
-            // Probably useless.
-        }*/
 
         // Link to the plug-in main page.
         $parameters = array('page' => 'trainingslist');
@@ -72,7 +75,11 @@ class block_attestoodle extends block_base {
         return $this->content;
     }
 
-    // My moodle can only have SITEID and it's redundant here, so take it away.
+    /**
+     * ??
+     *
+     * @return array An array...
+     */
     public function applicable_formats() {
         return array('all' => false,
             'site' => true,
@@ -83,16 +90,31 @@ class block_attestoodle extends block_base {
             'mod-quiz' => false);
     }
 
+    /**
+     * Define if there can be multiple Attestoodle block in a single page.
+     *
+     * @return boolean False
+     */
     public function instance_allow_multiple() {
         return false;
     }
 
+    /**
+     * Define if the block has a configuration.
+     *
+     * @return boolean True
+     */
     public function has_config() {
         return true;
     }
 
+    /**
+     * Define if the block has a cron.
+     *
+     * @return boolean False
+     */
     public function cron() {
-        return true;
+        return false;
     }
 
 }

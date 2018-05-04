@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This is the class describing a training in Attestoodle
+ * This is the class describing a training in Attestoodle.
  *
  * @package    block_attestoodle
  * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
@@ -36,11 +36,9 @@ class training {
     private $courses;
 
     /**
-     * Constructor of the training class
+     * Constructor of the training class.
      *
-     * @param string $id Id of the training
-     * @param string $name Name of the training
-     * @param string $description Description of the training
+     * @param category $category Category object that the training depends on
      */
     public function __construct($category) {
         $this->category = $category;
@@ -48,7 +46,7 @@ class training {
     }
 
     /**
-     * Returns the learners registered to at least one course of the training
+     * Returns the learners registered to at least one course of the training.
      *
      * @return learner[] The array containing the learners of the training
      */
@@ -68,28 +66,34 @@ class training {
     }
 
     /**
-     * Getter for $id property
+     * Shortcut getter for the category $id property.
      *
-     * @return string Id of the training
+     * @return integer Id of the training
      */
     public function get_id() {
         return $this->category->get_id();
     }
 
     /**
-     * Getter for $name property
+     * Shortcut getter for the category $name property.
      *
      * @return string Name of the training
      */
     public function get_name() {
         return $this->category->get_name();
     }
+
+    /**
+     * Shortcut getter for the category hierarchy property.
+     *
+     * @return string The hierarchy of the training
+     */
     public function get_hierarchy() {
         return $this->category->get_hierarchy();
     }
 
     /**
-     * Getter for $description property
+     * Shortcut getter for the category $description property.
      *
      * @return string Description of the training
      */
@@ -98,7 +102,7 @@ class training {
     }
 
     /**
-     * Getter for $courses property
+     * Getter for $courses property.
      *
      * @return course[] Courses of the training
      */
@@ -121,7 +125,7 @@ class training {
     }
 
     /**
-     * Setter for $id property
+     * Shortcut setter for the category $id property.
      *
      * @param string $prop Id to set for the training
      */
@@ -130,7 +134,7 @@ class training {
     }
 
     /**
-     * Setter for $name property
+     * Shortcut setter for the category $name property.
      *
      * @param string $prop Name to set for the training
      */
@@ -139,7 +143,7 @@ class training {
     }
 
     /**
-     * Setter for $description property
+     * Shortcut setter for the category $description property.
      *
      * @param string $prop Description to set for the training
      */
@@ -148,7 +152,7 @@ class training {
     }
 
     /**
-     * Setter for $courses property
+     * Setter for $courses property.
      *
      * @param course[] $prop Courses to set for the training
      */
@@ -157,7 +161,7 @@ class training {
     }
 
     /**
-     * Add a course to the training courses list
+     * Add a course to the training courses list.
      *
      * @param course $course Course to add to the training
      */
@@ -167,10 +171,11 @@ class training {
     }
 
     /**
-     * Methods that retrieve an activity based on its id
+     * Methods that retrieves an activity based on an id.
      *
      * @param string $idactivity The id to search for
-     * @return activity|null The activity retrieved if any
+     * @return activity|null The activity retrieved or null if no activity has
+     * the specified ID in the training
      */
     public function retrieve_activity($idactivity) {
         $activity = null;
@@ -183,6 +188,13 @@ class training {
         return $activity;
     }
 
+    /**
+     * Method that checks if an activity exists in the training based on
+     * a specific ID.
+     *
+     * @param integer $idactivity The activity id to search for
+     * @return boolean True if the activity exists
+     */
     public function has_activity($idactivity) {
         $a = $this->retrieve_activity($idactivity);
         return isset($a);

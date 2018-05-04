@@ -14,13 +14,27 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-// Importation de la config $CFG qui importe égalment $DB et $OUTPUT.
-// @todo create an autoloader.
+/**
+ * File that handles all the requested page from the user.
+ *
+ * @todo May be reduced
+ *
+ * @package    block_attestoodle
+ * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
+// Main configuration importation (instanciate the $CFG global variable).
 require_once(dirname(__FILE__) . '/../../config.php');
+
+// Libraries imports.
 require_once($CFG->libdir.'/pdflib.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/lib.php');
 
+/**
+ * Imports of class files.
+ * @todo create an autoloader.
+ */
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/learners_factory.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/trainings_list.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/trainings_management.php');
@@ -30,11 +44,9 @@ require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/traini
 
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/certificate.php');
 
-use block_attestoodle\factories\learners_factory;
 use block_attestoodle\factories\trainings_factory;
 use block_attestoodle\factories\categories_factory;
 use block_attestoodle\output\renderable;
-use block_attestoodle\certificate;
 
 $page = optional_param('page', '', PARAM_ALPHA);
 $action = optional_param('action', '', PARAM_ALPHA);

@@ -16,10 +16,10 @@
 
 /**
  * This is the class that implements the pattern Factory to create the
- * learners used by Attestoodle
+ * learners used by Attestoodle.
  *
  * @package    block_attestoodle
- * @copyright  2017 Pole de Ressource Numerique de l'Université du Mans
+ * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -40,7 +40,7 @@ class learners_factory extends singleton {
     private $learners;
 
     /**
-     * Constructor method
+     * Constructor method that instanciates the main learners array.
      */
     protected function __construct() {
         parent::__construct();
@@ -49,7 +49,7 @@ class learners_factory extends singleton {
 
     /**
      * Create a learner from a Moodle request standard object, add it
-     * to the array then return it
+     * to the main array then return it.
      *
      * @param stdClass $dblearner Standard object from the Moodle request
      * @return learner The learner added in the array
@@ -88,7 +88,8 @@ class learners_factory extends singleton {
     }
 
     /**
-     * Method that retrieves validated activities for all the learners in the factory
+     * Method that retrieves the validated activities for all the
+     * learners stored in the factory main array.
      */
     public function retrieve_all_validated_activities() {
         foreach ($this->learners as $learner) {
@@ -97,18 +98,18 @@ class learners_factory extends singleton {
     }
 
     /**
-     * Getter of the $learners property
+     * Getter for the $learners property.
      *
-     * @return array The learners stored in the factory
+     * @return learner[] The learners stored in the factory
      */
     public function get_learners() {
         return $this->learners;
     }
 
     /**
-     * Method that checks if a learner exists based on its ID
+     * Method that checks if a learner exists in the main array based on an ID.
      *
-     * @param string $id Id to search against
+     * @param integer $id Id to search against
      * @return boolean TRUE if the learner exists, FALSE if not
      */
     public function has_learner($id) {
@@ -117,11 +118,11 @@ class learners_factory extends singleton {
     }
 
     /**
-     * Method that retrieve a learner within the list based on an ID
+     * Method that retrieves a learner within the main array based on an ID.
      *
-     * @param string $id Id of the learner to search for
-     * @return learner The learner retrieved or NULL if no learner
-     * has been found
+     * @param integer $id Id of the learner to search for
+     * @return learner The learner retrieved or NULL if no learner has been
+     * found with the specified ID
      */
     public function retrieve_learner($id) {
         $learner = null;
@@ -135,9 +136,9 @@ class learners_factory extends singleton {
     }
 
     /**
-     * Method that retrieves the learners registered to a specific course
+     * Method that retrieves the learners registered to a specific course.
      *
-     * @param string $id Id of the course to retrieve learners for
+     * @param integer $id Id of the course to retrieve learners for
      * @return learners The learners retrieved for the course
      */
     public function retrieve_learners_by_course($id) {

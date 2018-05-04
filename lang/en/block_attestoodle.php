@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Strings for component 'block_attestoodle', language 'en'
+ * Attestoodle translations, language 'en'
  *
  * @package    block_attestoodle
- * @copyright  Guillaume GIRARD <dev.guillaume.girard@gmail.com>
+ * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

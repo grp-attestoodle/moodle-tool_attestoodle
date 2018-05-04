@@ -15,10 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This is the class describing an activity validated by a learner in Attestoodle
+ * This is the class describing an activity validated by a learner in
+ * Attestoodle. A validated activity is an activity with a validated DateTime.
  *
  * @package    block_attestoodle
- * @copyright  2017 Pole de Ressource Numerique de l'Université du Mans
+ * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -34,7 +35,7 @@ class validated_activity {
     private $datetime;
 
     /**
-     * Constructor of the validated_activity class
+     * Constructor of the validated_activity class.
      *
      * @param activity $activity The activity validated
      * @param integer $unixtime The unixtime when the activity has been validated
@@ -46,7 +47,7 @@ class validated_activity {
     }
 
     /**
-     * Getter for $activity property
+     * Getter for $activity property.
      *
      * @return activity Activity validated
      */
@@ -55,7 +56,7 @@ class validated_activity {
     }
 
     /**
-     * Getter for $datetime property
+     * Getter for $datetime property.
      *
      * @return \DateTime DateTime when the activity has been validated
      */
@@ -64,7 +65,7 @@ class validated_activity {
     }
 
     /**
-     * Setter for $activity property
+     * Setter for $activity property.
      *
      * @param activity $prop Validated activity to set
      */
@@ -73,7 +74,7 @@ class validated_activity {
     }
 
     /**
-     * Setter for $datetime property
+     * Setter for $datetime property.
      *
      * @param \DateTime $prop DateTime to set for the validated activity
      */

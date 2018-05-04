@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This is the class describing a category in Attestoodle
+ * This is the class describing a category in Attestoodle.
  *
  * @package    block_attestoodle
- * @copyright  2017 Pole de Ressource Numerique de l'Université du Mans
+ * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -27,7 +27,7 @@ namespace block_attestoodle;
 defined('MOODLE_INTERNAL') || die;
 
 class category {
-    /** @var string Id of the category */
+    /** @var integer Id of the category */
     private $id;
 
     /** @var string Name of the category */
@@ -43,7 +43,8 @@ class category {
     private $parent;
 
     /**
-     * Constructor of the category class
+     * Constructor of the category class. The properties are first set to null,
+     * then set to the actual value after a data parsing in categories_factory.
      *
      * @param string $id Id of the category
      */
@@ -56,7 +57,8 @@ class category {
     }
 
     /**
-     * Set the properties of the category
+     * Set the properties of the category after the data has been parsed
+     * by the categories_factory.
      *
      * @param string $name Name of the category
      * @param string $description Description of the category
@@ -72,6 +74,8 @@ class category {
 
     /**
      * Update the current category data into the database.
+     *
+     * @todo Use the db_accessor singleton instead of $DB global object
      */
     public function persist() {
         global $DB;
@@ -84,7 +88,7 @@ class category {
     }
 
     /**
-     * Getter for $id property
+     * Getter for $id property.
      *
      * @return string Id of the category
      */
@@ -93,7 +97,7 @@ class category {
     }
 
     /**
-     * Getter for $name property
+     * Getter for $name property.
      *
      * @return string Name of the category
      */
@@ -102,7 +106,8 @@ class category {
     }
 
     /**
-     * Getter for $istraining property
+     * Getter for $istraining property.
+     *
      * @return boolean Value of the istraining property
      */
     public function is_training() {
@@ -110,7 +115,7 @@ class category {
     }
 
     /**
-     * Getter for $description property
+     * Getter for $description property.
      *
      * @return string Description of the category
      */
@@ -119,7 +124,7 @@ class category {
     }
 
     /**
-     * Getter for $parent property
+     * Getter for $parent property.
      *
      * @return category|null Parent category of the current category, if any
      */
@@ -128,7 +133,7 @@ class category {
     }
 
     /**
-     * Method that check if the category has a parent
+     * Method that checks if the category has a parent.
      *
      * @return boolean True if the category has a parent
      */
@@ -137,9 +142,9 @@ class category {
     }
 
     /**
-     * Returns the parent hierarchy of the category
+     * Returns the parent hierarchy of the category.
      *
-     * @return string the hierarchy formatted "[parent N-x] / [parent N-1] / [current category]"
+     * @return string The hierarchy formatted "[parent N-x] / [parent N-1] / [current category]"
      */
     public function get_hierarchy() {
         $hierarchy = "";
@@ -150,7 +155,7 @@ class category {
     }
 
     /**
-     * Setter for $id property
+     * Setter for $id property.
      *
      * @param string $prop Id to set for the category
      */
@@ -159,7 +164,7 @@ class category {
     }
 
     /**
-     * Setter for $name property
+     * Setter for $name property.
      *
      * @param string $prop Name to set for the category
      */
@@ -168,7 +173,7 @@ class category {
     }
 
     /**
-     * Set the $istraining property if the value is different from the current one
+     * Set the $istraining property if the value is different from the current one.
      *
      * @param boolean $prop Either if the category is a training or not
      * @return boolean True if the new value is different from the current one
@@ -184,7 +189,7 @@ class category {
     }
 
     /**
-     * Setter for $description property
+     * Setter for $description property.
      *
      * @param string $prop Description to set for the category
      */
@@ -192,18 +197,24 @@ class category {
         $this->description = $prop;
     }
 
+    /**
+     * Method that modifies the description to store the training boolean.
+     */
     private function update_istraining_in_description() {
         $desc = $this->description;
         $istraining = $this->istraining;
 
         $regexp = "/<span class=(?:(?:\"attestoodle_training\")|(?:\'attestoodle_training\'))><\/span>/iU";
 
+        // No training: remove the HTML tag.
         if (!$istraining) {
             $desc = preg_replace($regexp, "", $desc);
         } else {
             if (preg_match($regexp, $desc)) {
+                // Modified training: change the HTML tag (virtually impossible possibility).
                 $desc = preg_replace($regexp, "<span class=\"attestoodle_training\"></span>", $desc);
             } else {
+                // Is training: add the HTML tag to the end of the description.
                 $desc = $desc . "<span class=\"attestoodle_training\"></span>";
             }
         }
@@ -212,7 +223,7 @@ class category {
     }
 
     /**
-     * Setter for $parent property
+     * Setter for $parent property.
      *
      * @param category $prop Parent category to set for the current category
      */

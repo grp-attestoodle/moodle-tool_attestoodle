@@ -33,7 +33,7 @@ class renderer extends \plugin_renderer_base {
     /**
      * Page trainings list (default page)
      *
-     * @param \block_attestoodle\output\renderable\trainings_list $obj Useful informations to display
+     * @param renderable\trainings_list $obj Useful informations to display
      * @return string HTML content of the page
      */
     public function render_trainings_list(renderable\trainings_list $obj) {
@@ -54,6 +54,11 @@ class renderer extends \plugin_renderer_base {
         return $output;
     }
 
+    /**
+     *
+     * @param renderable\trainings_management $obj
+     * @return type
+     */
     public function render_trainings_management(renderable\trainings_management $obj) {
         $output = "";
 
@@ -66,7 +71,7 @@ class renderer extends \plugin_renderer_base {
     /**
      * Page training learners list
      *
-     * @param \block_attestoodle\output\renderable\training_learners_list $obj Useful informations to display
+     * @param renderable\training_learners_list $obj Useful informations to display
      * @return string HTML content of the page
      */
     public function render_training_learners_list(renderable\training_learners_list $obj) {
@@ -92,6 +97,11 @@ class renderer extends \plugin_renderer_base {
         return $output;
     }
 
+    /**
+     *
+     * @param renderable\training_milestones $obj
+     * @return type
+     */
     public function render_training_milestones(renderable\training_milestones $obj) {
         $output = "";
 
@@ -108,7 +118,7 @@ class renderer extends \plugin_renderer_base {
     /**
      * Page learner details
      *
-     * @param \block_attestoodle\output\renderable\learner_details $obj Useful informations to display
+     * @param renderable\learner_details $obj Useful informations to display
      * @return string HTML content of the page
      */
     public function render_learner_details(renderable\learner_details $obj) {

@@ -16,10 +16,10 @@
 
 /**
  * This is the abstract class implementing the Singleton pattern to
- * help factories creating their objects
+ * help factories creating their own objects.
  *
  * @package    block_attestoodle
- * @copyright  2017 Pole de Ressource Numerique de l'Université du Mans
+ * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -28,7 +28,6 @@ namespace block_attestoodle\utils;
 defined('MOODLE_INTERNAL') || die;
 
 abstract class singleton {
-
     /** @var singleton Instance of the singleton */
     protected static $instance;
 
@@ -39,7 +38,7 @@ abstract class singleton {
     }
 
     /**
-     * Method that returns or generates the singleton instance
+     * Method that returns or generates the singleton instance.
      *
      * @return singleton The instance of the singleton
      */
@@ -52,7 +51,7 @@ abstract class singleton {
     }
 
     /**
-     * This overrides __clone method to avoid cloning of the singleton
+     * This overrides __clone method to avoid cloning of the singleton.
      */
     public function __clone() {
         trigger_error('Cloning is not allowed', E_USER_ERROR);

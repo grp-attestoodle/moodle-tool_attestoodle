@@ -15,7 +15,12 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Renderable page that computes infos to give to the template
+ * This class implements the moodle renderable interface to help rendering
+ * the learner_details page.
+ *
+ * @package    block_attestoodle
+ * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace block_attestoodle\output\renderable;
@@ -27,20 +32,37 @@ use block_attestoodle\factories\trainings_factory;
 use block_attestoodle\certificate;
 
 class learner_details implements \renderable {
+    /** @var integer Id of the learner being displayed */
     public $learnerid;
+    /** @var learner Learner being displayed */
     public $learner;
+    /** @var string Begin date formatted as YYYY-MM-DD */
     public $begindate;
+    /** @var \DateTime Begin date object */
     public $actualbegindate;
+    /** @var boolean True if the $begindate property is not parsable by the \DateTime constructor */
     public $begindateerror;
+    /** @var string End date formatted as YYYY-MM-DD */
     public $enddate;
+    /** @var \DateTime End date object */
     public $actualenddate;
+    /** @var \DateTime End date object + 1 day (to simplify comparison) */
     public $searchenddate;
+    /** @var boolean True if the $enddate property is not parsable by the \DateTime constructor */
     public $enddateerror;
 
+    /**
+     * Constructor of the renderable object.
+     *
+     * @param integer $learnerid Id of the learner being displayed (url param)
+     * @param string $begindate Begin date formatted as YYYY-MM-DD (url param)
+     * @param string $enddate End date formatted as YYYY-MM-DD (url param)
+     */
     public function __construct($learnerid, $begindate, $enddate) {
         $this->learnerid = $learnerid;
         $this->learner = learners_factory::get_instance()->retrieve_learner($learnerid);
 
+        // Default dates are January 1st and December 31st of current year
         $this->begindate = isset($begindate) ? $begindate : (new \DateTime('first day of January ' . date('Y')))->format('Y-m-d');
         $this->enddate = isset($enddate) ? $enddate : (new \DateTime('last day of December ' . date('Y')))->format('Y-m-d');
         // Parsing begin date.
@@ -61,10 +83,21 @@ class learner_details implements \renderable {
         }
     }
 
+    /**
+     * Method that checks if the learner exists (meaning that the ID given is valid).
+     *
+     * @return boolean True if the learner exists
+     */
     public function learner_exists() {
         return isset($this->learner);
     }
 
+    /**
+     * Checks if the training has validated activities
+     *
+     * @param training $training The training to check
+     * @return boolean True if the training has validated activities
+     */
     public function training_has_validated_activites($training) {
         $vas = $this->get_learner_validated_activities();
         $fas = array_filter($vas, function($va) use ($training){
@@ -73,6 +106,13 @@ class learner_details implements \renderable {
         return count($fas) > 0;
     }
 
+    /**
+     * Methods that instanciate a certificate object then ask it to create
+     * the certificate file on the server. A notification is then send to the
+     * user depending on the result of the file creation (error, overwritten, new file).
+     *
+     * @param integer $trainingid The training ID of the certificate requested
+     */
     public function generate_certificate_file($trainingid) {
         $training = trainings_factory::get_instance()->retrieve_training($trainingid);
         $certificate = new certificate($this->learner, $training, $this->actualbegindate, $this->actualenddate);
@@ -95,14 +135,31 @@ class learner_details implements \renderable {
         }
     }
 
+    /**
+     * Method that returns all the trainings registered by the learner being displayed.
+     *
+     * @return training[] The trainings registered by the learner
+     */
     public function get_learner_registered_trainings() {
         return $this->learner->retrieve_training_registered();
     }
 
+    /**
+     * Method that returns all the validated activities of the learner being
+     * displayed within the period requested.
+     *
+     * @return validated_activity[] The validated activites of the learner
+     */
     public function get_learner_validated_activities() {
         return $this->learner->get_validated_activities_with_marker($this->actualbegindate, $this->searchenddate);
     }
 
+    /**
+     * Instanciate the title of the page, in the header, depending on the state
+     * of the page (error or OK).
+     *
+     * @return string The title of the page
+     */
     public function get_heading() {
         $heading = "";
         if (!$this->learner_exists()) {
@@ -114,8 +171,11 @@ class learner_details implements \renderable {
     }
 
     /**
-     * TODO fat function
-     * @return string
+     * Computes the content header depending on params (the filter form).
+     *
+     * @todo Long method, could be reduce
+     *
+     * @return string The computed HTML string of the page header
      */
     public function get_header() {
         $output = "";
@@ -153,6 +213,12 @@ class learner_details implements \renderable {
         return $output;
     }
 
+    /**
+     * Computes the HTML content above tables within the page.
+     *
+     * @param training $training The training corresponding to the table being computes
+     * @return string The computed HTML string of table above content
+     */
     public function get_table_heading($training) {
         $output = "";
 
@@ -174,6 +240,12 @@ class learner_details implements \renderable {
         return $output;
     }
 
+    /**
+     * Returns the table head used by moodle html_table function to display a
+     * html table head. It does not depend on any parameter.
+     *
+     * @return string[] The tables columns header
+     */
     public function get_table_head() {
         return array(
                 get_string('learner_details_table_header_column_course_name', 'block_attestoodle'),
@@ -184,6 +256,13 @@ class learner_details implements \renderable {
         );
     }
 
+    /**
+     * Returns the table content used by moodle html_table function to display a
+     * html table content depending on the training being displayed.
+     *
+     * @param training $training The training being computes as a table
+     * @return \stdClass The stdClass used by html_table function
+     */
     public function get_table_content($training) {
         $data = array();
 
@@ -205,14 +284,32 @@ class learner_details implements \renderable {
         return $data;
     }
 
+    /**
+     * Returns the string that says that the learner has no training registered.
+     *
+     * @return string The no training registered message, translated
+     */
     public function get_no_training_registered_message() {
         return get_string('learner_details_no_training_registered', 'block_attestoodle');
     }
 
+    /**
+     * Returns the string that says that the learner has no validated activities
+     * within the specified period.
+     *
+     * @return string The no validated activities message, translated
+     */
     public function get_no_validated_activities_message() {
         return get_string('learner_details_no_validated_activities', 'block_attestoodle');
     }
 
+    /**
+     * Computes the HTML content bellow tables within the page, with the
+     * links to download and/or generate the certificate file.
+     *
+     * @param training $training The training corresponding to the table being computes
+     * @return string The computed HTML string of table bellow content
+     */
     public function get_footer($training) {
         $output = "";
 

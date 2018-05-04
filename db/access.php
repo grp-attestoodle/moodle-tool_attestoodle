@@ -15,28 +15,16 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Attestoodle block caps.
+ * Attestoodle capabilities.
  *
  * @package    block_attestoodle
- * @copyright  Guillaume GIRARD <dev.guillaume.girard@gmail.com>
+ * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
 $capabilities = array(
-        /*'block/attestoodle:addinstance' => array(
-            'riskbitmask' => RISK_SPAM | RISK_XSS,
-
-            'captype' => 'write',
-            'contextlevel' => CONTEXT_SYSTEM,
-            'archetypes' => array(
-                'editingteacher' => CAP_ALLOW,
-                'manager' => CAP_ALLOW
-            ),
-
-            'clonepermissionsfrom' => 'moodle/site:manageblocks'
-        )*/
         'block/attestoodle:managetrainings' => array(
                 'riskbitmask' => RISK_CONFIG | RISK_DATALOSS,
 

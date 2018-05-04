@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This is the class describing a learner in Attestoodle
+ * This is the class describing a learner in Attestoodle.
  *
  * @package    block_attestoodle
- * @copyright  2017 Pole de Ressource Numerique de l'Université du Mans
+ * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -29,7 +29,7 @@ defined('MOODLE_INTERNAL') || die;
 use block_attestoodle\factories\trainings_factory;
 
 class learner {
-    /** @var string Id of the learner */
+    /** @var integer Id of the learner */
     private $id;
 
     /** @var string Firstname of the learner */
@@ -42,9 +42,9 @@ class learner {
     private $validatedactivities;
 
     /**
-     * Constructor of the learner class
+     * Constructor of the learner class.
      *
-     * @param string $id Id of the learner
+     * @param integer $id Id of the learner
      * @param string $firstname Firstname of the learner
      * @param string $lastname Lastname of the learner
      */
@@ -56,47 +56,16 @@ class learner {
     }
 
     /**
-     * Methods that return the number of activities validated by the learner
+     * Methods that returns the total amount of milestones validated by the
+     * learner within a training and an optional period of time.
      *
-     * @return integer The number of activities validated by the learner
-     */
-    public function get_total_validated_activities() {
-        return count($this->validatedactivities);
-    }
-
-    /**
-     * Methods that return the total amount of markers validated by the learner in
-     * an optional specified training
-     *
-     * @param string $trainingid Id of the training to filter the activities
-     * @return integer The total amount of minutes validated by the learner in
-     * the specified training or all trainings if not specified
-     */
-    public function get_total_markers($trainingid = null) {
-        $totalminutes = 0;
-        foreach ($this->validatedactivities as $validatedactivity) {
-            $act = $validatedactivity->get_activity();
-            if (!isset($trainingid) ||
-                    $act->get_course()->get_training()->get_id() == $trainingid) {
-                if ($act->is_milestone()) {
-                    $totalminutes += $act->get_milestone();
-                }
-            }
-        }
-        return $totalminutes;
-    }
-
-    /**
-     * Methods that return the total amount of markers validated by the learner
-     * within a training and an optional period of time
-     *
-     * @param string $trainingid Id of the training to filter the activities
+     * @param integer $trainingid Id of the training to filter the activities
      * @param \DateTime $begindate The begining date to filter the activities
      * @param \DateTime $enddate The ending date to filter the activities
      * @return integer The total amount of minutes validated by the learner in
      * the specified training and the specified period of time
      */
-    public function get_total_markers_period($trainingid, $begindate = null, $enddate = null) {
+    public function get_total_milestones($trainingid, $begindate = null, $enddate = null) {
         $totalminutes = 0;
         $validatedactivities = $this->get_validated_activities_with_marker($begindate, $enddate);
         foreach ($validatedactivities as $va) {
@@ -109,7 +78,7 @@ class learner {
     }
 
     /**
-     * Methods that return all the trainings where the learner is registered in.
+     * Methods that returns all the trainings where the learner is registered in.
      *
      * @return training[] The trainings registered by the learner.
      */
@@ -130,16 +99,16 @@ class learner {
     }
 
     /**
-     * Getter for $id property
+     * Getter for $id property.
      *
-     * @return string Id of the learner
+     * @return integer Id of the learner
      */
     public function get_id() {
         return $this->id;
     }
 
     /**
-     * Getter for $firstname property
+     * Getter for $firstname property.
      *
      * @return string Firstname of the learner
      */
@@ -148,7 +117,7 @@ class learner {
     }
 
     /**
-     * Getter for $lastname property
+     * Getter for $lastname property.
      *
      * @return string Lastname of the learner
      */
@@ -157,7 +126,7 @@ class learner {
     }
 
     /**
-     * Get the full name of the learner
+     * Get the full name of the learner.
      *
      * @return string The full name formatted as "FirstName LastName"
      */
@@ -166,7 +135,7 @@ class learner {
     }
 
     /**
-     * Getter for $validatedactivities property
+     * Getter for $validatedactivities property.
      *
      * @return validated_activity[] Validated activities of the learner
      */
@@ -176,7 +145,7 @@ class learner {
 
     /**
      * Method that returns the validated activities with milestone in an
-     * optional period of time
+     * optional period of time.
      *
      * @param \DateTime $begindate The begining date to filter the activities
      * @param \DateTime $enddate The ending date to filter the activities
@@ -201,16 +170,16 @@ class learner {
     }
 
     /**
-     * Setter for $id property
+     * Setter for $id property.
      *
-     * @param string $prop Id to set for the learner
+     * @param integer $prop Id to set for the learner
      */
     public function set_id($prop) {
         $this->id = $prop;
     }
 
     /**
-     * Setter for $firstname property
+     * Setter for $firstname property.
      *
      * @param string $prop Firstame to set for the learner
      */
@@ -219,7 +188,7 @@ class learner {
     }
 
     /**
-     * Setter for $lastname property
+     * Setter for $lastname property.
      *
      * @param string $prop Lastname to set for the learner
      */
@@ -228,7 +197,7 @@ class learner {
     }
 
     /**
-     * Setter for $validatedactivities property
+     * Setter for $validatedactivities property.
      *
      * @param validated_activity[] $prop Validated activities to set for the learner
      */
@@ -237,7 +206,7 @@ class learner {
     }
 
     /**
-     * Add a validated activity to the validated activities list
+     * Add a validated activity to the validated activities list.
      *
      * @param validated_activity $validatedactivity Validated activity to add
      */

@@ -16,10 +16,10 @@
 
 /**
  * This is the class that implements the pattern Factory to create the
- * activities used by Attestoodle
+ * activities used by Attestoodle (corresponding to the moodle "modules").
  *
  * @package    block_attestoodle
- * @copyright  2017 Pole de Ressource Numerique de l'Université du Mans
+ * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -50,13 +50,13 @@ class activities_factory extends singleton {
     }
 
     /**
-     * Create a course from a Moodle request standard object, add it
-     * to the array then return it
+     * Create an activity from a Moodle request standard object, add it
+     * to the array then return it.
      *
      * @param string $activityid Id of the activity in mdl_course_modules table
      * @param stdClass $dbactivity Standard object from the Moodle request
      * @param string $tablename Name of the db table where the activity is stored
-     *  in, corresponding to the type of the activity
+     *  in, corresponding to the type of the activity (quiz, folder, file, ...)
      * @return activity The activity created
      */
     private function create($activityid, $dbactivity, $tablename) {
@@ -65,6 +65,7 @@ class activities_factory extends singleton {
         $name = $dbactivity->name;
         $desc = $dbactivity->intro;
 
+        // Retrieve the potential milestone value of the activity.
         $milestone = null;
         if (isset($desc)) {
             $milestone = $this->extract_milestone($desc);
@@ -74,13 +75,16 @@ class activities_factory extends singleton {
     }
 
     /**
-     * Method that extract the milestone time value in a string
+     * Method that extracts the milestone time value in a string. The milestone
+     * is defined in a specific html span in the following format:
+     * "<span class="tps_jalon">[value]</span>" where "[value]" is the
+     * milestone value in minutes.
      *
      * @todo Use a XMLParser function instead of a RegExp
      *
      * @param string $string The string that may contain a milestone time value
-     * @return integer|null The milestone time within the string, null if no milestone time has
-     * been found
+     * @return integer|null The milestone time within the string or null if
+     * no milestone time has been found
      */
     private function extract_milestone($string) {
         $milestone = null;
@@ -93,7 +97,7 @@ class activities_factory extends singleton {
     }
 
     /**
-     * Method that retrieve a module table name based on the id of the module
+     * Method that retrieves a module table name based on the id of the module.
      *
      * @param string $moduleid Id of the module to search for
      * @return string Name of the table corresponding to the module id
@@ -108,7 +112,7 @@ class activities_factory extends singleton {
     }
 
     /**
-     * Method that retrieve all activities linked to a course
+     * Method that retrieves all activities in a course.
      *
      * @param string $id Id of the course to search activities for
      * @return activity[] Array containing all the activity objects of the course

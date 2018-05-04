@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This is the class describing a course in Attestoodle
+ * This is the class describing a course in Attestoodle.
  *
  * @package    block_attestoodle
- * @copyright  2017 Pole de Ressource Numerique de l'Université du Mans
+ * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -27,7 +27,7 @@ namespace block_attestoodle;
 defined('MOODLE_INTERNAL') || die;
 
 class course {
-    /** @var string Id of the course */
+    /** @var integer Id of the course */
     private $id;
 
     /** @var string Name of the course */
@@ -36,11 +36,11 @@ class course {
     /** @var activity[] Activities of the course */
     private $activities;
 
-    /** @var learner[] Learners registered for the course */
+    /** @var learner[] Learners registered in the course */
     private $learners;
 
     /**
-     * @var training Training corresponding to the course
+     * @var training Training corresponding to the course.
      * @todo Replace by the ID of the training to avoid bijective relation
      */
     private $training;
@@ -48,7 +48,7 @@ class course {
     /**
      * Constructor of the course class
      *
-     * @param string $id Id of the course
+     * @param integer $id Id of the course
      * @param string $name Name of the course
      */
     public function __construct($id, $name) {
@@ -60,16 +60,16 @@ class course {
     }
 
     /**
-     * Getter for $id property
+     * Getter for $id property.
      *
-     * @return string Id of the course
+     * @return integer Id of the course
      */
     public function get_id() {
         return $this->id;
     }
 
     /**
-     * Getter for $name property
+     * Getter for $name property.
      *
      * @return string Name of the course
      */
@@ -78,7 +78,7 @@ class course {
     }
 
     /**
-     * Getter for $activities property
+     * Getter for $activities property.
      *
      * @return activity[] Activities of the course
      */
@@ -87,7 +87,7 @@ class course {
     }
 
     /**
-     * Getter for $learners property
+     * Getter for $learners property.
      *
      * @return learner[] Learners of the course
      */
@@ -96,7 +96,7 @@ class course {
     }
 
     /**
-     * Getter for $training property
+     * Getter for $training property.
      *
      * @return training Training of the course
      */
@@ -105,7 +105,7 @@ class course {
     }
 
     /**
-     * Method that computes the total amount of milestones included in
+     * Method that computes the total amount of milestones declared in
      * the activities of the current course.
      *
      * @return integer The total amount of milestones in minutes
@@ -121,16 +121,16 @@ class course {
     }
 
     /**
-     * Setter for $id property
+     * Setter for $id property.
      *
-     * @param string $prop Id to set for the course
+     * @param integer $prop Id to set for the course
      */
     public function set_id($prop) {
         $this->id = $prop;
     }
 
     /**
-     * Setter for $name property
+     * Setter for $name property.
      *
      * @param string $prop Name to set for the course
      */
@@ -139,7 +139,7 @@ class course {
     }
 
     /**
-     * Setter for $activities property
+     * Setter for $activities property.
      *
      * @param activity[] $prop Activities to set for the course
      */
@@ -148,7 +148,7 @@ class course {
     }
 
     /**
-     * Add an activity to the course activities list
+     * Add an activity to the course activities list.
      *
      * @param activity $activity Activity to add to the course
      */
@@ -158,7 +158,7 @@ class course {
     }
 
     /**
-     * Setter for $learners property
+     * Setter for $learners property.
      *
      * @param learner[] $prop Learners to set for the course
      */
@@ -167,7 +167,7 @@ class course {
     }
 
     /**
-     * Add a learner to the course learners list
+     * Add a learner to the course learners list.
      *
      * @param learner $learner Learner to add to the course
      */
@@ -176,7 +176,7 @@ class course {
     }
 
     /**
-     * Setter for $training property
+     * Setter for $training property.
      *
      * @param training $prop Training to set for the course
      */
@@ -186,9 +186,9 @@ class course {
 
     /**
      * Methods that retrieve an activity within the course activities
-     * list based on its id
+     * list based on its id.
      *
-     * @param string $idactivity The id to search for
+     * @param integer $idactivity The id to search for
      * @return activity|null The activity retrieved if any
      */
     public function retrieve_activity($idactivity) {

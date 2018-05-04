@@ -16,10 +16,10 @@
 
 /**
  * This is the class that implements the pattern Factory to create the
- * trainings used by Attestoodle
+ * trainings used by Attestoodle.
  *
  * @package    block_attestoodle
- * @copyright  2017 Pole de Ressource Numerique de l'Université du Mans
+ * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -39,7 +39,7 @@ class trainings_factory extends singleton {
     private $trainings;
 
     /**
-     * Constructor method
+     * Constructor method that instanciates the main trainings array.
      */
     protected function __construct() {
         parent::__construct();
@@ -47,20 +47,20 @@ class trainings_factory extends singleton {
     }
 
     /**
-     * Create a training from a Moodle request standard object, add it
-     * to the array then return it
+     * Create a training based on a specific category, stores it in the
+     * main array then return it.
      *
-     * @param stdClass $dbtraining Standard object from the Moodle request
-     * @return training The training added in the array
+     * @param category $category The category that the training comes from
+     * @return training The newly created training
      */
     public function create($category) {
         $trainingtoadd = new training($category);
 
         $this->trainings[] = $trainingtoadd;
 
-        // Direct courses.
+        // Retrieve direct courses.
         $courses = courses_factory::get_instance()->retrieve_courses_by_training($trainingtoadd->get_id());
-        // Courses of sub categories.
+        // Retrieve courses in sub categories.
         $subcategories = categories_factory::get_instance()->retrieve_sub_categories($trainingtoadd->get_id());
         foreach ($subcategories as $subcat) {
             $subcatcourses = courses_factory::get_instance()->retrieve_courses_by_training($subcat->get_id());
@@ -77,18 +77,18 @@ class trainings_factory extends singleton {
     }
 
     /**
-     * Getter of the $trainings property
+     * Getter of the $trainings property.
      *
-     * @return training[] The trainings stored in the factory
+     * @return training[] The trainings stored in the factory main array
      */
     public function get_trainings() {
         return $this->trainings;
     }
 
     /**
-     * Method that checks if a training exists based on its ID
+     * Method that checks if a training exists in the main array based on an ID.
      *
-     * @param string $id Id to search against
+     * @param integer $id Id to search against
      * @return boolean TRUE if the training exists, FALSE if not
      */
     public function has_training($id) {
@@ -97,11 +97,11 @@ class trainings_factory extends singleton {
     }
 
     /**
-     * Method that retrieve a training within the list based on an ID
+     * Method that retrieves a training within the main array based on an ID.
      *
-     * @param string $id Id of the training to retrieve
+     * @param integer $id Id of the training to retrieve
      * @return training|null The training retrieved or NULL if no training has been
-     * found
+     * found with the specified ID
      */
     public function retrieve_training($id) {
         // TODO: problem with the training list cache (no cache).
@@ -118,10 +118,11 @@ class trainings_factory extends singleton {
     }
 
     /**
-     * Methods that retrieve an activity based on its id
+     * Methods that retrieves an activity based on its id
      *
-     * @param string $idactivity The id to search for
-     * @return activity|null The activity retrieved if any
+     * @param integer $idactivity The id to search for
+     * @return activity|null The activity retrieved or NULL if no activity has
+     * been found with the specified ID.
      */
     public function retrieve_activity($idactivity) {
         $activity = null;

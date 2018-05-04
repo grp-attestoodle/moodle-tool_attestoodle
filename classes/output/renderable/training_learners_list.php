@@ -160,7 +160,7 @@ class training_learners_list implements renderable {
     public function get_table_content() {
         return array_map(function(\block_attestoodle\learner $o) {
             $stdclass = new \stdClass();
-            $totalmarkerperiod = $o->get_total_markers_period(
+            $totalmarkerperiod = $o->get_total_milestones(
                     $this->training->get_id(),
                     $this->actualbegindate,
                     $this->actualenddate
