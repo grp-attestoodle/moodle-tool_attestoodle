@@ -118,7 +118,7 @@ class renderer extends \plugin_renderer_base {
 
         if ($obj->learner_exists()) {
             // If the training and learner ids are valid...
-            // Print validated activities informations (with marker only).
+            // Print validated activities informations (with milestone only).
             $trainingsregistered = $obj->get_learner_registered_trainings();
 
             if (count($trainingsregistered) > 0) {

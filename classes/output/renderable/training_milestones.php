@@ -110,8 +110,8 @@ class training_milestones implements \renderable {
                     $idactivity = $matches[1];
                     if (!empty($idactivity) && $this->training->has_activity($idactivity)) {
                         $activity = $this->training->retrieve_activity($idactivity);
-                        $oldmarkervalue = $activity->get_marker();
-                        if ($activity->set_marker($value)) {
+                        $oldmarkervalue = $activity->get_milestone();
+                        if ($activity->set_milestone($value)) {
                             try {
                                 // Try to persist activity in DB.
                                 $activity->persist();
@@ -125,24 +125,24 @@ class training_milestones implements \renderable {
                                 } else {
                                     $fromstring = "<b>{$oldmarkervalue}</b> minutes";
                                 }
-                                if ($activity->get_marker() == null) {
+                                if ($activity->get_milestone() == null) {
                                     $tostring = "<b>[no marker]</b>";
                                 } else {
-                                    $tostring = "<b>{$activity->get_marker()}</b> minutes";
+                                    $tostring = "<b>{$activity->get_milestone()}</b> minutes";
                                 }
 
                                 $successlist .= "<li><b>{$activity->get_name()}</b> "
                                         . "from {$fromstring} to {$tostring}. </li>";
                             } catch (\Exception $ex) {
                                 // If record in DB failed, re-set the old value.
-                                $activity->set_marker($oldmarkervalue);
+                                $activity->set_milestone($oldmarkervalue);
                                 $errorcounter++;
 
                                 // Output a warning to the user.
-                                if ($activity->get_marker() == null) {
+                                if ($activity->get_milestone() == null) {
                                     $oldstring = "<b>[no marker]</b>";
                                 } else {
-                                    $oldstring = "<b>{$activity->get_marker()}</b> minutes";
+                                    $oldstring = "<b>{$activity->get_milestone()}</b> minutes";
                                 }
 
                                 $errorlist .= "<li><b>{$activity->get_name()}</b>. "

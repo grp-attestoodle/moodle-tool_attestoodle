@@ -50,12 +50,12 @@ class training_milestones_update_form extends \moodleform {
                 $label = $activity->get_name();
                 $suffix = get_string("training_details_form_input_suffix", "block_attestoodle");
                 $type = get_string('modulename', $activity->get_type());
-                $marker = $activity->get_marker();
+                $milestone = $activity->get_milestone();
 
                 $group = array();
                 $group[] =& $mform->createElement("text", $name, null, array("size" => 5)); // Max 5 char.
                 $mform->setType($name, PARAM_ALPHANUM); // Parsing the value in INT after submit.
-                $mform->setDefault($name, $marker); // Set default value to the current milestone value.
+                $mform->setDefault($name, $milestone); // Set default value to the current milestone value.
                 $group[] =& $mform->createElement("static", null, null, "<span>{$suffix}</span>");
                 $mform->addGroup($group, $groupname, "{$label} ({$type})", array(' '), false);
                 $mform->addGroupRule($groupname, array(

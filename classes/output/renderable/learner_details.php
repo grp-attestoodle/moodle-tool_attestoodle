@@ -196,7 +196,7 @@ class learner_details implements \renderable {
                 $stdclassact->name = $act->get_name();
                 $stdclassact->type = get_string('modulename', $act->get_type());
                 $stdclassact->validatedtime = parse_datetime_to_readable_format($vact->get_datetime());
-                $stdclassact->milestone = parse_minutes_to_hours($act->get_marker());
+                $stdclassact->milestone = parse_minutes_to_hours($act->get_milestone());
 
                 $data[] = $stdclassact;
             }

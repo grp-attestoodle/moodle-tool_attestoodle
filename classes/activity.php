@@ -43,10 +43,10 @@ class activity {
     private $type;
 
     /**
-     * @var integer Marker time (in minutes) of the activity
-     * @todo Replace by a class "Milestone" with a specific marker propertys
+     * @var integer Milestone time (in minutes) of the activity
+     * @todo Replace by a class "Milestone" ?
      */
-    private $marker;
+    private $milestone;
 
     /**
      * @var course The course corresponding to the activity
@@ -61,25 +61,25 @@ class activity {
      * @param string $name Name of the activity
      * @param string $description Description of the activity
      * @param string $type Type of the activity
-     * @param integer $marker The marker time of the activity if any
+     * @param integer $milestone The milestone value of the activity if any
      */
-    public function __construct($id, $idmodule, $name, $description, $type, $marker = null) {
+    public function __construct($id, $idmodule, $name, $description, $type, $milestone = null) {
         $this->id = $id;
         $this->idmodule = $idmodule;
         $this->name = $name;
         $this->description = $description;
         $this->type = $type;
-        $this->marker = $marker;
+        $this->milestone = $milestone;
         $this->course = null;
     }
 
     /**
-     * Method that checks if the activity contains a marker
+     * Method that checks if the activity is a milestone
      *
-     * @return boolean TRUE if the activity contains a marker
+     * @return boolean TRUE if the activity is a milestone
      */
-    public function has_marker() {
-        return isset($this->marker);
+    public function is_milestone() {
+        return isset($this->milestone);
     }
 
     /**
@@ -141,12 +141,12 @@ class activity {
     }
 
     /**
-     * Getter for $marker property
+     * Getter for $milestone property
      *
-     * @return integer|null Marker value of the activity
+     * @return integer|null Milestone value of the activity
      */
-    public function get_marker() {
-        return $this->marker;
+    public function get_milestone() {
+        return $this->milestone;
     }
 
     /**
@@ -194,19 +194,19 @@ class activity {
         $this->description = $prop;
     }
 
-    private function update_marker_in_description() {
+    private function update_milestone_in_description() {
         $desc = $this->description;
-        $marker = $this->marker;
+        $milestone = $this->milestone;
 
         $regexp = "/<span class=(?:(?:\"tps_jalon\")|(?:\'tps_jalon\'))>(.+)<\/span>/iU";
 
-        if ($marker == null) {
+        if ($milestone == null) {
             $desc = preg_replace($regexp, "", $desc);
         } else {
             if (preg_match($regexp, $desc)) {
-                $desc = preg_replace($regexp, "<span class=\"tps_jalon\">{$marker}</span>", $desc);
+                $desc = preg_replace($regexp, "<span class=\"tps_jalon\">{$milestone}</span>", $desc);
             } else {
-                $desc = $desc . "<span class=\"tps_jalon\">{$marker}</span>";
+                $desc = $desc . "<span class=\"tps_jalon\">{$milestone}</span>";
             }
         }
 
@@ -223,19 +223,19 @@ class activity {
     }
 
     /**
-     * Set the $marker property if the value is different from the current one
+     * Set the $milestone property if the value is different from the current one
      *
-     * @param integer $prop Marker value to set for the activity
+     * @param integer $prop Milestone value to set for the activity
      * @return boolean True if the new value is different from the current one
      */
-    public function set_marker($prop) {
-        if ($this->marker != $prop) {
+    public function set_milestone($prop) {
+        if ($this->milestone != $prop) {
             if ($prop == 0) {
-                $this->marker = null;
+                $this->milestone = null;
             } else {
-                $this->marker = $prop;
+                $this->milestone = $prop;
             }
-            $this->update_marker_in_description();
+            $this->update_milestone_in_description();
             return true;
         } else {
             return false;

@@ -78,8 +78,8 @@ class learner {
             $act = $validatedactivity->get_activity();
             if (!isset($trainingid) ||
                     $act->get_course()->get_training()->get_id() == $trainingid) {
-                if ($act->has_marker()) {
-                    $totalminutes += $act->get_marker();
+                if ($act->is_milestone()) {
+                    $totalminutes += $act->get_milestone();
                 }
             }
         }
@@ -102,7 +102,7 @@ class learner {
         foreach ($validatedactivities as $va) {
             $act = $va->get_activity();
             if ($act->get_course()->get_training()->get_id() == $trainingid) {
-                $totalminutes += $act->get_marker();
+                $totalminutes += $act->get_milestone();
             }
         }
         return $totalminutes;
@@ -175,16 +175,16 @@ class learner {
     }
 
     /**
-     * Method that returns the validated activities with marker in an optional
-     * period of time
+     * Method that returns the validated activities with milestone in an
+     * optional period of time
      *
      * @param \DateTime $begindate The begining date to filter the activities
      * @param \DateTime $enddate The ending date to filter the activities
-     * @return validated_activity[] Validated activities with marker of the learner
+     * @return validated_activity[] Learner's validated activities with milestone
      */
     public function get_validated_activities_with_marker($begindate = null, $enddate = null) {
         return array_filter($this->validatedactivities, function($va) use ($begindate, $enddate) {
-            if ($va->get_activity()->has_marker()) {
+            if ($va->get_activity()->is_milestone()) {
                 if (!$begindate || $va->get_datetime() > $begindate) {
                     if (!$enddate || $va->get_datetime() < $enddate) {
                         return true;

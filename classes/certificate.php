@@ -131,7 +131,7 @@ class certificate {
             $activity = $fva->get_activity();
 
             // Increment total minutes for the training.
-            $totalminutes += $activity->get_marker();
+            $totalminutes += $activity->get_milestone();
 
             // Retrieve current activity informations.
             $course = $activity->get_course();
@@ -146,7 +146,7 @@ class certificate {
                 );
             }
             // Increment total minutes for the course id in the training.
-            $activitiesstructured[$courseid]["totalminutes"] += $activity->get_marker();
+            $activitiesstructured[$courseid]["totalminutes"] += $activity->get_milestone();
         }
         // Retrieve global informations.
         // ...@TODO translations.

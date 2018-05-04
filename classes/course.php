@@ -113,8 +113,8 @@ class course {
     public function get_total_milestones() {
         $total = 0;
         foreach ($this->activities as $act) {
-            if ($act->has_marker()) {
-                $total += $act->get_marker();
+            if ($act->is_milestone()) {
+                $total += $act->get_milestone();
             }
         }
         return $total;

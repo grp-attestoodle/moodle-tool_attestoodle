@@ -65,31 +65,31 @@ class activities_factory extends singleton {
         $name = $dbactivity->name;
         $desc = $dbactivity->intro;
 
-        $marker = null;
+        $milestone = null;
         if (isset($desc)) {
-            $marker = $this->extractmarker($desc);
+            $milestone = $this->extract_milestone($desc);
         }
 
-        return new activity($id, $idmodule, $name, $desc, $tablename, $marker);
+        return new activity($id, $idmodule, $name, $desc, $tablename, $milestone);
     }
 
     /**
-     * Method that extract the marker time value in a string
+     * Method that extract the milestone time value in a string
      *
      * @todo Use a XMLParser function instead of a RegExp
      *
-     * @param string $string The string that may contain a marker time value
-     * @return integer|null The marker time within the string, null if no marker time has
+     * @param string $string The string that may contain a milestone time value
+     * @return integer|null The milestone time within the string, null if no milestone time has
      * been found
      */
-    private function extractmarker($string) {
-        $marker = null;
+    private function extract_milestone($string) {
+        $milestone = null;
         $matches = array();
         $regexp = "/<span class=(?:(?:\"tps_jalon\")|(?:\'tps_jalon\'))>(.+)<\/span>/iU";
         if (preg_match($regexp, $string, $matches)) {
-            $marker = (integer)$matches[1];
+            $milestone = (integer)$matches[1];
         }
-        return $marker;
+        return $milestone;
     }
 
     /**
