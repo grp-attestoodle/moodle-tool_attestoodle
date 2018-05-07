@@ -104,54 +104,33 @@ class training_milestones implements \renderable {
             $errorlist = "Activities not updated:<ul>";
 
             foreach ($datafromform as $key => $value) {
-                $matches = [];
-                $regexp = "/attestoodle_activity_id_(.+)/";
-                if (preg_match($regexp, $key, $matches)) {
-                    $idactivity = $matches[1];
-                    if (!empty($idactivity) && $this->training->has_activity($idactivity)) {
-                        $activity = $this->training->retrieve_activity($idactivity);
-                        $oldmarkervalue = $activity->get_milestone();
-                        if ($activity->set_milestone($value)) {
-                            try {
-                                // Try to persist activity in DB.
-                                $activity->persist();
+                $resulthandling = $this->handle_form_activity($key, $value);
 
-                                // If no Exception has been thrown by DB update.
-                                $updatecounter++;
-
-                                // Instanciate the output for the user.
-                                if ($oldmarkervalue == null) {
-                                    $fromstring = "<b>[no marker]</b>";
-                                } else {
-                                    $fromstring = "<b>{$oldmarkervalue}</b> minutes";
-                                }
-                                if ($activity->get_milestone() == null) {
-                                    $tostring = "<b>[no marker]</b>";
-                                } else {
-                                    $tostring = "<b>{$activity->get_milestone()}</b> minutes";
-                                }
-
-                                $successlist .= "<li><b>{$activity->get_name()}</b> "
-                                        . "from {$fromstring} to {$tostring}. </li>";
-                            } catch (\Exception $ex) {
-                                // If record in DB failed, re-set the old value.
-                                $activity->set_milestone($oldmarkervalue);
-                                $errorcounter++;
-
-                                // Output a warning to the user.
-                                if ($activity->get_milestone() == null) {
-                                    $oldstring = "<b>[no marker]</b>";
-                                } else {
-                                    $oldstring = "<b>{$activity->get_milestone()}</b> minutes";
-                                }
-
-                                $errorlist .= "<li><b>{$activity->get_name()}</b>. "
-                                        . "Kept the old value of {$oldstring}. </li>";
-                            }
-                        }
-                    }
+                switch($resulthandling->status) {
+                    case -1:
+                        // Error while updating.
+                        $errorcounter++;
+                        $errorlist .= "<li>"
+                                . "<b>{$resulthandling->activityname}</b>. "
+                                . "Kept the old value of <b>{$resulthandling->oldvalue}</b>."
+                                . "</li>";
+                        break;
+                    case 1:
+                        // Updated with success.
+                        $updatecounter++;
+                        $successlist .= "<li>"
+                                . "<b>{$resulthandling->activityname}</b> "
+                                . "from <b>{$resulthandling->oldvalue}</b> "
+                                . "to <b>{$resulthandling->newvalue}</b>."
+                                . "</li>";
+                        break;
+                    case 0:
+                    default:
+                        // Not updated, nothing to do.
+                        break;
                 }
             }
+
             $successlist .= "</ul>";
             $errorlist .= "</ul>";
 
@@ -182,6 +161,70 @@ class training_milestones implements \renderable {
         } else {
             return;
         }
+    }
+
+    /**
+     * TODO translations
+     * @param type $key
+     * @param type $value
+     * @return \stdClass
+     */
+    private function handle_form_activity($key, $value) {
+        // Instanciate default return object.
+        $returnobject = new \stdClass();
+        $returnobject->status = 0;
+        $returnobject->activityname = null;
+        $returnobject->oldvalue = null;
+        $returnobject->newvalue = null;
+
+        $matches = [];
+        $regexp = "/attestoodle_activity_id_(.+)/";
+        if (preg_match($regexp, $key, $matches)) {
+            // There is an activity ID.
+            $idactivity = $matches[1];
+            if (!empty($idactivity) && $this->training->has_activity($idactivity)) {
+                // The activity ID is valid.
+                $activity = $this->training->retrieve_activity($idactivity);
+                $oldmarkervalue = $activity->get_milestone();
+                if ($activity->set_milestone($value)) {
+                    // The activity milestone is different from the current one.
+                    $returnobject->activityname = $activity->get_name();
+
+                    try {
+                        // Try to persist activity in DB.
+                        $activity->persist();
+
+                        // No Exception return, status to updated.
+                        $returnobject->status = 1;
+
+                        // Store values in return object.
+                        if ($oldmarkervalue == null) {
+                            $returnobject->oldvalue = "[no marker]";
+                        } else {
+                            $returnobject->oldvalue = "{$oldmarkervalue} minutes";
+                        }
+                        if ($activity->get_milestone() == null) {
+                            $returnobject->newvalue = "[no marker]";
+                        } else {
+                            $returnobject->newvalue = "{$activity->get_milestone()} minutes";
+                        }
+                    } catch (\Exception $ex) {
+                        // If record in DB failed, re-set the old value.
+                        $activity->set_milestone($oldmarkervalue);
+                        $returnobject->status = -1;
+
+                        // Store old value in return object.
+                        if ($activity->get_milestone() == null) {
+                            $returnobject->oldvalue = "[no marker]";
+                        } else {
+                            $returnobject->oldvalue = "{$activity->get_milestone()} minutes";
+                        }
+                    }
+                }
+            }
+        }
+
+        return $returnobject;
     }
 
     public function get_heading() {
