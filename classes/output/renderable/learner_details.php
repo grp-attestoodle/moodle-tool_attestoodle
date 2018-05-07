@@ -62,7 +62,7 @@ class learner_details implements \renderable {
         $this->learnerid = $learnerid;
         $this->learner = learners_factory::get_instance()->retrieve_learner($learnerid);
 
-        // Default dates are January 1st and December 31st of current year
+        // Default dates are January 1st and December 31st of current year.
         $this->begindate = isset($begindate) ? $begindate : (new \DateTime('first day of January ' . date('Y')))->format('Y-m-d');
         $this->enddate = isset($enddate) ? $enddate : (new \DateTime('last day of December ' . date('Y')))->format('Y-m-d');
         // Parsing begin date.

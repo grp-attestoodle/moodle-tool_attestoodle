@@ -52,7 +52,7 @@ function parse_datetime_to_readable_format($datetime) {
  * Function automagically called by moodle to retrieve a file on the server that
  * the plug-in can interact with.
  *
- * @link See doc at https://docs.moodle.org/dev/File_API#Serving_files_to_users 
+ * @link See doc at https://docs.moodle.org/dev/File_API#Serving_files_to_users
  */
 function block_attestoodle_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options=array()) {
     if ($course && $cm) {

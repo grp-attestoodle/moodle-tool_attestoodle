@@ -31,7 +31,7 @@ require_once(dirname(__FILE__) . '/../../config.php');
 require_once($CFG->libdir.'/pdflib.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/lib.php');
 
-/**
+/*
  * Imports of class files.
  * @todo create an autoloader.
  */

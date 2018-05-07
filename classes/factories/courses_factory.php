@@ -56,8 +56,7 @@ class courses_factory extends singleton {
             $coursetoadd->add_activity($activity);
         }
 
-        /* @todo: adding learners one by one with ->add_learner method
-        seems stupid */
+        // TODO: adding learners one by one with ->add_learner method seems stupid.
         // Retrieve the learners registered to the course being created.
         $learners = learners_factory::get_instance()->retrieve_learners_by_course($id);
         foreach ($learners as $learner) {
