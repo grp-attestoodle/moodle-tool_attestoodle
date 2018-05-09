@@ -15,7 +15,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Renderable page that computes infos to give to the template
+ * Page training details.
+ *
+ * Renderable class that is used to render the page that lists all the
+ * learners of a training
+ *
+ * @package    block_attestoodle
+ * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace block_attestoodle\output\renderable;
@@ -26,18 +33,34 @@ use \renderable;
 use block_attestoodle\certificate;
 
 class training_learners_list implements renderable {
+    /** @var training Training that is currently displayed */
     public $training = null;
+    /** @var string Begin date formatted as YYYY-MM-DD */
     public $begindate;
+    /** @var \DateTime Begin date object */
     public $actualbegindate;
+    /** @var boolean True if the $begindate property is not parsable by the \DateTime constructor */
     public $begindateerror;
+    /** @var string End date formatted as YYYY-MM-DD */
     public $enddate;
+    /** @var \DateTime End date object */
     public $actualenddate;
+    /** @var \DateTime End date object + 1 day (to simplify comparison) */
     public $searchenddate;
+    /** @var boolean True if the $enddate property is not parsable by the \DateTime constructor */
     public $enddateerror;
 
+    /**
+     * Constructor of the renderable object.
+     *
+     * @param training $training Training being displayed
+     * @param string $begindate Begin date formatted as YYYY-MM-DD (url param)
+     * @param string $enddate End date formatted as YYYY-MM-DD (url param)
+     */
     public function __construct($training, $begindate, $enddate) {
         $this->training = $training;
 
+        // Default dates are January 1st and December 31st of current year.
         $this->begindate = isset($begindate) ? $begindate : (new \DateTime('first day of January ' . date('Y')))->format('Y-m-d');
         $this->enddate = isset($enddate) ? $enddate : (new \DateTime('last day of December ' . date('Y')))->format('Y-m-d');
         // Parsing begin date.
@@ -58,10 +81,22 @@ class training_learners_list implements renderable {
         }
     }
 
+    /**
+     * Method that checks if the training exists.
+     *
+     * @return boolean True if the training exists
+     */
     public function training_exists() {
         return isset($this->training);
     }
 
+    /**
+     * Computes the content header depending on params (the filter form).
+     *
+     * @todo Long method, could be reduce
+     *
+     * @return string The computed HTML string of the page header
+     */
     public function get_header() {
         $output = "";
 
@@ -148,6 +183,12 @@ class training_learners_list implements renderable {
         return $output;
     }
 
+    /**
+     * Returns the table head used by moodle html_table function to display a
+     * html table head. It does not depend on any parameter.
+     *
+     * @return string[] The tables columns header
+     */
     public function get_table_head() {
         return array(
                 get_string('training_learners_list_table_header_column_lastname', 'block_attestoodle'),
@@ -157,6 +198,12 @@ class training_learners_list implements renderable {
         );
     }
 
+    /**
+     * Returns the table content used by moodle html_table function to display a
+     * html table content depending on the training being displayed.
+     *
+     * @return \stdClass[] The array of \stdClass used by html_table function
+     */
     public function get_table_content() {
         return array_map(function(\block_attestoodle\learner $o) {
             $stdclass = new \stdClass();
@@ -184,10 +231,21 @@ class training_learners_list implements renderable {
         }, $this->training->get_learners());
     }
 
+    /**
+     * Returns the string that says that the ID training searched is not valid.
+     *
+     * @return string The unknow training ID message, translated
+     */
     public function get_unknown_training_message() {
         return get_string('training_details_unknown_training_id', 'block_attestoodle');
     }
 
+    /**
+     * Method that generates certificates for all the learners in the training,
+     * filtering activities by period given.
+     * It creates the files on the server then notify the user if there is
+     * any error or warning (file not created or other file creation error).
+     */
     public function generate_certificates() {
         $errorcounter = 0;
         $newfilecounter = 0;
@@ -237,10 +295,19 @@ class training_learners_list implements renderable {
         }
     }
 
+    /**
+     * The method retrieves all the certificate files on the server filtered by
+     * the current training and period requested, then stores them in a new
+     * ZIP file, then sends the archive to the client.
+     * The method does not create any file! It is designed to be called after the
+     * generate_certificates() method; it means that the ZIP file can be void.
+     */
     public function send_certificates_zipped() {
+        // Create ZIP file.
         $zipper = \get_file_packer('application/zip');
         $certificates = array();
 
+        // Retrieve certificates based on period requested.
         foreach ($this->training->get_learners() as $learner) {
             $certificate = new certificate($learner, $this->training, $this->actualbegindate, $this->actualenddate);
 
@@ -250,11 +317,13 @@ class training_learners_list implements renderable {
             }
         }
 
+        // Archive file name.
         $filename = "certificates_{$this->training->get_name()}_";
         $filename .= $this->actualbegindate->format("Ymd") . "_" . $this->actualenddate->format("Ymd");
         $filename .= ".zip";
         $temppath = make_request_directory() . $filename;
 
+        // Send the archive to the client.
         if ($zipper->archive_to_pathname($certificates, $temppath)) {
             send_temp_file($temppath, $filename);
         } else {

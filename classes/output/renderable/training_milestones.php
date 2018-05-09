@@ -15,9 +15,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Page training management (declare milestones)
+ * Page training management.
  *
- * Renderable page that computes infos to give to the template
+ * Renderable class that is used to render the page that allow user to manage
+ * the milestones of a training.
+ *
+ * @package    block_attestoodle
+ * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace block_attestoodle\output\renderable;
@@ -28,10 +33,18 @@ use block_attestoodle\factories\trainings_factory;
 use block_attestoodle\forms\training_milestones_update_form;
 
 class training_milestones implements \renderable {
+    /** @var integer Id of the training displayed */
     private $trainingid;
+    /** @var training Actual training displayed */
     private $training;
+    /** @var training_milestones_update_form The form used to manage milestones */
     private $form;
 
+    /**
+     * Constructor method that computes training ID to an actual training.
+     *
+     * @param integer $trainingid The training ID requested
+     */
     public function __construct($trainingid) {
         $this->trainingid = $trainingid;
         $this->training = trainings_factory::get_instance()->retrieve_training($trainingid);
@@ -51,6 +64,11 @@ class training_milestones implements \renderable {
         }
     }
 
+    /**
+     * Main form handling method (calls other actual handling method).
+     *
+     * @return void Return void if no handling is needed (first render).
+     */
     private function handle_form() {
         // Form processing and displaying is done here.
         if ($this->form->is_cancelled()) {
@@ -63,6 +81,9 @@ class training_milestones implements \renderable {
         }
     }
 
+    /**
+     * Handles the form cancellation (redirect to training details with a message).
+     */
     private function handle_form_cancelled() {
         // Handle form cancel operation.
         $redirecturl = new \moodle_url(
@@ -74,6 +95,10 @@ class training_milestones implements \renderable {
         redirect($redirecturl, $message, null, \core\output\notification::NOTIFY_INFO);
     }
 
+    /**
+     * Handles the form submission (calls other actual form submission handling
+     * methods).
+     */
     private function handle_form_submitted() {
          // Handle form submit operation.
         // Check the data validity.
@@ -86,11 +111,21 @@ class training_milestones implements \renderable {
         }
     }
 
+    /**
+     * Handle form submission if its not valid (notify an error to the user).
+     */
     private function handle_form_not_validated() {
         // If not valid, warn the user.
         \core\notification::error(get_string('training_details_error_invalid_form', 'block_attestoodle'));
     }
 
+    /**
+     * Handles form submission if its valid. Return a notification message
+     * to the user to let him know how much activites have been updated and if
+     * there is any error while save in DB.
+     *
+     * @return void Return void if the user has not the rights to update in DB
+     */
     private function handle_form_has_submitted_data() {
         if (has_capability('block/attestoodle:managetraining', \context_system::instance())) {
             // If data are valid, process persistance.
@@ -164,10 +199,19 @@ class training_milestones implements \renderable {
     }
 
     /**
-     * TODO translations
-     * @param type $key
-     * @param type $value
-     * @return \stdClass
+     * Handle the process of update of one activity after the form has been
+     * submitted (and its valid).
+     *
+     * @TODO translations
+     *
+     * @param string $key Input name being computed
+     * @param string $value Input value being computed
+     * @return \stdClass A standard object defining the state of the current
+     * update activity where:
+     *   status = -1 || 0 || 1 (-1 = error, 0 = nothing to update, 1 = updated)
+     *   activityname = name of the activity being updated || null if no udpate
+     *   oldvalue = old value of the milestone activity (before update)
+     *   new value = new value of the milestone activity (after update)
      */
     private function handle_form_activity($key, $value) {
         // Instanciate default return object.
@@ -227,6 +271,12 @@ class training_milestones implements \renderable {
         return $returnobject;
     }
 
+    /**
+     * Instanciate the title of the page, in the header, depending on the state
+     * of the page (error or OK).
+     *
+     * @return string The title of the page
+     */
     public function get_heading() {
         $heading = "";
         if (!$this->training_exists()) {
@@ -241,6 +291,11 @@ class training_milestones implements \renderable {
         return $heading;
     }
 
+    /**
+     * Computes the content header.
+     *
+     * @return string The computed HTML string of the page header
+     */
     public function get_header() {
         $output = "";
 
@@ -258,17 +313,38 @@ class training_milestones implements \renderable {
         return $output;
     }
 
+    /**
+     * Render the form.
+     *
+     * @return string HTML string corresponding to the form
+     */
     public function get_content() {
         return $this->form->render();
     }
 
+    /**
+     * Checks if the training is a valid one.
+     *
+     * @return boolean True if the training exists
+     */
     public function training_exists() {
         return isset($this->training);
     }
 
+    /**
+     * Getter for $trainingid property.
+     *
+     * @return integer The training ID
+     */
     public function get_trainingid() {
         return $this->trainingid;
     }
+
+    /**
+     * Getter for $training property.
+     *
+     * @return training The actual training
+     */
     public function get_training() {
         return $this->training;
     }

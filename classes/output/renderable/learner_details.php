@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Page learner details.
+ *
  * This class implements the moodle renderable interface to help rendering
  * the learner_details page.
  *
@@ -261,7 +263,7 @@ class learner_details implements \renderable {
      * html table content depending on the training being displayed.
      *
      * @param training $training The training being computes as a table
-     * @return \stdClass The stdClass used by html_table function
+     * @return \stdClass[] The array of \stdClass used by html_table function
      */
     public function get_table_content($training) {
         $data = array();
