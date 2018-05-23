@@ -46,8 +46,9 @@ class db_accessor extends singleton {
     }
 
     /**
+     * Retrieves all the course_categories in moodle DB.
      *
-     * @return stdClass
+     * @return \stdClass Standard Moodle DB object
      */
     public function get_all_categories() {
         $result = self::$db->get_records('course_categories', null, null, 'id, name, description, parent');
@@ -55,21 +56,10 @@ class db_accessor extends singleton {
     }
 
     /**
+     * Retrieves the courses under a specific course category (training).
      *
-     * @return stdClass
-     */
-    public function get_all_trainings() {
-        $result = self::$db->get_records('course_categories');
-        return $result;
-    }
-
-    /**
-     * Retrieve the courses under a specific course category (training)
-     *
-     * @todo Improve to get a recursive exploration
-     *
-     * @param integer $id Id of the course category to retrieve courses for
-     * @return stdClass Standard Moodle DB object
+     * @param int $id Id of the course category to retrieve courses for
+     * @return \stdClass Standard Moodle DB object
      */
     public function get_courses_by_training($id) {
         $result = self::$db->get_records('course', array('category' => $id));
@@ -77,9 +67,10 @@ class db_accessor extends singleton {
     }
 
     /**
+     * Retrieves the modules (activities) under a specific course.
      *
-     * @param int $id
-     * @return stdClass
+     * @param int $id Id of the course to retrieve activities for
+     * @return \stdClass Standard Moodle DB object
      */
     public function get_course_modules_by_course($id) {
         $result = self::$db->get_records('course_modules', array('course' => $id));
@@ -87,9 +78,10 @@ class db_accessor extends singleton {
     }
 
     /**
+     * Retrieves the learners (student users) registered to a specific course
      *
-     * @param int $courseid
-     * @return stdClass
+     * @param int $courseid Id of the course to retrieve learners for
+     * @return \stdClass Standard Moodle DB object
      */
     public function get_learners_by_course($courseid) {
         $studentroleid = get_config('attestoodle', 'student_role_id');
@@ -114,9 +106,10 @@ class db_accessor extends singleton {
     }
 
     /**
+     * Retrieves the activities IDs validated by a specific learner.
      *
-     * @param type $learner
-     * @return stdClass
+     * @param learner $learner The learner to search activities for
+     * @return \stdClass Standard Moodle DB object
      */
     public function get_activities_validated_by_learner($learner) {
         $result = self::$db->get_records(
@@ -129,9 +122,10 @@ class db_accessor extends singleton {
     }
 
     /**
+     * Retrieves the name of a module (activity type) based on its ID.
      *
-     * @param int $id
-     * @return stdClass
+     * @param int $id The module ID to search the name for
+     * @return \stdClass Standard Moodle DB object
      */
     public function get_module_table_name($id) {
         $result = self::$db->get_record('modules', array('id' => $id), "name");
@@ -139,9 +133,11 @@ class db_accessor extends singleton {
     }
 
     /**
+     * Retrieves the details of an activity (module) in its specific DB table.
      *
-     * @param int $id
-     * @return stdClass
+     * @param int $instanceid Activity of the module in its specific DB table
+     * @param string $tablename DB table of the module searched
+     * @return \stdClass Standard Moodle DB object
      */
     public function get_course_modules_infos($instanceid, $tablename) {
         $result = self::$db->get_record($tablename, array('id' => $instanceid));

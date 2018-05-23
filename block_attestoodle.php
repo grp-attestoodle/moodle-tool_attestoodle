@@ -25,7 +25,6 @@
 defined('MOODLE_INTERNAL') || die();
 
 class block_attestoodle extends block_base {
-
     /**
      * Block initialisation.
      */

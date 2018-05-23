@@ -55,9 +55,10 @@ class renderer extends \plugin_renderer_base {
     }
 
     /**
+     * Page trainings management (add or remove trainings from categories list).
      *
-     * @param renderable\trainings_management $obj
-     * @return type
+     * @param renderable\trainings_management $obj Useful informations to display
+     * @return string HTML content of the page
      */
     public function render_trainings_management(renderable\trainings_management $obj) {
         $output = "";
@@ -98,9 +99,10 @@ class renderer extends \plugin_renderer_base {
     }
 
     /**
+     * Page milestones management (add or remove milestones from a training).
      *
-     * @param renderable\training_milestones $obj
-     * @return type
+     * @param renderable\training_milestones $obj Useful informations to display
+     * @return string HTML content of the page
      */
     public function render_training_milestones(renderable\training_milestones $obj) {
         $output = "";
