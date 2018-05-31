@@ -24,8 +24,6 @@
 
 namespace block_attestoodle;
 
-use block_attestoodle\factories\courses_factory;
-
 defined('MOODLE_INTERNAL') || die;
 
 class training {

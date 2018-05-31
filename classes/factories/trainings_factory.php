@@ -26,6 +26,7 @@
 namespace block_attestoodle\factories;
 
 use block_attestoodle\utils\singleton;
+use block_attestoodle\utils\db_accessor;
 use block_attestoodle\factories\categories_factory;
 use block_attestoodle\training;
 
@@ -44,6 +45,33 @@ class trainings_factory extends singleton {
     protected function __construct() {
         parent::__construct();
         $this->trainings = array();
+    }
+
+    /**
+     * Method that instanciates all the trainings used by Attestoodle and
+     * stores them in the main array.
+     */
+    public function create_trainings() {
+        $dbtrainings = db_accessor::get_instance()->get_all_trainings();
+        $categoryids = array_column($dbtrainings, 'categoryid');
+
+        $paths = db_accessor::get_instance()->get_categories_paths($categoryids);
+
+        foreach($paths as $path) {
+            $matches = array();
+            if (preg_match("/\/(\d+)/", $path->path, $matches)) {
+                if (!in_array($matches[1], $categoryids)) {
+                    $categoryids[] = $matches[1];
+                }
+            }
+        }
+        categories_factory::get_instance()->create_categories_by_ids($categoryids);
+
+        foreach($dbtrainings as $dbtr) {
+            $catid = $dbtr->categoryid;
+            $cat = categories_factory::get_instance()->retrieve_category($catid);
+            $this->create($cat);
+        }
     }
 
     /**
@@ -73,6 +101,10 @@ class trainings_factory extends singleton {
             $trainingtoadd->add_course($course);
         }
 
+        // Waiting for all the courses being instanciate to retrieve the...
+        // ...validated activities for each learner.
+        learners_factory::get_instance()->retrieve_all_validated_activities();
+
         return $trainingtoadd;
     }
 
@@ -83,6 +115,19 @@ class trainings_factory extends singleton {
      */
     public function get_trainings() {
         return $this->trainings;
+    }
+
+    /**
+     * Method that returns all the category IDs corresponding to a training.
+     *
+     * @return integer[] The category IDs in an array
+     */
+    public function get_training_category_ids() {
+        $categoryids = array();
+        foreach($this->trainings as $tr) {
+            $categoryids[] = $tr->get_id();
+        }
+        return $categoryids;
     }
 
     /**
@@ -99,13 +144,13 @@ class trainings_factory extends singleton {
     /**
      * Method that retrieves a training within the main array based on an ID.
      *
-     * @param integer $id Id of the training to retrieve
+     * @param integer $id Id of the training (category) to retrieve
      * @return training|null The training retrieved or NULL if no training has been
      * found with the specified ID
      */
     public function retrieve_training($id) {
         // TODO: problem with the training list cache (no cache).
-        categories_factory::get_instance()->create_categories();
+        // categories_factory::get_instance()->create_categories();
 
         $training = null;
         foreach ($this->trainings as $t) {
@@ -115,6 +160,25 @@ class trainings_factory extends singleton {
             }
         }
         return $training;
+    }
+
+    /**
+     * Method that retrieves the index of a training in trainings global array
+     * based on its ID
+     *
+     * @param integer $id Id of the training (category) to retrieve
+     * @return int The index retrieved or -1 if no training has been found with
+     * the specified ID
+     */
+    public function retrieve_training_index($id) {
+        $index = -1;
+        foreach ($this->trainings as $i => $t) {
+            if ($t->get_id() == $id) {
+                $index = $i;
+                break;
+            }
+        }
+        return $index;
     }
 
     /**
@@ -133,6 +197,41 @@ class trainings_factory extends singleton {
             }
         }
         return $activity;
+    }
+
+    /**
+     * Remove a training both in current factory and DB.
+     *
+     * @param int $categoryid The category ID corresponding to the training to remove
+     */
+    public function remove_training($categoryid) {
+        // Call delete in DB
+        db_accessor::get_instance()->delete_training($categoryid);
+
+        // If OK, unset the training in $this->trainings.
+        $index = $this->retrieve_training_index($categoryid);
+        if ($index >= 0) {
+            array_splice($this->trainings, $index, 1);
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
+    /**
+     * Add a training both in current factory and DB.
+     *
+     * @param category $category The category corresponding to the training to add
+     */
+    public function add_training($category) {
+        // Call insert in DB.
+        db_accessor::get_instance()->insert_training($category->get_id());
+
+        // If OK, call $this->create with the category object.
+        $this->create($category);
+
+        return true;
     }
 }
 

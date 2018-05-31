@@ -52,10 +52,11 @@ class categories_factory extends singleton {
      */
     public function create_categories() {
         $dbcategories = db_accessor::get_instance()->get_all_categories();
+        $trainingcategoryids = trainings_factory::get_instance()->get_training_category_ids();
 
         foreach ($dbcategories as $dbcat) {
             $desc = $dbcat->description;
-            $istraining = $this->extract_training($desc);
+            $istraining = in_array($dbcat->id, $trainingcategoryids);
 
             $category = $this->retrieve_category($dbcat->id);
             // Create the -almost- void category object if it doesn't exist yet.
@@ -76,34 +77,38 @@ class categories_factory extends singleton {
             // Set the properties of the -almost- void category object.
             $category->feed($dbcat->name, $desc, $istraining, $parent);
         }
-        // Waiting for all the categories to be instanciated to instanciate...
-        // ... the trainings and all the courses of a training.
-        foreach ($this->categories as $cat) {
-            if ($cat->is_training()) {
-                trainings_factory::get_instance()->create($cat);
-            }
-        }
-
-        // Waiting for all the courses being instanciate to retrieve the...
-        // ...validated activities for each learner.
-        learners_factory::get_instance()->retrieve_all_validated_activities();
     }
 
     /**
-     * Method that checks if a string specifies a training. If the string contains
-     * the specific following HTML tag:
-     * <span class="attestoodle_training"></span>
-     * then it is a training.
+     * Method that instanciates the categories corresponding to certain IDs.
      *
-     * @todo Use a XMLParser function instead of a RegExp
-     *
-     * @param string $string The string that may contain a training marker
-     * @return boolean True if the string contains the training marker.
+     * @param int[] $ids The category IDs we want to create
      */
-    private function extract_training($string) {
-        $regexp = "/<span class=(?:(?:\"attestoodle_training\")|(?:\'attestoodle_training\'))><\/span>/iU";
-        $istraining = preg_match($regexp, $string);
-        return $istraining;
+    public function create_categories_by_ids($ids) {
+        $dbcategories = db_accessor::get_instance()->get_categories_by_id($ids);
+
+        foreach ($dbcategories as $dbcat) {
+            $desc = $dbcat->description;
+
+            $category = $this->retrieve_category($dbcat->id);
+            // Create the -almost- void category object if it doesn't exist yet.
+            if (!isset($category)) {
+                $category = $this->create($dbcat->id);
+            }
+
+            $parent = null;
+            // Computes the potential parent category.
+            if ($dbcat->parent > 0) {
+                // Try to retrieve the category object based on the id.
+                $parent = $this->retrieve_category($dbcat->parent);
+                if (!isset($parent)) {
+                    // Create the -almost- void parent category object if needed.
+                    $parent = $this->create($dbcat->parent);
+                }
+            }
+            // Set the properties of the -almost- void category object.
+            $category->feed($dbcat->name, $desc, true, $parent);
+        }
     }
 
     /**
@@ -147,6 +152,7 @@ class categories_factory extends singleton {
      */
     public function retrieve_sub_categories($id) {
         $categories = array();
+
         foreach ($this->categories as $cat) {
             if ($cat->has_parent() && ($cat->get_parent()->get_id() == $id)) {
                 $categories[] = $cat;

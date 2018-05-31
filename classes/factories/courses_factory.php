@@ -52,6 +52,7 @@ class courses_factory extends singleton {
         seems stupid */
         // Retrieve the activities of the course being created.
         $activities = activities_factory::get_instance()->retrieve_activities_by_course($id);
+
         foreach ($activities as $activity) {
             $coursetoadd->add_activity($activity);
         }
@@ -59,9 +60,7 @@ class courses_factory extends singleton {
         // TODO: adding learners one by one with ->add_learner method seems stupid.
         // Retrieve the learners registered to the course being created.
         $learners = learners_factory::get_instance()->retrieve_learners_by_course($id);
-        foreach ($learners as $learner) {
-            $coursetoadd->add_learner($learner);
-        }
+        $coursetoadd->set_learners($learners);
 
         return $coursetoadd;
     }

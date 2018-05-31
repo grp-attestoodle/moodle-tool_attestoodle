@@ -127,8 +127,8 @@ class trainings_management implements \renderable {
                     $boolvalue = boolval($value);
                     if ($category->set_istraining($boolvalue)) {
                         try {
-                            // Try to persist activity in DB.
-                            $category->persist();
+                            // Try to persist training in DB.
+                            $category->persist_training();
 
                             // If no Exception has been thrown by DB update.
                             $updatecounter++;

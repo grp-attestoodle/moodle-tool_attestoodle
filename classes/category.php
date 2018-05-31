@@ -24,6 +24,8 @@
 
 namespace block_attestoodle;
 
+use block_attestoodle\factories\trainings_factory;
+
 defined('MOODLE_INTERNAL') || die;
 
 class category {
@@ -73,18 +75,20 @@ class category {
     }
 
     /**
-     * Update the current category data into the database.
-     *
-     * @todo Use the db_accessor singleton instead of $DB global object
+     * Persists the data into the training table after remove/add training boolean
      */
-    public function persist() {
-        global $DB;
+    public function persist_training() {
+        $istraining = $this->istraining;
 
-        $obj = new \stdClass();
-        $obj->id = $this->id;
-        $obj->description = $this->description;
-
-        $DB->update_record("course_categories", $obj);
+        // No training: delete the record.
+        if (!$istraining) {
+            // call training factory 'remove' (that will call delete in DB).
+            trainings_factory::get_instance()->remove_training($this->id);
+        } else {
+            // Is training: insert the record.
+            // call training factory 'add' (that will call insert in DB).
+            trainings_factory::get_instance()->add_training($this);
+        }
     }
 
     /**
@@ -181,7 +185,6 @@ class category {
     public function set_istraining($prop) {
         if ($this->istraining != $prop) {
             $this->istraining = $prop;
-            $this->update_istraining_in_description();
             return true;
         } else {
             return false;
@@ -195,31 +198,6 @@ class category {
      */
     public function set_description($prop) {
         $this->description = $prop;
-    }
-
-    /**
-     * Method that modifies the description to store the training boolean.
-     */
-    private function update_istraining_in_description() {
-        $desc = $this->description;
-        $istraining = $this->istraining;
-
-        $regexp = "/<span class=(?:(?:\"attestoodle_training\")|(?:\'attestoodle_training\'))><\/span>/iU";
-
-        // No training: remove the HTML tag.
-        if (!$istraining) {
-            $desc = preg_replace($regexp, "", $desc);
-        } else {
-            if (preg_match($regexp, $desc)) {
-                // Modified training: change the HTML tag (virtually impossible possibility).
-                $desc = preg_replace($regexp, "<span class=\"attestoodle_training\"></span>", $desc);
-            } else {
-                // Is training: add the HTML tag to the end of the description.
-                $desc = $desc . "<span class=\"attestoodle_training\"></span>";
-            }
-        }
-
-        $this->set_description($desc);
     }
 
     /**

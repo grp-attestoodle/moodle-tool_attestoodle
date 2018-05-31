@@ -68,7 +68,7 @@ class learners_factory extends singleton {
 
     /**
      * Method that retrieves the activities validated by a learner in DB and
-     * stores them in the learner
+     * stores them in the learner.
      *
      * @todo The passing by reference may be useless
      *

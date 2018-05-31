@@ -57,11 +57,12 @@ $PAGE->set_context($context);
 require_login();
 
 $renderer = $PAGE->get_renderer('block_attestoodle');
-// Always create categories.
-categories_factory::get_instance()->create_categories();
+// Always create trainings.
+trainings_factory::get_instance()->create_trainings();
 
 switch($page) {
     case 'trainingsmanagement':
+        categories_factory::get_instance()->create_categories();
         $PAGE->set_url(new moodle_url('/blocks/attestoodle/index.php',
                 ['page' => $page]));
         $PAGE->set_title(get_string('trainings_management_page_title', 'block_attestoodle'));

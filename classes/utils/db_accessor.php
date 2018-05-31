@@ -56,6 +56,50 @@ class db_accessor extends singleton {
     }
 
     /**
+     * Retrieves all the attestoodle trainings in moodle DB.
+     *
+     * @return \stdClass Standard Moodle DB object
+     */
+    public function get_all_trainings() {
+        $result = self::$db->get_records('block_attestoodle_training');
+        return $result;
+    }
+
+    /**
+     * Retrieves the path of the course categories that linked
+     * to a training in Attestoodle.
+     *
+     * @param int[] $categoryids The ids of the categories to retrieve
+     * @return \stdClass Standard Moodle DB object
+     */
+    public function get_categories_paths($categoryids) {
+        $result = self::$db->get_records_list(
+                'course_categories',
+                'id',
+                $categoryids,
+                null,
+                'path');
+        return $result;
+    }
+
+    /**
+     * Retrieves informations of the course categories that linked
+     * to a training in Attestoodle.
+     *
+     * @param int[] $categoryids The ids of the categories to retrieve
+     * @return \stdClass Standard Moodle DB object
+     */
+    public function get_categories_by_id($categoryids) {
+        $result = self::$db->get_records_list(
+                'course_categories',
+                'id',
+                $categoryids,
+                null,
+                'id, name, description, parent');
+        return $result;
+    }
+
+    /**
      * Retrieves the courses under a specific course category (training).
      *
      * @param int $id Id of the course category to retrieve courses for
@@ -142,5 +186,26 @@ class db_accessor extends singleton {
     public function get_course_modules_infos($instanceid, $tablename) {
         $result = self::$db->get_record($tablename, array('id' => $instanceid));
         return $result;
+    }
+
+    /**
+     * Delete a training in training table based on the category ID.
+     *
+     * @param int $categoryid The category ID that we want to delete
+     */
+    public function delete_training($categoryid) {
+        self::$db->delete_records('block_attestoodle_training', array('categoryid' => $categoryid));
+    }
+
+    /**
+     * Insert a training in training table for a specific category ID.
+     *
+     * @param int $categoryid The category ID that we want to insert
+     */
+    public function insert_training($categoryid) {
+        $dataobject = new \stdClass();
+        $dataobject->name = "";
+        $dataobject->categoryid = $categoryid;
+        self::$db->insert_record('block_attestoodle_training', $dataobject);
     }
 }
