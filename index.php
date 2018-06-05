@@ -72,6 +72,7 @@ switch($page) {
         require_capability('block/attestoodle:managetrainings', $context);
 
         $renderable = new renderable\trainings_management();
+
         break;
     case 'trainingmilestones':
         $trainingid = required_param('training', PARAM_INT);
@@ -86,6 +87,7 @@ switch($page) {
 
         $renderable = new renderable\training_milestones($trainingid);
         $PAGE->set_heading($renderable->get_heading());
+
         break;
     case 'learners':
         // Required params.
@@ -126,6 +128,7 @@ switch($page) {
         } else if ($action == 'generatecertificates') {
             $renderable->generate_certificates();
         }
+
         break;
     case 'learnerdetails':
         // Required param.
@@ -159,6 +162,7 @@ switch($page) {
             $renderable->generate_certificate_file($trainingid);
         }
         $PAGE->set_heading($renderable->get_heading());
+
         break;
     case 'trainingslist':
     default:
@@ -170,6 +174,8 @@ switch($page) {
         require_capability('block/attestoodle:displaytrainings', $context);
 
         $renderable = new renderable\trainings_list(trainings_factory::get_instance()->get_trainings());
+
+        break;
 }
 
 echo $OUTPUT->header();

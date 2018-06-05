@@ -95,3 +95,27 @@ function block_attestoodle_pluginfile($course, $cm, $context, $filearea, $args, 
     // From Moodle 2.3, use send_stored_file instead.
     send_stored_file($file, 1, 0, $forcedownload, $options);
 }
+
+/**
+ * Function automagically called by moodle to add a setting navigation entry
+ *
+ * @param array     $settingsnav
+ * @param object    $context
+ * @return void
+ */
+
+function block_attestoodle_extend_navigation_category_settings(navigation_node $parentnode, context_coursecat $context) {
+    global $CFG, $PAGE;
+
+    $strfoo = get_string('competencies', 'competency');
+    $url = new moodle_url('/blocks/attestoodle/index.php');
+    $node = navigation_node::create(
+            "Attestoodle",
+            $url,
+            navigation_node::NODETYPE_LEAF,
+            'admincompetences',
+            'admincompetences',
+            new pix_icon('navigation', "Attestoodle", "block_attestoodle"));
+    $node->showinflatnavigation = false;
+    $parentnode->add_node($node);
+}
