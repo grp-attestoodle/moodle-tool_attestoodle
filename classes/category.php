@@ -67,7 +67,9 @@ class category {
      * @param boolean $istraining If the category is a training
      * @param category|null $parent The parent category, if any
      */
-    public function feed($name, $description, $istraining, $parent) {
+    public function feed($name, $description, $parent) {
+        $istraining = trainings_factory::get_instance()->has_training($this->id);
+
         $this->name = $name;
         $this->description = $description;
         $this->istraining = $istraining;

@@ -106,16 +106,24 @@ function block_attestoodle_pluginfile($course, $cm, $context, $filearea, $args, 
 
 function block_attestoodle_extend_navigation_category_settings(navigation_node $parentnode, context_coursecat $context) {
     global $CFG, $PAGE;
+    $userhascapability = has_capability('block/attestoodle:manageuniqtraining', $context);
 
-    $strfoo = get_string('competencies', 'competency');
-    $url = new moodle_url('/blocks/attestoodle/index.php');
-    $node = navigation_node::create(
-            "Attestoodle",
-            $url,
-            navigation_node::NODETYPE_LEAF,
-            'admincompetences',
-            'admincompetences',
-            new pix_icon('navigation', "Attestoodle", "block_attestoodle"));
-    $node->showinflatnavigation = false;
-    $parentnode->add_node($node);
+    if ($userhascapability) {
+        $categoryid = $PAGE->context->instanceid;
+        $url = new moodle_url(
+                '/blocks/attestoodle/index.php',
+                array(
+                        "page" => "uniqtrainingmanagement",
+                        "categoryid" => $categoryid
+                ));
+        $node = navigation_node::create(
+                "Attestoodle",
+                $url,
+                navigation_node::NODETYPE_LEAF,
+                'admincompetences',
+                'admincompetences',
+                new pix_icon('navigation', "Attestoodle", "block_attestoodle"));
+        $node->showinflatnavigation = false;
+        $parentnode->add_node($node);
+    }
 }

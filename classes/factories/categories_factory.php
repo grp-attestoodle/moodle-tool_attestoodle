@@ -75,7 +75,7 @@ class categories_factory extends singleton {
                 }
             }
             // Set the properties of the -almost- void category object.
-            $category->feed($dbcat->name, $desc, $istraining, $parent);
+            $category->feed($dbcat->name, $desc, $parent);
         }
     }
 
@@ -107,7 +107,7 @@ class categories_factory extends singleton {
                 }
             }
             // Set the properties of the -almost- void category object.
-            $category->feed($dbcat->name, $desc, true, $parent);
+            $category->feed($dbcat->name, $desc, $parent);
         }
     }
 

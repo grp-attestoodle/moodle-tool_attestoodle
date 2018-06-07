@@ -55,6 +55,21 @@ class renderer extends \plugin_renderer_base {
     }
 
     /**
+     * Page training management (declare/suppress a category as a training).
+     *
+     * @param renderable\uniq_training_management $obj Useful informations to display
+     * @return string HTML content of the page
+     */
+    public function render_uniq_training_management(renderable\uniq_training_management $obj) {
+        $output = "";
+
+        $output .= $obj->get_header();
+        $output .= $obj->get_content();
+
+        return $output;
+    }
+
+    /**
      * Page trainings management (add or remove trainings from categories list).
      *
      * @param renderable\trainings_management $obj Useful informations to display

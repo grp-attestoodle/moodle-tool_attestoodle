@@ -63,6 +63,10 @@ $string['trainings_list_table_header_column_description'] = 'Description';
 $string['trainings_list_table_link_details'] = 'Learners monitoring';
 $string['trainings_list_warning_no_trainings'] = 'No trainings registered';
 
+// Uniq training management page strings.
+$string['uniq_training_management_page_title'] = 'Moodle - Attestoodle - Training management';
+$string['uniq_training_management_main_title'] = 'Training management';
+
 // Trainings management page strings.
 $string['trainings_management_page_title'] = 'Moodle - Attestoodle - Trainings management';
 $string['trainings_management_main_title'] = 'Trainings management';
