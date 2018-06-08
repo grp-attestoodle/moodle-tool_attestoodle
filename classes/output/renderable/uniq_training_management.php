@@ -53,9 +53,13 @@ class uniq_training_management implements \renderable {
 
         // Handling form is useful only if the category exists.
         if (isset($this->category)) {
-            var_dump($this->category);
             $this->form = new category_training_update_form(
-                    new \moodle_url('/blocks/attestoodle/index.php', ['page' => 'uniqtrainingmanagement']),
+                    new \moodle_url(
+                            '/blocks/attestoodle/index.php',
+                            array(
+                                    'page' => 'uniqtrainingmanagement',
+                                    'categoryid' => $this->categoryid
+                            )),
                     array(
                             'data' => $this->category,
                             'input_name_prefix' => "attestoodle_category_id_"
