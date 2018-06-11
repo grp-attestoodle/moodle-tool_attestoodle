@@ -195,7 +195,7 @@ class uniq_training_management implements \renderable {
         $output .= '<form action="?"><div>'
                 . '<input type="hidden" name="page" value="uniqtrainingmanagement" />';
         $output .= '<label for="input_category_id">'
-                . get_string('learner_details_begin_date_label', 'block_attestoodle') . '</label>'
+                . get_string('uniq_training_management_category_id_label', 'block_attestoodle') . '</label>'
                 . '<input type="text" id="input_category_id" name="categoryid" value="' . $this->categoryid . '" />';
         $output .= '<input type="submit" value="'
                 . get_string('learner_details_submit_button_value', 'block_attestoodle') . '" />'

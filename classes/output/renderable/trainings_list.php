@@ -57,7 +57,7 @@ class trainings_list implements renderable {
         $output .= \html_writer::link(
                 new \moodle_url(
                         '/blocks/attestoodle/index.php',
-                        ['page' => 'trainingsmanagement']
+                        ['page' => 'uniqtrainingmanagement']
                 ),
                 get_string('trainings_list_manage_trainings_link', 'block_attestoodle'),
                 array('class' => 'btn btn-default attestoodle-button')

@@ -66,6 +66,7 @@ $string['trainings_list_warning_no_trainings'] = 'Pas de formations enregistrée
 // Uniq training management page strings.
 $string['uniq_training_management_page_title'] = "Moodle - Attestoodle - Gestion d'une formation";
 $string['uniq_training_management_main_title'] = "Gestion d'une formation";
+$string['uniq_training_management_category_id_label'] = "Identifiant de catégorie : ";
 
 // Trainings management page strings.
 $string['trainings_management_page_title'] = 'Moodle - Attestoodle - Gestion des formations';
