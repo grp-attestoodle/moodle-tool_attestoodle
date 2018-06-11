@@ -123,7 +123,7 @@ class training_learners_list implements renderable {
             $output .= "<hr />";
 
             // Basic form to allow user filtering the validated activities by begin and end dates.
-            // TODO use a moodle_quickform ?
+            // @TODO use a moodle_quickform.
             $output .= '<form action="?" class="filterform"><div>'
                     . '<input type="hidden" name="page" value="learners" />'
                     . '<input type="hidden" name="training" value="' . $this->training->get_id() . '" />';
