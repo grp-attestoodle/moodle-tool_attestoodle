@@ -37,7 +37,7 @@ require_once($CFG->dirroot.'/blocks/attestoodle/lib.php');
  */
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/learners_factory.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/trainings_list.php');
-require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/trainings_management.php');
+require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/training_management.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/training_learners_list.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/learner_details.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/training_milestones.php');
@@ -45,7 +45,6 @@ require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/traini
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/certificate.php');
 
 use block_attestoodle\factories\trainings_factory;
-use block_attestoodle\factories\categories_factory;
 use block_attestoodle\output\renderable;
 
 $page = optional_param('page', '', PARAM_ALPHA);
@@ -73,20 +72,7 @@ switch($page) {
         $userhascapability = has_capability('block/attestoodle:manageuniqtraining', $context);
         require_capability('block/attestoodle:manageuniqtraining', $context);
 
-        $renderable = new renderable\uniq_training_management($categoryid);
-
-        break;
-    case 'trainingsmanagement':
-        categories_factory::get_instance()->create_categories();
-        $PAGE->set_url(new moodle_url('/blocks/attestoodle/index.php',
-                ['page' => $page]));
-        $PAGE->set_title(get_string('trainings_management_page_title', 'block_attestoodle'));
-        $PAGE->set_heading(get_string('trainings_management_main_title', 'block_attestoodle'));
-
-        $userhascapability = has_capability('block/attestoodle:managetrainings', $context);
-        require_capability('block/attestoodle:managetrainings', $context);
-
-        $renderable = new renderable\trainings_management();
+        $renderable = new renderable\training_management($categoryid);
 
         break;
     case 'trainingmilestones':

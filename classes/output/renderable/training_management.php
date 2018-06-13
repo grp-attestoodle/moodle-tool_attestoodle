@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Page trainings management.
+ * Page uniq training management.
  *
  * Renderable class that is used to render the page that allow user to manage
- * the trainings in Attestoodle.
+ * a single training in Attestoodle.
  *
  * @package    block_attestoodle
  * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
@@ -30,26 +30,44 @@ namespace block_attestoodle\output\renderable;
 defined('MOODLE_INTERNAL') || die;
 
 use block_attestoodle\factories\categories_factory;
-use block_attestoodle\forms\categories_trainings_update_form;
+use block_attestoodle\forms\category_training_update_form;
 
-class trainings_management implements \renderable {
-    /** @var categories_trainings_update_form The form used to manage trainings */
+class training_management implements \renderable {
+    /** @var category_training_update_form The form used to manage trainings */
     private $form;
+
+    /** @var integer The category ID that we want to manage */
+    private $categoryid = null;
+
+    /** @var category the actual category we want to manage */
+    private $category = null;
 
     /**
      * Constructor method that instanciates the form.
      */
-    public function __construct() {
-        $categories = categories_factory::get_instance()->get_categories();
-        $this->form = new categories_trainings_update_form(
-                new \moodle_url('/blocks/attestoodle/index.php', ['page' => 'trainingsmanagement']),
-                array(
-                        'data' => $categories,
-                        'input_name_prefix' => "attestoodle_category_id_"
-                )
-        );
+    public function __construct($categoryid) {
+        $this->categoryid = $categoryid;
 
-        $this->handle_form();
+        categories_factory::get_instance()->create_categories_by_ids(array($categoryid));
+        $this->category = categories_factory::get_instance()->retrieve_category($categoryid);
+
+        // Handling form is useful only if the category exists.
+        if (isset($this->category)) {
+            $this->form = new category_training_update_form(
+                    new \moodle_url(
+                            '/blocks/attestoodle/index.php',
+                            array(
+                                    'page' => 'uniqtrainingmanagement',
+                                    'categoryid' => $this->categoryid
+                            )),
+                    array(
+                            'data' => $this->category,
+                            'input_name_prefix' => "attestoodle_category_id_"
+                    )
+            );
+
+            $this->handle_form();
+        }
     }
 
     /**
@@ -163,14 +181,16 @@ class trainings_management implements \renderable {
     public function get_header() {
         $output = "";
 
-        $output .= \html_writer::start_div('clearfix');
-        // Link to the trainings list.
-        $output .= \html_writer::link(
-                new \moodle_url('/blocks/attestoodle/index.php', ['page' => 'trainingslist']),
-                get_string('trainings_management_trainings_list_link', 'block_attestoodle'),
-                array('class' => 'attestoodle-link')
-        );
-        $output .= \html_writer::end_div();
+        if (isset($this->category)) {
+            $output .= \html_writer::start_div('clearfix');
+            // Link to the trainings list.
+            $output .= \html_writer::link(
+                    new \moodle_url("/course/index.php", array("categoryid" => $this->category->get_id())),
+                    get_string('uniq_training_management_backto_category_link', 'block_attestoodle'),
+                    array('class' => 'attestoodle-link')
+            );
+            $output .= \html_writer::end_div();
+        }
 
         return $output;
     }
@@ -181,6 +201,38 @@ class trainings_management implements \renderable {
      * @return string HTML string corresponding to the form
      */
     public function get_content() {
-        return $this->form->render();
+        $output = "";
+        if (!isset($this->categoryid)) {
+            $output .= get_string('uniq_training_management_no_category_id', 'block_attestoodle');
+        } else if (!isset($this->category)) {
+            $output .= get_string('uniq_training_management_training_details_link', 'block_attestoodle');
+        } else {
+            $output .= $this->form->render();
+
+            if ($this->category->is_training()) {
+                // Link to the learners list of the training.
+                $parameters = array(
+                        'page' => 'learners',
+                        'training' => $this->category->get_id()
+                );
+                $url = new \moodle_url('/blocks/attestoodle/index.php', $parameters);
+                $label = get_string('uniq_training_management_training_details_link', 'block_attestoodle');
+                $attributes = array('class' => 'attestoodle-button');
+                $output .= \html_writer::link($url, $label, $attributes);
+
+                $output.= "<br />";
+
+                // Link to the milestones management of the training.
+                $parametersmilestones = array(
+                        'page' => 'trainingmilestones',
+                        'training' => $this->category->get_id()
+                );
+                $urlmilestones = new \moodle_url('/blocks/attestoodle/index.php', $parametersmilestones);
+                $labelmilestones = get_string('uniq_training_management_manage_training_link', 'block_attestoodle');
+                $attributesmilestones = array('class' => 'attestoodle-button');
+                $output .= \html_writer::link($urlmilestones, $labelmilestones, $attributesmilestones);
+            }
+        }
+        return $output;
     }
 }
