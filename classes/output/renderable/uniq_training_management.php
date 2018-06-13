@@ -181,25 +181,16 @@ class uniq_training_management implements \renderable {
     public function get_header() {
         $output = "";
 
-        $output .= \html_writer::start_div('clearfix');
-        // Link to the trainings list.
-        $output .= \html_writer::link(
-                new \moodle_url('/blocks/attestoodle/index.php', ['page' => 'trainingslist']),
-                get_string('trainings_management_trainings_list_link', 'block_attestoodle'),
-                array('class' => 'attestoodle-link')
-        );
-        $output .= \html_writer::end_div();
-
-        // Basic form to allow the user to search for a category by its ID.
-        // @TODO use a moodle_quickform.
-        $output .= '<form action="?"><div>'
-                . '<input type="hidden" name="page" value="uniqtrainingmanagement" />';
-        $output .= '<label for="input_category_id">'
-                . get_string('uniq_training_management_category_id_label', 'block_attestoodle') . '</label>'
-                . '<input type="text" id="input_category_id" name="categoryid" value="' . $this->categoryid . '" />';
-        $output .= '<input type="submit" value="'
-                . get_string('learner_details_submit_button_value', 'block_attestoodle') . '" />'
-                . '</div></form>' . "\n";
+        if (isset($this->category)) {
+            $output .= \html_writer::start_div('clearfix');
+            // Link to the trainings list.
+            $output .= \html_writer::link(
+                    new \moodle_url("/course/index.php", array("categoryid" => $this->category->get_id())),
+                    get_string('uniq_training_management_backto_category_link', 'block_attestoodle'),
+                    array('class' => 'attestoodle-link')
+            );
+            $output .= \html_writer::end_div();
+        }
 
         return $output;
     }
@@ -210,14 +201,38 @@ class uniq_training_management implements \renderable {
      * @return string HTML string corresponding to the form
      */
     public function get_content() {
+        $output = "";
         if (!isset($this->categoryid)) {
-            return "Vous devez spécifier un ID de catégorie à modifier";
-        }
+            $output .= get_string('uniq_training_management_no_category_id', 'block_attestoodle');
+        } else if (!isset($this->category)) {
+            $output .= get_string('uniq_training_management_training_details_link', 'block_attestoodle');
+        } else {
+            $output .= $this->form->render();
 
-        if (!isset($this->category)) {
-            return "L'identifiant {$this->categoryid} n'est pas valide.";
+            if ($this->category->is_training()) {
+                // Link to the learners list of the training.
+                $parameters = array(
+                        'page' => 'learners',
+                        'training' => $this->category->get_id()
+                );
+                $url = new \moodle_url('/blocks/attestoodle/index.php', $parameters);
+                $label = get_string('uniq_training_management_training_details_link', 'block_attestoodle');
+                $attributes = array('class' => 'attestoodle-button');
+                $output .= \html_writer::link($url, $label, $attributes);
+
+                $output.= "<br />";
+
+                // Link to the milestones management of the training.
+                $parametersmilestones = array(
+                        'page' => 'trainingmilestones',
+                        'training' => $this->category->get_id()
+                );
+                $urlmilestones = new \moodle_url('/blocks/attestoodle/index.php', $parametersmilestones);
+                $labelmilestones = get_string('uniq_training_management_manage_training_link', 'block_attestoodle');
+                $attributesmilestones = array('class' => 'attestoodle-button');
+                $output .= \html_writer::link($urlmilestones, $labelmilestones, $attributesmilestones);
+            }
         }
-//        return "this is the content";
-        return $this->form->render();
+        return $output;
     }
 }

@@ -52,18 +52,6 @@ class trainings_list implements renderable {
     public function get_header() {
         $output = "";
 
-        $output .= \html_writer::start_div('clearfix');
-        // Link to the trainings management page.
-        $output .= \html_writer::link(
-                new \moodle_url(
-                        '/blocks/attestoodle/index.php',
-                        ['page' => 'uniqtrainingmanagement']
-                ),
-                get_string('trainings_list_manage_trainings_link', 'block_attestoodle'),
-                array('class' => 'btn btn-default attestoodle-button')
-        );
-        $output .= \html_writer::end_div();
-
         return $output;
     }
 

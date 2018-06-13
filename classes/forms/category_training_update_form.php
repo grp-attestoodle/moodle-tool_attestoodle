@@ -48,7 +48,7 @@ class category_training_update_form extends \moodleform {
         $mform->addElement("advcheckbox", $name, $label);
         $mform->setDefault($name, $istraining);
 
-        $this->add_action_buttons();
+        $this->add_action_buttons(false);
     }
 
     /**

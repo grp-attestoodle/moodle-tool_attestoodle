@@ -66,7 +66,11 @@ $string['trainings_list_warning_no_trainings'] = 'No trainings registered';
 // Uniq training management page strings.
 $string['uniq_training_management_page_title'] = 'Moodle - Attestoodle - Training management';
 $string['uniq_training_management_main_title'] = 'Training management';
-$string['uniq_training_management_category_id_label'] = "Category ID: ";
+$string['uniq_training_management_backto_category_link'] = "Back to category";
+$string['uniq_training_management_training_details_link'] = "Go to training";
+$string['uniq_training_management_manage_training_link'] = "Manage milestones";
+$string['uniq_training_management_no_category_id'] = "No category ID specified.";
+$string['uniq_training_management_unknow_category_id'] = "Invalid category ID.";
 
 // Trainings management page strings.
 $string['trainings_management_page_title'] = 'Moodle - Attestoodle - Trainings management';
