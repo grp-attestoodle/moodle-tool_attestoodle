@@ -60,17 +60,16 @@ $renderer = $PAGE->get_renderer('block_attestoodle');
 trainings_factory::get_instance()->create_trainings();
 
 switch($page) {
-    case 'uniqtrainingmanagement':
+    case 'trainingmanagement':
         $categoryid = optional_param('categoryid', null, PARAM_INT);
 
         $PAGE->set_url(new moodle_url('/blocks/attestoodle/index.php',
                 ['page' => $page, 'categoryid' => $categoryid]));
 
-        $PAGE->set_title(get_string('uniq_training_management_page_title', 'block_attestoodle'));
-        $PAGE->set_heading(get_string('uniq_training_management_main_title', 'block_attestoodle'));
+        $PAGE->set_title(get_string('training_management_page_title', 'block_attestoodle'));
 
-        $userhascapability = has_capability('block/attestoodle:manageuniqtraining', $context);
-        require_capability('block/attestoodle:manageuniqtraining', $context);
+        $userhascapability = has_capability('block/attestoodle:managetraining', $context);
+        require_capability('block/attestoodle:managetraining', $context);
 
         $renderable = new renderable\training_management($categoryid);
 

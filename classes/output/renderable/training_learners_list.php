@@ -103,7 +103,10 @@ class training_learners_list implements renderable {
         $output .= \html_writer::start_div('clearfix');
         // Link to the trainings list.
         $output .= \html_writer::link(
-                new \moodle_url('/blocks/attestoodle/index.php'),
+                new \moodle_url(
+                        '/blocks/attestoodle/index.php',
+                        array('page' => 'trainingmanagement', 'categoryid' => $this->training->get_id())
+                ),
                 get_string('trainings_list_btn_text', 'block_attestoodle'),
                 array('class' => 'attestoodle-link')
         );
@@ -115,12 +118,13 @@ class training_learners_list implements renderable {
             $output .= \html_writer::link(
                     new \moodle_url(
                             '/blocks/attestoodle/index.php',
-                            ['page' => 'trainingmilestones', 'training' => $this->training->get_id()]
+                            array('page' => 'trainingmilestones', 'training' => $this->training->get_id())
                     ),
                     get_string('training_learners_list_edit_training_link', 'block_attestoodle'),
                     array('class' => 'btn btn-default attestoodle-button'));
             $output .= \html_writer::end_div();
-            $output .= "<hr />";
+
+            $output .= \html_writer::start_div('clearfix training-report-header');
 
             // Basic form to allow user filtering the validated activities by begin and end dates.
             // @TODO use a moodle_quickform.
@@ -177,7 +181,7 @@ class training_learners_list implements renderable {
                     array('class' => 'btn btn-default attestoodle-button'));
             $output .= \html_writer::end_div();
 
-            $output .= "<hr />";
+            $output .= \html_writer::end_div();
         }
 
         return $output;

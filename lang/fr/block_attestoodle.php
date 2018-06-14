@@ -45,7 +45,7 @@ $string['plugin_access'] = 'Accès au plug-in';
 
 // Shared strings.
 $string['courses_list_btn_text'] = 'Liste des cours Attestoodle';
-$string['trainings_list_btn_text'] = 'Liste des formations Attestoodle';
+$string['trainings_list_btn_text'] = 'Retour à la page principale de la formation';
 $string['backto_trainings_list_btn_text'] = 'Retour à la liste des formations Attestoodle';
 $string['backto_training_detail_btn_text'] = 'Retour aux détails de la formation';
 $string['backto_training_learners_list_btn_text'] = 'Retour à la liste des étudiants';
@@ -63,28 +63,29 @@ $string['trainings_list_table_header_column_description'] = 'Description';
 $string['trainings_list_table_link_details'] = 'Suivi des étudiants';
 $string['trainings_list_warning_no_trainings'] = 'Pas de formations enregistrées';
 
-// Uniq training management page strings.
-$string['uniq_training_management_page_title'] = "Moodle - Attestoodle - Gestion d'une formation";
-$string['uniq_training_management_main_title'] = "Gestion d'une formation";
-$string['uniq_training_management_backto_category_link'] = "Retour à la catégorie";
-$string['uniq_training_management_training_details_link'] = "Voir la formation";
-$string['uniq_training_management_manage_training_link'] = "Gérer les jalons";
-$string['uniq_training_management_no_category_id'] = "Vous devez spécifier un ID de catégorie.";
-$string['uniq_training_management_unknow_category_id'] = "Identifiant de catégorie invalide.";
-
-// Trainings management page strings.
-$string['trainings_management_page_title'] = 'Moodle - Attestoodle - Gestion des formations';
-$string['trainings_management_main_title'] = 'Gestion des formations';
-$string['trainings_management_trainings_list_link'] = 'Retour à la liste des formations';
-$string['trainings_management_warning_no_submitted_data'] = 'Aucune donnée envoyée';
-$string['trainings_management_warning_invalid_form'] = "Le formulaire n'est pas valide";
-$string['trainings_management_info_form_canceled'] = 'Le formulaire a été annulé';
+// Training management page strings.
+$string['training_management_page_title'] = "Moodle - Attestoodle - Gestion d'une formation";
+$string['training_management_main_title'] = 'Attestoodle - {$a}';
+$string['training_management_main_title_no_category'] = "Attestoodle - Erreur";
+$string['training_management_backto_category_link'] = "Retour à la catégorie";
+$string['training_management_training_details_link'] = "Rapport global de la formation";
+$string['training_management_manage_training_link'] = "Gérer les jalons";
+$string['training_management_no_category_id'] = "Vous devez spécifier un ID de catégorie.";
+$string['training_management_unknow_category_id'] = "Identifiant de catégorie invalide.";
+$string['training_management_checkbox_label'] = 'Cette catégorie est une formation';
+$string['training_management_warning_no_submitted_data'] = 'Aucune donnée envoyée';
+$string['training_management_warning_invalid_form'] = "Le formulaire n'est pas valide";
+$string['training_management_info_form_canceled'] = 'Le formulaire a été annulé';
+$string['training_management_submit_added'] = 'La catégorie a été ajoutée à la liste des formations Attestoodle';
+$string['training_management_submit_removed'] = 'La catégorie a été retirée de la liste des formations Attestoodle';
+$string['training_management_submit_unchanged'] = 'Aucune modification sur la catégorie';
+$string['training_management_submit_error'] = "Une erreur est survenue pendant l'enregistrement en BDD. Veuillez réessayer plus tard.";
 
 // Training learners list page strings.
 $string['training_learners_list_page_title'] = 'Moodle - Attestoodle - Liste des apprenants';
-$string['training_learners_list_main_title'] = 'Rapport formation {$a}';
+$string['training_learners_list_main_title'] = 'Attestoodle - Rapport global ';
 $string['training_learners_list_main_title_error'] = 'Erreur !';
-$string['training_learners_list_edit_training_link'] = 'Gérer la formation';
+$string['training_learners_list_edit_training_link'] = 'Gérer les jalons';
 $string['training_learners_list_download_zip_link'] = 'Télécharger les attestations existantes';
 $string['training_learners_list_generate_certificates_link'] = 'Générer toutes les attestations';
 $string['training_learners_list_heading'] = '{$a} apprenants dans la formation';

@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Page uniq training management.
+ * Page training management.
  *
  * Renderable class that is used to render the page that allow user to manage
  * a single training in Attestoodle.
@@ -46,18 +46,23 @@ class training_management implements \renderable {
      * Constructor method that instanciates the form.
      */
     public function __construct($categoryid) {
+        global $PAGE;
+
         $this->categoryid = $categoryid;
 
         categories_factory::get_instance()->create_categories_by_ids(array($categoryid));
         $this->category = categories_factory::get_instance()->retrieve_category($categoryid);
 
+
         // Handling form is useful only if the category exists.
         if (isset($this->category)) {
+            $PAGE->set_heading(get_string('training_management_main_title', 'block_attestoodle', $this->category->get_name()));
+
             $this->form = new category_training_update_form(
                     new \moodle_url(
                             '/blocks/attestoodle/index.php',
                             array(
-                                    'page' => 'uniqtrainingmanagement',
+                                    'page' => 'trainingmanagement',
                                     'categoryid' => $this->categoryid
                             )),
                     array(
@@ -67,6 +72,8 @@ class training_management implements \renderable {
             );
 
             $this->handle_form();
+        } else {
+            $PAGE->set_heading(get_string('training_management_main_title_no_category', 'block_attestoodle'));
         }
     }
 
@@ -93,7 +100,7 @@ class training_management implements \renderable {
     private function handle_form_cancelled() {
         // Handle form cancel operation.
         $redirecturl = new \moodle_url('/blocks/attestoodle/index.php', ['page' => 'trainingslist']);
-        $message = get_string('trainings_management_info_form_canceled', 'block_attestoodle');
+        $message = get_string('training_management_info_form_canceled', 'block_attestoodle');
         redirect($redirecturl, $message, null, \core\output\notification::NOTIFY_INFO);
     }
 
@@ -118,7 +125,7 @@ class training_management implements \renderable {
      */
     private function handle_form_not_validated() {
         // If not valid, warn the user.
-        \core\notification::error(get_string('trainings_management_warning_invalid_form', 'block_attestoodle'));
+        \core\notification::error(get_string('training_management_warning_invalid_form', 'block_attestoodle'));
     }
 
     /**
@@ -131,8 +138,9 @@ class training_management implements \renderable {
     private function handle_form_has_submitted_data() {
         $datafromform = $this->form->get_submitted_data();
         // Instanciate global variables to output to the user.
-        $updatecounter = 0;
-        $errorcounter = 0;
+        $error = false;
+        $updated = false;
+        $boolvalue = false;
 
         foreach ($datafromform as $key => $value) {
             $matches = [];
@@ -144,16 +152,14 @@ class training_management implements \renderable {
                     $oldistrainingvalue = $category->is_training();
                     $boolvalue = boolval($value);
                     if ($category->set_istraining($boolvalue)) {
+                        $updated = true;
                         try {
                             // Try to persist training in DB.
                             $category->persist_training();
-
-                            // If no Exception has been thrown by DB update.
-                            $updatecounter++;
                         } catch (\Exception $ex) {
                             // If record in DB failed, re-set the old value.
                             $category->set_istraining($oldistrainingvalue);
-                            $errorcounter++;
+                            $error = true;
                         }
                     }
                 }
@@ -161,14 +167,20 @@ class training_management implements \renderable {
         }
 
         $message = "";
-        if ($errorcounter == 0) {
-            $message .= "Form submitted. <br />"
-                    . "{$updatecounter} categories updated <br />";
-            \core\notification::success($message);
+        if (!$error) {
+            if ($updated) {
+                if ($boolvalue) {
+                    $message .= get_string('training_management_submit_added', 'block_attestoodle');
+                } else {
+                    $message .= get_string('training_management_submit_removed', 'block_attestoodle');
+                }
+                \core\notification::success($message);
+            } else {
+                $message .= get_string('training_management_submit_unchanged', 'block_attestoodle');
+                \core\notification::info($message);
+            }
         } else {
-            $message .= "Form submitted with errors. <br />"
-                    . "{$updatecounter} categories updated <br />"
-                    . "{$errorcounter} errors (categories not updated in database).<br />";
+            $message .= get_string('training_management_submit_error', 'block_attestoodle');
             \core\notification::warning($message);
         }
     }
@@ -183,10 +195,10 @@ class training_management implements \renderable {
 
         if (isset($this->category)) {
             $output .= \html_writer::start_div('clearfix');
-            // Link to the trainings list.
+            // Link back to the category.
             $output .= \html_writer::link(
                     new \moodle_url("/course/index.php", array("categoryid" => $this->category->get_id())),
-                    get_string('uniq_training_management_backto_category_link', 'block_attestoodle'),
+                    get_string('training_management_backto_category_link', 'block_attestoodle'),
                     array('class' => 'attestoodle-link')
             );
             $output .= \html_writer::end_div();
@@ -203,20 +215,22 @@ class training_management implements \renderable {
     public function get_content() {
         $output = "";
         if (!isset($this->categoryid)) {
-            $output .= get_string('uniq_training_management_no_category_id', 'block_attestoodle');
+            $output .= get_string('training_management_no_category_id', 'block_attestoodle');
         } else if (!isset($this->category)) {
-            $output .= get_string('uniq_training_management_training_details_link', 'block_attestoodle');
+            $output .= get_string('training_management_unknow_category_id', 'block_attestoodle');
         } else {
             $output .= $this->form->render();
 
             if ($this->category->is_training()) {
+                $output .= \html_writer::start_div('clearfix training-management-content');
+
                 // Link to the learners list of the training.
                 $parameters = array(
                         'page' => 'learners',
                         'training' => $this->category->get_id()
                 );
                 $url = new \moodle_url('/blocks/attestoodle/index.php', $parameters);
-                $label = get_string('uniq_training_management_training_details_link', 'block_attestoodle');
+                $label = get_string('training_management_training_details_link', 'block_attestoodle');
                 $attributes = array('class' => 'attestoodle-button');
                 $output .= \html_writer::link($url, $label, $attributes);
 
@@ -228,9 +242,11 @@ class training_management implements \renderable {
                         'training' => $this->category->get_id()
                 );
                 $urlmilestones = new \moodle_url('/blocks/attestoodle/index.php', $parametersmilestones);
-                $labelmilestones = get_string('uniq_training_management_manage_training_link', 'block_attestoodle');
+                $labelmilestones = get_string('training_management_manage_training_link', 'block_attestoodle');
                 $attributesmilestones = array('class' => 'attestoodle-button');
                 $output .= \html_writer::link($urlmilestones, $labelmilestones, $attributesmilestones);
+
+                $output .= \html_writer::end_div();
             }
         }
         return $output;

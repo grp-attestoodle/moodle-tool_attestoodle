@@ -42,7 +42,7 @@ class category_training_update_form extends \moodleform {
         $mform = $this->_form;
 
         $name = $inputnameprefix  . $category->get_id();
-        $label = $category->get_hierarchy();
+        $label = get_string('training_management_checkbox_label', 'block_attestoodle');
         $istraining = $category->is_training();
 
         $mform->addElement("advcheckbox", $name, $label);

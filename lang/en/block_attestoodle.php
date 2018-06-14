@@ -45,7 +45,7 @@ $string['plugin_access'] = 'Access to plugin';
 
 // Shared strings.
 $string['courses_list_btn_text'] = 'Attestoodle courses list';
-$string['trainings_list_btn_text'] = 'Attestoodle trainings list';
+$string['trainings_list_btn_text'] = 'Back to the training main page';
 $string['backto_trainings_list_btn_text'] = 'Back to Attestoodle trainings list';
 $string['backto_training_detail_btn_text'] = 'Back to the training details';
 $string['backto_training_learners_list_btn_text'] = 'Back to the students list';
@@ -63,28 +63,29 @@ $string['trainings_list_table_header_column_description'] = 'Description';
 $string['trainings_list_table_link_details'] = 'Learners monitoring';
 $string['trainings_list_warning_no_trainings'] = 'No trainings registered';
 
-// Uniq training management page strings.
-$string['uniq_training_management_page_title'] = 'Moodle - Attestoodle - Training management';
-$string['uniq_training_management_main_title'] = 'Training management';
-$string['uniq_training_management_backto_category_link'] = "Back to category";
-$string['uniq_training_management_training_details_link'] = "Go to training";
-$string['uniq_training_management_manage_training_link'] = "Manage milestones";
-$string['uniq_training_management_no_category_id'] = "No category ID specified.";
-$string['uniq_training_management_unknow_category_id'] = "Invalid category ID.";
-
-// Trainings management page strings.
-$string['trainings_management_page_title'] = 'Moodle - Attestoodle - Trainings management';
-$string['trainings_management_main_title'] = 'Trainings management';
-$string['trainings_management_trainings_list_link'] = 'Back to trainings list';
-$string['trainings_management_warning_no_submitted_data'] = 'No submitted data';
-$string['trainings_management_warning_invalid_form'] = 'The form is not valid';
-$string['trainings_management_info_form_canceled'] = 'The form has been canceled';
+// Training management page strings.
+$string['training_management_page_title'] = 'Moodle - Attestoodle - Training management';
+$string['training_management_main_title'] = 'Attestoodle - {$a}';
+$string['training_management_main_title_no_category'] = 'Attestoodle - Error';
+$string['training_management_backto_category_link'] = "Back to category";
+$string['training_management_training_details_link'] = "Training global report";
+$string['training_management_manage_training_link'] = "Manage milestones";
+$string['training_management_no_category_id'] = "No category ID specified.";
+$string['training_management_unknow_category_id'] = "Invalid category ID.";
+$string['training_management_checkbox_label'] = 'This category is a training';
+$string['training_management_warning_no_submitted_data'] = 'No submitted data';
+$string['training_management_warning_invalid_form'] = 'The form is not valid';
+$string['training_management_info_form_canceled'] = 'The form has been canceled';
+$string['training_management_submit_added'] = 'Category added to the Attestoodle trainings list';
+$string['training_management_submit_removed'] = 'Category removed from the Attestoodle trainings list';
+$string['training_management_submit_unchanged'] = 'No modification.';
+$string['training_management_submit_error'] = 'An error occured while saving in DB. Try again later';
 
 // Training learners list page strings.
 $string['training_learners_list_page_title'] = 'Moodle - Attestoodle - Learners list';
-$string['training_learners_list_main_title'] = 'Training {$a} report';
+$string['training_learners_list_main_title'] = 'Attestoodle - Global report ';
 $string['training_learners_list_main_title_error'] = 'Error!';
-$string['training_learners_list_edit_training_link'] = 'Manage training';
+$string['training_learners_list_edit_training_link'] = 'Manage milestones';
 $string['training_learners_list_download_zip_link'] = 'Download existing certificates';
 $string['training_learners_list_generate_certificates_link'] = 'Generate all certificates';
 $string['training_learners_list_heading'] = '{$a} students in the training';

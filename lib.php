@@ -106,14 +106,14 @@ function block_attestoodle_pluginfile($course, $cm, $context, $filearea, $args, 
 
 function block_attestoodle_extend_navigation_category_settings(navigation_node $parentnode, context_coursecat $context) {
     global $CFG, $PAGE;
-    $userhascapability = has_capability('block/attestoodle:manageuniqtraining', $context);
+    $userhascapability = has_capability('block/attestoodle:managetraining', $context);
 
     if ($userhascapability) {
         $categoryid = $PAGE->context->instanceid;
         $url = new moodle_url(
                 '/blocks/attestoodle/index.php',
                 array(
-                        "page" => "uniqtrainingmanagement",
+                        "page" => "trainingmanagement",
                         "categoryid" => $categoryid
                 ));
         $node = navigation_node::create(

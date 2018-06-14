@@ -59,3 +59,19 @@ div.editor_atto_content > span.tps_jalon::after {
 .attestoodle-button {
     float: right;
 }
+
+.training-management-content {
+    padding: 10px;
+    background-color: #ECECEC;
+}
+
+.training-report-header,
+.learner-detail-header {
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #ECECEC;
+}
+
+.training-report-header {
+    margin-top: 10px;
+}

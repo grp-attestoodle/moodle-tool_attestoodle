@@ -186,6 +186,7 @@ class learner_details implements \renderable {
         if (!$this->learner_exists()) {
             $output .= \get_string('unknown_learner_id', 'block_attestoodle', $this->learnerid);
         } else {
+            $output .= \html_writer::start_div('clearfix learner-detail-header');
             // Basic form to allow user filtering the validated activities by begin and end dates.
             // TODO use a moodle_quickform ?
             $output .= '<form action="?" class="filterform"><div>'
@@ -209,7 +210,7 @@ class learner_details implements \renderable {
                     . get_string('learner_details_submit_button_value', 'block_attestoodle') . '" />'
                     . '</div></form>' . "\n";
 
-            $output .= "<hr />";
+            $output .= \html_writer::end_div();
         }
 
         return $output;
