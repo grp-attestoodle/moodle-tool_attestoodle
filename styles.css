@@ -61,17 +61,23 @@ div.editor_atto_content > span.tps_jalon::after {
 }
 
 .training-management-content {
-    padding: 10px;
+    padding: 1rem;
     background-color: #ECECEC;
 }
 
 .training-report-header,
 .learner-detail-header {
-    margin-bottom: 10px;
-    padding: 10px;
+    margin-bottom: 1rem;
+    padding: 1rem;
     background-color: #ECECEC;
 }
 
 .training-report-header {
-    margin-top: 10px;
+    margin-top: 1rem;
+}
+
+p.no-validated-activity {
+    margin-top: 1rem;
+    margin-left: 1rem;
+    font-style: italic;
 }

@@ -303,7 +303,11 @@ class learner_details implements \renderable {
      * @return string The no validated activities message, translated
      */
     public function get_no_validated_activities_message() {
-        return get_string('learner_details_no_validated_activities', 'block_attestoodle');
+        $output = \html_writer::start_tag("p", array("class" => "no-validated-activity"));
+        $output .= get_string('learner_details_no_validated_activities', 'block_attestoodle');
+        $output .= \html_writer::end_tag("p");
+        
+        return $output;
     }
 
     /**

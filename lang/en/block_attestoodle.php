@@ -48,7 +48,7 @@ $string['courses_list_btn_text'] = 'Attestoodle courses list';
 $string['trainings_list_btn_text'] = 'Back to the training main page';
 $string['backto_trainings_list_btn_text'] = 'Back to Attestoodle trainings list';
 $string['backto_training_detail_btn_text'] = 'Back to the training details';
-$string['backto_training_learners_list_btn_text'] = 'Back to the students list';
+$string['backto_training_learners_list_btn_text'] = 'Back to global report';
 $string['unknown_training_id'] = 'No training with the ID: {$a}';
 $string['unknown_learner_id'] = 'No student with the ID: {$a}';
 
@@ -83,8 +83,8 @@ $string['training_management_submit_error'] = 'An error occured while saving in 
 
 // Training learners list page strings.
 $string['training_learners_list_page_title'] = 'Moodle - Attestoodle - Learners list';
-$string['training_learners_list_main_title'] = 'Attestoodle - Global report ';
-$string['training_learners_list_main_title_error'] = 'Error!';
+$string['training_learners_list_main_title'] = 'Attestoodle - Global report "{$a}"';
+$string['training_learners_list_main_title_error'] = 'Attestoodle - Error';
 $string['training_learners_list_edit_training_link'] = 'Manage milestones';
 $string['training_learners_list_download_zip_link'] = 'Download existing certificates';
 $string['training_learners_list_generate_certificates_link'] = 'Generate all certificates';
@@ -100,7 +100,7 @@ $string['training_learners_list_table_header_column_total_milestones'] = 'Total 
 $string['training_details_page_title'] = "Moodle - Attestoodle - Training details";
 $string['training_details_main_title'] = 'Management of the training {$a}: ';
 $string['training_details_main_title_error'] = "Error!";
-$string['training_details_learners_list_btn_text'] = "Training's students";
+$string['training_details_learners_list_btn_text'] = "Back to global report";
 $string['training_details_unknown_training_id'] = "No training with the ID: ";
 $string['training_details_warning_no_submitted_data'] = 'No submitted data';
 $string['training_details_error_invalid_form'] = 'The form is not valid';
@@ -109,8 +109,8 @@ $string['training_details_form_input_suffix'] = 'min.';
 
 // Learner details page strings.
 $string['learner_details_page_title'] = "Moodle - Attestoodle - Learner details";
-$string['learner_details_main_title'] = 'Milestones validated by {$a}';
-$string['learner_details_main_title_error'] = "Error!";
+$string['learner_details_main_title'] = 'Attestoodle - Milestones validated by "{$a}"';
+$string['learner_details_main_title_error'] = "Attestoodle - Error";
 $string['learner_details_unknown_training_id'] = "No training with the ID: ";
 $string['learner_details_unknown_learner_id'] = "No student with the ID: ";
 $string['learner_details_begin_date_label'] = "Begin date: ";

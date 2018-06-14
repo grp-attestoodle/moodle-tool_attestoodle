@@ -48,7 +48,7 @@ $string['courses_list_btn_text'] = 'Liste des cours Attestoodle';
 $string['trainings_list_btn_text'] = 'Retour à la page principale de la formation';
 $string['backto_trainings_list_btn_text'] = 'Retour à la liste des formations Attestoodle';
 $string['backto_training_detail_btn_text'] = 'Retour aux détails de la formation';
-$string['backto_training_learners_list_btn_text'] = 'Retour à la liste des étudiants';
+$string['backto_training_learners_list_btn_text'] = 'Retour au rapport global';
 $string['unknown_training_id'] = 'Aucune formation Attestoodle ayant l\'identifiant {$a}';
 $string['unknown_learner_id'] = 'Aucun étudiant ayant l\'identifiant {$a}';
 
@@ -82,9 +82,9 @@ $string['training_management_submit_unchanged'] = 'Aucune modification sur la ca
 $string['training_management_submit_error'] = "Une erreur est survenue pendant l'enregistrement en BDD. Veuillez réessayer plus tard.";
 
 // Training learners list page strings.
-$string['training_learners_list_page_title'] = 'Moodle - Attestoodle - Liste des apprenants';
-$string['training_learners_list_main_title'] = 'Attestoodle - Rapport global ';
-$string['training_learners_list_main_title_error'] = 'Erreur !';
+$string['training_learners_list_page_title'] = 'Moodle - Attestoodle - Rapport global';
+$string['training_learners_list_main_title'] = 'Attestoodle - Rapport global "{$a}"';
+$string['training_learners_list_main_title_error'] = 'Attestoodle - Erreur';
 $string['training_learners_list_edit_training_link'] = 'Gérer les jalons';
 $string['training_learners_list_download_zip_link'] = 'Télécharger les attestations existantes';
 $string['training_learners_list_generate_certificates_link'] = 'Générer toutes les attestations';
@@ -99,8 +99,8 @@ $string['training_learners_list_table_header_column_total_milestones'] = 'Total 
 // Training details page strings.
 $string['training_details_page_title'] = "Moodle - Attestoodle - Gestion d'une formation";
 $string['training_details_main_title'] = 'Gestion de la formation {$a} : ';
-$string['training_details_main_title_error'] = "Erreur !";
-$string['training_details_learners_list_btn_text'] = "Retour à la liste des apprenants";
+$string['training_details_main_title_error'] = "Attestoodle - Erreur";
+$string['training_details_learners_list_btn_text'] = "Retour au rapport global";
 $string['training_details_unknown_training_id'] = "Aucune formation avec l'identifiant : ";
 $string['training_details_warning_no_submitted_data'] = 'Aucune donnée envoyée';
 $string['training_details_error_invalid_form'] = "Le formulaire n'est pas valide";
@@ -109,8 +109,8 @@ $string['training_details_form_input_suffix'] = "min.";
 
 // Learner details page strings.
 $string['learner_details_page_title'] = "Moodle - Attestoodle - Détail d'un apprenant";
-$string['learner_details_main_title'] = 'Jalons validés par {$a}';
-$string['learner_details_main_title_error'] = "Erreur !";
+$string['learner_details_main_title'] = 'Attestoodle - Jalons validés par "{$a}"';
+$string['learner_details_main_title_error'] = "Attestoodle - Erreur";
 $string['learner_details_unknown_training_id'] = "Pas de formation avec l'identifiant : ";
 $string['learner_details_unknown_learner_id'] = "Pas d'apprenant avec l'identifiant : ";
 $string['learner_details_begin_date_label'] = "Date de début : ";

@@ -145,7 +145,6 @@ class renderer extends \plugin_renderer_base {
                         $output .= \html_writer::table($table);
                     } else {
                         $output .= $obj->get_no_validated_activities_message();
-                        $output .= "<br />";
                     }
 
                     $output .= $obj->get_footer($tr);
