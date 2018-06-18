@@ -48,8 +48,7 @@ class courses_factory extends singleton {
 
         $coursetoadd = new course($id, $name);
 
-        /* TODO: adding activities one by one with ->add_activity method
-        seems stupid */
+        // TODO: adding activities one by one seems stupid.
         // Retrieve the activities of the course being created.
         $activities = activities_factory::get_instance()->retrieve_activities_by_course($id);
 

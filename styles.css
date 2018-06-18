@@ -62,14 +62,14 @@ div.editor_atto_content > span.tps_jalon::after {
 
 .training-management-content {
     padding: 1rem;
-    background-color: #ECECEC;
+    background-color: #ececec;
 }
 
 .training-report-header,
 .learner-detail-header {
     margin-bottom: 1rem;
     padding: 1rem;
-    background-color: #ECECEC;
+    background-color: #ececec;
 }
 
 .training-report-header {
