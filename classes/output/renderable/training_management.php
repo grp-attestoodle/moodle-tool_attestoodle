@@ -74,7 +74,6 @@ class training_management implements \renderable {
         } else {
             $PAGE->set_heading(get_string('training_management_main_title_no_category', 'block_attestoodle'));
         }
-        $chips = true;
     }
 
     /**
