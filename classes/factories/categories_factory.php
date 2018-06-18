@@ -47,39 +47,6 @@ class categories_factory extends singleton {
     }
 
     /**
-     * Method that instanciates all the categories used by Attestoodle and
-     * stores them in the main array.
-     */
-    public function create_categories() {
-        $dbcategories = db_accessor::get_instance()->get_all_categories();
-        $trainingcategoryids = trainings_factory::get_instance()->get_training_category_ids();
-
-        foreach ($dbcategories as $dbcat) {
-            $desc = $dbcat->description;
-            $istraining = in_array($dbcat->id, $trainingcategoryids);
-
-            $category = $this->retrieve_category($dbcat->id);
-            // Create the -almost- void category object if it doesn't exist yet.
-            if (!isset($category)) {
-                $category = $this->create($dbcat->id);
-            }
-
-            $parent = null;
-            // Computes the potential parent category.
-            if ($dbcat->parent > 0) {
-                // Try to retrieve the category object based on the id.
-                $parent = $this->retrieve_category($dbcat->parent);
-                if (!isset($parent)) {
-                    // Create the -almost- void parent category object if needed.
-                    $parent = $this->create($dbcat->parent);
-                }
-            }
-            // Set the properties of the -almost- void category object.
-            $category->feed($dbcat->name, $desc, $parent);
-        }
-    }
-
-    /**
      * Method that instanciates the categories corresponding to certain IDs.
      *
      * @param int[] $ids The category IDs we want to create

@@ -70,7 +70,6 @@ function block_attestoodle_pluginfile($course, $cm, $context, $filearea, $args, 
     }
 
     // Leave this line out if you set the itemid to null in make_pluginfile_url (set $itemid to 0 instead).
-    // $itemid = array_shift($args); // The first item in the $args array.
     $itemid = 0;
 
     // Use the itemid to retrieve any relevant data records and perform any security checks to see if the
@@ -105,7 +104,7 @@ function block_attestoodle_pluginfile($course, $cm, $context, $filearea, $args, 
  */
 
 function block_attestoodle_extend_navigation_category_settings(navigation_node $parentnode, context_coursecat $context) {
-    global $CFG, $PAGE;
+    global $PAGE;
     $userhascapability = has_capability('block/attestoodle:managetraining', $context);
 
     if ($userhascapability) {

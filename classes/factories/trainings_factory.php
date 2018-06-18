@@ -57,7 +57,7 @@ class trainings_factory extends singleton {
 
         $paths = db_accessor::get_instance()->get_categories_paths($categoryids);
 
-        foreach($paths as $path) {
+        foreach ($paths as $path) {
             $matches = array();
             if (preg_match("/\/(\d+)/", $path->path, $matches)) {
                 if (!in_array($matches[1], $categoryids)) {
@@ -67,7 +67,7 @@ class trainings_factory extends singleton {
         }
         categories_factory::get_instance()->create_categories_by_ids($categoryids);
 
-        foreach($dbtrainings as $dbtr) {
+        foreach ($dbtrainings as $dbtr) {
             $catid = $dbtr->categoryid;
             $cat = categories_factory::get_instance()->retrieve_category($catid);
             $this->create($cat);
@@ -124,7 +124,7 @@ class trainings_factory extends singleton {
      */
     public function get_training_category_ids() {
         $categoryids = array();
-        foreach($this->trainings as $tr) {
+        foreach ($this->trainings as $tr) {
             $categoryids[] = $tr->get_id();
         }
         return $categoryids;
@@ -149,9 +149,6 @@ class trainings_factory extends singleton {
      * found with the specified ID
      */
     public function retrieve_training($id) {
-        // TODO: problem with the training list cache (no cache).
-        // categories_factory::get_instance()->create_categories();
-
         $training = null;
         foreach ($this->trainings as $t) {
             if ($t->get_id() == $id) {
@@ -205,7 +202,7 @@ class trainings_factory extends singleton {
      * @param int $categoryid The category ID corresponding to the training to remove
      */
     public function remove_training($categoryid) {
-        // Call delete in DB
+        // Call delete in DB.
         db_accessor::get_instance()->delete_training($categoryid);
 
         // If OK, unset the training in $this->trainings.

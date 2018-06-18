@@ -273,8 +273,6 @@ class certificate {
 
         $pdf->AddPage();
 
-        // Logo : 80 de largeur et 55 de hauteur.
-        // To add logo : $pdf->Image('logo_societe.png', 10, 10, 80, 55);
         // Title.
         $title = "Attestation mensuelle : temps d'apprentissage";
         $pdf->SetFont("helvetica", "", 14);

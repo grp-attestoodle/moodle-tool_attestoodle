@@ -84,7 +84,7 @@ class category {
 
         // No training: delete the record.
         if (!$istraining) {
-            // call training factory 'remove' (that will call delete in DB).
+            // Call training factory 'remove' (that will call delete in DB).
             trainings_factory::get_instance()->remove_training($this->id);
         } else {
             // Is training: insert the record.

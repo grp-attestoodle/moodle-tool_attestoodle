@@ -53,7 +53,6 @@ class training_management implements \renderable {
         categories_factory::get_instance()->create_categories_by_ids(array($categoryid));
         $this->category = categories_factory::get_instance()->retrieve_category($categoryid);
 
-
         // Handling form is useful only if the category exists.
         if (isset($this->category)) {
             $PAGE->set_heading(get_string('training_management_main_title', 'block_attestoodle', $this->category->get_name()));
@@ -234,7 +233,7 @@ class training_management implements \renderable {
                 $attributes = array('class' => 'attestoodle-button');
                 $output .= \html_writer::link($url, $label, $attributes);
 
-                $output.= "<br />";
+                $output .= "<br />";
 
                 // Link to the milestones management of the training.
                 $parametersmilestones = array(
