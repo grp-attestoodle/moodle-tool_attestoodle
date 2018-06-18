@@ -36,19 +36,19 @@ class training_learners_list implements renderable {
     /** @var training Training that is currently displayed */
     public $training = null;
     /** @var string Begin date formatted as YYYY-MM-DD */
-    public $begindate;
+    public $thebegindate;
     /** @var \DateTime Begin date object */
-    public $actualbegindate;
+    public $theactualbegindate;
     /** @var boolean True if the $begindate property is not parsable by the \DateTime constructor */
-    public $begindateerror;
+    public $begindateisinerror;
     /** @var string End date formatted as YYYY-MM-DD */
-    public $enddate;
+    public $theenddate;
     /** @var \DateTime End date object */
-    public $actualenddate;
+    public $theactualenddate;
     /** @var \DateTime End date object + 1 day (to simplify comparison) */
-    public $searchenddate;
+    public $searchingenddate;
     /** @var boolean True if the $enddate property is not parsable by the \DateTime constructor */
-    public $enddateerror;
+    public $enddateisinerror;
 
     /**
      * Constructor of the renderable object.
@@ -61,23 +61,23 @@ class training_learners_list implements renderable {
         $this->training = $training;
 
         // Default dates are January 1st and December 31st of current year.
-        $this->begindate = isset($begindate) ? $begindate : (new \DateTime('first day of January ' . date('Y')))->format('Y-m-d');
-        $this->enddate = isset($enddate) ? $enddate : (new \DateTime('last day of December ' . date('Y')))->format('Y-m-d');
+        $this->thebegindate = isset($begindate) ? $begindate : (new \DateTime('first day of January ' . date('Y')))->format('Y-m-d');
+        $this->theenddate = isset($enddate) ? $enddate : (new \DateTime('last day of December ' . date('Y')))->format('Y-m-d');
         // Parsing begin date.
         try {
-            $this->actualbegindate = new \DateTime($this->begindate);
-            $this->begindateerror = false;
+            $this->theactualbegindate = new \DateTime($this->thebegindate);
+            $this->begindateisinerror = false;
         } catch (\Exception $ex) {
-            $this->begindateerror = true;
+            $this->begindateisinerror = true;
         }
         // Parsing end date.
         try {
-            $this->actualenddate = new \DateTime($this->enddate);
-            $this->searchenddate = clone $this->actualenddate;
-            $this->searchenddate->modify('+1 day');
-            $this->enddateerror = false;
+            $this->theactualenddate = new \DateTime($this->theenddate);
+            $this->searchingenddate = clone $this->theactualenddate;
+            $this->searchingenddate->modify('+1 day');
+            $this->enddateisinerror = false;
         } catch (\Exception $ex) {
-            $this->enddateerror = true;
+            $this->enddateisinerror = true;
         }
     }
 
@@ -133,16 +133,16 @@ class training_learners_list implements renderable {
                     . '<input type="hidden" name="training" value="' . $this->training->get_id() . '" />';
             $output .= '<label for="input_begin_date">'
                     . get_string('learner_details_begin_date_label', 'block_attestoodle') . '</label>'
-                    . '<input type="text" id="input_begin_date" name="begindate" value="' . $this->begindate . '" '
+                    . '<input type="text" id="input_begin_date" name="begindate" value="' . $this->thebegindate . '" '
                     . 'placeholder="ex: ' . (new \DateTime('now'))->format('Y-m-d') . '" />';
-            if ($this->begindateerror) {
+            if ($this->begindateisinerror) {
                 echo "<span class='error'>Erreur de format</span>";
             }
             $output .= '<label for="input_end_date">'
                     . get_string('learner_details_end_date_label', 'block_attestoodle') . '</label>'
-                    . '<input type="text" id="input_end_date" name="enddate" value="' . $this->enddate . '" '
+                    . '<input type="text" id="input_end_date" name="enddate" value="' . $this->theenddate . '" '
                     . 'placeholder="ex: ' . (new \DateTime('now'))->format('Y-m-d') . '" />';
-            if ($this->enddateerror) {
+            if ($this->enddateisinerror) {
                 $output .= "<span class='error'>Erreur de format</span>";
             }
             $output .= '<input type="submit" value="'
@@ -159,8 +159,8 @@ class training_learners_list implements renderable {
                                     'page' => 'learners',
                                     'action' => 'downloadzip',
                                     'training' => $this->training->get_id(),
-                                    'begindate' => $this->begindate,
-                                    'enddate' => $this->enddate
+                                    'begindate' => $this->thebegindate,
+                                    'enddate' => $this->theenddate
                             )
                     ),
                     get_string('training_learners_list_download_zip_link', 'block_attestoodle'),
@@ -173,8 +173,8 @@ class training_learners_list implements renderable {
                                     'page' => 'learners',
                                     'action' => 'generatecertificates',
                                     'training' => $this->training->get_id(),
-                                    'begindate' => $this->begindate,
-                                    'enddate' => $this->enddate
+                                    'begindate' => $this->thebegindate,
+                                    'enddate' => $this->theenddate
                             )
                     ),
                     get_string('training_learners_list_generate_certificates_link', 'block_attestoodle'),
@@ -213,8 +213,8 @@ class training_learners_list implements renderable {
             $stdclass = new \stdClass();
             $totalmarkerperiod = $o->get_total_milestones(
                     $this->training->get_id(),
-                    $this->actualbegindate,
-                    $this->actualenddate
+                    $this->theactualbegindate,
+                    $this->theactualenddate
             );
 
             $stdclass->lastname = $o->get_lastname();
@@ -224,8 +224,8 @@ class training_learners_list implements renderable {
             $parameters = array(
                 'page' => 'learnerdetails',
                 'learner' => $o->get_id(),
-                'begindate' => $this->begindate,
-                'enddate' => $this->enddate);
+                'begindate' => $this->thebegindate,
+                'enddate' => $this->theenddate);
             $url = new \moodle_url('/blocks/attestoodle/index.php', $parameters);
             $label = get_string('training_learners_list_table_link_details', 'block_attestoodle');
             $attributes = array('class' => 'attestoodle-button');
@@ -258,7 +258,7 @@ class training_learners_list implements renderable {
         $notificationmessage = "";
 
         foreach ($this->training->get_learners() as $learner) {
-            $certificate = new certificate($learner, $this->training, $this->actualbegindate, $this->actualenddate);
+            $certificate = new certificate($learner, $this->training, $this->theactualbegindate, $this->theactualenddate);
             $status = $certificate->create_file_on_server();
             switch ($status) {
                 case 0:
@@ -313,7 +313,7 @@ class training_learners_list implements renderable {
 
         // Retrieve certificates based on period requested.
         foreach ($this->training->get_learners() as $learner) {
-            $certificate = new certificate($learner, $this->training, $this->actualbegindate, $this->actualenddate);
+            $certificate = new certificate($learner, $this->training, $this->theactualbegindate, $this->theactualenddate);
 
             if ($certificate->file_exists()) {
                 $file = $certificate->retrieve_file();
@@ -323,7 +323,7 @@ class training_learners_list implements renderable {
 
         // Archive file name.
         $filename = "certificates_{$this->training->get_name()}_";
-        $filename .= $this->actualbegindate->format("Ymd") . "_" . $this->actualenddate->format("Ymd");
+        $filename .= $this->theactualbegindate->format("Ymd") . "_" . $this->theactualenddate->format("Ymd");
         $filename .= ".zip";
         $temppath = make_request_directory() . $filename;
 
