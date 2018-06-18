@@ -66,14 +66,15 @@ class training_management implements \renderable {
                             )),
                     array(
                             'data' => $this->category,
-                            'input_name_prefix' => "attestoodle_category_id_"
-                    )
+                    ),
+                    'get'
             );
 
             $this->handle_form();
         } else {
             $PAGE->set_heading(get_string('training_management_main_title_no_category', 'block_attestoodle'));
         }
+        $chips = true;
     }
 
     /**
@@ -139,29 +140,22 @@ class training_management implements \renderable {
         // Instanciate global variables to output to the user.
         $error = false;
         $updated = false;
-        $boolvalue = false;
 
-        foreach ($datafromform as $key => $value) {
-            $matches = [];
-            $regexp = "/attestoodle_category_id_(.+)/";
-            if (preg_match($regexp, $key, $matches)) {
-                $idcategory = $matches[1];
-                if (!empty($idcategory) && categories_factory::get_instance()->has_category($idcategory)) {
-                    $category = categories_factory::get_instance()->retrieve_category($idcategory);
-                    $oldistrainingvalue = $category->is_training();
-                    $boolvalue = boolval($value);
-                    if ($category->set_istraining($boolvalue)) {
-                        $updated = true;
-                        try {
-                            // Try to persist training in DB.
-                            $category->persist_training();
-                        } catch (\Exception $ex) {
-                            // If record in DB failed, re-set the old value.
-                            $category->set_istraining($oldistrainingvalue);
-                            $error = true;
-                        }
-                    }
-                }
+        $value = $datafromform->checkbox_is_training;
+
+        $category = categories_factory::get_instance()->retrieve_category($this->categoryid);
+        $oldistrainingvalue = $category->is_training();
+        $boolvalue = boolval($value);
+
+        if ($category->set_istraining($boolvalue)) {
+            $updated = true;
+            try {
+                // Try to persist training in DB.
+                $category->persist_training();
+            } catch (\Exception $ex) {
+                // If record in DB failed, re-set the old value.
+                $category->set_istraining($oldistrainingvalue);
+                $error = true;
             }
         }
 

@@ -36,12 +36,11 @@ class category_training_update_form extends \moodleform {
      * all the elements (inputs, titles, buttons, ...) in the form.
      */
     public function definition() {
-        $inputnameprefix = $this->_customdata['input_name_prefix'];
+        $name = "checkbox_is_training";
         $category = $this->_customdata['data'];
 
         $mform = $this->_form;
 
-        $name = $inputnameprefix  . $category->get_id();
         $label = get_string('training_management_checkbox_label', 'block_attestoodle');
         $istraining = $category->is_training();
 
