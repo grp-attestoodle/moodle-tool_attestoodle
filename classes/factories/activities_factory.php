@@ -63,7 +63,7 @@ class activities_factory extends singleton {
         $id = $activityid;
         $idmodule = $dbactivity->id;
         $name = $dbactivity->name;
-        $desc = $dbactivity->intro;
+        $desc = isset($dbactivity->intro) ? $dbactivity->intro : null;
 
         // Retrieve the potential milestone value of the activity.
         $milestone = null;
