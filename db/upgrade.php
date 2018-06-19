@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -15,16 +16,12 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Attestoodle version details.
+ * Attestoodle upgrade logic.
  *
  * @package    block_attestoodle
  * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-defined('MOODLE_INTERNAL') || die();
-
-$plugin->version   = 2018061903;        // The current plugin version (Date: YYYYMMDDXX).
-$plugin->requires  = 2012112900;        // Requires this Moodle version.
-$plugin->component = 'block_attestoodle'; // Full name of the plugin (used for diagnostics).
-$plugin->cron = 0;
+function xmldb_block_attestoodle_upgrade($oldversion) {
+    // In case of update, the code to do it should be here.
+}

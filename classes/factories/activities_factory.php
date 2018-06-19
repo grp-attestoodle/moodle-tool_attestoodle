@@ -42,11 +42,23 @@ class activities_factory extends singleton {
     private $modulenames;
 
     /**
+     * @var array Associative array containing the module IDs with their milestone value
+     * in a key => value format where key = id of the module and value = milestone
+     */
+    private $milestones;
+
+    /**
      * Constructor method (protected to avoid external instanciation)
      */
     protected function __construct() {
         parent::__construct();
         $this->modulenames = array();
+
+        $this->milestones = array();
+        $dbmilestones = db_accessor::get_instance()->get_all_milestones();
+        foreach ($dbmilestones as $dbm) {
+            $this->milestones[$dbm->moduleid] = $dbm->milestone;
+        }
     }
 
     /**
@@ -66,33 +78,25 @@ class activities_factory extends singleton {
         $desc = isset($dbactivity->intro) ? $dbactivity->intro : null;
 
         // Retrieve the potential milestone value of the activity.
-        $milestone = null;
-        if (isset($desc)) {
-            $milestone = $this->extract_milestone($desc);
-        }
+        $milestone = $this->extract_milestone($id);
 
         return new activity($id, $idmodule, $name, $desc, $tablename, $milestone);
     }
 
     /**
-     * Method that extracts the milestone time value in a string. The milestone
-     * is defined in a specific html span in the following format:
-     * "<span class="tps_jalon">[value]</span>" where "[value]" is the
-     * milestone value in minutes.
+     * Method that retrieves the milestone value of a specific module.
      *
-     * @todo Use a XMLParser function instead of a RegExp
-     *
-     * @param string $string The string that may contain a milestone time value
+     * @param integer $moduleid The module id that may have a milestone time value
      * @return integer|null The milestone time within the string or null if
      * no milestone time has been found
      */
-    private function extract_milestone($string) {
+    private function extract_milestone($moduleid) {
         $milestone = null;
-        $matches = array();
-        $regexp = "/<span class=(?:(?:\"tps_jalon\")|(?:\'tps_jalon\'))>(.+)<\/span>/iU";
-        if (preg_match($regexp, $string, $matches)) {
-            $milestone = (integer)$matches[1];
+
+        if (array_key_exists($moduleid, $this->milestones)) {
+            $milestone = (integer)$this->milestones[$moduleid];
         }
+
         return $milestone;
     }
 
@@ -132,5 +136,34 @@ class activities_factory extends singleton {
             $activities[] = $this->create($activityid, $coursemodulesinfos, $tablename);
         }
         return $activities;
+    }
+
+    /**
+     * Method that checks if an activity is a milestone in the $milestone array.
+     *
+     * @param activity $activity The activity to check against
+     */
+    public function is_milestone($activity) {
+        return array_key_exists($activity->get_id(), $this->milestones);
+    }
+
+    /**
+     * Method that adds a milestone in the global $milestones array after
+     * it being instanciate (can be used to update a value).
+     *
+     * @param activity $activity The activity to update value for
+     */
+    public function add_milestone($activity) {
+        $this->milestones[$activity->get_id()] = $activity->get_milestone();
+    }
+
+    /**
+     * Method that removes a milestone in the global $milestones array after
+     * it being instanciate.
+     *
+     * @param activity $activity The activity to delete value for
+     */
+    public function remove_milestone($activity) {
+        unset($this->milestones[$activity->get_id()]);
     }
 }

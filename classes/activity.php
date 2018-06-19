@@ -26,6 +26,9 @@ namespace block_attestoodle;
 
 defined('MOODLE_INTERNAL') || die;
 
+use block_attestoodle\utils\db_accessor;
+use block_attestoodle\factories\activities_factory;
+
 class activity {
     /** @var string Id of the activity */
     private $id;
@@ -42,10 +45,7 @@ class activity {
     /** @var string Type of the activity */
     private $type;
 
-    /**
-     * @var integer Milestone time (in minutes) of the activity
-     * @todo Replace by a class "Milestone" ?
-     */
+    /** @var integer Milestone time (in minutes) of the activity */
     private $milestone;
 
     /**
@@ -83,18 +83,28 @@ class activity {
     }
 
     /**
-     * Update the current activity data into the database.
-     *
-     * @todo Use the db_accessor singleton to access the database
+     * Method that stores the milestone information into the database (insert,
+     * update or delete in attestoodle_milestone table).
      */
     public function persist() {
-        global $DB;
+        $dba = db_accessor::get_instance();
 
-        $obj = new \stdClass();
-        $obj->id = $this->idmodule;
-        $obj->intro = $this->description;
-
-        $DB->update_record($this->type, $obj);
+        if ($this->is_milestone()) {
+            // The activity is a milestone.
+            if (activities_factory::get_instance()->is_milestone($this)) {
+                // It already was one, so update.
+                $dba->update_milestone($this);
+                activities_factory::get_instance()->add_milestone($this);
+            } else {
+                // It wasn't already one, so insert.
+                $dba->insert_milestone($this);
+                activities_factory::get_instance()->add_milestone($this);
+            }
+        } else {
+            // Not a milestone anymore, delete.
+            $dba->delete_milestone($this);
+            activities_factory::get_instance()->remove_milestone($this);
+        }
     }
 
     /**
@@ -197,31 +207,6 @@ class activity {
     }
 
     /**
-     * Method that modifies the description to store the new milestone value.
-     */
-    private function update_milestone_in_description() {
-        $desc = $this->description;
-        $milestone = $this->milestone;
-
-        $regexp = "/<span class=(?:(?:\"tps_jalon\")|(?:\'tps_jalon\'))>(.+)<\/span>/iU";
-
-        // No milestone: remove the HTML tag.
-        if ($milestone == null) {
-            $desc = preg_replace($regexp, "", $desc);
-        } else {
-            if (preg_match($regexp, $desc)) {
-                // Modified milestone: replace the integer value in the HTML tag.
-                $desc = preg_replace($regexp, "<span class=\"tps_jalon\">{$milestone}</span>", $desc);
-            } else {
-                // New milestone: add the HTML tag to the end of the description.
-                $desc = $desc . "<span class=\"tps_jalon\">{$milestone}</span>";
-            }
-        }
-
-        $this->set_description($desc);
-    }
-
-    /**
      * Setter for $type property.
      *
      * @param string $prop Type to set for the activity
@@ -243,7 +228,6 @@ class activity {
             } else {
                 $this->milestone = $prop;
             }
-            $this->update_milestone_in_description();
             return true;
         } else {
             return false;

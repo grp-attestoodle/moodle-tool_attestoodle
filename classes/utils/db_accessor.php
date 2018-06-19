@@ -56,6 +56,60 @@ class db_accessor extends singleton {
     }
 
     /**
+     * Retrieves all the attestoodle milestones in moodle DB.
+     *
+     * @return \stdClass Standard Moodle DB object
+     */
+    public function get_all_milestones() {
+        $result = self::$db->get_records('block_attestoodle_milestone');
+        return $result;
+    }
+
+    /**
+     * Method that deletes an activity in the attestoodle_milestone table.
+     *
+     * @param activity $activity The activity to delete in table
+     */
+    public function delete_milestone($activity) {
+        self::$db->delete_records(
+                'block_attestoodle_milestone',
+                array('moduleid' => $activity->get_id())
+        );
+    }
+
+    /**
+     * Method that insert an activity in the attestoodle_milestone table.
+     *
+     * @param activity $activity The activity to insert in table
+     */
+    public function insert_milestone($activity) {
+        $dataobject = new \stdClass();
+        $dataobject->milestone = $activity->get_milestone();
+        $dataobject->moduleid = $activity->get_id();
+
+        self::$db->insert_record('block_attestoodle_milestone', $dataobject);
+    }
+
+    /**
+     * Method that update an activity in the attestoodle_milestone table.
+     *
+     * @param activity $activity The activity to update in table
+     */
+    public function update_milestone($activity) {
+        $request = "
+                UPDATE mdl_block_attestoodle_milestone
+                SET milestone = ?
+                WHERE moduleid = ?
+            ";
+        self::$db->execute(
+                $request,
+                array(
+                        $activity->get_milestone(),
+                        $activity->get_id()
+                ));
+    }
+
+    /**
      * Retrieves all the attestoodle trainings in moodle DB.
      *
      * @return \stdClass Standard Moodle DB object
