@@ -262,4 +262,42 @@ class db_accessor extends singleton {
         $dataobject->categoryid = $categoryid;
         self::$db->insert_record('block_attestoodle_training', $dataobject);
     }
+
+    public function log_launch($timecreated, $begindate, $enddate, $operatorid) {
+        $dataobject = new \stdClass();
+        $dataobject->timegenerated = $timecreated;
+        $dataobject->begindate = $begindate;
+        $dataobject->enddate = $enddate;
+        $dataobject->operatorid = $operatorid;
+
+        $launchid = self::$db->insert_record('block_attestoodle_launch_log', $dataobject, true);
+        return $launchid;
+    }
+
+    public function log_certificate($filename, $status, $trainingid, $learnerid, $launchid) {
+        $dataobject = new \stdClass();
+        $dataobject->filename = $filename;
+        $dataobject->status = $status;
+        $dataobject->trainingid = $trainingid;
+        $dataobject->learnerid = $learnerid;
+        $dataobject->launchid = $launchid;
+
+        $certificateid = self::$db->insert_record('block_attestoodle_certif_log', $dataobject, true);
+        return $certificateid;
+    }
+
+    public function log_values($certificatelogid, $activities) {
+        $milestones = array();
+
+        foreach ($activities as $act) {
+            $dataobject = new \stdClass();
+            $dataobject->creditedtime = $act->get_milestone();
+            $dataobject->certificateid = $certificatelogid;
+            $dataobject->milestone = $act->get_id();
+
+            $milestones[] = $dataobject;
+        }
+
+        self::$db->insert_records('block_attestoodle_value_log', $milestones);
+    }
 }

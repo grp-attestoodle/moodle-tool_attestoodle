@@ -31,6 +31,7 @@ defined('MOODLE_INTERNAL') || die;
 
 use \renderable;
 use block_attestoodle\certificate;
+use \block_attestoodle\utils\db_accessor;
 
 class training_learners_list implements renderable {
     /** @var training Training that is currently displayed */
@@ -251,15 +252,31 @@ class training_learners_list implements renderable {
      * any error or warning (file not created or other file creation error).
      */
     public function generate_certificates() {
+        global $USER;
+
         $errorcounter = 0;
         $newfilecounter = 0;
         $overwrittencounter = 0;
 
         $notificationmessage = "";
 
+        // Log the generation launch.
+        $launchdberror = false;
+        try {
+            $launchid = db_accessor::get_instance()->log_launch(
+                    \time(),
+                    $this->thebegindate,
+                    $this->theenddate,
+                    $USER->id
+            );
+        } catch (\Exception $ex) {
+            $launchdberror = true;
+        }
+
         foreach ($this->training->get_learners() as $learner) {
             $certificate = new certificate($learner, $this->training, $this->theactualbegindate, $this->theactualenddate);
             $status = $certificate->create_file_on_server();
+
             switch ($status) {
                 case 0:
                     // Error.
@@ -274,7 +291,17 @@ class training_learners_list implements renderable {
                     $overwrittencounter++;
                     break;
             }
+
+            // Log the certificate informations.
+            if (!$launchdberror) {
+                try {
+                    $certificate->log($launchid, $status);
+                } catch (Exception $ex) {
+                    // Do something?
+                }
+            }
         }
+
         if ($newfilecounter > 0 || $overwrittencounter > 0) {
             if ($errorcounter > 0) {
                 $notificationmessage .= "Certificates generated with errors: <br />";

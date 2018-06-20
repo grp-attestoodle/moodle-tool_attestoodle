@@ -26,6 +26,8 @@ namespace block_attestoodle;
 
 defined('MOODLE_INTERNAL') || die;
 
+use block_attestoodle\utils\db_accessor;
+
 class certificate {
     /** @var learner Learner for whom the certificate is */
     private $learner;
@@ -113,16 +115,7 @@ class certificate {
         $trainingname = $this->training->get_name();
         $totalminutes = 0;
 
-        $validatedmilestones = $this->learner->get_validated_activities_with_marker($begindate, $searchenddate);
-        // Filtering activities based on the training.
-        $filteredmilestones = array_filter($validatedmilestones, function($va) use($trainingid) {
-            $act = $va->get_activity();
-            if ($act->get_course()->get_training()->get_id() == $trainingid) {
-                return true;
-            } else {
-                return false;
-            }
-        });
+        $filteredmilestones = $this->get_filtered_milestones();
 
         // Retrieve activities informations in an array structure.
         $activitiesstructured = array();
@@ -160,6 +153,33 @@ class certificate {
         $certificateinfos->activities = $activitiesstructured;
 
         return $certificateinfos;
+    }
+
+    /**
+     * Method that returns the activities validated by the learner for the
+     * training currently being computes, within the period and all
+     *
+     * @return activity[] The activities with milestones validated by the learner
+     */
+    private function get_filtered_milestones() {
+        $begindate = clone $this->begindate;
+        $searchenddate = clone $this->enddate;
+        $searchenddate->modify('+1 day');
+        $trainingid = $this->training->get_id();
+
+        $validatedmilestones = $this->learner->get_validated_activities_with_marker($begindate, $searchenddate);
+
+        // Filtering activities based on the training.
+        $filteredmilestones = array_filter($validatedmilestones, function($va) use($trainingid) {
+            $act = $va->get_activity();
+            if ($act->get_course()->get_training()->get_id() == $trainingid) {
+                return true;
+            } else {
+                return false;
+            }
+        });
+
+        return $filteredmilestones;
     }
 
     /**
@@ -350,5 +370,36 @@ class certificate {
         $pdf->Cell($pdf->GetPageWidth() / 2 - 10, 0, "Signature responsable de formation", 0, 0, 'R');
 
         return $pdf;
+    }
+
+    public function log($launchid, $status) {
+        $statusstring = null;
+        switch($status) {
+            case 0:
+                $statusstring = 'ERROR';
+                break;
+            case 1:
+                $statusstring = 'NEW';
+                break;
+            case 2:
+                $statusstring = 'OVERWRITTEN';
+                break;
+        }
+
+        $certificatelogid = db_accessor::get_instance()->log_certificate(
+                $this->get_file_name(),
+                $statusstring,
+                $this->training->get_id(),
+                $this->learner->get_id(),
+                $launchid);
+
+        $milestones = $this->get_filtered_milestones();
+        if (count($milestones) > 0) {
+            try {
+                db_accessor::get_instance()->log_values($certificatelogid, $milestones);
+            } catch (\Exception $ex) {
+                // Do something?
+            }
+        }
     }
 }
