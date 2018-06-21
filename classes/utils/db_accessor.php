@@ -263,6 +263,15 @@ class db_accessor extends singleton {
         self::$db->insert_record('block_attestoodle_training', $dataobject);
     }
 
+    /**
+     * Insert a log line in launch_log table.
+     *
+     * @param integer $timecreated The current unix time
+     * @param string $begindate The begin date of the period requested
+     * @param string $enddate The end date of the period requested
+     * @param integer $operatorid ID of the user that requested the generation launch
+     * @return integer The newly created ID in DB
+     */
     public function log_launch($timecreated, $begindate, $enddate, $operatorid) {
         $dataobject = new \stdClass();
         $dataobject->timegenerated = $timecreated;
@@ -274,6 +283,16 @@ class db_accessor extends singleton {
         return $launchid;
     }
 
+    /**
+     * Insert a log line in certificate_log table.
+     *
+     * @param string $filename Name of the file on the server
+     * @param string $status Status of the file creation (ERROR, NEW, OVERWRITTEN)
+     * @param integer $trainingid The training ID corresponding to the certificate
+     * @param integer $learnerid The learner ID corresponding to the certificate
+     * @param integer $launchid The launch_log ID corresponding to this certificate log
+     * @return integer The newly created certificate_log id
+     */
     public function log_certificate($filename, $status, $trainingid, $learnerid, $launchid) {
         $dataobject = new \stdClass();
         $dataobject->filename = $filename;
@@ -286,6 +305,13 @@ class db_accessor extends singleton {
         return $certificateid;
     }
 
+    /**
+     * Insert log lines in value_log table.
+     *
+     * @param integer $certificatelogid The ID of the certificate_log corresponding
+     * @param validated_activity[] $validatedactivities An array of validated activities
+     * that has been use for the certificate
+     */
     public function log_values($certificatelogid, $validatedactivities) {
         $milestones = array();
 

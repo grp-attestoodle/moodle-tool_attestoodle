@@ -372,6 +372,12 @@ class certificate {
         return $pdf;
     }
 
+    /**
+     * Method that logs the certificate generation in DB.
+     *
+     * @param integer $launchid The launch_log ID line, already in DB
+     * @param integer $status The status of the file creation.
+     */
     public function log($launchid, $status) {
         $statusstring = null;
         switch($status) {
