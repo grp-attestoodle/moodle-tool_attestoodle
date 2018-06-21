@@ -108,10 +108,6 @@ class certificate {
      * property may be a void array.
      */
     private function get_pdf_informations() {
-        $begindate = clone $this->begindate;
-        $searchenddate = clone $this->enddate;
-        $searchenddate->modify('+1 day');
-        $trainingid = $this->training->get_id();
         $trainingname = $this->training->get_name();
         $totalminutes = 0;
 
@@ -401,10 +397,11 @@ class certificate {
 
         $milestones = $this->get_filtered_milestones();
         if (count($milestones) > 0) {
+            $logvalueserror = false;
             try {
                 db_accessor::get_instance()->log_values($certificatelogid, $milestones);
             } catch (\Exception $ex) {
-                // Do something?
+                $logvalueserror = true;
             }
         }
     }

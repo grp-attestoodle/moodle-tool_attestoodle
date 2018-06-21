@@ -62,8 +62,14 @@ class training_learners_list implements renderable {
         $this->training = $training;
 
         // Default dates are January 1st and December 31st of current year.
-        $this->thebegindate = isset($begindate) ? $begindate : (new \DateTime('first day of January ' . date('Y')))->format('Y-m-d');
-        $this->theenddate = isset($enddate) ? $enddate : (new \DateTime('last day of December ' . date('Y')))->format('Y-m-d');
+        $this->thebegindate =
+                isset($begindate) ?
+                $begindate :
+                (new \DateTime('first day of January ' . date('Y')))->format('Y-m-d');
+        $this->theenddate =
+                isset($enddate) ?
+                $enddate :
+                (new \DateTime('last day of December ' . date('Y')))->format('Y-m-d');
         // Parsing begin date.
         try {
             $this->theactualbegindate = new \DateTime($this->thebegindate);
@@ -294,10 +300,11 @@ class training_learners_list implements renderable {
 
             // Log the certificate informations.
             if (!$launchdberror) {
+                $logcertiferror = false;
                 try {
                     $certificate->log($launchid, $status);
-                } catch (Exception $ex) {
-                    // Do something?
+                } catch (\Exception $ex) {
+                    $logcertiferror = true;
                 }
             }
         }

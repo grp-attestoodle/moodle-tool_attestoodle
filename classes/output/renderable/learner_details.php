@@ -34,7 +34,6 @@ use block_attestoodle\factories\trainings_factory;
 use block_attestoodle\certificate;
 use block_attestoodle\utils\db_accessor;
 
-
 class learner_details implements \renderable {
     /** @var integer Id of the learner being displayed */
     public $learnerid;
@@ -154,10 +153,11 @@ class learner_details implements \renderable {
 
         // Log the certificate informations.
         if (!$launchdberror) {
+            $logcertiferror = false;
             try {
                 $certificate->log($launchid, $status);
-            } catch (Exception $ex) {
-                // Do something?
+            } catch (\Exception $ex) {
+                $logcertiferror = true;
             }
         }
     }
