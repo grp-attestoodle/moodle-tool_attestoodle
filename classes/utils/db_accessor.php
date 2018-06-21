@@ -286,10 +286,11 @@ class db_accessor extends singleton {
         return $certificateid;
     }
 
-    public function log_values($certificatelogid, $activities) {
+    public function log_values($certificatelogid, $validatedactivities) {
         $milestones = array();
 
-        foreach ($activities as $act) {
+        foreach ($validatedactivities as $fva) {
+            $act = $fva->get_activity();
             $dataobject = new \stdClass();
             $dataobject->creditedtime = $act->get_milestone();
             $dataobject->certificateid = $certificatelogid;

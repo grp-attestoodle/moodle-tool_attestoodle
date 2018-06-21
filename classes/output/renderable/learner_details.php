@@ -32,6 +32,8 @@ defined('MOODLE_INTERNAL') || die;
 use block_attestoodle\factories\learners_factory;
 use block_attestoodle\factories\trainings_factory;
 use block_attestoodle\certificate;
+use block_attestoodle\utils\db_accessor;
+
 
 class learner_details implements \renderable {
     /** @var integer Id of the learner being displayed */
@@ -116,6 +118,20 @@ class learner_details implements \renderable {
      * @param integer $trainingid The training ID of the certificate requested
      */
     public function generate_certificate_file($trainingid) {
+        global $USER;
+
+        $launchdberror = false;
+        try {
+            $launchid = db_accessor::get_instance()->log_launch(
+                    \time(),
+                    $this->begindate,
+                    $this->enddate,
+                    $USER->id
+            );
+        } catch (\Exception $ex) {
+            $launchdberror = true;
+        }
+
         $training = trainings_factory::get_instance()->retrieve_training($trainingid);
         $certificate = new certificate($this->learner, $training, $this->actualbegindate, $this->actualenddate);
         $status = $certificate->create_file_on_server();
@@ -134,6 +150,15 @@ class learner_details implements \renderable {
                 $notificationmessage .= "File generated (overwritten).";
                 \core\notification::success($notificationmessage);
                 break;
+        }
+
+        // Log the certificate informations.
+        if (!$launchdberror) {
+            try {
+                $certificate->log($launchid, $status);
+            } catch (Exception $ex) {
+                // Do something?
+            }
         }
     }
 

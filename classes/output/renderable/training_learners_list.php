@@ -31,7 +31,7 @@ defined('MOODLE_INTERNAL') || die;
 
 use \renderable;
 use block_attestoodle\certificate;
-use \block_attestoodle\utils\db_accessor;
+use block_attestoodle\utils\db_accessor;
 
 class training_learners_list implements renderable {
     /** @var training Training that is currently displayed */
