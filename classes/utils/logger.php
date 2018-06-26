@@ -31,18 +31,13 @@ class logger extends singleton {
     protected static $instance;
 
     /**
-     * Protected constructor to avoid external instanciation.
-     */
-    protected function __construct() {
-        parent::__construct();
-    }
-
-    /**
      * Method that inserts a launch record into DB and return the newly created
      * id of the launch
      *
      * @global type $USER Global $USER Moodle object
-     * @param renderable $data The renderable that calls the function
+     *
+     * @param string $begindate The begin date of the generation launch
+     * @param string $enddate The end date of the generation launch
      * @return integer|null The newly created launch ID or null if an error occured
      */
     public static function log_launch($begindate, $enddate) {

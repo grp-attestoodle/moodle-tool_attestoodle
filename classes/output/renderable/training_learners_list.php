@@ -308,26 +308,68 @@ class training_learners_list implements renderable {
         if ($newfiles > 0 || $filesoverwritten > 0) {
             if ($errors > 0) {
                 // Generated with errors.
-                $notificationmessage .= \get_string('training_learners_list_notification_message_with_error_one', 'block_attestoodle') . "<br />";
-                $notificationmessage .= \get_string('training_learners_list_notification_message_with_error_two', 'block_attestoodle', $newfiles) . "<br />";
-                $notificationmessage .= \get_string('training_learners_list_notification_message_with_error_three', 'block_attestoodle', $filesoverwritten) . "<br />";
-                $notificationmessage .= \get_string('training_learners_list_notification_message_with_error_viva_algerie', 'block_attestoodle', $errors);
+                $notificationmessage .=
+                        \get_string(
+                                'training_learners_list_notification_message_with_error_one',
+                                'block_attestoodle') .
+                        "<br />";
+                $notificationmessage .=
+                        \get_string(
+                                'training_learners_list_notification_message_with_error_two',
+                                'block_attestoodle',
+                                $newfiles) .
+                        "<br />";
+                $notificationmessage .=
+                        \get_string(
+                                'training_learners_list_notification_message_with_error_three',
+                                'block_attestoodle',
+                                $filesoverwritten) .
+                        "<br />";
+                $notificationmessage .=
+                        \get_string(
+                                'training_learners_list_notification_message_with_error_viva_algerie',
+                                'block_attestoodle',
+                                $errors);
                 \core\notification::warning($notificationmessage);
             } else {
                 // Generated with success.
-                $notificationmessage .= \get_string('training_learners_list_notification_message_success_one', 'block_attestoodle') . "<br />";
-                $notificationmessage .= \get_string('training_learners_list_notification_message_success_two', 'block_attestoodle', $newfiles) . "<br />";
-                $notificationmessage .= \get_string('training_learners_list_notification_message_success_three', 'block_attestoodle', $filesoverwritten);
+                $notificationmessage .=
+                        \get_string(
+                                'training_learners_list_notification_message_success_one',
+                                'block_attestoodle') .
+                        "<br />";
+                $notificationmessage .=
+                        \get_string(
+                                'training_learners_list_notification_message_success_two',
+                                'block_attestoodle',
+                                $newfiles) .
+                        "<br />";
+                $notificationmessage .=
+                        \get_string(
+                                'training_learners_list_notification_message_success_three',
+                                'block_attestoodle',
+                                $filesoverwritten);
                 \core\notification::success($notificationmessage);
             }
         } else if ($errors > 0) {
             // All files in error.
-            $notificationmessage .= \get_string('training_learners_list_notification_message_error_one', 'block_attestoodle') . "<br />";
-            $notificationmessage .= \get_string('training_learners_list_notification_message_error_two', 'block_attestoodle',  $errors);
+            $notificationmessage .=
+                    \get_string(
+                            'training_learners_list_notification_message_error_one',
+                            'block_attestoodle') .
+                    "<br />";
+            $notificationmessage .=
+                    \get_string(
+                            'training_learners_list_notification_message_error_two',
+                            'block_attestoodle',
+                            $errors);
             \core\notification::error($notificationmessage);
         } else {
             // No file generated.
-            $notificationmessage .= \get_string('training_learners_list_notification_message_no_file', 'block_attestoodle');
+            $notificationmessage .=
+                    \get_string(
+                            'training_learners_list_notification_message_no_file',
+                            'block_attestoodle');
             \core\notification::warning($notificationmessage);
         }
     }
