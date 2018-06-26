@@ -33,9 +33,8 @@ $string['settings_student_role_helper'] = 'Id du rôle Etudiant dans la base de 
 
 // Capabilities strings.
 $string['attestoodle:displaytrainings'] = "Afficher les formations";
-$string['attestoodle:managetraining'] = "Modifier les jalons";
-$string['attestoodle:managetrainings'] = "Modifier les formations";
-$string['attestoodle:trainingdetails'] = "Afficher les détails d'une formation";
+$string['attestoodle:managetraining'] = "Ajouter/Supprimer une formation";
+$string['attestoodle:managemilestones'] = "Gérer les jalons d'une formation";
 $string['attestoodle:displaylearnerslist'] = "Afficher les détails d'une formation";
 $string['attestoodle:downloadcertificate'] = "Générer/Télécharger les attestations";
 $string['attestoodle:learnerdetails'] = "Afficher les détails d'un apprenant";
@@ -95,17 +94,27 @@ $string['training_learners_list_table_header_column_firstname'] = 'Prénom';
 $string['training_learners_list_table_header_column_lastname'] = 'Nom';
 $string['training_learners_list_table_header_column_validated_activities'] = 'Activités validées';
 $string['training_learners_list_table_header_column_total_milestones'] = 'Total temps jalons validés sur la période';
+$string['training_learners_list_notification_message_no_file'] = 'Aucun fichier créé';
+$string['training_learners_list_notification_message_error_one'] = 'Une erreur est survenue lors de la tentative de génération des attestations, veuillez réessayer plus tard';
+$string['training_learners_list_notification_message_error_two'] = 'Tous les {$a} fichiers en erreur';
+$string['training_learners_list_notification_message_success_one'] = 'Attestations générées avec succès :';
+$string['training_learners_list_notification_message_success_two'] = '{$a} nouveau fichier';
+$string['training_learners_list_notification_message_success_three'] = '{$a} fichiers écrasés';
+$string['training_learners_list_notification_message_with_error_one'] = 'Attestations générées avec des erreurs :';
+$string['training_learners_list_notification_message_with_error_two'] = '{$a} nouveaux fichiers';
+$string['training_learners_list_notification_message_with_error_three'] = '{$a} fichiers écrasés';
+$string['training_learners_list_notification_message_with_error_viva_algerie'] = '{$a} fichiers en erreur';
 
-// Training details page strings.
-$string['training_details_page_title'] = "Moodle - Attestoodle - Gestion d'une formation";
-$string['training_details_main_title'] = 'Gestion de la formation {$a} : ';
-$string['training_details_main_title_error'] = "Attestoodle - Erreur";
-$string['training_details_learners_list_btn_text'] = "Retour au rapport global";
-$string['training_details_unknown_training_id'] = "Aucune formation avec l'identifiant : ";
-$string['training_details_warning_no_submitted_data'] = 'Aucune donnée envoyée';
-$string['training_details_error_invalid_form'] = "Le formulaire n'est pas valide";
-$string['training_details_info_form_canceled'] = "Le formulaire a été annulé";
-$string['training_details_form_input_suffix'] = "min.";
+// Training milestones management page strings.
+$string['training_milestones_page_title'] = "Moodle - Attestoodle - Gestion d'une formation";
+$string['training_milestones_main_title'] = 'Gestion de la formation {$a} : ';
+$string['training_milestones_main_title_error'] = "Attestoodle - Erreur";
+$string['training_milestones_learners_list_btn_text'] = "Retour au rapport global";
+$string['training_milestones_unknown_training_id'] = "Aucune formation avec l'identifiant : ";
+$string['training_milestones_warning_no_submitted_data'] = 'Aucune donnée envoyée';
+$string['training_milestones_error_invalid_form'] = "Le formulaire n'est pas valide";
+$string['training_milestones_info_form_canceled'] = "Le formulaire a été annulé";
+$string['training_milestones_form_input_suffix'] = "min.";
 
 // Learner details page strings.
 $string['learner_details_page_title'] = "Moodle - Attestoodle - Détail d'un apprenant";
@@ -126,9 +135,10 @@ $string['learner_details_table_header_column_validated_time'] = "Validé le";
 $string['learner_details_table_header_column_milestones'] = "Temps jalon crédité";
 $string['learner_details_generate_certificate_link'] = "Générer l'attestation";
 $string['learner_details_regenerate_certificate_link'] = "Générer une nouvelle attestation";
-
-// Download certificate page strings. @TODO move to learner details strings.
-$string['download_certificate_file_link_text'] = "Télécharger l'attestation";
+$string['learner_details_download_certificate_link'] = "Télécharger l'attestation";
+$string['learner_details_notification_message_error'] = "Une erreur est survenue lors de la création du fichier sur le serveur, veuillez réessayer plus tard.";
+$string['learner_details_notification_message_new'] = "L'attestation a été créé sur le serveur";
+$string['learner_details_notification_message_overwritten'] = "Une nouvelle attestation a été créée sur le serveur, l'ancien fichier a été écrasé";
 
 // Unknown strings.
 // @todo review these strings.

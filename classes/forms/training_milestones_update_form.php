@@ -52,7 +52,7 @@ class training_milestones_update_form extends \moodleform {
                 $name = $inputnameprefix  . $activity->get_id();
                 $groupname = "group_" . $name;
                 $label = $activity->get_name();
-                $suffix = get_string("training_details_form_input_suffix", "block_attestoodle");
+                $suffix = get_string("training_milestones_form_input_suffix", "block_attestoodle");
                 $type = get_string('modulename', $activity->get_type());
                 $milestone = $activity->get_milestone();
 

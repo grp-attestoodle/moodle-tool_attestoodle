@@ -83,7 +83,7 @@ class certificate {
      * "certificate_[learner last name][learner first name]_[begin date]_[end date]_[training name].pdf"
      * where the begin and end dates format is YYYYMMDD
      */
-    private function get_file_name() {
+    public function get_file_name() {
         $filename = "certificate_{$this->learner->get_lastname()}{$this->learner->get_firstname()}_";
         $filename .= "{$this->begindate->format("Ymd")}_{$this->enddate->format("Ymd")}_";
         $filename .= $this->training->get_name();
@@ -157,7 +157,7 @@ class certificate {
      *
      * @return activity[] The activities with milestones validated by the learner
      */
-    private function get_filtered_milestones() {
+    public function get_filtered_milestones() {
         $begindate = clone $this->begindate;
         $searchenddate = clone $this->enddate;
         $searchenddate->modify('+1 day');
@@ -369,40 +369,20 @@ class certificate {
     }
 
     /**
-     * Method that logs the certificate generation in DB.
+     * Returns the training of the certificate.
      *
-     * @param integer $launchid The launch_log ID line, already in DB
-     * @param integer $status The status of the file creation.
+     * @return training The training of the certificate.
      */
-    public function log($launchid, $status) {
-        $statusstring = null;
-        switch($status) {
-            case 0:
-                $statusstring = 'ERROR';
-                break;
-            case 1:
-                $statusstring = 'NEW';
-                break;
-            case 2:
-                $statusstring = 'OVERWRITTEN';
-                break;
-        }
+    public function get_training() {
+        return $this->training;
+    }
 
-        $certificatelogid = db_accessor::get_instance()->log_certificate(
-                $this->get_file_name(),
-                $statusstring,
-                $this->training->get_id(),
-                $this->learner->get_id(),
-                $launchid);
-
-        $milestones = $this->get_filtered_milestones();
-        if (count($milestones) > 0) {
-            $logvalueserror = false;
-            try {
-                db_accessor::get_instance()->log_values($certificatelogid, $milestones);
-            } catch (\Exception $ex) {
-                $logvalueserror = true;
-            }
-        }
+    /**
+     * Returns the learner of the certificate.
+     *
+     * @return learner The learner of the certificate.
+     */
+    public function get_learner() {
+        return $this->learner;
     }
 }

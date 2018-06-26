@@ -32,7 +32,7 @@ defined('MOODLE_INTERNAL') || die;
 use block_attestoodle\factories\learners_factory;
 use block_attestoodle\factories\trainings_factory;
 use block_attestoodle\certificate;
-use block_attestoodle\utils\db_accessor;
+use block_attestoodle\utils\logger;
 
 class learner_details implements \renderable {
     /** @var integer Id of the learner being displayed */
@@ -117,48 +117,47 @@ class learner_details implements \renderable {
      * @param integer $trainingid The training ID of the certificate requested
      */
     public function generate_certificate_file($trainingid) {
-        global $USER;
-
-        $launchdberror = false;
-        try {
-            $launchid = db_accessor::get_instance()->log_launch(
-                    \time(),
-                    $this->begindate,
-                    $this->enddate,
-                    $USER->id
-            );
-        } catch (\Exception $ex) {
-            $launchdberror = true;
-        }
+        // Log the generation launch.
+        $launchid = logger::log_launch($this->begindate, $this->enddate);
 
         $training = trainings_factory::get_instance()->retrieve_training($trainingid);
         $certificate = new certificate($this->learner, $training, $this->actualbegindate, $this->actualenddate);
         $status = $certificate->create_file_on_server();
+
+        // Log the certificate informations.
+        if (isset($launchid)) {
+            logger::log_certificate($launchid, $status, $certificate);
+        }
+
+        $this->notify_result($status);
+    }
+
+    /**
+     * Method that throws a notification to user to let him know the result of
+     * the certificate file generation.
+     *
+     * @param integer $status The status of the file generation on the server (0: error,
+     * 1: new file, 2: new file overwritten the old one)
+     */
+    private function notify_result($status) {
         $notificationmessage = "";
 
         switch ($status) {
             case 0:
-                $notificationmessage .= "File not generated (an error occured).";
+                // Error.
+                $notificationmessage .= \get_string('learner_details_notification_message_error', 'block_attestoodle');
                 \core\notification::error($notificationmessage);
                 break;
             case 1:
-                $notificationmessage .= "New file generated.";
+                // New file.
+                $notificationmessage .= \get_string('learner_details_notification_message_new', 'block_attestoodle');
                 \core\notification::success($notificationmessage);
                 break;
             case 2:
-                $notificationmessage .= "File generated (overwritten).";
+                // File overwritten.
+                $notificationmessage .= \get_string('learner_details_notification_message_overwritten', 'block_attestoodle');
                 \core\notification::success($notificationmessage);
                 break;
-        }
-
-        // Log the certificate informations.
-        if (!$launchdberror) {
-            $logcertiferror = false;
-            try {
-                $certificate->log($launchid, $status);
-            } catch (\Exception $ex) {
-                $logcertiferror = true;
-            }
         }
     }
 
@@ -200,8 +199,6 @@ class learner_details implements \renderable {
     /**
      * Computes the content header depending on params (the filter form).
      *
-     * @todo Long method, could be reduce
-     *
      * @return string The computed HTML string of the page header
      */
     public function get_header() {
@@ -213,7 +210,7 @@ class learner_details implements \renderable {
         } else {
             $output .= \html_writer::start_div('clearfix learner-detail-header');
             // Basic form to allow user filtering the validated activities by begin and end dates.
-            // TODO use a moodle_quickform ?
+            // TODO use a moodle_quickform.
             $output .= '<form action="?" class="filterform"><div>'
                     . '<input type="hidden" name="page" value="learnerdetails" />'
                     . '<input type="hidden" name="learner" value="' . $this->learnerid . '" />';
@@ -355,7 +352,7 @@ class learner_details implements \renderable {
             $linktext = get_string('learner_details_regenerate_certificate_link', 'block_attestoodle');
 
             $output .= "<a href='" . $certificate->get_existing_file_url() . "' target='_blank'>" .
-                    get_string('download_certificate_file_link_text', 'block_attestoodle') .
+                    get_string('learner_details_download_certificate_link', 'block_attestoodle') .
                     "</a>";
             $output .= "&nbsp;ou&nbsp;";
         }

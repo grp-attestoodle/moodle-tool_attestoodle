@@ -33,9 +33,8 @@ $string['settings_student_role_helper'] = 'Id of the student role in database';
 
 // Capabilities strings.
 $string['attestoodle:displaytrainings'] = "Display trainings list";
-$string['attestoodle:managetraining'] = "Modify milestones";
-$string['attestoodle:managetrainings'] = "Modify trainings";
-$string['attestoodle:trainingdetails'] = "Display training details";
+$string['attestoodle:managetraining'] = "Add/Remove training";
+$string['attestoodle:managemilestones'] = "Manage training milestones";
 $string['attestoodle:displaylearnerslist'] = "Display training details";
 $string['attestoodle:downloadcertificate'] = "Generate/Download certificates";
 $string['attestoodle:learnerdetails'] = "Display learner details";
@@ -95,17 +94,27 @@ $string['training_learners_list_table_header_column_firstname'] = 'Firstname';
 $string['training_learners_list_table_header_column_lastname'] = 'Lastname';
 $string['training_learners_list_table_header_column_validated_activities'] = 'Validated activities';
 $string['training_learners_list_table_header_column_total_milestones'] = 'Total milestones within period';
+$string['training_learners_list_notification_message_no_file'] = 'No file created';
+$string['training_learners_list_notification_message_error_one'] = 'An error occured while attempting to generate certificates, try again later';
+$string['training_learners_list_notification_message_error_two'] = 'All {$a} files in error';
+$string['training_learners_list_notification_message_success_one'] = 'Certificates generated:';
+$string['training_learners_list_notification_message_success_two'] = '{$a} new files';
+$string['training_learners_list_notification_message_success_three'] = '{$a} files overwritten';
+$string['training_learners_list_notification_message_with_error_one'] = 'Certificates generated with errors:';
+$string['training_learners_list_notification_message_with_error_two'] = '{$a} new files';
+$string['training_learners_list_notification_message_with_error_three'] = '{$a} files overwritten';
+$string['training_learners_list_notification_message_with_error_viva_algerie'] = '{$a} errors';
 
-// Training details page strings.
-$string['training_details_page_title'] = "Moodle - Attestoodle - Training details";
-$string['training_details_main_title'] = 'Management of the training {$a}: ';
-$string['training_details_main_title_error'] = "Error!";
-$string['training_details_learners_list_btn_text'] = "Back to global report";
-$string['training_details_unknown_training_id'] = "No training with the ID: ";
-$string['training_details_warning_no_submitted_data'] = 'No submitted data';
-$string['training_details_error_invalid_form'] = 'The form is not valid';
-$string['training_details_info_form_canceled'] = 'The form has been canceled';
-$string['training_details_form_input_suffix'] = 'min.';
+// Training milestones management page strings.
+$string['training_milestones_page_title'] = "Moodle - Attestoodle - Training details";
+$string['training_milestones_main_title'] = 'Management of the training {$a}: ';
+$string['training_milestones_main_title_error'] = "Error!";
+$string['training_milestones_learners_list_btn_text'] = "Back to global report";
+$string['training_milestones_unknown_training_id'] = "No training with the ID: ";
+$string['training_milestones_warning_no_submitted_data'] = 'No submitted data';
+$string['training_milestones_error_invalid_form'] = 'The form is not valid';
+$string['training_milestones_info_form_canceled'] = 'The form has been canceled';
+$string['training_milestones_form_input_suffix'] = 'min.';
 
 // Learner details page strings.
 $string['learner_details_page_title'] = "Moodle - Attestoodle - Learner details";
@@ -126,9 +135,10 @@ $string['learner_details_table_header_column_validated_time'] = "Validated time"
 $string['learner_details_table_header_column_milestones'] = "Milestone credit";
 $string['learner_details_generate_certificate_link'] = "Generate certificate";
 $string['learner_details_regenerate_certificate_link'] = "Generate a new certificate";
-
-// Download certificate page strings. @TODO move to learner details strings.
-$string['download_certificate_file_link_text'] = "Download certificate";
+$string['learner_details_download_certificate_link'] = "Download certificate";
+$string['learner_details_notification_message_error'] = "An error occured while attempting to create the file on the server, try again later";
+$string['learner_details_notification_message_new'] = "The new certificate has been create on the server";
+$string['learner_details_notification_message_overwritten'] = "A new certificate has been create on the server, the old file has been overwritten";
 
 // Unknown strings.
 // @TODO review these strings.

@@ -95,8 +95,7 @@ class trainings_factory extends singleton {
             $courses = array_merge($courses, $subcatcourses);
         }
 
-        /* @todo: adding courses one by one with ->add_course method
-        seems stupid */
+        // Add courses to the training.
         foreach ($courses as $course) {
             $trainingtoadd->add_course($course);
         }

@@ -43,7 +43,7 @@ $capabilities = array(
                         'manager' => CAP_ALLOW
                 )
         ),
-        'block/attestoodle:trainingdetails' => array(
+        'block/attestoodle:managemilestones' => array(
                 'riskbitmask' => RISK_PERSONAL,
 
                 'captype' => 'read',

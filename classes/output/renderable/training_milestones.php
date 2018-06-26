@@ -53,7 +53,7 @@ class training_milestones implements \renderable {
             $this->form = new training_milestones_update_form(
                     new \moodle_url(
                             '/blocks/attestoodle/index.php',
-                            ['page' => 'trainingmilestones', 'training' => $this->training->get_id()]),
+                            ['page' => 'managemilestones', 'training' => $this->training->get_id()]),
                     array(
                         'data' => $this->training->get_courses(),
                         'input_name_prefix' => "attestoodle_activity_id_"
@@ -90,8 +90,7 @@ class training_milestones implements \renderable {
                 '/blocks/attestoodle/index.php',
                 ['page' => 'learners', 'training' => $this->training->get_id()]
         );
-        // TODO rename string variable.
-        $message = get_string('training_details_info_form_canceled', 'block_attestoodle');
+        $message = get_string('training_milestones_info_form_canceled', 'block_attestoodle');
         redirect($redirecturl, $message, null, \core\output\notification::NOTIFY_INFO);
     }
 
@@ -116,7 +115,7 @@ class training_milestones implements \renderable {
      */
     private function handle_form_not_validated() {
         // If not valid, warn the user.
-        \core\notification::error(get_string('training_details_error_invalid_form', 'block_attestoodle'));
+        \core\notification::error(get_string('training_milestones_error_invalid_form', 'block_attestoodle'));
     }
 
     /**
@@ -124,11 +123,14 @@ class training_milestones implements \renderable {
      * to the user to let him know how much activites have been updated and if
      * there is any error while save in DB.
      *
+     * @todo create a new private method to notify the user
+     * @todo translations
+     *
      * @return void Return void if the user has not the rights to update in DB
      */
     private function handle_form_has_submitted_data() {
-        if (has_capability('block/attestoodle:managetraining', \context_system::instance())) {
-            // If data are valid, process persistance.
+        // If data are valid, process persistance.
+        if (has_capability('block/attestoodle:managemilestones', \context_system::instance())) {
             // Retrieve the submitted data.
             $datafromform = $this->form->get_submitted_data();
 
@@ -186,7 +188,7 @@ class training_milestones implements \renderable {
             $this->form = new training_milestones_update_form(
                     new \moodle_url(
                             '/blocks/attestoodle/index.php',
-                            ['page' => 'trainingmilestones', 'training' => $this->training->get_id()]
+                            ['page' => 'managemilestones', 'training' => $this->training->get_id()]
                     ),
                     array(
                         'data' => $this->training->get_courses(),
@@ -280,12 +282,10 @@ class training_milestones implements \renderable {
     public function get_heading() {
         $heading = "";
         if (!$this->training_exists()) {
-            // TODO rename string variable.
-            $heading = \get_string('training_details_main_title_error', 'block_attestoodle');
+            $heading = \get_string('training_milestones_main_title_error', 'block_attestoodle');
         } else {
             $totalhours = parse_minutes_to_hours($this->training->get_total_milestones());
-            // TODO rename string variable.
-            $heading = \get_string('training_details_main_title', 'block_attestoodle', $this->training->get_name());
+            $heading = \get_string('training_milestones_main_title', 'block_attestoodle', $this->training->get_name());
             $heading .= $totalhours;
         }
         return $heading;
@@ -306,7 +306,7 @@ class training_milestones implements \renderable {
                         '/blocks/attestoodle/index.php',
                         ['page' => 'learners', 'training' => $this->training->get_id()]
                 ),
-                get_string('training_details_learners_list_btn_text', 'block_attestoodle'),
+                get_string('training_milestones_learners_list_btn_text', 'block_attestoodle'),
                 array('class' => 'attestoodle-link'));
         $output .= \html_writer::end_div();
 

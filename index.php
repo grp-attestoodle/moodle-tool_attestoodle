@@ -33,7 +33,6 @@ require_once($CFG->dirroot.'/blocks/attestoodle/lib.php');
 
 /*
  * Imports of class files.
- * @todo create an autoloader.
  */
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/learners_factory.php');
 require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/trainings_list.php');
@@ -74,16 +73,14 @@ switch($page) {
         $renderable = new renderable\training_management($categoryid);
 
         break;
-    case 'trainingmilestones':
+    case 'managemilestones':
         $trainingid = required_param('training', PARAM_INT);
         $PAGE->set_url(new moodle_url('/blocks/attestoodle/index.php',
                 ['page' => $page, 'training' => $trainingid]));
-        // TODO rename the string variable.
-        $PAGE->set_title(get_string('training_details_page_title', 'block_attestoodle'));
+        $PAGE->set_title(get_string('training_milestones_page_title', 'block_attestoodle'));
 
-        // TODO rename the capability.
-        $userhascapability = has_capability('block/attestoodle:trainingdetails', $context);
-        require_capability('block/attestoodle:trainingdetails', $context);
+        $userhascapability = has_capability('block/attestoodle:managemilestones', $context);
+        require_capability('block/attestoodle:managemilestones', $context);
 
         $renderable = new renderable\training_milestones($trainingid);
         $PAGE->set_heading($renderable->get_heading());

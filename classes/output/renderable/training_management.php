@@ -132,33 +132,54 @@ class training_management implements \renderable {
      * to the user to let him know how much categories have been updated and if
      * there is any error while save in DB.
      *
-     * @todo should "@return void Return void if the user has not the rights to update in DB"
+     * @todo create a new private method to notify the user
+     *
+     * @return void Return void if the user has not the rights to update in DB
      */
     private function handle_form_has_submitted_data() {
-        $datafromform = $this->form->get_submitted_data();
-        // Instanciate global variables to output to the user.
-        $error = false;
-        $updated = false;
+        if (has_capability('block/attestoodle:managetraining', \context_system::instance())) {
+            $datafromform = $this->form->get_submitted_data();
+            // Instanciate global variables to output to the user.
+            $error = false;
+            $updated = false;
 
-        $value = $datafromform->checkbox_is_training;
+            $value = $datafromform->checkbox_is_training;
 
-        $category = categories_factory::get_instance()->retrieve_category($this->categoryid);
-        $oldistrainingvalue = $category->is_training();
-        $boolvalue = boolval($value);
+            $category = categories_factory::get_instance()->retrieve_category($this->categoryid);
+            $oldistrainingvalue = $category->is_training();
+            $boolvalue = boolval($value);
 
-        if ($category->set_istraining($boolvalue)) {
-            $updated = true;
-            try {
-                // Try to persist training in DB.
-                $category->persist_training();
-            } catch (\Exception $ex) {
-                // If record in DB failed, re-set the old value.
-                $category->set_istraining($oldistrainingvalue);
-                $error = true;
+            if ($category->set_istraining($boolvalue)) {
+                $updated = true;
+                try {
+                    // Try to persist training in DB.
+                    $category->persist_training();
+                } catch (\Exception $ex) {
+                    // If record in DB failed, re-set the old value.
+                    $category->set_istraining($oldistrainingvalue);
+                    $error = true;
+                }
             }
-        }
 
+            // Notify the user of the submission result.
+            $this->notify_result($error, $updated, $boolvalue);
+        } else {
+            return;
+        }
+    }
+
+    /**
+     * Method that throws a notification to user to let him know the result of
+     * the form submission.
+     *
+     * @param boolean $error If there was an error
+     * @param boolean $updated If the training has been updated
+     * @param boolean $boolvalue True if the training has been added, false if
+     * it has been removed
+     */
+    private function notify_result($error, $updated, $boolvalue) {
         $message = "";
+
         if (!$error) {
             if ($updated) {
                 if ($boolvalue) {
@@ -230,7 +251,7 @@ class training_management implements \renderable {
 
                 // Link to the milestones management of the training.
                 $parametersmilestones = array(
-                        'page' => 'trainingmilestones',
+                        'page' => 'managemilestones',
                         'training' => $this->category->get_id()
                 );
                 $urlmilestones = new \moodle_url('/blocks/attestoodle/index.php', $parametersmilestones);

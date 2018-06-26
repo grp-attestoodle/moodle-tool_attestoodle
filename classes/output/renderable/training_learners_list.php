@@ -31,7 +31,7 @@ defined('MOODLE_INTERNAL') || die;
 
 use \renderable;
 use block_attestoodle\certificate;
-use block_attestoodle\utils\db_accessor;
+use block_attestoodle\utils\logger;
 
 class training_learners_list implements renderable {
     /** @var training Training that is currently displayed */
@@ -125,7 +125,7 @@ class training_learners_list implements renderable {
             $output .= \html_writer::link(
                     new \moodle_url(
                             '/blocks/attestoodle/index.php',
-                            array('page' => 'trainingmilestones', 'training' => $this->training->get_id())
+                            array('page' => 'managemilestones', 'training' => $this->training->get_id())
                     ),
                     get_string('training_learners_list_edit_training_link', 'block_attestoodle'),
                     array('class' => 'btn btn-default attestoodle-button'));
@@ -248,7 +248,7 @@ class training_learners_list implements renderable {
      * @return string The unknow training ID message, translated
      */
     public function get_unknown_training_message() {
-        return get_string('training_details_unknown_training_id', 'block_attestoodle');
+        return get_string('training_milestones_unknown_training_id', 'block_attestoodle');
     }
 
     /**
@@ -258,26 +258,12 @@ class training_learners_list implements renderable {
      * any error or warning (file not created or other file creation error).
      */
     public function generate_certificates() {
-        global $USER;
-
         $errorcounter = 0;
         $newfilecounter = 0;
         $overwrittencounter = 0;
 
-        $notificationmessage = "";
-
         // Log the generation launch.
-        $launchdberror = false;
-        try {
-            $launchid = db_accessor::get_instance()->log_launch(
-                    \time(),
-                    $this->thebegindate,
-                    $this->theenddate,
-                    $USER->id
-            );
-        } catch (\Exception $ex) {
-            $launchdberror = true;
-        }
+        $launchid = logger::log_launch($this->thebegindate, $this->theenddate);
 
         foreach ($this->training->get_learners() as $learner) {
             $certificate = new certificate($learner, $this->training, $this->theactualbegindate, $this->theactualenddate);
@@ -299,36 +285,49 @@ class training_learners_list implements renderable {
             }
 
             // Log the certificate informations.
-            if (!$launchdberror) {
-                $logcertiferror = false;
-                try {
-                    $certificate->log($launchid, $status);
-                } catch (\Exception $ex) {
-                    $logcertiferror = true;
-                }
+            if (isset($launchid)) {
+                logger::log_certificate($launchid, $status, $certificate);
             }
         }
 
-        if ($newfilecounter > 0 || $overwrittencounter > 0) {
-            if ($errorcounter > 0) {
-                $notificationmessage .= "Certificates generated with errors: <br />";
-                $notificationmessage .= "{$newfilecounter} new files <br />";
-                $notificationmessage .= "{$overwrittencounter} files overwritten <br />";
-                $notificationmessage .= "{$errorcounter} errors.";
+        $this->notify_results($newfilecounter, $overwrittencounter, $errorcounter);
+    }
+
+    /**
+     * Method that throws a notification to user to let him know the results of
+     * the certificate files generation (number of new files, overwritten ones and
+     * the ones in error).
+     *
+     * @param integer $newfiles The number of new file generated
+     * @param integer $filesoverwritten The number of new file that overwritten an identical old one
+     * @param integer $errors The number of file creation in error
+     */
+    private function notify_results($newfiles, $filesoverwritten, $errors) {
+        $notificationmessage = "";
+
+        if ($newfiles > 0 || $filesoverwritten > 0) {
+            if ($errors > 0) {
+                // Generated with errors.
+                $notificationmessage .= \get_string('training_learners_list_notification_message_with_error_one', 'block_attestoodle') . "<br />";
+                $notificationmessage .= \get_string('training_learners_list_notification_message_with_error_two', 'block_attestoodle', $newfiles) . "<br />";
+                $notificationmessage .= \get_string('training_learners_list_notification_message_with_error_three', 'block_attestoodle', $filesoverwritten) . "<br />";
+                $notificationmessage .= \get_string('training_learners_list_notification_message_with_error_viva_algerie', 'block_attestoodle', $errors);
                 \core\notification::warning($notificationmessage);
             } else {
-                $notificationmessage .= "Certificates generated! <br />";
-                $notificationmessage .= "{$newfilecounter} new files <br />";
-                $notificationmessage .= "{$overwrittencounter} files overwritten <br />";
+                // Generated with success.
+                $notificationmessage .= \get_string('training_learners_list_notification_message_success_one', 'block_attestoodle') . "<br />";
+                $notificationmessage .= \get_string('training_learners_list_notification_message_success_two', 'block_attestoodle', $newfiles) . "<br />";
+                $notificationmessage .= \get_string('training_learners_list_notification_message_success_three', 'block_attestoodle', $filesoverwritten);
                 \core\notification::success($notificationmessage);
             }
-        } else if ($errorcounter > 0) {
-            $notificationmessage .= "Problem with certificates generation! <br />";
-            $notificationmessage .= "{$errorcounter} errors.";
+        } else if ($errors > 0) {
+            // All files in error.
+            $notificationmessage .= \get_string('training_learners_list_notification_message_error_one', 'block_attestoodle') . "<br />";
+            $notificationmessage .= \get_string('training_learners_list_notification_message_error_two', 'block_attestoodle',  $errors);
             \core\notification::error($notificationmessage);
         } else {
             // No file generated.
-            $notificationmessage .= "No file created.";
+            $notificationmessage .= \get_string('training_learners_list_notification_message_no_file', 'block_attestoodle');
             \core\notification::warning($notificationmessage);
         }
     }
@@ -336,7 +335,7 @@ class training_learners_list implements renderable {
     /**
      * The method retrieves all the certificate files on the server filtered by
      * the current training and period requested, then stores them in a new
-     * ZIP file, then sends the archive to the client.
+     * ZIP file and sends the archive to the client.
      * The method does not create any file! It is designed to be called after the
      * generate_certificates() method; it means that the ZIP file can be void.
      */
