@@ -19,15 +19,15 @@
  * It handles the rendering of each page, called in index.php. The method called
  * depends on the parameters passed to the index.php page (page and action)
  *
- * @package    block_attestoodle
- * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
+ * @package    tool_attestoodle
+ * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace block_attestoodle\output;
+namespace tool_attestoodle\output;
 
 defined('MOODLE_INTERNAL') || die;
 
-use block_attestoodle\output\renderable;
+use tool_attestoodle\output\renderable;
 
 class renderer extends \plugin_renderer_base {
     /**
@@ -87,7 +87,7 @@ class renderer extends \plugin_renderer_base {
 
             $output .= $this->output->heading(get_string(
                     'training_learners_list_heading',
-                    'block_attestoodle',
+                    'tool_attestoodle',
                     count($obj->training->get_learners())
             ));
             $output .= \html_writer::table($table);
@@ -108,7 +108,7 @@ class renderer extends \plugin_renderer_base {
         $output = "";
 
         if (!$obj->training_exists()) {
-            $output .= get_string('training_milestones_unknown_training_id', 'block_attestoodle') . $obj->get_trainingid();
+            $output .= get_string('training_milestones_unknown_training_id', 'tool_attestoodle') . $obj->get_trainingid();
         } else {
             $output .= $obj->get_header();
             $output .= $obj->get_content();

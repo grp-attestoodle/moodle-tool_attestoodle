@@ -17,7 +17,7 @@
 /**
  * Useful global functions for Attestoodle.
  *
- * @package    block_attestoodle
+ * @package    tool_attestoodle
  * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -54,16 +54,17 @@ function parse_datetime_to_readable_format($datetime) {
  *
  * @link See doc at https://docs.moodle.org/dev/File_API#Serving_files_to_users
  */
-function block_attestoodle_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options=array()) {
+function tool_attestoodle_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options=array()) {
     if ($course && $cm) {
         $cm = $cm;
         $course = $course;
     }
-    // Check the contextlevel is as expected - if your plugin is a block, this becomes CONTEXT_BLOCK, etc.
+    /*
+    // Check the contextlevel is as expected 
     if ($context->contextlevel != CONTEXT_USER) {
         return false;
     }
-
+*/
     // Make sure the filearea is one of those used by the plugin.
     if ($filearea !== 'certificates') {
         return false;
@@ -85,11 +86,16 @@ function block_attestoodle_pluginfile($course, $cm, $context, $filearea, $args, 
 
     // Retrieve the file from the Files API.
     $fs = get_file_storage();
-    $file = $fs->get_file($context->id, 'block_attestoodle', $filearea, $itemid, $filepath, $filename);
+    $file = $fs->get_file($context->id, 'tool_attestoodle', $filearea, $itemid, $filepath, $filename);
     if (!$file) {
         return false; // The file does not exist.
     }
 
+    // Force non image formats to be downloaded
+    if ($file->is_valid_image()) {
+    	$forcedownload = false;
+    }
+    
     // We can now send the file back to the browser - in this case with a cache lifetime of 1 day and no filtering.
     // From Moodle 2.3, use send_stored_file instead.
     send_stored_file($file, 1, 0, $forcedownload, $options);
@@ -103,17 +109,17 @@ function block_attestoodle_pluginfile($course, $cm, $context, $filearea, $args, 
  * @return void
  */
 
-function block_attestoodle_extend_navigation_category_settings(navigation_node $parentnode, context_coursecat $context) {
-    global $PAGE;
-    $userhascapability = has_capability('block/attestoodle:managetraining', $context);
-
+function tool_attestoodle_extend_navigation_category_settings(navigation_node $parentnode, context_coursecat $context) {
+    global $PAGE, $CFG;
+    $userhascapability = has_capability('tool/attestoodle:managetraining', $context);
+    $toolPath = $CFG->wwwroot. "/" . $CFG->admin . "/tool/attestoodle";
     if ($userhascapability) {
         $categoryid = $PAGE->context->instanceid;
-        $url = new moodle_url(
-                '/blocks/attestoodle/index.php',
+        $url = new moodle_url($toolPath . '/index.php',
                 array(
                         "page" => "trainingmanagement",
-                        "categoryid" => $categoryid
+                        "categoryid" => $categoryid,
+                		"call" => "categ"
                 ));
         $node = navigation_node::create(
                 "Attestoodle",
@@ -121,7 +127,7 @@ function block_attestoodle_extend_navigation_category_settings(navigation_node $
                 navigation_node::NODETYPE_LEAF,
                 'admincompetences',
                 'admincompetences',
-                new pix_icon('navigation', "Attestoodle", "block_attestoodle"));
+                new pix_icon('navigation', "Attestoodle", "tool_attestoodle"));
         $node->showinflatnavigation = false;
         $parentnode->add_node($node);
     }

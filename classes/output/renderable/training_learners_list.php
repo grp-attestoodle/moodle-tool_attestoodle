@@ -20,18 +20,18 @@
  * Renderable class that is used to render the page that lists all the
  * learners of a training
  *
- * @package    block_attestoodle
- * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
+ * @package    tool_attestoodle
+ * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace block_attestoodle\output\renderable;
+namespace tool_attestoodle\output\renderable;
 
 defined('MOODLE_INTERNAL') || die;
 
 use \renderable;
-use block_attestoodle\certificate;
-use block_attestoodle\utils\logger;
+use tool_attestoodle\certificate;
+use tool_attestoodle\utils\logger;
 
 class training_learners_list implements renderable {
     /** @var training Training that is currently displayed */
@@ -62,14 +62,8 @@ class training_learners_list implements renderable {
         $this->training = $training;
 
         // Default dates are January 1st and December 31st of current year.
-        $this->thebegindate =
-                isset($begindate) ?
-                $begindate :
-                (new \DateTime('first day of January ' . date('Y')))->format('Y-m-d');
-        $this->theenddate =
-                isset($enddate) ?
-                $enddate :
-                (new \DateTime('last day of December ' . date('Y')))->format('Y-m-d');
+        $this->thebegindate = isset($begindate) ? $begindate : (new \DateTime('first day of January ' . date('Y')))->format('Y-m-d');
+        $this->theenddate = isset($enddate) ? $enddate : (new \DateTime('last day of December ' . date('Y')))->format('Y-m-d');
         // Parsing begin date.
         try {
             $this->theactualbegindate = new \DateTime($this->thebegindate);
@@ -109,25 +103,26 @@ class training_learners_list implements renderable {
 
         $output .= \html_writer::start_div('clearfix');
         // Link to the trainings list.
+        /*
         $output .= \html_writer::link(
                 new \moodle_url(
-                        '/blocks/attestoodle/index.php',
+                        '/admin/tool/attestoodle/index.php',
                         array('page' => 'trainingmanagement', 'categoryid' => $this->training->get_id())
                 ),
-                get_string('trainings_list_btn_text', 'block_attestoodle'),
+                get_string('trainings_list_btn_text', 'tool_attestoodle'),
                 array('class' => 'attestoodle-link')
         );
-
+	*/
         if (!$this->training_exists()) {
             $output .= \html_writer::end_div();
         } else {
             // Link to the training details (management).
             $output .= \html_writer::link(
                     new \moodle_url(
-                            '/blocks/attestoodle/index.php',
-                            array('page' => 'managemilestones', 'training' => $this->training->get_id())
+                            '/admin/tool/attestoodle/index.php',
+                            array('page' => 'trainingmanagement', 'categoryid' => $this->training->get_id())
                     ),
-                    get_string('training_learners_list_edit_training_link', 'block_attestoodle'),
+                    get_string('backto_training_detail_btn_text', 'tool_attestoodle'),
                     array('class' => 'btn btn-default attestoodle-button'));
             $output .= \html_writer::end_div();
 
@@ -139,21 +134,21 @@ class training_learners_list implements renderable {
                     . '<input type="hidden" name="page" value="learners" />'
                     . '<input type="hidden" name="training" value="' . $this->training->get_id() . '" />';
             $output .= '<label for="input_begin_date">'
-                    . get_string('learner_details_begin_date_label', 'block_attestoodle') . '</label>'
+                    . get_string('learner_details_begin_date_label', 'tool_attestoodle') . '</label>'
                     . '<input type="text" id="input_begin_date" name="begindate" value="' . $this->thebegindate . '" '
                     . 'placeholder="ex: ' . (new \DateTime('now'))->format('Y-m-d') . '" />';
             if ($this->begindateisinerror) {
                 echo "<span class='error'>Erreur de format</span>";
             }
             $output .= '<label for="input_end_date">'
-                    . get_string('learner_details_end_date_label', 'block_attestoodle') . '</label>'
+                    . get_string('learner_details_end_date_label', 'tool_attestoodle') . '</label>'
                     . '<input type="text" id="input_end_date" name="enddate" value="' . $this->theenddate . '" '
                     . 'placeholder="ex: ' . (new \DateTime('now'))->format('Y-m-d') . '" />';
             if ($this->enddateisinerror) {
                 $output .= "<span class='error'>Erreur de format</span>";
             }
             $output .= '<input type="submit" value="'
-                    . get_string('learner_details_submit_button_value', 'block_attestoodle') . '" />'
+                    . get_string('learner_details_submit_button_value', 'tool_attestoodle') . '" />'
                     . '</div></form>' . "\n";
 
             // Certicates related links.
@@ -161,7 +156,7 @@ class training_learners_list implements renderable {
             // Download ZIP link.
             $output .= \html_writer::link(
                     new \moodle_url(
-                            '/blocks/attestoodle/index.php',
+                            '/admin/tool/attestoodle/index.php',
                             array(
                                     'page' => 'learners',
                                     'action' => 'downloadzip',
@@ -170,12 +165,12 @@ class training_learners_list implements renderable {
                                     'enddate' => $this->theenddate
                             )
                     ),
-                    get_string('training_learners_list_download_zip_link', 'block_attestoodle'),
+                    get_string('training_learners_list_download_zip_link', 'tool_attestoodle'),
                     array('class' => 'btn btn-default attestoodle-button'));
             // Generate all certificates link.
             $output .= \html_writer::link(
                     new \moodle_url(
-                            '/blocks/attestoodle/index.php',
+                            '/admin/tool/attestoodle/index.php',
                             array(
                                     'page' => 'learners',
                                     'action' => 'generatecertificates',
@@ -184,7 +179,7 @@ class training_learners_list implements renderable {
                                     'enddate' => $this->theenddate
                             )
                     ),
-                    get_string('training_learners_list_generate_certificates_link', 'block_attestoodle'),
+                    get_string('training_learners_list_generate_certificates_link', 'tool_attestoodle'),
                     array('class' => 'btn btn-default attestoodle-button'));
             $output .= \html_writer::end_div();
 
@@ -202,9 +197,9 @@ class training_learners_list implements renderable {
      */
     public function get_table_head() {
         return array(
-                get_string('training_learners_list_table_header_column_lastname', 'block_attestoodle'),
-                get_string('training_learners_list_table_header_column_firstname', 'block_attestoodle'),
-                get_string('training_learners_list_table_header_column_total_milestones', 'block_attestoodle'),
+                get_string('training_learners_list_table_header_column_lastname', 'tool_attestoodle'),
+                get_string('training_learners_list_table_header_column_firstname', 'tool_attestoodle'),
+                get_string('training_learners_list_table_header_column_total_milestones', 'tool_attestoodle'),
                 ''
         );
     }
@@ -216,7 +211,7 @@ class training_learners_list implements renderable {
      * @return \stdClass[] The array of \stdClass used by html_table function
      */
     public function get_table_content() {
-        return array_map(function(\block_attestoodle\learner $o) {
+        return array_map(function(\tool_attestoodle\learner $o) {
             $stdclass = new \stdClass();
             $totalmarkerperiod = $o->get_total_milestones(
                     $this->training->get_id(),
@@ -233,8 +228,8 @@ class training_learners_list implements renderable {
                 'learner' => $o->get_id(),
                 'begindate' => $this->thebegindate,
                 'enddate' => $this->theenddate);
-            $url = new \moodle_url('/blocks/attestoodle/index.php', $parameters);
-            $label = get_string('training_learners_list_table_link_details', 'block_attestoodle');
+            $url = new \moodle_url('/admin/tool/attestoodle/index.php', $parameters);
+            $label = get_string('training_learners_list_table_link_details', 'tool_attestoodle');
             $attributes = array('class' => 'attestoodle-button');
             $stdclass->link = \html_writer::link($url, $label, $attributes);
 
@@ -248,7 +243,7 @@ class training_learners_list implements renderable {
      * @return string The unknow training ID message, translated
      */
     public function get_unknown_training_message() {
-        return get_string('training_milestones_unknown_training_id', 'block_attestoodle');
+        return get_string('training_details_unknown_training_id', 'tool_attestoodle');
     }
 
     /**
@@ -264,11 +259,10 @@ class training_learners_list implements renderable {
 
         // Log the generation launch.
         $launchid = logger::log_launch($this->thebegindate, $this->theenddate);
-
+        
         foreach ($this->training->get_learners() as $learner) {
             $certificate = new certificate($learner, $this->training, $this->theactualbegindate, $this->theactualenddate);
             $status = $certificate->create_file_on_server();
-
             switch ($status) {
                 case 0:
                     // Error.
@@ -283,13 +277,12 @@ class training_learners_list implements renderable {
                     $overwrittencounter++;
                     break;
             }
-
             // Log the certificate informations.
             if (isset($launchid)) {
-                logger::log_certificate($launchid, $status, $certificate);
+            	logger::log_certificate($launchid, $status, $certificate);
             }
         }
-
+        
         $this->notify_results($newfilecounter, $overwrittencounter, $errorcounter);
     }
 
@@ -303,81 +296,81 @@ class training_learners_list implements renderable {
      * @param integer $errors The number of file creation in error
      */
     private function notify_results($newfiles, $filesoverwritten, $errors) {
-        $notificationmessage = "";
-
-        if ($newfiles > 0 || $filesoverwritten > 0) {
-            if ($errors > 0) {
-                // Generated with errors.
-                $notificationmessage .=
-                        \get_string(
-                                'training_learners_list_notification_message_with_error_one',
-                                'block_attestoodle') .
-                        "<br />";
-                $notificationmessage .=
-                        \get_string(
-                                'training_learners_list_notification_message_with_error_two',
-                                'block_attestoodle',
-                                $newfiles) .
-                        "<br />";
-                $notificationmessage .=
-                        \get_string(
-                                'training_learners_list_notification_message_with_error_three',
-                                'block_attestoodle',
-                                $filesoverwritten) .
-                        "<br />";
-                $notificationmessage .=
-                        \get_string(
-                                'training_learners_list_notification_message_with_error_viva_algerie',
-                                'block_attestoodle',
-                                $errors);
-                \core\notification::warning($notificationmessage);
-            } else {
-                // Generated with success.
-                $notificationmessage .=
-                        \get_string(
-                                'training_learners_list_notification_message_success_one',
-                                'block_attestoodle') .
-                        "<br />";
-                $notificationmessage .=
-                        \get_string(
-                                'training_learners_list_notification_message_success_two',
-                                'block_attestoodle',
-                                $newfiles) .
-                        "<br />";
-                $notificationmessage .=
-                        \get_string(
-                                'training_learners_list_notification_message_success_three',
-                                'block_attestoodle',
-                                $filesoverwritten);
-                \core\notification::success($notificationmessage);
-            }
-        } else if ($errors > 0) {
-            // All files in error.
-            $notificationmessage .=
-                    \get_string(
-                            'training_learners_list_notification_message_error_one',
-                            'block_attestoodle') .
-                    "<br />";
-            $notificationmessage .=
-                    \get_string(
-                            'training_learners_list_notification_message_error_two',
-                            'block_attestoodle',
-                            $errors);
-            \core\notification::error($notificationmessage);
-        } else {
-            // No file generated.
-            $notificationmessage .=
-                    \get_string(
-                            'training_learners_list_notification_message_no_file',
-                            'block_attestoodle');
-            \core\notification::warning($notificationmessage);
-        }
+    	$notificationmessage = "";
+    
+    	if ($newfiles > 0 || $filesoverwritten > 0) {
+    		if ($errors > 0) {
+    			// Generated with errors.
+    			$notificationmessage .=
+    			\get_string(
+    					'training_learners_list_notification_message_with_error_one',
+    					'tool_attestoodle') .
+    					"<br />";
+    			$notificationmessage .=
+    			\get_string(
+    					'training_learners_list_notification_message_with_error_two',
+    					'tool_attestoodle',
+    					$newfiles) .
+    					"<br />";
+    			$notificationmessage .=
+    			\get_string(
+    					'training_learners_list_notification_message_with_error_three',
+    					'tool_attestoodle',
+    					$filesoverwritten) .
+    					"<br />";
+    			$notificationmessage .=
+    			\get_string(
+    					'training_learners_list_notification_message_with_error_viva_algerie',
+    					'tool_attestoodle',
+    					$errors);
+    			\core\notification::warning($notificationmessage);
+    		} else {
+    			// Generated with success.
+    			$notificationmessage .=
+    			\get_string(
+    					'training_learners_list_notification_message_success_one',
+    					'tool_attestoodle') .
+    					"<br />";
+    			$notificationmessage .=
+    			\get_string(
+    					'training_learners_list_notification_message_success_two',
+    					'tool_attestoodle',
+    					$newfiles) .
+    					"<br />";
+    			$notificationmessage .=
+    			\get_string(
+    					'training_learners_list_notification_message_success_three',
+    					'tool_attestoodle',
+    					$filesoverwritten);
+    			\core\notification::success($notificationmessage);
+    		}
+    	} else if ($errors > 0) {
+    		// All files in error.
+    		$notificationmessage .=
+    		\get_string(
+    				'training_learners_list_notification_message_error_one',
+    				'tool_attestoodle') .
+    				"<br />";
+    		$notificationmessage .=
+    		\get_string(
+    				'training_learners_list_notification_message_error_two',
+    				'tool_attestoodle',
+    				$errors);
+    		\core\notification::error($notificationmessage);
+    	} else {
+    		// No file generated.
+    		$notificationmessage .=
+    		\get_string(
+    				'training_learners_list_notification_message_no_file',
+    				'tool_attestoodle');
+    		\core\notification::warning($notificationmessage);
+    	}
     }
-
+    
     /**
      * The method retrieves all the certificate files on the server filtered by
      * the current training and period requested, then stores them in a new
-     * ZIP file and sends the archive to the client.
+     * ZIP file, then sends the archive to the client.
      * The method does not create any file! It is designed to be called after the
      * generate_certificates() method; it means that the ZIP file can be void.
      */

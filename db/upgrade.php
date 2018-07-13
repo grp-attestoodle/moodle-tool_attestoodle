@@ -18,14 +18,14 @@
  * File that allow to manipulate data when an upgrade of the plug-in has been
  * detected. The main method is automagically called by Moodle.
  *
- * @package    block_attestoodle
- * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
+ * @package    tool_attestoodle
+ * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die;
 
-function xmldb_block_attestoodle_upgrade($oldversion) {
+function xmldb_tool_attestoodle_upgrade($oldversion) {
     // Update this function in need of DB upgrade while installing new version.
     if ($oldversion) {
         return true;

@@ -18,12 +18,12 @@
  * This is the class that handles the addition/suppression of trainings through
  * a moodleform moodle object.
  *
- * @package    block_attestoodle
+ * @package    tool_attestoodle
  * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace block_attestoodle\forms;
+namespace tool_attestoodle\forms;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -38,15 +38,30 @@ class category_training_update_form extends \moodleform {
     public function definition() {
         $name = "checkbox_is_training";
         $category = $this->_customdata['data'];
+        $idtemplate = $this->_customdata['idtemplate'];
 
         $mform = $this->_form;
 
-        $label = get_string('training_management_checkbox_label', 'block_attestoodle');
+        $label = get_string('training_management_checkbox_label', 'tool_attestoodle');
         $istraining = $category->is_training();
 
         $mform->addElement("advcheckbox", $name, $label);
         $mform->setDefault($name, $istraining);
 
+        if ($idtemplate > -1) {
+        	$mform->addElement('header', 'templatesection', get_string('template_certificate', 'tool_attestoodle'));
+        	$group=array();
+        	if ($idtemplate == 0) {
+        		$group[] =& $mform->createElement("static", null, null, " Standard ");
+        		$group[] =& $mform->createElement('submit', 'createtemplate', get_string('personalize', 'tool_attestoodle'), array('class'=>'send-button'));
+        	} else {
+        		$group[] =& $mform->createElement("static", null, null, get_string('personalized', 'tool_attestoodle') );
+        		$group[] =& $mform->createElement('submit', 'createtemplate', get_string('update'), array('class'=>'send-button'));
+        	}
+        	$mform->addGroup($group, 'activities', get_string('template_certificate','tool_attestoodle'), ' ', false);
+        	$mform->setExpanded('templatesection', false);
+        }
+        
         $this->add_action_buttons(false);
     }
 

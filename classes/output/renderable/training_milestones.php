@@ -20,17 +20,17 @@
  * Renderable class that is used to render the page that allow user to manage
  * the milestones of a training.
  *
- * @package    block_attestoodle
- * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
+ * @package    tool_attestoodle
+ * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace block_attestoodle\output\renderable;
+namespace tool_attestoodle\output\renderable;
 
 defined('MOODLE_INTERNAL') || die;
 
-use block_attestoodle\factories\trainings_factory;
-use block_attestoodle\forms\training_milestones_update_form;
+use tool_attestoodle\factories\trainings_factory;
+use tool_attestoodle\forms\training_milestones_update_form;
 
 class training_milestones implements \renderable {
     /** @var integer Id of the training displayed */
@@ -52,7 +52,7 @@ class training_milestones implements \renderable {
         if ($this->training_exists()) {
             $this->form = new training_milestones_update_form(
                     new \moodle_url(
-                            '/blocks/attestoodle/index.php',
+                            '/admin/tool/attestoodle/index.php',
                             ['page' => 'managemilestones', 'training' => $this->training->get_id()]),
                     array(
                         'data' => $this->training->get_courses(),
@@ -87,10 +87,11 @@ class training_milestones implements \renderable {
     private function handle_form_cancelled() {
         // Handle form cancel operation.
         $redirecturl = new \moodle_url(
-                '/blocks/attestoodle/index.php',
-                ['page' => 'learners', 'training' => $this->training->get_id()]
+                '/admin/tool/attestoodle/index.php',
+        		array('page' => 'trainingmanagement', 'categoryid' => $this->training->get_id())
+    //            ['page' => 'learners', 'training' => $this->training->get_id()]
         );
-        $message = get_string('training_milestones_info_form_canceled', 'block_attestoodle');
+        $message = get_string('training_milestones_info_form_canceled', 'tool_attestoodle');
         redirect($redirecturl, $message, null, \core\output\notification::NOTIFY_INFO);
     }
 
@@ -115,7 +116,7 @@ class training_milestones implements \renderable {
      */
     private function handle_form_not_validated() {
         // If not valid, warn the user.
-        \core\notification::error(get_string('training_milestones_error_invalid_form', 'block_attestoodle'));
+        \core\notification::error(get_string('training_milestones_error_invalid_form', 'tool_attestoodle'));
     }
 
     /**
@@ -129,8 +130,8 @@ class training_milestones implements \renderable {
      * @return void Return void if the user has not the rights to update in DB
      */
     private function handle_form_has_submitted_data() {
-        // If data are valid, process persistance.
-        if (has_capability('block/attestoodle:managemilestones', \context_system::instance())) {
+    	// If data are valid, process persistance.
+        if (has_capability('tool/attestoodle:managemilestones', \context_system::instance())) {
             // Retrieve the submitted data.
             $datafromform = $this->form->get_submitted_data();
 
@@ -187,7 +188,7 @@ class training_milestones implements \renderable {
             // Reinstanciate the form to update training and courses total milestones.
             $this->form = new training_milestones_update_form(
                     new \moodle_url(
-                            '/blocks/attestoodle/index.php',
+                            '/admin/tool/attestoodle/index.php',
                             ['page' => 'managemilestones', 'training' => $this->training->get_id()]
                     ),
                     array(
@@ -282,10 +283,10 @@ class training_milestones implements \renderable {
     public function get_heading() {
         $heading = "";
         if (!$this->training_exists()) {
-            $heading = \get_string('training_milestones_main_title_error', 'block_attestoodle');
+            $heading = \get_string('training_milestones_main_title_error', 'tool_attestoodle');
         } else {
             $totalhours = parse_minutes_to_hours($this->training->get_total_milestones());
-            $heading = \get_string('training_milestones_main_title', 'block_attestoodle', $this->training->get_name());
+            $heading = \get_string('training_milestones_main_title', 'tool_attestoodle', $this->training->get_name());
             $heading .= $totalhours;
         }
         return $heading;
@@ -300,14 +301,16 @@ class training_milestones implements \renderable {
         $output = "";
 
         $output .= \html_writer::start_div('clearfix');
+        /*
         // Link to the training learners list.
         $output .= \html_writer::link(
                 new \moodle_url(
-                        '/blocks/attestoodle/index.php',
+                        '/admin/tool/attestoodle/index.php',
                         ['page' => 'learners', 'training' => $this->training->get_id()]
                 ),
-                get_string('training_milestones_learners_list_btn_text', 'block_attestoodle'),
+                get_string('training_milestones_learners_list_btn_text', 'tool_attestoodle'),
                 array('class' => 'attestoodle-link'));
+        */
         $output .= \html_writer::end_div();
 
         return $output;

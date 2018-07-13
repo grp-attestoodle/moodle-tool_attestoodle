@@ -18,17 +18,17 @@
  * This is the class that implements the pattern Factory to create the
  * trainings used by Attestoodle.
  *
- * @package    block_attestoodle
- * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
+ * @package    tool_attestoodle
+ * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace block_attestoodle\factories;
+namespace tool_attestoodle\factories;
 
-use block_attestoodle\utils\singleton;
-use block_attestoodle\utils\db_accessor;
-use block_attestoodle\factories\categories_factory;
-use block_attestoodle\training;
+use tool_attestoodle\utils\singleton;
+use tool_attestoodle\utils\db_accessor;
+use tool_attestoodle\factories\categories_factory;
+use tool_attestoodle\training;
 
 defined('MOODLE_INTERNAL') || die;
 

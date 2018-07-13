@@ -20,12 +20,12 @@
  * Renderable class that is used to render the page that allow user to display
  * the list of all the trainings declared in Attestoodle.
  *
- * @package    block_attestoodle
- * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
+ * @package    tool_attestoodle
+ * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace block_attestoodle\output\renderable;
+namespace tool_attestoodle\output\renderable;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -63,9 +63,9 @@ class trainings_list implements renderable {
      */
     public function get_table_head() {
         return array(
-                get_string('trainings_list_table_header_column_name', 'block_attestoodle'),
-                get_string('trainings_list_table_header_column_hierarchy', 'block_attestoodle'),
-                get_string('trainings_list_table_header_column_description', 'block_attestoodle'),
+                get_string('trainings_list_table_header_column_name', 'tool_attestoodle'),
+                get_string('trainings_list_table_header_column_hierarchy', 'tool_attestoodle'),
+                get_string('trainings_list_table_header_column_description', 'tool_attestoodle'),
                 ''
         );
     }
@@ -78,6 +78,7 @@ class trainings_list implements renderable {
      */
     public function get_table_content() {
         return array_map(function($training) {
+        	global $OUTPUT;
             $stdclass = new \stdClass();
 
             $categorylink = new \moodle_url("/course/index.php", array("categoryid" => $training->get_id()));
@@ -87,13 +88,38 @@ class trainings_list implements renderable {
 
             $stdclass->description = $training->get_description();
 
+            //links
             $parameters = array(
                 'page' => 'learners',
                 'training' => $training->get_id());
-            $url = new \moodle_url('/blocks/attestoodle/index.php', $parameters);
-            $label = get_string('trainings_list_table_link_details', 'block_attestoodle');
-            $attributes = array('class' => 'attestoodle-button');
-            $stdclass->link = \html_writer::link($url, $label, $attributes);
+            $url = new \moodle_url('/admin/tool/attestoodle/index.php', $parameters);
+            //Moodle 3.2 needs pix_url still - only use image_url in 3.3
+            //$label = "<img src=" . $OUTPUT->image_url ( 'i/group', 'moodle' ). " title='". get_string('student_list_link', 'tool_attestoodle') ."' />";
+            $label = "<img src=" . $OUTPUT->pix_url ( 'i/group', 'moodle' ). " title='". get_string('student_list_link', 'tool_attestoodle') ."' />";
+            
+            $studentLink = \html_writer::link($url, $label);
+            
+            $parameters = array(
+            		'page' => 'trainingmanagement',
+            		'categoryid' => $training->get_id());
+            $url = new \moodle_url('/admin/tool/attestoodle/index.php', $parameters);
+            //$label = "<img src=" . $OUTPUT->image_url ( 'i/settings', 'moodle' ). " title='". get_string('training_setting_link', 'tool_attestoodle') ."' />";
+            $label = "<img src=" . $OUTPUT->pix_url ( 'i/settings', 'moodle' ). " title='". get_string('training_setting_link', 'tool_attestoodle') ."' />";
+            
+            $settingLink = \html_writer::link($url, $label);
+            
+            $parameters = array(
+            		'page' => 'managemilestones',
+            		'training' => $training->get_id());
+            $url = new \moodle_url('/admin/tool/attestoodle/index.php', $parameters);
+            //$label = "<img src=" . $OUTPUT->image_url ( 'navigation', 'tool_attestoodle' ). " title='" . get_string('milestone_manage_link', 'tool_attestoodle') ."' />";
+            $label = "<img src=" . $OUTPUT->pix_url ( 'navigation', 'tool_attestoodle' ). " title='" . get_string('milestone_manage_link', 'tool_attestoodle') ."' />";
+            
+            $milestoneLink = \html_writer::link($url, $label);
+            
+            
+            $stdclass->link =   $settingLink . " &nbsp; " .  $milestoneLink . " &nbsp; " . $studentLink;//\html_writer::link($url, $label, $attributes);
+            
 
             return $stdclass;
         }, $this->trainings);
@@ -105,7 +131,7 @@ class trainings_list implements renderable {
      * @return string The no training message, translated
      */
     public function get_no_training_message() {
-        return get_string('trainings_list_warning_no_trainings', 'block_attestoodle');
+        return get_string('trainings_list_warning_no_trainings', 'tool_attestoodle');
     }
 
     /**

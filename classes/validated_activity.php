@@ -18,12 +18,12 @@
  * This is the class describing an activity validated by a learner in
  * Attestoodle. A validated activity is an activity with a validated DateTime.
  *
- * @package    block_attestoodle
+ * @package    tool_attestoodle
  * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace block_attestoodle;
+namespace tool_attestoodle;
 
 defined('MOODLE_INTERNAL') || die;
 

@@ -17,14 +17,14 @@
 /**
  * Attestoodle version details.
  *
- * @package    block_attestoodle
- * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
+ * @package    tool_attestoodle
+ * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2018062002;        // The current plugin version (Date: YYYYMMDDXX).
+$plugin->version   = 2018071305;        // The current plugin version (Date: YYYYMMDDXX).
 $plugin->requires  = 2012112900;        // Requires this Moodle version.
-$plugin->component = 'block_attestoodle'; // Full name of the plugin (used for diagnostics).
+$plugin->component = 'tool_attestoodle'; // Full name of the plugin (used for diagnostics).
 $plugin->cron = 0;

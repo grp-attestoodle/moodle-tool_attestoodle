@@ -20,19 +20,19 @@
  * This class implements the moodle renderable interface to help rendering
  * the learner_details page.
  *
- * @package    block_attestoodle
- * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
+ * @package    tool_attestoodle
+ * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace block_attestoodle\output\renderable;
+namespace tool_attestoodle\output\renderable;
 
 defined('MOODLE_INTERNAL') || die;
 
-use block_attestoodle\factories\learners_factory;
-use block_attestoodle\factories\trainings_factory;
-use block_attestoodle\certificate;
-use block_attestoodle\utils\logger;
+use tool_attestoodle\factories\learners_factory;
+use tool_attestoodle\factories\trainings_factory;
+use tool_attestoodle\certificate;
+use tool_attestoodle\utils\logger;
 
 class learner_details implements \renderable {
     /** @var integer Id of the learner being displayed */
@@ -117,13 +117,13 @@ class learner_details implements \renderable {
      * @param integer $trainingid The training ID of the certificate requested
      */
     public function generate_certificate_file($trainingid) {
-        // Log the generation launch.
-        $launchid = logger::log_launch($this->begindate, $this->enddate);
-
+    	// Log the generation launch.
+    	$launchid = logger::log_launch($this->begindate, $this->enddate);
+    	 
         $training = trainings_factory::get_instance()->retrieve_training($trainingid);
         $certificate = new certificate($this->learner, $training, $this->actualbegindate, $this->actualenddate);
         $status = $certificate->create_file_on_server();
-
+        
         // Log the certificate informations.
         if (isset($launchid)) {
             logger::log_certificate($launchid, $status, $certificate);
@@ -131,7 +131,7 @@ class learner_details implements \renderable {
 
         $this->notify_result($status);
     }
-
+    
     /**
      * Method that throws a notification to user to let him know the result of
      * the certificate file generation.
@@ -140,27 +140,27 @@ class learner_details implements \renderable {
      * 1: new file, 2: new file overwritten the old one)
      */
     private function notify_result($status) {
-        $notificationmessage = "";
-
-        switch ($status) {
-            case 0:
-                // Error.
-                $notificationmessage .= \get_string('learner_details_notification_message_error', 'block_attestoodle');
-                \core\notification::error($notificationmessage);
-                break;
-            case 1:
-                // New file.
-                $notificationmessage .= \get_string('learner_details_notification_message_new', 'block_attestoodle');
-                \core\notification::success($notificationmessage);
-                break;
-            case 2:
-                // File overwritten.
-                $notificationmessage .= \get_string('learner_details_notification_message_overwritten', 'block_attestoodle');
-                \core\notification::success($notificationmessage);
-                break;
-        }
+    	$notificationmessage = "";
+    
+    	switch ($status) {
+    		case 0:
+    			// Error.
+    			$notificationmessage .= \get_string('learner_details_notification_message_error', 'tool_attestoodle');
+    			\core\notification::error($notificationmessage);
+    			break;
+    		case 1:
+    			// New file.
+    			$notificationmessage .= \get_string('learner_details_notification_message_new', 'tool_attestoodle');
+    			\core\notification::success($notificationmessage);
+    			break;
+    		case 2:
+    			// File overwritten.
+    			$notificationmessage .= \get_string('learner_details_notification_message_overwritten', 'tool_attestoodle');
+    			\core\notification::success($notificationmessage);
+    			break;
+    	}
     }
-
+    
     /**
      * Method that returns all the trainings registered by the learner being displayed.
      *
@@ -189,9 +189,9 @@ class learner_details implements \renderable {
     public function get_heading() {
         $heading = "";
         if (!$this->learner_exists()) {
-            $heading = \get_string('learner_details_main_title_error', 'block_attestoodle');
+            $heading = \get_string('learner_details_main_title_error', 'tool_attestoodle');
         } else {
-            $heading = \get_string('learner_details_main_title', 'block_attestoodle', $this->learner->get_fullname());
+            $heading = \get_string('learner_details_main_title', 'tool_attestoodle', $this->learner->get_fullname());
         }
         return $heading;
     }
@@ -206,7 +206,7 @@ class learner_details implements \renderable {
 
         // Verifying learner id.
         if (!$this->learner_exists()) {
-            $output .= \get_string('unknown_learner_id', 'block_attestoodle', $this->learnerid);
+            $output .= \get_string('unknown_learner_id', 'tool_attestoodle', $this->learnerid);
         } else {
             $output .= \html_writer::start_div('clearfix learner-detail-header');
             // Basic form to allow user filtering the validated activities by begin and end dates.
@@ -215,21 +215,21 @@ class learner_details implements \renderable {
                     . '<input type="hidden" name="page" value="learnerdetails" />'
                     . '<input type="hidden" name="learner" value="' . $this->learnerid . '" />';
             $output .= '<label for="input_begin_date">'
-                    . get_string('learner_details_begin_date_label', 'block_attestoodle') . '</label>'
+                    . get_string('learner_details_begin_date_label', 'tool_attestoodle') . '</label>'
                     . '<input type="text" id="input_begin_date" name="begindate" value="' . $this->begindate . '" '
                     . 'placeholder="ex: ' . (new \DateTime('now'))->format('Y-m-d') . '" />';
             if ($this->begindateerror) {
                 echo "<span class='error'>Erreur de format</span>";
             }
             $output .= '<label for="input_end_date">'
-                    . get_string('learner_details_end_date_label', 'block_attestoodle') . '</label>'
+                    . get_string('learner_details_end_date_label', 'tool_attestoodle') . '</label>'
                     . '<input type="text" id="input_end_date" name="enddate" value="' . $this->enddate . '" '
                     . 'placeholder="ex: ' . (new \DateTime('now'))->format('Y-m-d') . '" />';
             if ($this->enddateerror) {
                 $output .= "<span class='error'>Erreur de format</span>";
             }
             $output .= '<input type="submit" value="'
-                    . get_string('learner_details_submit_button_value', 'block_attestoodle') . '" />'
+                    . get_string('learner_details_submit_button_value', 'tool_attestoodle') . '" />'
                     . '</div></form>' . "\n";
 
             $output .= \html_writer::end_div();
@@ -250,14 +250,14 @@ class learner_details implements \renderable {
         $output .= "<h2>{$training->get_name()}</h2>";
         $output .= \html_writer::link(
                 new \moodle_url(
-                        '/blocks/attestoodle/index.php', array(
+                        '/admin/tool/attestoodle/index.php', array(
                                 'page' => 'learners',
                                 'training' => $training->get_id(),
                                 'begindate' => $this->begindate,
                                 'enddate' => $this->enddate
                         )
                 ),
-                \get_string('backto_training_learners_list_btn_text', 'block_attestoodle'),
+                \get_string('backto_training_learners_list_btn_text', 'tool_attestoodle'),
                 array('class' => 'attestoodle-link')
         );
         $output .= "<br />";
@@ -273,11 +273,11 @@ class learner_details implements \renderable {
      */
     public function get_table_head() {
         return array(
-                get_string('learner_details_table_header_column_course_name', 'block_attestoodle'),
-                get_string('learner_details_table_header_column_name', 'block_attestoodle'),
-                get_string('learner_details_table_header_column_type', 'block_attestoodle'),
-                get_string('learner_details_table_header_column_validated_time', 'block_attestoodle'),
-                get_string('learner_details_table_header_column_milestones', 'block_attestoodle')
+                get_string('learner_details_table_header_column_course_name', 'tool_attestoodle'),
+                get_string('learner_details_table_header_column_name', 'tool_attestoodle'),
+                get_string('learner_details_table_header_column_type', 'tool_attestoodle'),
+                get_string('learner_details_table_header_column_validated_time', 'tool_attestoodle'),
+                get_string('learner_details_table_header_column_milestones', 'tool_attestoodle')
         );
     }
 
@@ -315,7 +315,7 @@ class learner_details implements \renderable {
      * @return string The no training registered message, translated
      */
     public function get_no_training_registered_message() {
-        return get_string('learner_details_no_training_registered', 'block_attestoodle');
+        return get_string('learner_details_no_training_registered', 'tool_attestoodle');
     }
 
     /**
@@ -326,7 +326,7 @@ class learner_details implements \renderable {
      */
     public function get_no_validated_activities_message() {
         $output = \html_writer::start_tag("p", array("class" => "no-validated-activity"));
-        $output .= get_string('learner_details_no_validated_activities', 'block_attestoodle');
+        $output .= get_string('learner_details_no_validated_activities', 'tool_attestoodle');
         $output .= \html_writer::end_tag("p");
 
         return $output;
@@ -342,17 +342,17 @@ class learner_details implements \renderable {
     public function get_footer($training) {
         $output = "";
 
-        $linktext = get_string('learner_details_generate_certificate_link', 'block_attestoodle');
+        $linktext = get_string('learner_details_generate_certificate_link', 'tool_attestoodle');
         $certificate = new certificate($this->learner, $training, $this->actualbegindate, $this->actualenddate);
 
         $output .= \html_writer::start_div('clearfix');
 
         // If the file already exists, add a link to it.
         if ($certificate->file_exists()) {
-            $linktext = get_string('learner_details_regenerate_certificate_link', 'block_attestoodle');
+            $linktext = get_string('learner_details_regenerate_certificate_link', 'tool_attestoodle');
 
             $output .= "<a href='" . $certificate->get_existing_file_url() . "' target='_blank'>" .
-                    get_string('learner_details_download_certificate_link', 'block_attestoodle') .
+                    get_string('learner_details_download_certificate_link', 'tool_attestoodle') .
                     "</a>";
             $output .= "&nbsp;ou&nbsp;";
         }
@@ -373,7 +373,7 @@ class learner_details implements \renderable {
         // Print the "Generate certificate" link.
         $output .= \html_writer::link(
                 new \moodle_url(
-                        '/blocks/attestoodle/index.php',
+                        '/admin/tool/attestoodle/index.php',
                         $dlcertifoptions
                 ),
                 $linktext,

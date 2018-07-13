@@ -17,14 +17,14 @@
 /**
  * This is the class describing a category in Attestoodle.
  *
- * @package    block_attestoodle
+ * @package    tool_attestoodle
  * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace block_attestoodle;
+namespace tool_attestoodle;
 
-use block_attestoodle\factories\trainings_factory;
+use tool_attestoodle\factories\trainings_factory;
 
 defined('MOODLE_INTERNAL') || die;
 

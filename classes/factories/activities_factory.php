@@ -18,16 +18,16 @@
  * This is the class that implements the pattern Factory to create the
  * activities used by Attestoodle (corresponding to the moodle "modules").
  *
- * @package    block_attestoodle
+ * @package    tool_attestoodle
  * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace block_attestoodle\factories;
+namespace tool_attestoodle\factories;
 
-use block_attestoodle\utils\singleton;
-use block_attestoodle\utils\db_accessor;
-use block_attestoodle\activity;
+use tool_attestoodle\utils\singleton;
+use tool_attestoodle\utils\db_accessor;
+use tool_attestoodle\activity;
 
 defined('MOODLE_INTERNAL') || die;
 

@@ -17,16 +17,19 @@
 /**
  * This is the class describing a certificate in Attestoodle
  *
- * @package    block_attestoodle
- * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
+ * @package    tool_attestoodle
+ * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace block_attestoodle;
+
+namespace tool_attestoodle;
+
 
 defined('MOODLE_INTERNAL') || die;
 
-use block_attestoodle\utils\db_accessor;
+use tool_attestoodle\utils\db_accessor;
+use tool_attestoodle\gabarit\attestation_pdf;
 
 class certificate {
     /** @var learner Learner for whom the certificate is */
@@ -65,7 +68,7 @@ class certificate {
         // Prepare file record object.
         $fileinfos = array(
                 'contextid' => $usercontext->id,
-                'component' => 'block_attestoodle',
+                'component' => 'tool_attestoodle',
                 'filearea' => 'certificates',
                 'filepath' => '/',
                 'itemid' => 0,
@@ -107,7 +110,7 @@ class certificate {
      * name and the course total validated milestones (in minutes). This last
      * property may be a void array.
      */
-    private function get_pdf_informations() {
+private function get_pdf_informations() {
         $trainingname = $this->training->get_name();
         $totalminutes = 0;
 
@@ -150,7 +153,7 @@ class certificate {
 
         return $certificateinfos;
     }
-
+    
     /**
      * Method that returns the activities validated by the learner for the
      * training currently being computes, within the period and all
@@ -158,24 +161,24 @@ class certificate {
      * @return activity[] The activities with milestones validated by the learner
      */
     public function get_filtered_milestones() {
-        $begindate = clone $this->begindate;
-        $searchenddate = clone $this->enddate;
-        $searchenddate->modify('+1 day');
-        $trainingid = $this->training->get_id();
-
-        $validatedmilestones = $this->learner->get_validated_activities_with_marker($begindate, $searchenddate);
-
-        // Filtering activities based on the training.
-        $filteredmilestones = array_filter($validatedmilestones, function($va) use($trainingid) {
-            $act = $va->get_activity();
-            if ($act->get_course()->get_training()->get_id() == $trainingid) {
-                return true;
-            } else {
-                return false;
-            }
-        });
-
-        return $filteredmilestones;
+    	$begindate = clone $this->begindate;
+    	$searchenddate = clone $this->enddate;
+    	$searchenddate->modify('+1 day');
+    	$trainingid = $this->training->get_id();
+    
+    	$validatedmilestones = $this->learner->get_validated_activities_with_marker($begindate, $searchenddate);
+    
+    	// Filtering activities based on the training.
+    	$filteredmilestones = array_filter($validatedmilestones, function($va) use($trainingid) {
+    		$act = $va->get_activity();
+    		if ($act->get_course()->get_training()->get_id() == $trainingid) {
+    			return true;
+    		} else {
+    			return false;
+    		}
+    	});
+    
+    		return $filteredmilestones;
     }
 
     /**
@@ -250,7 +253,11 @@ class certificate {
                 $status = 2;
             }
 
-            $pdf = $this->generate_pdf_object();
+            $doc = new attestation_pdf();
+            $doc->setIdTemplate($this->training->get_id());
+            $doc->setInfos($this->get_pdf_informations());
+            $pdf = $doc->generatePdfObject();
+            
             $pdfstring = $pdf->Output('', 'S');
 
             $file = $fs->create_file_from_string($fileinfos, $pdfstring);
@@ -264,125 +271,22 @@ class certificate {
 
         return $status;
     }
-
-    /**
-     * Methods that create the virtual PDF file which can be "print" on an
-     * actual PDF file within moodledata
-     *
-     * @todo translations
-     *
-     * @return \pdf The virtual pdf file using the moodle pdf class
-     */
-    private function generate_pdf_object() {
-        // PDF Class instanciation.
-        $pdf = new \pdf();
-
-        $certificateinfos = $this->get_pdf_informations();
-
-        // Suppressing default header and footer.
-        $pdf->setPrintHeader(false);
-        $pdf->setPrintFooter(false);
-
-        // Suppressing margins.
-        $pdf->SetAutoPagebreak(false);
-        $pdf->SetMargins(0, 0, 0);
-
-        $pdf->AddPage();
-
-        // Title.
-        $title = "Attestation mensuelle : temps d'apprentissage";
-        $pdf->SetFont("helvetica", "", 14);
-        $pdf->SetXY(0, 74);
-        $pdf->Cell($pdf->GetPageWidth(), 0, $title, 0, 0, "C");
-
-        // Period.
-        $period = $certificateinfos->period;
-        $pdf->SetFont("helvetica", "B", 14);
-        $pdf->SetXY(0, 80);
-        $pdf->Cell($pdf->GetPageWidth(), 0, $period, 0, 0, "C");
-
-        // Learner name.
-        $learnername = "Nom du stagiaire : " . $certificateinfos->learnername;
-        $pdf->SetFont("helvetica", "", 10);
-        $pdf->SetXY(10, 90);
-        $pdf->Cell($pdf->GetStringWidth($learnername), 0, $learnername, 0, "L");
-
-        // Training name.
-        $trainingname = "Intitulé de la formation : " . $certificateinfos->trainingname;
-        $pdf->SetXY(10, 95);
-        $pdf->Cell($pdf->GetStringWidth($trainingname), 0, $trainingname, 0, "L");
-
-        // Total amount of learning time.
-        $totalvalidatedtime = "Temps total validé sur la période : " . parse_minutes_to_hours($certificateinfos->totalminutes);
-        $pdf->SetXY(10, 100);
-        $pdf->Cell($pdf->GetStringWidth($totalvalidatedtime), 0, $totalvalidatedtime, 0, "L");
-
-        // Validated activities details.
-        $pdf->SetXY(10, 110);
-        // Main borders.
-        $pdf->SetLineWidth(0.1);
-        $pdf->Rect(10, 110, 190, 90, "D");
-        // Header border.
-        $pdf->Line(10, 125, 200, 125);
-        // Columns.
-        $pdf->Line(150, 110, 150, 200);
-        // Column title "type".
-        $pdf->SetFont('helvetica', 'B', 10);
-        $pdf->SetFillColor(210, 210, 210);
-        $pdf->SetXY(10, 110);
-        $pdf->Cell(140, 15, "Cours suivis", 1, 0, 'C', true);
-        // Column title "total hours".
-        $pdf->SetXY(150, 110);
-        $pdf->Cell(50, 15, "Total heures", 1, 0, 'C', true);
-
-        // Activities lines.
-        $y = 125;
-        $lineheight = 8;
-        $pdf->SetFont('helvetica', '', 10);
-        foreach ($certificateinfos->activities as $course) {
-            $coursename = $course["coursename"];
-            $totalminutes = $course["totalminutes"];
-            $pdf->SetXY(10, $y);
-            // Activity type.
-            $pdf->Cell(140, $lineheight, $coursename, 0, 0, 'L');
-            // Activity total hours.
-            $pdf->SetXY(150, $y);
-            $pdf->Cell(50, $lineheight, parse_minutes_to_hours($totalminutes), 0, 0, 'C');
-            $y += $lineheight;
-            $pdf->Line(10, $y, 200, $y);
-        }
-
-        // Legal clause.
-        $pdf->SetLineWidth(0.1);
-        $pdf->Rect(5, 240, 200, 6, "D");
-        $pdf->SetXY(0, 240);
-        $pdf->SetFont('helvetica', '', 7);
-        $pdf->Cell($pdf->GetPageWidth(), 7, "Cette attestation est faite pour servir et valoir ce que de droit", 0, 0, 'C');
-
-        // Signatures.
-        $pdf->SetXY(10, 250);
-        $pdf->SetFont('helvetica', '', 10);
-        $pdf->Cell($pdf->GetPageWidth() / 2 - 10, 0, "Signature stagiaire", 0, 0, 'L');
-        $pdf->Cell($pdf->GetPageWidth() / 2 - 10, 0, "Signature responsable de formation", 0, 0, 'R');
-
-        return $pdf;
-    }
-
+    
     /**
      * Returns the training of the certificate.
      *
      * @return training The training of the certificate.
      */
     public function get_training() {
-        return $this->training;
+    	return $this->training;
     }
-
+    
     /**
      * Returns the learner of the certificate.
      *
      * @return learner The learner of the certificate.
      */
     public function get_learner() {
-        return $this->learner;
+    	return $this->learner;
     }
 }

@@ -18,12 +18,12 @@
  * This is the class that handles the addition/suppression of trainings through
  * a moodleform moodle object.
  *
- * @package    block_attestoodle
- * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
+ * @package    tool_attestoodle
+ * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace block_attestoodle\forms;
+namespace tool_attestoodle\forms;
 
 defined('MOODLE_INTERNAL') || die;
 

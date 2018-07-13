@@ -18,12 +18,12 @@
  * This is the class that handles the modification of milestones values through
  * a moodle moodleform object.
  *
- * @package    block_attestoodle
+ * @package    tool_attestoodle
  * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace block_attestoodle\forms;
+namespace tool_attestoodle\forms;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -52,7 +52,7 @@ class training_milestones_update_form extends \moodleform {
                 $name = $inputnameprefix  . $activity->get_id();
                 $groupname = "group_" . $name;
                 $label = $activity->get_name();
-                $suffix = get_string("training_milestones_form_input_suffix", "block_attestoodle");
+                $suffix = get_string("training_milestones_form_input_suffix", "tool_attestoodle");
                 $type = get_string('modulename', $activity->get_type());
                 $milestone = $activity->get_milestone();
 

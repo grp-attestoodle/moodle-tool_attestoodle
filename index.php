@@ -17,34 +17,36 @@
 /**
  * File that handles all the requested page from the user.
  *
- * @todo May be reduced
- *
- * @package    block_attestoodle
- * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
+ * @package    tool_attestoodle
+ * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 // Main configuration importation (instanciate the $CFG global variable).
-require_once(dirname(__FILE__) . '/../../config.php');
+require_once(dirname(__FILE__) . '/../../../config.php');
 
 // Libraries imports.
 require_once($CFG->libdir.'/pdflib.php');
-require_once($CFG->dirroot.'/blocks/attestoodle/lib.php');
+require_once(dirname(__FILE__) .'/lib.php');
 
 /*
  * Imports of class files.
+ * @todo create an autoloader.
  */
-require_once($CFG->dirroot.'/blocks/attestoodle/classes/factories/learners_factory.php');
-require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/trainings_list.php');
-require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/training_management.php');
-require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/training_learners_list.php');
-require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/learner_details.php');
-require_once($CFG->dirroot.'/blocks/attestoodle/classes/output/renderable/training_milestones.php');
 
-require_once($CFG->dirroot.'/blocks/attestoodle/classes/certificate.php');
+$toolPath = dirname(__FILE__);
 
-use block_attestoodle\factories\trainings_factory;
-use block_attestoodle\output\renderable;
+require_once($toolPath . "/classes/factories/learners_factory.php");
+require_once($toolPath . "/classes/output/renderable/trainings_list.php");
+require_once($toolPath . "/classes/output/renderable/training_management.php");
+require_once($toolPath . "/classes/output/renderable/training_learners_list.php");
+require_once($toolPath . "/classes/output/renderable/learner_details.php");
+require_once($toolPath . "/classes/output/renderable/training_milestones.php");
+
+require_once($toolPath . "/classes/certificate.php");
+
+use tool_attestoodle\factories\trainings_factory;
+use tool_attestoodle\output\renderable;
 
 $page = optional_param('page', '', PARAM_ALPHA);
 $action = optional_param('action', '', PARAM_ALPHA);
@@ -54,7 +56,7 @@ $PAGE->set_context($context);
 
 require_login();
 
-$renderer = $PAGE->get_renderer('block_attestoodle');
+$renderer = $PAGE->get_renderer('tool_attestoodle');
 // Always create trainings.
 trainings_factory::get_instance()->create_trainings();
 
@@ -62,25 +64,25 @@ switch($page) {
     case 'trainingmanagement':
         $categoryid = optional_param('categoryid', null, PARAM_INT);
 
-        $PAGE->set_url(new moodle_url('/blocks/attestoodle/index.php',
+        $PAGE->set_url(new moodle_url($toolPath . '/index.php',
                 ['page' => $page, 'categoryid' => $categoryid]));
 
-        $PAGE->set_title(get_string('training_management_page_title', 'block_attestoodle'));
+        $PAGE->set_title(get_string('training_management_page_title', 'tool_attestoodle'));
 
-        $userhascapability = has_capability('block/attestoodle:managetraining', $context);
-        require_capability('block/attestoodle:managetraining', $context);
+        $userhascapability = has_capability('tool/attestoodle:managetraining', $context);
+        require_capability('tool/attestoodle:managetraining', $context);
 
         $renderable = new renderable\training_management($categoryid);
 
         break;
     case 'managemilestones':
         $trainingid = required_param('training', PARAM_INT);
-        $PAGE->set_url(new moodle_url('/blocks/attestoodle/index.php',
+        $PAGE->set_url(new moodle_url($toolPath . '/index.php',
                 ['page' => $page, 'training' => $trainingid]));
-        $PAGE->set_title(get_string('training_milestones_page_title', 'block_attestoodle'));
+        $PAGE->set_title(get_string('training_milestones_page_title', 'tool_attestoodle'));
 
-        $userhascapability = has_capability('block/attestoodle:managemilestones', $context);
-        require_capability('block/attestoodle:managemilestones', $context);
+        $userhascapability = has_capability('tool/attestoodle:managemilestones', $context);
+        require_capability('tool/attestoodle:managemilestones', $context);
 
         $renderable = new renderable\training_milestones($trainingid);
         $PAGE->set_heading($renderable->get_heading());
@@ -93,8 +95,7 @@ switch($page) {
         $begindate = optional_param('begindate', null, PARAM_ALPHANUMEXT);
         $enddate = optional_param('enddate', null, PARAM_ALPHANUMEXT);
 
-        $PAGE->set_url(new moodle_url(
-                '/blocks/attestoodle/index.php',
+        $PAGE->set_url(new moodle_url($toolPath . '/index.php',
                 array(
                         'page' => $page,
                         'action' => $action,
@@ -103,19 +104,19 @@ switch($page) {
                         'enddate' => $enddate
                 )
         ));
-        $PAGE->set_title(get_string('training_learners_list_page_title', 'block_attestoodle'));
+        $PAGE->set_title(get_string('training_learners_list_page_title', 'tool_attestoodle'));
 
-        $userhascapability = has_capability('block/attestoodle:displaylearnerslist', $context);
-        require_capability('block/attestoodle:displaylearnerslist', $context);
+        $userhascapability = has_capability('tool/attestoodle:displaylearnerslist', $context);
+        require_capability('tool/attestoodle:displaylearnerslist', $context);
 
         // TODO instanciate the training in the renderable.
         $training = null;
         $trainingexist = trainings_factory::get_instance()->has_training($trainingid);
         if ($trainingexist) {
             $training = trainings_factory::get_instance()->retrieve_training($trainingid);
-            $PAGE->set_heading(get_string('training_learners_list_main_title', 'block_attestoodle', $training->get_name()));
+            $PAGE->set_heading(get_string('training_learners_list_main_title', 'tool_attestoodle', $training->get_name()));
         } else {
-            $PAGE->set_heading(get_string('training_learners_list_main_title_error', 'block_attestoodle'));
+            $PAGE->set_heading(get_string('training_learners_list_main_title_error', 'tool_attestoodle'));
         }
 
         $renderable = new renderable\training_learners_list($training, $begindate, $enddate);
@@ -135,8 +136,7 @@ switch($page) {
         $begindate = optional_param('begindate', null, PARAM_ALPHANUMEXT);
         $enddate = optional_param('enddate', null, PARAM_ALPHANUMEXT);
 
-        $PAGE->set_url(new moodle_url(
-                '/blocks/attestoodle/index.php',
+        $PAGE->set_url(new moodle_url($toolPath . '/index.php',
                 array(
                         'page' => $page,
                         'action' => $action,
@@ -147,11 +147,11 @@ switch($page) {
         ));
 
         // Set page title.
-        $PAGE->set_title(get_string('learner_details_page_title', 'block_attestoodle'));
+        $PAGE->set_title(get_string('learner_details_page_title', 'tool_attestoodle'));
 
         // Checking capabilities.
-        $userhascapability = has_capability('block/attestoodle:learnerdetails', $context);
-        require_capability('block/attestoodle:learnerdetails', $context);
+        $userhascapability = has_capability('tool/attestoodle:learnerdetails', $context);
+        require_capability('tool/attestoodle:learnerdetails', $context);
 
         $renderable = new renderable\learner_details($learnerid, $begindate, $enddate);
         if ($action == 'generatecertificate') {
@@ -163,12 +163,12 @@ switch($page) {
         break;
     case 'trainingslist':
     default:
-        $PAGE->set_url(new moodle_url('/blocks/attestoodle/index.php'));
-        $PAGE->set_title(get_string('trainings_list_page_title', 'block_attestoodle'));
-        $PAGE->set_heading(get_string('trainings_list_main_title', 'block_attestoodle'));
+        $PAGE->set_url(new moodle_url($toolPath . '/index.php'));
+        $PAGE->set_title(get_string('trainings_list_page_title', 'tool_attestoodle'));
+        $PAGE->set_heading(get_string('trainings_list_main_title', 'tool_attestoodle'));
 
-        $userhascapability = has_capability('block/attestoodle:displaytrainings', $context);
-        require_capability('block/attestoodle:displaytrainings', $context);
+        $userhascapability = has_capability('tool/attestoodle:displaytrainings', $context);
+        require_capability('tool/attestoodle:displaytrainings', $context);
 
         $renderable = new renderable\trainings_list(trainings_factory::get_instance()->get_trainings());
 

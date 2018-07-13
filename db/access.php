@@ -17,15 +17,15 @@
 /**
  * Attestoodle capabilities.
  *
- * @package    block_attestoodle
- * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
+ * @package    tool_attestoodle
+ * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
 $capabilities = array(
-        'block/attestoodle:managetraining' => array(
+        'tool/attestoodle:managetraining' => array(
                 'riskbitmask' => RISK_CONFIG | RISK_DATALOSS,
 
                 'captype' => 'write',
@@ -34,7 +34,7 @@ $capabilities = array(
                         'manager' => CAP_ALLOW
                 )
         ),
-        'block/attestoodle:displaytrainings' => array(
+        'tool/attestoodle:displaytrainings' => array(
                 'riskbitmask' => RISK_PERSONAL,
 
                 'captype' => 'read',
@@ -43,7 +43,7 @@ $capabilities = array(
                         'manager' => CAP_ALLOW
                 )
         ),
-        'block/attestoodle:managemilestones' => array(
+        'tool/attestoodle:managemilestones' => array(
                 'riskbitmask' => RISK_PERSONAL,
 
                 'captype' => 'read',
@@ -52,7 +52,7 @@ $capabilities = array(
                         'manager' => CAP_ALLOW
                 )
         ),
-        'block/attestoodle:managetraining' => array(
+        'tool/attestoodle:managetraining' => array(
                 'riskbitmask' => RISK_CONFIG | RISK_DATALOSS,
 
                 'captype' => 'write',
@@ -61,7 +61,7 @@ $capabilities = array(
                         'manager' => CAP_ALLOW
                 )
         ),
-        'block/attestoodle:displaylearnerslist' => array(
+        'tool/attestoodle:displaylearnerslist' => array(
                 'riskbitmask' => RISK_PERSONAL,
 
                 'captype' => 'read',
@@ -70,7 +70,7 @@ $capabilities = array(
                         'manager' => CAP_ALLOW
                 )
         ),
-        'block/attestoodle:learnerdetails' => array(
+        'tool/attestoodle:learnerdetails' => array(
                 'riskbitmask' => RISK_PERSONAL,
 
                 'captype' => 'read',
@@ -79,7 +79,7 @@ $capabilities = array(
                         'manager' => CAP_ALLOW
                 )
         ),
-        'block/attestoodle:downloadcertificate' => array(
+        'tool/attestoodle:downloadcertificate' => array(
                 'riskbitmask' => RISK_CONFIG | RISK_DATALOSS | RISK_PERSONAL,
 
                 'captype' => 'read write',
