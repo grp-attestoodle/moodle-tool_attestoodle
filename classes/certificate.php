@@ -110,7 +110,7 @@ class certificate {
      * name and the course total validated milestones (in minutes). This last
      * property may be a void array.
      */
-private function get_pdf_informations() {
+    private function get_pdf_informations() {
         $trainingname = $this->training->get_name();
         $totalminutes = 0;
 
@@ -153,7 +153,7 @@ private function get_pdf_informations() {
 
         return $certificateinfos;
     }
-    
+
     /**
      * Method that returns the activities validated by the learner for the
      * training currently being computes, within the period and all
@@ -161,24 +161,23 @@ private function get_pdf_informations() {
      * @return activity[] The activities with milestones validated by the learner
      */
     public function get_filtered_milestones() {
-    	$begindate = clone $this->begindate;
-    	$searchenddate = clone $this->enddate;
-    	$searchenddate->modify('+1 day');
-    	$trainingid = $this->training->get_id();
-    
-    	$validatedmilestones = $this->learner->get_validated_activities_with_marker($begindate, $searchenddate);
-    
-    	// Filtering activities based on the training.
-    	$filteredmilestones = array_filter($validatedmilestones, function($va) use($trainingid) {
-    		$act = $va->get_activity();
-    		if ($act->get_course()->get_training()->get_id() == $trainingid) {
-    			return true;
-    		} else {
-    			return false;
-    		}
-    	});
-    
-    		return $filteredmilestones;
+        $begindate = clone $this->begindate;
+        $searchenddate = clone $this->enddate;
+        $searchenddate->modify('+1 day');
+        $trainingid = $this->training->get_id();
+
+        $validatedmilestones = $this->learner->get_validated_activities_with_marker($begindate, $searchenddate);
+
+        // Filtering activities based on the training.
+        $filteredmilestones = array_filter($validatedmilestones, function($va) use($trainingid) {
+            $act = $va->get_activity();
+            if ($act->get_course()->get_training()->get_id() == $trainingid) {
+                return true;
+            } else {
+                return false;
+            }
+        });
+        return $filteredmilestones;
     }
 
     /**
@@ -254,10 +253,10 @@ private function get_pdf_informations() {
             }
 
             $doc = new attestation_pdf();
-            $doc->setIdTemplate($this->training->get_id());
-            $doc->setInfos($this->get_pdf_informations());
-            $pdf = $doc->generatePdfObject();
-            
+            $doc->set_idtemplate($this->training->get_id());
+            $doc->set_infos($this->get_pdf_informations());
+            $pdf = $doc->generate_pdf_object();
+
             $pdfstring = $pdf->Output('', 'S');
 
             $file = $fs->create_file_from_string($fileinfos, $pdfstring);
@@ -271,22 +270,22 @@ private function get_pdf_informations() {
 
         return $status;
     }
-    
+
     /**
      * Returns the training of the certificate.
      *
      * @return training The training of the certificate.
      */
     public function get_training() {
-    	return $this->training;
+        return $this->training;
     }
-    
+
     /**
      * Returns the learner of the certificate.
      *
      * @return learner The learner of the certificate.
      */
     public function get_learner() {
-    	return $this->learner;
+        return $this->learner;
     }
 }

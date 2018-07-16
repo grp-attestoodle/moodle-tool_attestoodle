@@ -78,7 +78,7 @@ class trainings_list implements renderable {
      */
     public function get_table_content() {
         return array_map(function($training) {
-        	global $OUTPUT;
+            global $OUTPUT;
             $stdclass = new \stdClass();
 
             $categorylink = new \moodle_url("/course/index.php", array("categoryid" => $training->get_id()));
@@ -88,38 +88,32 @@ class trainings_list implements renderable {
 
             $stdclass->description = $training->get_description();
 
-            //links
+            // Links.
             $parameters = array(
                 'page' => 'learners',
                 'training' => $training->get_id());
             $url = new \moodle_url('/admin/tool/attestoodle/index.php', $parameters);
-            //Moodle 3.2 needs pix_url still - only use image_url in 3.3
-            //$label = "<img src=" . $OUTPUT->image_url ( 'i/group', 'moodle' ). " title='". get_string('student_list_link', 'tool_attestoodle') ."' />";
+            // Moodle 3.2 needs pix_url still - only use image_url in 3.3.
+            // $label = "<img src=" . $OUTPUT->image_url ( 'i/group', 'moodle' ). " title='". get_string('student_list_link', 'tool_attestoodle') ."' />";
             $label = "<img src=" . $OUTPUT->pix_url ( 'i/group', 'moodle' ). " title='". get_string('student_list_link', 'tool_attestoodle') ."' />";
-            
-            $studentLink = \html_writer::link($url, $label);
-            
-            $parameters = array(
-            		'page' => 'trainingmanagement',
-            		'categoryid' => $training->get_id());
+
+            $studentlink = \html_writer::link($url, $label);
+
+            $parameters = array('page' => 'trainingmanagement', 'categoryid' => $training->get_id());
             $url = new \moodle_url('/admin/tool/attestoodle/index.php', $parameters);
-            //$label = "<img src=" . $OUTPUT->image_url ( 'i/settings', 'moodle' ). " title='". get_string('training_setting_link', 'tool_attestoodle') ."' />";
+            // $label = "<img src=" . $OUTPUT->image_url ( 'i/settings', 'moodle' ). " title='". get_string('training_setting_link', 'tool_attestoodle') ."' />";
             $label = "<img src=" . $OUTPUT->pix_url ( 'i/settings', 'moodle' ). " title='". get_string('training_setting_link', 'tool_attestoodle') ."' />";
-            
-            $settingLink = \html_writer::link($url, $label);
-            
-            $parameters = array(
-            		'page' => 'managemilestones',
-            		'training' => $training->get_id());
+
+            $settinglink = \html_writer::link($url, $label);
+
+            $parameters = array('page' => 'managemilestones', 'training' => $training->get_id());
             $url = new \moodle_url('/admin/tool/attestoodle/index.php', $parameters);
-            //$label = "<img src=" . $OUTPUT->image_url ( 'navigation', 'tool_attestoodle' ). " title='" . get_string('milestone_manage_link', 'tool_attestoodle') ."' />";
+            // $label = "<img src=" . $OUTPUT->image_url ( 'navigation', 'tool_attestoodle' ). " title='" . get_string('milestone_manage_link', 'tool_attestoodle') ."' />";
             $label = "<img src=" . $OUTPUT->pix_url ( 'navigation', 'tool_attestoodle' ). " title='" . get_string('milestone_manage_link', 'tool_attestoodle') ."' />";
-            
-            $milestoneLink = \html_writer::link($url, $label);
-            
-            
-            $stdclass->link =   $settingLink . " &nbsp; " .  $milestoneLink . " &nbsp; " . $studentLink;//\html_writer::link($url, $label, $attributes);
-            
+
+            $milestonelink = \html_writer::link($url, $label);
+
+            $stdclass->link = $settinglink . " &nbsp; " .  $milestonelink . " &nbsp; " . $studentlink;
 
             return $stdclass;
         }, $this->trainings);

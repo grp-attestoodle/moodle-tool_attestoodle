@@ -62,7 +62,8 @@ class training_learners_list implements renderable {
         $this->training = $training;
 
         // Default dates are January 1st and December 31st of current year.
-        $this->thebegindate = isset($begindate) ? $begindate : (new \DateTime('first day of January ' . date('Y')))->format('Y-m-d');
+        $this->thebegindate = isset($begindate) ? $begindate :
+            (new \DateTime('first day of January ' . date('Y')))->format('Y-m-d');
         $this->theenddate = isset($enddate) ? $enddate : (new \DateTime('last day of December ' . date('Y')))->format('Y-m-d');
         // Parsing begin date.
         try {
@@ -102,17 +103,6 @@ class training_learners_list implements renderable {
         $output = "";
 
         $output .= \html_writer::start_div('clearfix');
-        // Link to the trainings list.
-        /*
-        $output .= \html_writer::link(
-                new \moodle_url(
-                        '/admin/tool/attestoodle/index.php',
-                        array('page' => 'trainingmanagement', 'categoryid' => $this->training->get_id())
-                ),
-                get_string('trainings_list_btn_text', 'tool_attestoodle'),
-                array('class' => 'attestoodle-link')
-        );
-	*/
         if (!$this->training_exists()) {
             $output .= \html_writer::end_div();
         } else {
@@ -259,7 +249,7 @@ class training_learners_list implements renderable {
 
         // Log the generation launch.
         $launchid = logger::log_launch($this->thebegindate, $this->theenddate);
-        
+
         foreach ($this->training->get_learners() as $learner) {
             $certificate = new certificate($learner, $this->training, $this->theactualbegindate, $this->theactualenddate);
             $status = $certificate->create_file_on_server();
@@ -279,10 +269,10 @@ class training_learners_list implements renderable {
             }
             // Log the certificate informations.
             if (isset($launchid)) {
-            	logger::log_certificate($launchid, $status, $certificate);
+                logger::log_certificate($launchid, $status, $certificate);
             }
         }
-        
+
         $this->notify_results($newfilecounter, $overwrittencounter, $errorcounter);
     }
 
@@ -296,77 +286,42 @@ class training_learners_list implements renderable {
      * @param integer $errors The number of file creation in error
      */
     private function notify_results($newfiles, $filesoverwritten, $errors) {
-    	$notificationmessage = "";
-    
-    	if ($newfiles > 0 || $filesoverwritten > 0) {
-    		if ($errors > 0) {
-    			// Generated with errors.
-    			$notificationmessage .=
-    			\get_string(
-    					'training_learners_list_notification_message_with_error_one',
-    					'tool_attestoodle') .
-    					"<br />";
-    			$notificationmessage .=
-    			\get_string(
-    					'training_learners_list_notification_message_with_error_two',
-    					'tool_attestoodle',
-    					$newfiles) .
-    					"<br />";
-    			$notificationmessage .=
-    			\get_string(
-    					'training_learners_list_notification_message_with_error_three',
-    					'tool_attestoodle',
-    					$filesoverwritten) .
-    					"<br />";
-    			$notificationmessage .=
-    			\get_string(
-    					'training_learners_list_notification_message_with_error_viva_algerie',
-    					'tool_attestoodle',
-    					$errors);
-    			\core\notification::warning($notificationmessage);
-    		} else {
-    			// Generated with success.
-    			$notificationmessage .=
-    			\get_string(
-    					'training_learners_list_notification_message_success_one',
-    					'tool_attestoodle') .
-    					"<br />";
-    			$notificationmessage .=
-    			\get_string(
-    					'training_learners_list_notification_message_success_two',
-    					'tool_attestoodle',
-    					$newfiles) .
-    					"<br />";
-    			$notificationmessage .=
-    			\get_string(
-    					'training_learners_list_notification_message_success_three',
-    					'tool_attestoodle',
-    					$filesoverwritten);
-    			\core\notification::success($notificationmessage);
-    		}
-    	} else if ($errors > 0) {
-    		// All files in error.
-    		$notificationmessage .=
-    		\get_string(
-    				'training_learners_list_notification_message_error_one',
-    				'tool_attestoodle') .
-    				"<br />";
-    		$notificationmessage .=
-    		\get_string(
-    				'training_learners_list_notification_message_error_two',
-    				'tool_attestoodle',
-    				$errors);
-    		\core\notification::error($notificationmessage);
-    	} else {
-    		// No file generated.
-    		$notificationmessage .=
-    		\get_string(
-    				'training_learners_list_notification_message_no_file',
-    				'tool_attestoodle');
-    		\core\notification::warning($notificationmessage);
-    	}
+        $notificationmessage = "";
+
+        if ($newfiles > 0 || $filesoverwritten > 0) {
+            if ($errors > 0) {
+                // Generated with errors !
+                $notificationmessage .= \get_string('training_learners_list_notification_message_with_error_one',
+                    'tool_attestoodle') . "<br />";
+                $notificationmessage .= \get_string('training_learners_list_notification_message_with_error_two',
+                    'tool_attestoodle', $newfiles) . "<br />";
+                $notificationmessage .= \get_string('training_learners_list_notification_message_with_error_three',
+                    'tool_attestoodle', $filesoverwritten) . "<br />";
+                $notificationmessage .= \get_string('training_learners_list_notification_message_with_error_viva_algerie',
+                    'tool_attestoodle', $errors);
+                \core\notification::warning($notificationmessage);
+            } else { // Generated with success.
+                $notificationmessage .= \get_string('training_learners_list_notification_message_success_one',
+                    'tool_attestoodle') . "<br />";
+                $notificationmessage .= \get_string('training_learners_list_notification_message_success_two',
+                    'tool_attestoodle', $newfiles) . "<br />";
+                $notificationmessage .= \get_string('training_learners_list_notification_message_success_three',
+                    'tool_attestoodle', $filesoverwritten);
+                \core\notification::success($notificationmessage);
+            }
+        } else if ($errors > 0) { // All files in error !
+            $notificationmessage .= \get_string('training_learners_list_notification_message_error_one',
+                'tool_attestoodle') . "<br />";
+            $notificationmessage .= \get_string('training_learners_list_notification_message_error_two',
+                'tool_attestoodle', $errors);
+            \core\notification::error($notificationmessage);
+        } else { // No file generated !
+            $notificationmessage .= \get_string('training_learners_list_notification_message_no_file',
+                'tool_attestoodle');
+            \core\notification::warning($notificationmessage);
+        }
     }
-    
+
     /**
      * The method retrieves all the certificate files on the server filtered by
      * the current training and period requested, then stores them in a new

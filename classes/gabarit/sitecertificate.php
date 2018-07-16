@@ -16,7 +16,6 @@
 
 /**
  * Controler of attestion_form, to create template site certificate.
- * 
  *
  * @package    tool_attestoodle
  * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
@@ -32,28 +31,28 @@ require_once(dirname(__FILE__) .'/../../lib.php');
 require_once('attestation_form.php');
 
 
-$toolPath = dirname(__FILE__);
 $context = context_system::instance();
-$idTemplate = optional_param('templateid', null, PARAM_INT);
+$idtemplate = optional_param('templateid', null, PARAM_INT);
 
-if (!isset($idTemplate)) {
-	$idTemplate = 0;
+if (!isset($idtemplate)) {
+    $idtemplate = 0;
 } else {
-	if (!$DB->record_exists('attestoodle_train_template', ['trainingid' => $idTemplate])) {
-		$record = new stdClass();
-		$record->trainingid = $idTemplate;
-		$record->templateid = $idTemplate;
-		$DB->insert_record('attestoodle_train_template', $record);
-		
-		$sql = "insert into {attestoodle_template_detail} (templateid,type,data) select ".$idTemplate." , type, data from {attestoodle_template_detail} where templateid = 0 ";
-		$DB->execute($sql);		
-	}
+    if (!$DB->record_exists('attestoodle_train_template', ['trainingid' => $idtemplate])) {
+        $record = new stdClass();
+        $record->trainingid = $idtemplate;
+        $record->templateid = $idtemplate;
+        $DB->insert_record('attestoodle_train_template', $record);
+
+        $sql = "insert into {attestoodle_template_detail} (templateid,type,data) select " . $idtemplate .
+            " , type, data from {attestoodle_template_detail} where templateid = 0 ";
+        $DB->execute($sql);
+    }
 }
 
 $PAGE->set_context($context);
 require_login();
 
-$PAGE->set_url(new moodle_url($toolPath . '/sitecertificate.php', [] ));
+$PAGE->set_url(new moodle_url(dirname(__FILE__) . '/sitecertificate.php', [] ));
 $PAGE->set_title(get_string('template_certificate', 'tool_attestoodle'));
 $title = get_string('pluginname', 'tool_attestoodle') . " - " . get_string('template_certificate', 'tool_attestoodle');
 $PAGE->set_heading($title);
@@ -62,145 +61,145 @@ $PAGE->set_heading($title);
 $mform = new attestation_form();
 
 if ($fromform = $mform->get_data()) {
-	//In this case you process validated data. $mform->get_data() returns data posted in form.
-	$datas = $mform->get_data();
-	
-	$idTemplate = $datas->templateid;
-	
-	if (isset($datas->cancel)) {
-		$redirecturl = new \moodle_url('/admin/search.php',array());
-		redirect($redirecturl);
-		return;
-	}
-	
-	$nvxTuples = array();
-	if (trim($datas->filename) != '') {
-		$templateDetail = new stdClass();
-		$templateDetail->templateid = $datas->templateid;
-		$templateDetail->type = "background";
-		$valeurs = new stdClass();
-		$valeurs->filename = $datas->filename;
-		$templateDetail->data = json_encode($valeurs);
-		$nvxTuples[] = $templateDetail;
-	}
-	
-	if (trim($datas->learnerPosx) != '') {
-		$nvxTuples[] = dataToStructure($datas->templateid, "learnername", $datas->learnerFontFamily, $datas->learnerEmphasis, $datas->learnerFontSize,
-				$datas->learnerPosx, $datas->learnerPosy, $datas->learnerAlign);
-	}
-	
-	if (trim($datas->trainingPosx) != '') {
-		$nvxTuples[] = dataToStructure($datas->templateid, "trainingname", $datas->trainingFontFamily, $datas->trainingEmphasis, $datas->trainingFontSize,
-				$datas->trainingPosx, $datas->trainingPosy, $datas->trainingAlign);
-	}
-	
-	if (trim($datas->periodPosx) != '') {
-		$nvxTuples[] = dataToStructure($datas->templateid, "period", $datas->periodFontFamily, $datas->periodEmphasis, $datas->periodFontSize,
-				$datas->periodPosx, $datas->periodPosy, $datas->periodAlign);
-	}
-	
-	if (trim($datas->totminutePosx) != '') {
-		$nvxTuples[] = dataToStructure($datas->templateid, "totalminutes", $datas->totminuteFontFamily, $datas->totminuteEmphasis, $datas->totminuteFontSize,
-				$datas->totminutePosx, $datas->totminutePosy, $datas->totminuteAlign);
-	}
-	if (trim($datas->activitiesPosx) != '') {
-		$nvxTuples[] = dataToStructure($datas->templateid, "activities", $datas->activitiesFontFamily, $datas->activitiesEmphasis, $datas->activitiesFontSize,
-				$datas->activitiesPosx, $datas->activitiesPosy, $datas->activitiesAlign);
-	}
-	
-	$DB->delete_records('attestoodle_template_detail', array ('templateid' => $datas->templateid));
-	if (count($nvxTuples) > 0) {
-		foreach ($nvxTuples as $record) {
-			$DB->insert_record('attestoodle_template_detail', $record);
-		}
-	}
-	\core\notification::success(get_string('enregok', 'tool_attestoodle'));
-} 
-echo $OUTPUT->header();
-	
-$sql = "select type,data from {attestoodle_template_detail} where templateid = " . $idTemplate;
-$rs = $DB->get_recordset_sql ( $sql, array () );
-$valDefault = array();
-	
-foreach ( $rs as $result ) {
-	$obj = json_decode($result->data);
-		
-	switch($result->type) {
-		case "background" :
-			$valDefault['filename'] = $obj->filename;
-			break;
-		case "learnername" :
-			addValuesFromJson($valDefault, "learner", $obj);
-			break;
-		case "trainingname" :
-			addValuesFromJson($valDefault, "training", $obj);
-			break;
-		case "period" :
-			addValuesFromJson($valDefault, "period", $obj);
-			break;
-		case "totalminutes" :
-			addValuesFromJson($valDefault, "totminute", $obj);
-			break;
-		case "activities" :
-			addValuesFromJson($valDefault, "activities", $obj);
-			break;
-	}
+    // In this case you process validated data. $mform->get_data() returns data posted in form. !
+    $datas = $mform->get_data();
+
+    $idtemplate = $datas->templateid;
+
+    if (isset($datas->cancel)) {
+        $redirecturl = new \moodle_url('/admin/search.php', array());
+        redirect($redirecturl);
+        return;
+    }
+
+    $nvxtuples = array();
+    if (trim($datas->filename) != '') {
+        $templatedetail = new stdClass();
+        $templatedetail->templateid = $datas->templateid;
+        $templatedetail->type = "background";
+        $valeurs = new stdClass();
+        $valeurs->filename = $datas->filename;
+        $templatedetail->data = json_encode($valeurs);
+        $nvxtuples[] = $templatedetail;
+    }
+
+    if (trim($datas->learnerPosx) != '') {
+        $nvxtuples[] = data_to_structure($datas->templateid, "learnername", $datas->learnerFontFamily, $datas->learnerEmphasis,
+                $datas->learnerFontSize, $datas->learnerPosx, $datas->learnerPosy, $datas->learnerAlign);
+    }
+
+    if (trim($datas->trainingPosx) != '') {
+        $nvxtuples[] = data_to_structure($datas->templateid, "trainingname", $datas->trainingFontFamily, $datas->trainingEmphasis,
+                $datas->trainingFontSize, $datas->trainingPosx, $datas->trainingPosy, $datas->trainingAlign);
+    }
+
+    if (trim($datas->periodPosx) != '') {
+        $nvxtuples[] = data_to_structure($datas->templateid, "period", $datas->periodFontFamily, $datas->periodEmphasis,
+                $datas->periodFontSize, $datas->periodPosx, $datas->periodPosy, $datas->periodAlign);
+    }
+
+    if (trim($datas->totminutePosx) != '') {
+        $nvxtuples[] = data_to_structure($datas->templateid, "totalminutes", $datas->totminuteFontFamily, $datas->totminuteEmphasis,
+                $datas->totminuteFontSize, $datas->totminutePosx, $datas->totminutePosy, $datas->totminuteAlign);
+    }
+    if (trim($datas->activitiesPosx) != '') {
+        $nvxtuples[] = data_to_structure($datas->templateid, "activities", $datas->activitiesFontFamily, $datas->activitiesEmphasis,
+                $datas->activitiesFontSize, $datas->activitiesPosx, $datas->activitiesPosy, $datas->activitiesAlign);
+    }
+
+    $DB->delete_records('attestoodle_template_detail', array ('templateid' => $datas->templateid));
+    if (count($nvxtuples) > 0) {
+        foreach ($nvxtuples as $record) {
+            $DB->insert_record('attestoodle_template_detail', $record);
+        }
+    }
+    \core\notification::success(get_string('enregok', 'tool_attestoodle'));
 }
-$valDefault['templateid'] = $idTemplate;
-	
-//Set default data (if any)
-$formdata =  $valDefault;
+echo $OUTPUT->header();
+$sql = "select type,data from {attestoodle_template_detail} where templateid = " . $idtemplate;
+$rs = $DB->get_recordset_sql ( $sql, array () );
+$valdefault = array();
+
+foreach ($rs as $result) {
+    $obj = json_decode($result->data);
+
+    switch($result->type) {
+        case "background" :
+            $valdefault['filename'] = $obj->filename;
+            break;
+        case "learnername" :
+            add_values_from_json($valdefault, "learner", $obj);
+            break;
+        case "trainingname" :
+            add_values_from_json($valdefault, "training", $obj);
+            break;
+        case "period" :
+            add_values_from_json($valdefault, "period", $obj);
+            break;
+        case "totalminutes" :
+            add_values_from_json($valdefault, "totminute", $obj);
+            break;
+        case "activities" :
+            add_values_from_json($valdefault, "activities", $obj);
+            break;
+    }
+}
+$valdefault['templateid'] = $idtemplate;
+
+// Set default data (if any)!
+$formdata = $valdefault;
 $mform->set_data($formdata);
 
-//displays the form
+// Displays the form !
 $mform->display();
-$previewLink = '<a target="preview" href="' . $CFG->wwwroot . '/admin/tool/attestoodle/classes/gabarit/view_export.php?templateid='.$idTemplate 
-.'" class= "btn-create pull-right">'.get_string('preview', 'tool_attestoodle').'</a>';
-echo $previewLink;
+$previewlink = '<a target="preview" href="' . $CFG->wwwroot .
+    '/admin/tool/attestoodle/classes/gabarit/view_export.php?templateid=' . $idtemplate .
+    '" class= "btn-create pull-right">'.get_string('preview', 'tool_attestoodle').'</a>';
+echo $previewlink;
 
 echo $OUTPUT->footer();
 
 
-function addValuesFromJson(&$arrayValues, $prefixe, $objJson) {
-	//XXX placer ces tableaux dans un seul endroit ex lib.php, actuellement ils sont définis dans 2 sources = pas bien
-	$emphases = array('','B','I');
-	$alignments = array('L','R','C','J');
-	$sizes = array('6','7','8','9','10','11','12','13','14','15','16','18','20','22','24','26','28','32','36','40','44','48','54','60','66','72');
-	$familles = array('courier', 'helvetica', 'times');
-	
-	$arrayValues[$prefixe . 'Posx'] = $objJson->location->x;
-	$arrayValues[$prefixe . 'Posy'] = $objJson->location->y;
-	$arrayValues[$prefixe . 'FontFamily'] = array_search($objJson->font->family, $familles);
-	$arrayValues[$prefixe . 'Emphasis'] = array_search($objJson->font->emphasis, $emphases);
-	$arrayValues[$prefixe . 'FontSize'] = array_search($objJson->font->size, $sizes);
-	$arrayValues[$prefixe . 'Align'] = array_search($objJson->align, $alignments);
+function add_values_from_json(&$arrayvalues, $prefixe, $objson) {
+    // TODO placer ces tableaux dans un seul endroit ex lib.php.
+    $emphases = array('', 'B', 'I');
+    $alignments = array('L', 'R', 'C', 'J');
+    $sizes = array('6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '18', '20', '22', '24', '26', '28', '32',
+        '36', '40', '44', '48', '54', '60', '66', '72');
+    $familles = array('courier', 'helvetica', 'times');
+
+    $arrayvalues[$prefixe . 'Posx'] = $objson->location->x;
+    $arrayvalues[$prefixe . 'Posy'] = $objson->location->y;
+    $arrayvalues[$prefixe . 'FontFamily'] = array_search($objson->font->family, $familles);
+    $arrayvalues[$prefixe . 'Emphasis'] = array_search($objson->font->emphasis, $emphases);
+    $arrayvalues[$prefixe . 'FontSize'] = array_search($objson->font->size, $sizes);
+    $arrayvalues[$prefixe . 'Align'] = array_search($objson->align, $alignments);
 }
 /**
  * create a table TemplateDetail row structure.
  */
-function dataToStructure($dtoTemplateid, $dtoType, $dtoFontFamily, $dtoEmphasis, $dtoFontSize,
-	$dtoPosx, $dtoPosy, $dtoAlign) {
-//XXX placer ces tableaux dans un seul endroit ex lib.php, actuellement ils sont définis dans 2 sources = pas bien
-	$emphases = array('','B','I');
-	$alignments = array('L','R','C','J');
-	$sizes = array('6','7','8','9','10','11','12','13','14','15','16','18','20','22','24','26','28','32','36','40','44','48','54','60','66','72');
-	$familles = array('courier', 'helvetica', 'times');
+function data_to_structure($dtotemplateid, $dtotype, $dtofontfamily, $dtoemphasis, $dtofontsize, $dtoposx, $dtoposy, $dtoalign) {
+    $emphases = array('', 'B', 'I');
+    $alignments = array('L', 'R', 'C', 'J');
+    $sizes = array('6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '18', '20', '22', '24', '26', '28', '32',
+        '36', '40', '44', '48', '54', '60', '66', '72');
+    $familles = array('courier', 'helvetica', 'times');
 
-	$templateDetail = new stdClass();
-	$templateDetail->templateid = $dtoTemplateid;
-	$templateDetail->type = $dtoType;
-	
-	$valeurs = new stdClass();
-	$font = new stdClass();
-	$font->family = $familles [$dtoFontFamily];
-	$font->emphasis = $emphases [$dtoEmphasis];
-	$font->size = $sizes [$dtoFontSize];
-	$valeurs->font = $font;
-	$location = new stdClass();
-	$location->x = $dtoPosx;
-	$location->y = $dtoPosy;
-	$valeurs->location = $location;
-	$valeurs->align = $alignments[$dtoAlign];
-	$templateDetail->data = json_encode($valeurs);
-	return $templateDetail;
+    $templatedetail = new stdClass();
+    $templatedetail->templateid = $dtotemplateid;
+    $templatedetail->type = $dtotype;
+
+    $valeurs = new stdClass();
+    $font = new stdClass();
+    $font->family = $familles [$dtofontfamily];
+    $font->emphasis = $emphases [$dtoemphasis];
+    $font->size = $sizes [$dtofontsize];
+    $valeurs->font = $font;
+    $location = new stdClass();
+    $location->x = $dtoposx;
+    $location->y = $dtoposy;
+    $valeurs->location = $location;
+    $valeurs->align = $alignments[$dtoalign];
+    $templatedetail->data = json_encode($valeurs);
+    return $templatedetail;
 }

@@ -29,15 +29,15 @@ use tool_attestoodle\gabarit\attestation_pdf;
 
 global $USER;
 
-$idTemplate = optional_param('templateid', null, PARAM_INT);
+$idtemplate = optional_param('templateid', null, PARAM_INT);
 
 $context = context_system::instance();
 $PAGE->set_context($context);
 
 require_login();
 
-if (!isset($idTemplate)) {
-	$idTemplate = 0;
+if (!isset($idtemplate)) {
+    $idtemplate = 0;
 }
 
 // Print the page header.
@@ -45,9 +45,8 @@ $PAGE->set_url(new moodle_url(dirname(__FILE__) . '/view_export.php', [] ));
 $PAGE->set_title('preview');
 $PAGE->set_heading(get_string('template_certificate', 'tool_attestoodle'));
 
-
 $exp = new attestation_pdf();
-// Create test data 
+// Create test data !
 $certificateinfos = new \stdClass();
 $certificateinfos->learnername = "Jean-Claude Confucius";
 $certificateinfos->trainingname = "Creation d Attestation PDF sous Moodle ";
@@ -55,26 +54,26 @@ $certificateinfos->totalminutes = 430;
 $certificateinfos->period = "Du 01/07/2018 au 31/07/2018";
 $activitiesstructured = array();
 $activitiesstructured[15] = array(
-		"totalminutes" => 30,
-		"coursename" => "L API PDF de Moodle"
+    "totalminutes" => 30,
+    "coursename" => "L API PDF de Moodle"
 );
 $activitiesstructured[23] = array(
-		"totalminutes" => 180,
-		"coursename" => "L API Forms de Moodle"
+    "totalminutes" => 180,
+    "coursename" => "L API Forms de Moodle"
 );
 $activitiesstructured[2] = array(
-		"totalminutes" => 120,
-		"coursename" => "Le langage PHP"
+    "totalminutes" => 120,
+    "coursename" => "Le langage PHP"
 );
 $activitiesstructured[30] = array(
-		"totalminutes" => 100,
-		"coursename" => "L'API File de Moodle"
+    "totalminutes" => 100,
+    "coursename" => "L'API File de Moodle"
 );
 $certificateinfos->activities = $activitiesstructured;
-//End test data
+// End test data !
 
-$exp->setIdTemplate($idTemplate);
-$exp->setInfos($certificateinfos);
+$exp->set_idtemplate($idtemplate);
+$exp->set_infos($certificateinfos);
 
 $exp->print_activity();
 echo $OUTPUT->footer();

@@ -34,16 +34,16 @@ require_once(dirname(__FILE__) .'/lib.php');
  * @todo create an autoloader.
  */
 
-$toolPath = dirname(__FILE__);
+$toolpath = dirname(__FILE__);
 
-require_once($toolPath . "/classes/factories/learners_factory.php");
-require_once($toolPath . "/classes/output/renderable/trainings_list.php");
-require_once($toolPath . "/classes/output/renderable/training_management.php");
-require_once($toolPath . "/classes/output/renderable/training_learners_list.php");
-require_once($toolPath . "/classes/output/renderable/learner_details.php");
-require_once($toolPath . "/classes/output/renderable/training_milestones.php");
+require_once($toolpath . "/classes/factories/learners_factory.php");
+require_once($toolpath . "/classes/output/renderable/trainings_list.php");
+require_once($toolpath . "/classes/output/renderable/training_management.php");
+require_once($toolpath . "/classes/output/renderable/training_learners_list.php");
+require_once($toolpath . "/classes/output/renderable/learner_details.php");
+require_once($toolpath . "/classes/output/renderable/training_milestones.php");
 
-require_once($toolPath . "/classes/certificate.php");
+require_once($toolpath . "/classes/certificate.php");
 
 use tool_attestoodle\factories\trainings_factory;
 use tool_attestoodle\output\renderable;
@@ -64,7 +64,7 @@ switch($page) {
     case 'trainingmanagement':
         $categoryid = optional_param('categoryid', null, PARAM_INT);
 
-        $PAGE->set_url(new moodle_url($toolPath . '/index.php',
+        $PAGE->set_url(new moodle_url($toolpath . '/index.php',
                 ['page' => $page, 'categoryid' => $categoryid]));
 
         $PAGE->set_title(get_string('training_management_page_title', 'tool_attestoodle'));
@@ -77,7 +77,7 @@ switch($page) {
         break;
     case 'managemilestones':
         $trainingid = required_param('training', PARAM_INT);
-        $PAGE->set_url(new moodle_url($toolPath . '/index.php',
+        $PAGE->set_url(new moodle_url($toolpath . '/index.php',
                 ['page' => $page, 'training' => $trainingid]));
         $PAGE->set_title(get_string('training_milestones_page_title', 'tool_attestoodle'));
 
@@ -95,7 +95,7 @@ switch($page) {
         $begindate = optional_param('begindate', null, PARAM_ALPHANUMEXT);
         $enddate = optional_param('enddate', null, PARAM_ALPHANUMEXT);
 
-        $PAGE->set_url(new moodle_url($toolPath . '/index.php',
+        $PAGE->set_url(new moodle_url($toolpath . '/index.php',
                 array(
                         'page' => $page,
                         'action' => $action,
@@ -136,7 +136,7 @@ switch($page) {
         $begindate = optional_param('begindate', null, PARAM_ALPHANUMEXT);
         $enddate = optional_param('enddate', null, PARAM_ALPHANUMEXT);
 
-        $PAGE->set_url(new moodle_url($toolPath . '/index.php',
+        $PAGE->set_url(new moodle_url($toolpath . '/index.php',
                 array(
                         'page' => $page,
                         'action' => $action,
@@ -163,7 +163,7 @@ switch($page) {
         break;
     case 'trainingslist':
     default:
-        $PAGE->set_url(new moodle_url($toolPath . '/index.php'));
+        $PAGE->set_url(new moodle_url($toolpath . '/index.php'));
         $PAGE->set_title(get_string('trainings_list_page_title', 'tool_attestoodle'));
         $PAGE->set_heading(get_string('trainings_list_main_title', 'tool_attestoodle'));
 

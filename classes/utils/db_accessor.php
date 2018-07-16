@@ -182,8 +182,8 @@ class db_accessor extends singleton {
      * @return \stdClass Standard Moodle DB object
      */
     public function get_learners_by_course($courseid) {
-    	//XXX a remplacer par une requete 
-        $studentroleid = 5;//get_config('attestoodle', 'student_role_id');
+        // TODO a remplacer par une requete.
+        $studentroleid = 5; // Ex get_config('attestoodle', 'student_role_id').
         $request = "
                 SELECT u.id, u.firstname, u.lastname
                 FROM {user} u
@@ -263,7 +263,7 @@ class db_accessor extends singleton {
         $dataobject->categoryid = $categoryid;
         self::$db->insert_record('attestoodle_training', $dataobject);
     }
-    
+
     /**
      * Insert a log line in launch_log table.
      *
@@ -274,16 +274,16 @@ class db_accessor extends singleton {
      * @return integer The newly created ID in DB
      */
     public function log_launch($timecreated, $begindate, $enddate, $operatorid) {
-    	$dataobject = new \stdClass();
-    	$dataobject->timegenerated = $timecreated;
-    	$dataobject->begindate = $begindate;
-    	$dataobject->enddate = $enddate;
-    	$dataobject->operatorid = $operatorid;
-    
-    	$launchid = self::$db->insert_record('attestoodle_launch_log', $dataobject, true);
-    	return $launchid;
+        $dataobject = new \stdClass();
+        $dataobject->timegenerated = $timecreated;
+        $dataobject->begindate = $begindate;
+        $dataobject->enddate = $enddate;
+        $dataobject->operatorid = $operatorid;
+
+        $launchid = self::$db->insert_record('attestoodle_launch_log', $dataobject, true);
+        return $launchid;
     }
-    
+
     /**
      * Insert a log line in certificate_log table.
      *
@@ -295,17 +295,17 @@ class db_accessor extends singleton {
      * @return integer The newly created certificate_log id
      */
     public function log_certificate($filename, $status, $trainingid, $learnerid, $launchid) {
-    	$dataobject = new \stdClass();
-    	$dataobject->filename = $filename;
-    	$dataobject->status = $status;
-    	$dataobject->trainingid = $trainingid;
-    	$dataobject->learnerid = $learnerid;
-    	$dataobject->launchid = $launchid;
-    
-    	$certificateid = self::$db->insert_record('attestoodle_certif_log', $dataobject, true);
-    	return $certificateid;
+        $dataobject = new \stdClass();
+        $dataobject->filename = $filename;
+        $dataobject->status = $status;
+        $dataobject->trainingid = $trainingid;
+        $dataobject->learnerid = $learnerid;
+        $dataobject->launchid = $launchid;
+
+        $certificateid = self::$db->insert_record('attestoodle_certif_log', $dataobject, true);
+        return $certificateid;
     }
-    
+
     /**
      * Insert log lines in value_log table.
      *
@@ -314,18 +314,16 @@ class db_accessor extends singleton {
      * that has been use for the certificate
      */
     public function log_values($certificatelogid, $validatedactivities) {
-    	$milestones = array();
-    
-    	foreach ($validatedactivities as $fva) {
-    		$act = $fva->get_activity();
-    		$dataobject = new \stdClass();
-    		$dataobject->creditedtime = $act->get_milestone();
-    		$dataobject->certificateid = $certificatelogid;
-    		$dataobject->milestone = $act->get_id();
-    
-    		$milestones[] = $dataobject;
-    	}
-    
-    	self::$db->insert_records('attestoodle_value_log', $milestones);
+        $milestones = array();
+        foreach ($validatedactivities as $fva) {
+            $act = $fva->get_activity();
+            $dataobject = new \stdClass();
+            $dataobject->creditedtime = $act->get_milestone();
+            $dataobject->certificateid = $certificatelogid;
+            $dataobject->milestone = $act->get_id();
+
+            $milestones[] = $dataobject;
+        }
+        self::$db->insert_records('attestoodle_value_log', $milestones);
     }
 }

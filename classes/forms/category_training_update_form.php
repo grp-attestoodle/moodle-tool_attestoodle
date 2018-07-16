@@ -49,19 +49,21 @@ class category_training_update_form extends \moodleform {
         $mform->setDefault($name, $istraining);
 
         if ($idtemplate > -1) {
-        	$mform->addElement('header', 'templatesection', get_string('template_certificate', 'tool_attestoodle'));
-        	$group=array();
-        	if ($idtemplate == 0) {
-        		$group[] =& $mform->createElement("static", null, null, " Standard ");
-        		$group[] =& $mform->createElement('submit', 'createtemplate', get_string('personalize', 'tool_attestoodle'), array('class'=>'send-button'));
-        	} else {
-        		$group[] =& $mform->createElement("static", null, null, get_string('personalized', 'tool_attestoodle') );
-        		$group[] =& $mform->createElement('submit', 'createtemplate', get_string('update'), array('class'=>'send-button'));
-        	}
-        	$mform->addGroup($group, 'activities', get_string('template_certificate','tool_attestoodle'), ' ', false);
-        	$mform->setExpanded('templatesection', false);
+            $mform->addElement('header', 'templatesection', get_string('template_certificate', 'tool_attestoodle'));
+            $group = array();
+            if ($idtemplate == 0) {
+                $group[] =& $mform->createElement("static", null, null, " Standard ");
+                $group[] =& $mform->createElement('submit', 'createtemplate', get_string('personalize', 'tool_attestoodle'),
+                        array('class' => 'send-button'));
+            } else {
+                $group[] =& $mform->createElement("static", null, null, get_string('personalized', 'tool_attestoodle') );
+                $group[] =& $mform->createElement('submit', 'createtemplate', get_string('update'),
+                        array('class' => 'send-button'));
+            }
+            $mform->addGroup($group, 'activities', get_string('template_certificate', 'tool_attestoodle'), ' ', false);
+            $mform->setExpanded('templatesection', false);
         }
-        
+
         $this->add_action_buttons(false);
     }
 

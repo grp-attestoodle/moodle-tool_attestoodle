@@ -16,55 +16,50 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+// Load repository lib, will load filelib and formslib !
+require_once($CFG->dirroot . '/repository/lib.php');
+
 /**
- * Form to create / modify the template of certificate.
+ * Form to create or modify the template of certificate.
  *
  * @package tool_attestoodle
  * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
-
-// load repository lib, will load filelib and formslib
-require_once($CFG->dirroot . '/repository/lib.php');
-
 class attestation_form extends moodleform {
-	
+
     protected function definition() {
         global $PAGE;
 
         $mform    = $this->_form;
-        $cm       = $PAGE->cm;
-        $context  = $PAGE->context;
 
-        $mform->addElement('text', 'filename', get_string('background', 'tool_attestoodle'), array('size'=>'30'));
+        $mform->addElement('text', 'filename', get_string('background', 'tool_attestoodle'), array('size' => '30'));
         $mform->setType('filename', PARAM_TEXT);
-        
-        $learnergroup = $this->creerLigne('learner');
+
+        $learnergroup = $this->creer_ligne('learner');
         $mform->addGroup($learnergroup, 'learnergroup', get_string('learner', 'tool_attestoodle'), ' ', false);
-        
-        
-        $traininggroup = $this->creerLigne('training');
+
+        $traininggroup = $this->creer_ligne('training');
         $mform->addGroup($traininggroup, 'training', get_string('training', 'tool_attestoodle'), ' ', false);
-        
-        $periodgroup = $this->creerLigne('period');
+
+        $periodgroup = $this->creer_ligne('period');
         $mform->addGroup($periodgroup, 'period', get_string('period', 'tool_attestoodle'), ' ', false);
-        
-        $totminutegroup = $this->creerLigne('totminute');
+
+        $totminutegroup = $this->creer_ligne('totminute');
         $mform->addGroup($totminutegroup, 'totalminute', get_string('totalminute', 'tool_attestoodle'), ' ', false);
-        
-        $activitiesgroup = $this->creerLigne('activities');
+
+        $activitiesgroup = $this->creer_ligne('activities');
         $mform->addGroup($activitiesgroup, 'activities', get_string('tabactivities', 'tool_attestoodle'), ' ', false);
-        
-        
+
         $mform->addElement('hidden', 'templateid');
         $mform->setType('templateid', PARAM_INT);
         $mform->addElement('hidden', 'trainingid');
         $mform->setType('trainingid', PARAM_INT);
-        
+
         $mform->addElement('header', 'actionssection', get_string('actions', 'tool_attestoodle'));
         $actionbuttongroup = array();
-        $actionbuttongroup[] =& $mform->createElement('submit', 'save', get_string('savechanges'), array('class'=>'send-button'));
-        $actionbuttongroup[] =& $mform->createElement('submit', 'cancel', get_string('cancel'), array('class'=>'cancel-button'));
+        $actionbuttongroup[] =& $mform->createElement('submit', 'save', get_string('savechanges'), array('class' => 'send-button'));
+        $actionbuttongroup[] =& $mform->createElement('submit', 'cancel', get_string('cancel'), array('class' => 'cancel-button'));
         $mform->addGroup($actionbuttongroup, 'actionbuttongroup', '', ' ', false);
         $mform->setExpanded('actionssection', true);
     }
@@ -73,14 +68,15 @@ class attestation_form extends moodleform {
      * Create a group with all elements of a line.
      * @param $prefix name of the subject of the line.
      */
-    protected function creerLigne($prefix) {
-    	$familles = array('courier', 'helvetica', 'times');
-    	$emphases = array('','B','I');
-    	$alignments = array('L','R','C','J');
-    	$sizes = array('6','7','8','9','10','11','12','13','14','15','16','18','20','22','24','26','28','32','36','40','44','48','54','60','66','72');
-    	 
-    	$mform    = $this->_form;
-        $group=array();
+    protected function creer_ligne($prefix) {
+        $familles = array('courier', 'helvetica', 'times');
+        $emphases = array('', 'B', 'I');
+        $alignments = array('L', 'R', 'C', 'J');
+        $sizes = array('6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16',
+            '18', '20', '22', '24', '26', '28', '32', '36', '40', '44', '48', '54', '60', '66', '72');
+
+        $mform    = $this->_form;
+        $group = array();
         $group[] =& $mform->createElement("static", null, null, " X :");
         $group[] =& $mform->createElement('text', $prefix . 'Posx', '', array("size" => 3));
         $mform->setType($prefix . 'Posx', PARAM_INT);
@@ -97,7 +93,7 @@ class attestation_form extends moodleform {
         $group[] =& $mform->createElement('select', $prefix . 'Align', '', $alignments, array("size" => 1));
         return $group;
     }
-    
+
     /**
      * Intercept the display of form so can format errors as notifications
      *
@@ -107,7 +103,7 @@ class attestation_form extends moodleform {
         global $OUTPUT;
 
         if ($this->_form->_errors) {
-            foreach($this->_form->_errors as $error) {
+            foreach ($this->_form->_errors as $error) {
                 echo $OUTPUT->notification($error, 'notifyproblem');
             }
             unset($this->_form->_errors);
@@ -142,7 +138,7 @@ class attestation_form extends moodleform {
     public function update_selectgroup($name, $options, $selected=array()) {
         $mform   = $this->_form;
         $element = $mform->getElement($name);
-        $element->_optGroups = array(); //reset the optgroup array()
+        $element->_optGroups = array(); // Reset the optgroup array() !
         return $element->loadArrayOptGroups($options, $selected);
     }
 
@@ -159,9 +155,9 @@ class attestation_form extends moodleform {
             'collapsed' => true,
             'maxfiles' => EDITOR_UNLIMITED_FILES,
             'maxbytes' => $maxbytes,
-            'trusttext'=> true,
+            'trusttext' => true,
             'accepted_types' => '*',
-            'return_types'=> FILE_INTERNAL | FILE_EXTERNAL
+            'return_types' => FILE_INTERNAL | FILE_EXTERNAL
         );
     }
 
@@ -172,7 +168,8 @@ class attestation_form extends moodleform {
      */
     public static function attachment_options() {
         global $CFG, $COURSE, $PAGE;
-        $maxbytes = get_user_max_upload_file_size($PAGE->context, $CFG->maxbytes, $COURSE->maxbytes, $PAGE->activityrecord->maxbytes);
+        $maxbytes = get_user_max_upload_file_size($PAGE->context, $CFG->maxbytes,
+                $COURSE->maxbytes, $PAGE->activityrecord->maxbytes);
         return array(
             'subdirs' => 0,
             'maxbytes' => $maxbytes,
@@ -191,11 +188,7 @@ class attestation_form extends moodleform {
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);
 
-        /*
-        if (empty($data['zone']['text'])) {
-            $errors['zone'] = 'erreur';//get_string('erroremptymessage', 'dialoguegrade');
-        }
-*/
+        // Add validation rule on $data['trainingPosx'] > 0 !
         return $errors;
     }
 
@@ -205,7 +198,7 @@ class attestation_form extends moodleform {
      */
     public function get_submit_action() {
         $submitactions = array('send', 'save', 'cancel', 'trash');
-        foreach($submitactions as $submitaction) {
+        foreach ($submitactions as $submitaction) {
             if (optional_param($submitaction, false, PARAM_BOOL)) {
                 return $submitaction;
             }

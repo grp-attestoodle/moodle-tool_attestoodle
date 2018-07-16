@@ -117,13 +117,13 @@ class learner_details implements \renderable {
      * @param integer $trainingid The training ID of the certificate requested
      */
     public function generate_certificate_file($trainingid) {
-    	// Log the generation launch.
-    	$launchid = logger::log_launch($this->begindate, $this->enddate);
-    	 
+        // Log the generation launch.
+        $launchid = logger::log_launch($this->begindate, $this->enddate);
+
         $training = trainings_factory::get_instance()->retrieve_training($trainingid);
         $certificate = new certificate($this->learner, $training, $this->actualbegindate, $this->actualenddate);
         $status = $certificate->create_file_on_server();
-        
+
         // Log the certificate informations.
         if (isset($launchid)) {
             logger::log_certificate($launchid, $status, $certificate);
@@ -131,7 +131,7 @@ class learner_details implements \renderable {
 
         $this->notify_result($status);
     }
-    
+
     /**
      * Method that throws a notification to user to let him know the result of
      * the certificate file generation.
@@ -140,27 +140,24 @@ class learner_details implements \renderable {
      * 1: new file, 2: new file overwritten the old one)
      */
     private function notify_result($status) {
-    	$notificationmessage = "";
-    
-    	switch ($status) {
-    		case 0:
-    			// Error.
-    			$notificationmessage .= \get_string('learner_details_notification_message_error', 'tool_attestoodle');
-    			\core\notification::error($notificationmessage);
-    			break;
-    		case 1:
-    			// New file.
-    			$notificationmessage .= \get_string('learner_details_notification_message_new', 'tool_attestoodle');
-    			\core\notification::success($notificationmessage);
-    			break;
-    		case 2:
-    			// File overwritten.
-    			$notificationmessage .= \get_string('learner_details_notification_message_overwritten', 'tool_attestoodle');
-    			\core\notification::success($notificationmessage);
-    			break;
-    	}
+        $notificationmessage = "";
+
+        switch ($status) {
+            case 0: // Error.
+                $notificationmessage .= \get_string('learner_details_notification_message_error', 'tool_attestoodle');
+                \core\notification::error($notificationmessage);
+                break;
+            case 1: // New file.
+                $notificationmessage .= \get_string('learner_details_notification_message_new', 'tool_attestoodle');
+                \core\notification::success($notificationmessage);
+                break;
+            case 2: // File overwritten.
+                $notificationmessage .= \get_string('learner_details_notification_message_overwritten', 'tool_attestoodle');
+                \core\notification::success($notificationmessage);
+                break;
+        }
     }
-    
+
     /**
      * Method that returns all the trainings registered by the learner being displayed.
      *

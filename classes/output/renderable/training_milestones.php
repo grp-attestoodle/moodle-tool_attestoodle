@@ -88,8 +88,7 @@ class training_milestones implements \renderable {
         // Handle form cancel operation.
         $redirecturl = new \moodle_url(
                 '/admin/tool/attestoodle/index.php',
-        		array('page' => 'trainingmanagement', 'categoryid' => $this->training->get_id())
-    //            ['page' => 'learners', 'training' => $this->training->get_id()]
+                array('page' => 'trainingmanagement', 'categoryid' => $this->training->get_id())
         );
         $message = get_string('training_milestones_info_form_canceled', 'tool_attestoodle');
         redirect($redirecturl, $message, null, \core\output\notification::NOTIFY_INFO);
@@ -130,7 +129,7 @@ class training_milestones implements \renderable {
      * @return void Return void if the user has not the rights to update in DB
      */
     private function handle_form_has_submitted_data() {
-    	// If data are valid, process persistance.
+        // If data are valid, process persistance.
         if (has_capability('tool/attestoodle:managemilestones', \context_system::instance())) {
             // Retrieve the submitted data.
             $datafromform = $this->form->get_submitted_data();
@@ -301,16 +300,6 @@ class training_milestones implements \renderable {
         $output = "";
 
         $output .= \html_writer::start_div('clearfix');
-        /*
-        // Link to the training learners list.
-        $output .= \html_writer::link(
-                new \moodle_url(
-                        '/admin/tool/attestoodle/index.php',
-                        ['page' => 'learners', 'training' => $this->training->get_id()]
-                ),
-                get_string('training_milestones_learners_list_btn_text', 'tool_attestoodle'),
-                array('class' => 'attestoodle-link'));
-        */
         $output .= \html_writer::end_div();
 
         return $output;

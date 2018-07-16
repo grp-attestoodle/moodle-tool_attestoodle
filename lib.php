@@ -59,12 +59,7 @@ function tool_attestoodle_pluginfile($course, $cm, $context, $filearea, $args, $
         $cm = $cm;
         $course = $course;
     }
-    /*
-    // Check the contextlevel is as expected 
-    if ($context->contextlevel != CONTEXT_USER) {
-        return false;
-    }
-*/
+
     // Make sure the filearea is one of those used by the plugin.
     if ($filearea !== 'certificates') {
         return false;
@@ -91,11 +86,10 @@ function tool_attestoodle_pluginfile($course, $cm, $context, $filearea, $args, $
         return false; // The file does not exist.
     }
 
-    // Force non image formats to be downloaded
+    // Force non image formats to be downloaded.
     if ($file->is_valid_image()) {
-    	$forcedownload = false;
+        $forcedownload = false;
     }
-    
     // We can now send the file back to the browser - in this case with a cache lifetime of 1 day and no filtering.
     // From Moodle 2.3, use send_stored_file instead.
     send_stored_file($file, 1, 0, $forcedownload, $options);
@@ -112,14 +106,14 @@ function tool_attestoodle_pluginfile($course, $cm, $context, $filearea, $args, $
 function tool_attestoodle_extend_navigation_category_settings(navigation_node $parentnode, context_coursecat $context) {
     global $PAGE, $CFG;
     $userhascapability = has_capability('tool/attestoodle:managetraining', $context);
-    $toolPath = $CFG->wwwroot. "/" . $CFG->admin . "/tool/attestoodle";
+    $toolpath = $CFG->wwwroot. "/" . $CFG->admin . "/tool/attestoodle";
     if ($userhascapability) {
         $categoryid = $PAGE->context->instanceid;
-        $url = new moodle_url($toolPath . '/index.php',
+        $url = new moodle_url($toolpath . '/index.php',
                 array(
                         "page" => "trainingmanagement",
                         "categoryid" => $categoryid,
-                		"call" => "categ"
+                        "call" => "categ"
                 ));
         $node = navigation_node::create(
                 "Attestoodle",
