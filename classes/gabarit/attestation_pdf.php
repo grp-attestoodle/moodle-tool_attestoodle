@@ -83,32 +83,7 @@ class attestation_pdf {
      * @return \pdf The virtual pdf file using the moodle pdf class
      */
     public function generate_pdf_object() {
-        global $CFG;
-
-        $orientation = 'L';
-        if (isset($this->filename)) {
-            $taille = getimagesize("$CFG->dirroot/admin/tool/attestoodle/pix/" . $this->filename);
-            $this->pagewidth = 297;
-            $pageheight = 210;
-
-            if ($taille[1] > $taille[0]) {
-                $orientation = 'P';
-                $this->pagewidth = 210;
-                $pageheight = 297;
-            }
-        }
-
-        $doc = new \pdf($orientation);
-        $doc->setPrintHeader(false);
-        $doc->setPrintFooter(false);
-        $doc->SetAutoPagebreak(false);
-        $doc->SetMargins(0, 0, 0);
-        $doc->AddPage();
-
-        if (isset($this->filename)) {
-            $doc->Image("$CFG->dirroot/admin/tool/attestoodle/pix/" . $this->filename, '0', '0',
-                     $this->pagewidth, $pageheight, 'png', '', true);
-        }
+        $doc = $this->prepare_page();
 
         foreach ($this->template as $elt) {
             $doc->SetFont($elt->font->family, $elt->font->emphasis, $elt->font->size);
@@ -145,6 +120,38 @@ class attestation_pdf {
                     }
                     break;
             }
+        }
+        return $doc;
+    }
+
+    /**
+     * Instanciate pdf document en prepare the first page
+     * with background image en is orientation.
+     */
+    private function prepare_page() {
+        global $CFG;
+        $orientation = 'L';
+        if (isset($this->filename)) {
+            $taille = getimagesize("$CFG->dirroot/admin/tool/attestoodle/pix/" . $this->filename);
+            $this->pagewidth = 297;
+            $pageheight = 210;
+
+            if ($taille[1] > $taille[0]) {
+                $orientation = 'P';
+                $this->pagewidth = 210;
+                $pageheight = 297;
+            }
+        }
+
+        $doc = new \pdf($orientation);
+        $doc->setPrintHeader(false);
+        $doc->setPrintFooter(false);
+        $doc->SetAutoPagebreak(false);
+        $doc->SetMargins(0, 0, 0);
+        $doc->AddPage();
+        if (isset($this->filename)) {
+            $doc->Image("$CFG->dirroot/admin/tool/attestoodle/pix/" . $this->filename, '0', '0',
+                $this->pagewidth, $pageheight, 'png', '', true);
         }
         return $doc;
     }
