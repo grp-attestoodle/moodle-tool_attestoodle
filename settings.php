@@ -48,31 +48,40 @@ if (count($records) == 0) {
     $object = new stdClass();
     $object->templateid = 0;
     $object->type = 'learnername';
-    $object->data = '{ "font": {"family":"helvetica","emphasis":"","size":"10"}, "location": {"x":"10","y":"90"}, "align":"L"} ';
+    $object->data = '{ "font": {"family":"helvetica","emphasis":"","size":"14"}, "location": {"x":"66","y":"33"}, "align":"L"} ';
     $DB->insert_record('attestoodle_template_detail', $object);
 
     $object = new stdClass();
     $object->templateid = 0;
     $object->type = 'trainingname';
-    $object->data = '{ "font": {"family":"helvetica","emphasis":"","size":"10"}, "location": {"x":"10","y":"95"}, "align":"L"} ';
+    $object->data = '{ "font": {"family":"helvetica","emphasis":"","size":"14"}, "location": {"x":"66","y":"39"}, "align":"L"} ';
     $DB->insert_record('attestoodle_template_detail', $object);
 
     $object = new stdClass();
     $object->templateid = 0;
     $object->type = 'period';
-    $object->data = '{ "font": {"family":"helvetica","emphasis":"B","size":"14"}, "location": {"x":"0","y":"80"}, "align":"C"} ';
+    $object->data = '{ "font": {"family":"helvetica","emphasis":"B","size":"14"}, "location": {"x":"110","y":"18"}, "align":"L"} ';
     $DB->insert_record('attestoodle_template_detail', $object);
 
     $object = new stdClass();
     $object->templateid = 0;
     $object->type = 'totalminutes';
-    $object->data = '{ "font": {"family":"helvetica","emphasis":"B","size":"10"}, "location": {"x":"10","y":"100"}, "align":"L"} ';
+    $object->data = '{ "font": {"family":"helvetica","emphasis":"B","size":"14"}, "location": {"x":"86","y":"45"}, "align":"L"} ';
     $DB->insert_record('attestoodle_template_detail', $object);
 
     $object = new stdClass();
     $object->templateid = 0;
     $object->type = 'activities';
-    $object->data = '{ "font": {"family":"helvetica","emphasis":"","size":"10"}, "location": {"x":"10","y":"110"}, "align":"L"} ';
+    $object->data = '{ "font": {"family":"helvetica","emphasis":"","size":"10"}, "location": {"x":"50","y":"60"}, "align":"C"} ';
     $DB->insert_record('attestoodle_template_detail', $object);
+    // Enreg image background in file storage.
+    $fs = get_file_storage();
+    $file = $fs->get_file(1, 'tool_attestoodle', 'fichier', 0, '/', 'attest_background.png');
+    if (!$file) {
+        $filerecord = array('contextid' => 1, 'component' => 'tool_attestoodle', 'filearea' => 'fichier',
+            'itemid' => 0, 'filepath' => '/');
+        $url = "$CFG->wwwroot/admin/tool/attestoodle/pix/attest_background.png";
+        $fs->create_file_from_url($filerecord, $url, null, true);
+    }
 }
 

@@ -56,8 +56,10 @@ class category_training_update_form extends \moodleform {
                 $group[] =& $mform->createElement('submit', 'createtemplate', get_string('personalize', 'tool_attestoodle'),
                         array('class' => 'send-button'));
             } else {
-                $group[] =& $mform->createElement("static", null, null, get_string('personalized', 'tool_attestoodle') );
+                $group[] =& $mform->createElement("static", null, null, get_string('personalized', 'tool_attestoodle'));
                 $group[] =& $mform->createElement('submit', 'createtemplate', get_string('update'),
+                        array('class' => 'send-button'));
+                $group[] =& $mform->createElement('submit', 'deletetemplate', get_string('delete'),
                         array('class' => 'send-button'));
             }
             $mform->addGroup($group, 'activities', get_string('template_certificate', 'tool_attestoodle'), ' ', false);

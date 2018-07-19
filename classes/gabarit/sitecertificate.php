@@ -44,7 +44,7 @@ if (!isset($idtemplate)) {
         $DB->insert_record('attestoodle_train_template', $record);
 
         $sql = "insert into {attestoodle_template_detail} (templateid,type,data) select " . $idtemplate .
-            " , type, data from {attestoodle_template_detail} where templateid = 0 ";
+            " , type, data from {attestoodle_template_detail} where templateid = 0 and type != 'background'";
         $DB->execute($sql);
     }
 }
@@ -73,14 +73,24 @@ if ($fromform = $mform->get_data()) {
     }
 
     $nvxtuples = array();
-    if (trim($datas->filename) != '') {
-        $templatedetail = new stdClass();
-        $templatedetail->templateid = $datas->templateid;
-        $templatedetail->type = "background";
-        $valeurs = new stdClass();
-        $valeurs->filename = $datas->filename;
-        $templatedetail->data = json_encode($valeurs);
-        $nvxtuples[] = $templatedetail;
+
+    if ($datas->fichier) {
+        file_save_draft_area_files($datas->fichier, $context->id, 'tool_attestoodle', 'fichier', $idtemplate,
+            array('subdirs' => 0, 'maxbytes' => 10485760, 'maxfiles' => 1));
+        // Get and save file name.
+        $fs = get_file_storage();
+        $arrayfile = $fs->get_directory_files($context->id, 'tool_attestoodle', 'fichier',
+                      $idtemplate, '/');
+        $thefile = reset($arrayfile);
+        if ($thefile !== false) {
+            $templatedetail = new stdClass();
+            $templatedetail->templateid = $datas->templateid;
+            $templatedetail->type = "background";
+            $valeurs = new stdClass();
+            $valeurs->filename = $thefile->get_filename();
+            $templatedetail->data = json_encode($valeurs);
+            $nvxtuples[] = $templatedetail;
+        }
     }
 
     if (trim($datas->learnerPosx) != '') {
@@ -124,9 +134,6 @@ foreach ($rs as $result) {
     $obj = json_decode($result->data);
 
     switch($result->type) {
-        case "background" :
-            $valdefault['filename'] = $obj->filename;
-            break;
         case "learnername" :
             add_values_from_json($valdefault, "learner", $obj);
             break;
@@ -145,6 +152,16 @@ foreach ($rs as $result) {
     }
 }
 $valdefault['templateid'] = $idtemplate;
+// Get background image.
+if (empty($entry->id)) {
+    $entry = new stdClass;
+    $entry->id = null;
+}
+$draftitemid = file_get_submitted_draft_itemid('fichier');
+file_prepare_draft_area($draftitemid, $context->id, 'tool_attestoodle', 'fichier', $idtemplate,
+    array('subdirs' => 0, 'maxbytes' => 10485760, 'maxfiles' => 1));
+$entry->fichier = $draftitemid;
+$mform->set_data($entry);
 
 // Set default data (if any)!
 $formdata = $valdefault;

@@ -61,7 +61,7 @@ function tool_attestoodle_pluginfile($course, $cm, $context, $filearea, $args, $
     }
 
     // Make sure the filearea is one of those used by the plugin.
-    if ($filearea !== 'certificates') {
+    if ($filearea !== 'certificates' && $filearea !== 'fichier') {
         return false;
     }
 
@@ -90,6 +90,7 @@ function tool_attestoodle_pluginfile($course, $cm, $context, $filearea, $args, $
     if ($file->is_valid_image()) {
         $forcedownload = false;
     }
+
     // We can now send the file back to the browser - in this case with a cache lifetime of 1 day and no filtering.
     // From Moodle 2.3, use send_stored_file instead.
     send_stored_file($file, 1, 0, $forcedownload, $options);

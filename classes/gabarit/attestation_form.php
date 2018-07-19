@@ -29,12 +29,17 @@ require_once($CFG->dirroot . '/repository/lib.php');
 class attestation_form extends moodleform {
 
     protected function definition() {
-        global $PAGE;
-
         $mform    = $this->_form;
 
-        $mform->addElement('text', 'filename', get_string('background', 'tool_attestoodle'), array('size' => '30'));
-        $mform->setType('filename', PARAM_TEXT);
+        $mform->addElement('filemanager', 'fichier', get_string('background', 'tool_attestoodle'),
+            null,
+            array(
+                'subdirs' => 0,
+                'maxbytes' => 10485760,
+                'areamaxbytes' => 10485760,
+                'maxfiles' => 1,
+                'accepted_types' => array('.png'),
+                'return_types' => FILE_INTERNAL | FILE_EXTERNAL));
 
         $learnergroup = $this->creer_ligne('learner');
         $mform->addGroup($learnergroup, 'learnergroup', get_string('learner', 'tool_attestoodle'), ' ', false);
@@ -140,43 +145,6 @@ class attestation_form extends moodleform {
         $element = $mform->getElement($name);
         $element->_optGroups = array(); // Reset the optgroup array() !
         return $element->loadArrayOptGroups($options, $selected);
-    }
-
-    /**
-     * Returns the options array to use in dialogue text editor
-     *
-     * @return array
-     */
-    public static function editor_options() {
-        global $CFG, $COURSE, $PAGE;
-
-        $maxbytes = get_user_max_upload_file_size($PAGE->context, $CFG->maxbytes, $COURSE->maxbytes);
-        return array(
-            'collapsed' => true,
-            'maxfiles' => EDITOR_UNLIMITED_FILES,
-            'maxbytes' => $maxbytes,
-            'trusttext' => true,
-            'accepted_types' => '*',
-            'return_types' => FILE_INTERNAL | FILE_EXTERNAL
-        );
-    }
-
-    /**
-     * Returns the options array to use in filemanager for dialogue attachments
-     *
-     * @return array
-     */
-    public static function attachment_options() {
-        global $CFG, $COURSE, $PAGE;
-        $maxbytes = get_user_max_upload_file_size($PAGE->context, $CFG->maxbytes,
-                $COURSE->maxbytes, $PAGE->activityrecord->maxbytes);
-        return array(
-            'subdirs' => 0,
-            'maxbytes' => $maxbytes,
-            'maxfiles' => $PAGE->activityrecord->maxattachments,
-            'accepted_types' => '*',
-            'return_types' => FILE_INTERNAL
-        );
     }
 
     /**

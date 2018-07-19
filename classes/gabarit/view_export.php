@@ -74,6 +74,5 @@ $certificateinfos->activities = $activitiesstructured;
 
 $exp->set_idtemplate($idtemplate);
 $exp->set_infos($certificateinfos);
-
 $exp->print_activity();
 echo $OUTPUT->footer();

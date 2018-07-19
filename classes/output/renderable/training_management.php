@@ -30,6 +30,7 @@ namespace tool_attestoodle\output\renderable;
 defined('MOODLE_INTERNAL') || die;
 
 use tool_attestoodle\factories\categories_factory;
+use tool_attestoodle\factories\trainings_factory;
 use tool_attestoodle\forms\category_training_update_form;
 
 class training_management implements \renderable {
@@ -60,7 +61,8 @@ class training_management implements \renderable {
             $idtemplate = -1;
             if ($this->category->is_training()) {
                 $idtemplate = 0;
-                $idtraining = $this->category->is_training();
+                $training = trainings_factory::get_instance()->retrieve_training($this->categoryid);
+                $idtraining = $training->get_id();
                 if ($DB->record_exists('attestoodle_train_template', ['trainingid' => $idtraining])) {
                     $idtemplate = $DB->get_field('attestoodle_train_template', 'templateid', ['trainingid' => $idtraining]);
                 }
@@ -138,6 +140,8 @@ class training_management implements \renderable {
      * @return void Return void if the user has not the rights to update in DB
      */
     private function handle_form_has_submitted_data() {
+        global $DB;
+
         if (has_capability('tool/attestoodle:managetraining', \context_system::instance())) {
             $datafromform = $this->form->get_submitted_data();
             // Instanciate global variables to output to the user.
@@ -163,10 +167,30 @@ class training_management implements \renderable {
             }
 
             if (isset($datafromform->createtemplate)) {
+                $training = trainings_factory::get_instance()->retrieve_training($this->categoryid);
+                $idtraining = $training->get_id();
                 $redirecturl = new \moodle_url('/admin/tool/attestoodle/classes/gabarit/sitecertificate.php',
-                    array('templateid' => $category->is_training()));
+                    array('templateid' => $idtraining));
                 redirect($redirecturl);
                 return;
+            }
+            if (isset($datafromform->deletetemplate)) {
+                $training = trainings_factory::get_instance()->retrieve_training($this->categoryid);
+                $idtraining = $training->get_id();
+                $record = $DB->get_record('attestoodle_train_template', ['trainingid' => $idtraining]);
+                $DB->delete_records('attestoodle_template_detail', ['templateid' => $record->templateid]);
+                $DB->delete_records('attestoodle_train_template', ['trainingid' => $idtraining]);
+                // Delete background image.
+                $fs = get_file_storage();
+                $files = $fs->get_area_files(1, 'tool_attestoodle', 'fichier', $record->templateid);
+
+                foreach ($files as $file) {
+                    $file->delete();
+                }
+                // Redirect on this page for redisplay form.
+                $redirecturl = new \moodle_url('/admin/tool/attestoodle/index.php',
+                    array('page' => 'trainingmanagement', 'categoryid' => $this->categoryid));
+                redirect($redirecturl);
             }
             // Notify the user of the submission result.
             $this->notify_result($error, $updated, $boolvalue);

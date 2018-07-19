@@ -168,4 +168,6 @@ $string['align'] = 'Align. :';
 $string['enregok'] = 'Save';
 $string['preview'] = 'preview';
 $string['personalize'] = 'Personalize';
+$string['activity_header_col_1'] = 'Courses taken';
+$string['activity_header_col_2'] = 'total hours';
 $string['personalized'] = 'Personalized';

@@ -36,6 +36,8 @@ class attestation_pdf {
     /** the width of the Page, orientation landscape or portrait change the width.*/
     protected $pagewidth = 0;
 
+    protected $file;
+
     /**
      * Set the information to print.
      * @param \stdClass $info A standard class object containing the following to print provide
@@ -62,6 +64,17 @@ class attestation_pdf {
             } else {
                 $obj->type = $result->type;
                 $this->template[] = $obj;
+            }
+        }
+
+        // Get background file.
+        if ($this->filename != null) {
+            $fs = get_file_storage();
+            $filestore = $file = $fs->get_file(1, 'tool_attestoodle', 'fichier', $idtemplate, '/', $this->filename);
+            if ($filestore) {
+                $this->file = $filestore->copy_content_to_temp();
+            } else {
+                $this->filename = null;
             }
         }
     }
@@ -130,16 +143,17 @@ class attestation_pdf {
      */
     private function prepare_page() {
         global $CFG;
-        $orientation = 'L';
+        $orientation = 'P';
+        $this->pagewidth = 210;
         if (isset($this->filename)) {
-            $taille = getimagesize("$CFG->dirroot/admin/tool/attestoodle/pix/" . $this->filename);
-            $this->pagewidth = 297;
-            $pageheight = 210;
+            // Set orientation width the size of image.
+            $taille = getimagesize($this->file);
+            $pageheight = 297;
 
-            if ($taille[1] > $taille[0]) {
-                $orientation = 'P';
-                $this->pagewidth = 210;
-                $pageheight = 297;
+            if ($taille[0] > $taille[1]) {
+                $orientation = 'L';
+                $this->pagewidth = 297;
+                $pageheight = 210;
             }
         }
 
@@ -149,10 +163,12 @@ class attestation_pdf {
         $doc->SetAutoPagebreak(false);
         $doc->SetMargins(0, 0, 0);
         $doc->AddPage();
+
         if (isset($this->filename)) {
-            $doc->Image("$CFG->dirroot/admin/tool/attestoodle/pix/" . $this->filename, '0', '0',
-                $this->pagewidth, $pageheight, 'png', '', true);
+            $doc->Image($this->file, 0, 0, $this->pagewidth, $pageheight, 'png', '', true);
+            @unlink($this->file);
         }
+
         return $doc;
     }
 
@@ -186,11 +202,11 @@ class attestation_pdf {
         // Column title course.
         $pdf->SetFont($model->font->family, 'B', $model->font->size);
         $pdf->SetXY($x + 5, $y + 5);
-        $pdf->Cell($widthfirstcolumn - 10, 0, "Cours Suivis", 0, 0, 'C', false);
+        $pdf->Cell($widthfirstcolumn - 10, 0, get_string('activity_header_col_1', 'tool_attestoodle'), 0, 0, 'C', false);
         // Column title "total hours".
         $pdf->SetXY($x + $widthfirstcolumn + 5, $y + 5);
         $widthsecondcolumn = $width - $widthfirstcolumn;
-        $pdf->Cell($widthsecondcolumn - 10, 0, "Total heures", 0, 0, 'C', false);
+        $pdf->Cell($widthsecondcolumn - 10, 0, get_string('activity_header_col_2', 'tool_attestoodle'), 0, 0, 'C', false);
 
         // Activities lines.
         $pdf->SetFont($model->font->family, '', $model->font->size);
