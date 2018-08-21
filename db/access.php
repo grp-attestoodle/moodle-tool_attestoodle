@@ -52,15 +52,6 @@ $capabilities = array(
                         'manager' => CAP_ALLOW
                 )
         ),
-        'tool/attestoodle:managetraining' => array(
-                'riskbitmask' => RISK_CONFIG | RISK_DATALOSS,
-
-                'captype' => 'write',
-                'contextlevel' => CONTEXT_SYSTEM,
-                'archetypes' => array(
-                        'manager' => CAP_ALLOW
-                )
-        ),
         'tool/attestoodle:displaylearnerslist' => array(
                 'riskbitmask' => RISK_PERSONAL,
 
@@ -82,6 +73,30 @@ $capabilities = array(
         'tool/attestoodle:downloadcertificate' => array(
                 'riskbitmask' => RISK_CONFIG | RISK_DATALOSS | RISK_PERSONAL,
 
+                'captype' => 'read write',
+                'contextlevel' => CONTEXT_SYSTEM,
+                'archetypes' => array(
+                        'manager' => CAP_ALLOW
+                )
+        ),
+        'tool/attestoodle:viewtemplate' => array(
+                'riskbitmask' => RISK_CONFIG | RISK_DATALOSS | RISK_PERSONAL,
+                'captype' => 'read write',
+                'contextlevel' => CONTEXT_SYSTEM,
+                'archetypes' => array(
+                        'manager' => CAP_ALLOW
+                )
+        ),
+        'tool/attestoodle:managetemplate' => array(
+                'riskbitmask' => RISK_CONFIG | RISK_DATALOSS | RISK_PERSONAL,
+                'captype' => 'read write',
+                'contextlevel' => CONTEXT_SYSTEM,
+                'archetypes' => array(
+                        'manager' => CAP_ALLOW
+                )
+        ),
+        'tool/attestoodle:deletetemplate' => array(
+                'riskbitmask' => RISK_CONFIG | RISK_DATALOSS | RISK_PERSONAL,
                 'captype' => 'read write',
                 'contextlevel' => CONTEXT_SYSTEM,
                 'archetypes' => array(

@@ -30,13 +30,16 @@ require_once($CFG->libdir.'/pdflib.php');
 require_once(dirname(__FILE__) .'/../../lib.php');
 require_once('attestation_form.php');
 
+use tool_attestoodle\factories\trainings_factory;
+
 
 $context = context_system::instance();
 $idtemplate = optional_param('templateid', null, PARAM_INT);
+$trainingname = 'standard';
 
 if (!isset($idtemplate)) {
     $idtemplate = 0;
-} else {
+} else if ($idtemplate != 0) {
     if (!$DB->record_exists('attestoodle_train_template', ['trainingid' => $idtemplate])) {
         $record = new stdClass();
         $record->trainingid = $idtemplate;
@@ -47,6 +50,10 @@ if (!isset($idtemplate)) {
             " , type, data from {attestoodle_template_detail} where templateid = 0 and type != 'background'";
         $DB->execute($sql);
     }
+    // Assume idtemplate = categoryid.
+    trainings_factory::get_instance()->create_trainings();
+    $training = trainings_factory::get_instance()->retrieve_training($idtemplate);
+    $trainingname = $training->get_name();
 }
 
 $PAGE->set_context($context);
@@ -54,7 +61,8 @@ require_login();
 
 $PAGE->set_url(new moodle_url(dirname(__FILE__) . '/sitecertificate.php', [] ));
 $PAGE->set_title(get_string('template_certificate', 'tool_attestoodle'));
-$title = get_string('pluginname', 'tool_attestoodle') . " - " . get_string('template_certificate', 'tool_attestoodle');
+$title = get_string('pluginname', 'tool_attestoodle') . " - " .
+    get_string('template_certificate', 'tool_attestoodle') . " - " . $trainingname;
 $PAGE->set_heading($title);
 
 
@@ -95,26 +103,57 @@ if ($fromform = $mform->get_data()) {
 
     if (trim($datas->learnerPosx) != '') {
         $nvxtuples[] = data_to_structure($datas->templateid, "learnername", $datas->learnerFontFamily, $datas->learnerEmphasis,
-                $datas->learnerFontSize, $datas->learnerPosx, $datas->learnerPosy, $datas->learnerAlign);
+                $datas->learnerFontSize, $datas->learnerPosx, $datas->learnerPosy, $datas->learnerAlign,
+                $datas->learnerlib);
     }
 
     if (trim($datas->trainingPosx) != '') {
         $nvxtuples[] = data_to_structure($datas->templateid, "trainingname", $datas->trainingFontFamily, $datas->trainingEmphasis,
-                $datas->trainingFontSize, $datas->trainingPosx, $datas->trainingPosy, $datas->trainingAlign);
+                $datas->trainingFontSize, $datas->trainingPosx, $datas->trainingPosy, $datas->trainingAlign,
+                $datas->traininglib);
     }
 
     if (trim($datas->periodPosx) != '') {
         $nvxtuples[] = data_to_structure($datas->templateid, "period", $datas->periodFontFamily, $datas->periodEmphasis,
-                $datas->periodFontSize, $datas->periodPosx, $datas->periodPosy, $datas->periodAlign);
+                $datas->periodFontSize, $datas->periodPosx, $datas->periodPosy, $datas->periodAlign,
+                $data->periodlib);
     }
 
     if (trim($datas->totminutePosx) != '') {
         $nvxtuples[] = data_to_structure($datas->templateid, "totalminutes", $datas->totminuteFontFamily, $datas->totminuteEmphasis,
-                $datas->totminuteFontSize, $datas->totminutePosx, $datas->totminutePosy, $datas->totminuteAlign);
+                $datas->totminuteFontSize, $datas->totminutePosx, $datas->totminutePosy, $datas->totminuteAlign,
+                $datas->totminutelib);
     }
+
     if (trim($datas->activitiesPosx) != '') {
         $nvxtuples[] = data_to_structure($datas->templateid, "activities", $datas->activitiesFontFamily, $datas->activitiesEmphasis,
-                $datas->activitiesFontSize, $datas->activitiesPosx, $datas->activitiesPosy, $datas->activitiesAlign);
+                $datas->activitiesFontSize, $datas->activitiesPosx, $datas->activitiesPosy, $datas->activitiesAlign,
+                null, $datas->activitiessize);
+    }
+
+    if (trim($datas->text1lib) != '') {
+        $nvxtuples[] = data_to_structure($datas->templateid, "text", $datas->text1FontFamily, $datas->text1Emphasis,
+                $datas->text1FontSize, $datas->text1Posx, $datas->text1Posy, $datas->text1Align, $datas->text1lib);
+    }
+
+    if (trim($datas->text2lib) != '') {
+        $nvxtuples[] = data_to_structure($datas->templateid, "text", $datas->text2FontFamily, $datas->text2Emphasis,
+                $datas->text2FontSize, $datas->text2Posx, $datas->text2Posy, $datas->text2Align, $datas->text2lib);
+    }
+
+    if (trim($datas->text3lib) != '') {
+        $nvxtuples[] = data_to_structure($datas->templateid, "text", $datas->text3FontFamily, $datas->text3Emphasis,
+                $datas->text3FontSize, $datas->text3Posx, $datas->text3Posy, $datas->text3Align, $datas->text3lib);
+    }
+
+    if (trim($datas->text4lib) != '') {
+        $nvxtuples[] = data_to_structure($datas->templateid, "text", $datas->text4FontFamily, $datas->text4Emphasis,
+                $datas->text4FontSize, $datas->text4Posx, $datas->text4Posy, $datas->text4Align, $datas->text4lib);
+    }
+
+    if (trim($datas->text5lib) != '') {
+        $nvxtuples[] = data_to_structure($datas->templateid, "text", $datas->text5FontFamily, $datas->text5Emphasis,
+                $datas->text5FontSize, $datas->text5Posx, $datas->text5Posy, $datas->text5Align, $datas->text5lib);
     }
 
     $DB->delete_records('attestoodle_template_detail', array ('templateid' => $datas->templateid));
@@ -129,7 +168,7 @@ echo $OUTPUT->header();
 $sql = "select type,data from {attestoodle_template_detail} where templateid = " . $idtemplate;
 $rs = $DB->get_recordset_sql ( $sql, array () );
 $valdefault = array();
-
+$nbtxt = 0;
 foreach ($rs as $result) {
     $obj = json_decode($result->data);
 
@@ -148,6 +187,10 @@ foreach ($rs as $result) {
             break;
         case "activities" :
             add_values_from_json($valdefault, "activities", $obj);
+            break;
+        case "text" :
+            $nbtxt ++;
+            add_values_from_json($valdefault, $result->type . $nbtxt, $obj);
             break;
     }
 }
@@ -191,11 +234,18 @@ function add_values_from_json(&$arrayvalues, $prefixe, $objson) {
     $arrayvalues[$prefixe . 'Emphasis'] = array_search($objson->font->emphasis, $emphases);
     $arrayvalues[$prefixe . 'FontSize'] = array_search($objson->font->size, $sizes);
     $arrayvalues[$prefixe . 'Align'] = array_search($objson->align, $alignments);
+    if (isset($objson->lib)) {
+        $arrayvalues[$prefixe . 'lib'] = $objson->lib;
+    }
+    if ($prefixe === "activities" && isset($objson->size)) {
+        $arrayvalues[$prefixe . 'size'] = $objson->size;
+    }
 }
 /**
- * create a table TemplateDetail row structure.
+ * create a table TemplateDetail row structure for save into database.
  */
-function data_to_structure($dtotemplateid, $dtotype, $dtofontfamily, $dtoemphasis, $dtofontsize, $dtoposx, $dtoposy, $dtoalign) {
+function data_to_structure($dtotemplateid, $dtotype, $dtofontfamily, $dtoemphasis, $dtofontsize, $dtoposx,
+    $dtoposy, $dtoalign, $dtolib = null, $dtosize = null) {
     $emphases = array('', 'B', 'I');
     $alignments = array('L', 'R', 'C', 'J');
     $sizes = array('6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '18', '20', '22', '24', '26', '28', '32',
@@ -217,6 +267,12 @@ function data_to_structure($dtotemplateid, $dtotype, $dtofontfamily, $dtoemphasi
     $location->y = $dtoposy;
     $valeurs->location = $location;
     $valeurs->align = $alignments[$dtoalign];
+    if ($dtolib != null) {
+        $valeurs->lib = $dtolib;
+    }
+    if ($dtosize != null) {
+        $valeurs->size = $dtosize;
+    }
     $templatedetail->data = json_encode($valeurs);
     return $templatedetail;
 }

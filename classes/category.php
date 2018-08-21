@@ -27,7 +27,10 @@ namespace tool_attestoodle;
 use tool_attestoodle\factories\trainings_factory;
 
 defined('MOODLE_INTERNAL') || die;
-
+/**
+ * Category Moodle with the ability of training.
+ * Warning : category and training seem similar but they don't.
+ */
 class category {
     /** @var integer Id of the category */
     private $id;

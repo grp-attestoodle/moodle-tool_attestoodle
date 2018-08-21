@@ -33,7 +33,9 @@ use tool_attestoodle\factories\learners_factory;
 use tool_attestoodle\factories\trainings_factory;
 use tool_attestoodle\certificate;
 use tool_attestoodle\utils\logger;
-
+/**
+ * Display learner's information of a training.
+ */
 class learner_details implements \renderable {
     /** @var integer Id of the learner being displayed */
     public $learnerid;
@@ -207,7 +209,6 @@ class learner_details implements \renderable {
         } else {
             $output .= \html_writer::start_div('clearfix learner-detail-header');
             // Basic form to allow user filtering the validated activities by begin and end dates.
-            // TODO use a moodle_quickform.
             $output .= '<form action="?" class="filterform"><div>'
                     . '<input type="hidden" name="page" value="learnerdetails" />'
                     . '<input type="hidden" name="learner" value="' . $this->learnerid . '" />';
@@ -216,14 +217,14 @@ class learner_details implements \renderable {
                     . '<input type="text" id="input_begin_date" name="begindate" value="' . $this->begindate . '" '
                     . 'placeholder="ex: ' . (new \DateTime('now'))->format('Y-m-d') . '" />';
             if ($this->begindateerror) {
-                echo "<span class='error'>Erreur de format</span>";
+                echo "<span class='error'>" . get_string('errorformat', 'tool_attestoodle') . "</span>";
             }
             $output .= '<label for="input_end_date">'
                     . get_string('learner_details_end_date_label', 'tool_attestoodle') . '</label>'
                     . '<input type="text" id="input_end_date" name="enddate" value="' . $this->enddate . '" '
                     . 'placeholder="ex: ' . (new \DateTime('now'))->format('Y-m-d') . '" />';
             if ($this->enddateerror) {
-                $output .= "<span class='error'>Erreur de format</span>";
+                $output .= "<span class='error'>" . get_string('errorformat', 'tool_attestoodle') . "</span>";
             }
             $output .= '<input type="submit" value="'
                     . get_string('learner_details_submit_button_value', 'tool_attestoodle') . '" />'

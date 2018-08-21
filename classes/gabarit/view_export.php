@@ -26,8 +26,10 @@ require_once(dirname(__FILE__) . '/../../../../../config.php');
 require_once(dirname(__FILE__).'/../../lib.php');
 
 use tool_attestoodle\gabarit\attestation_pdf;
+use tool_attestoodle\factories\trainings_factory;
 
-global $USER;
+
+global $USER, $DB;
 
 $idtemplate = optional_param('templateid', null, PARAM_INT);
 
@@ -49,7 +51,16 @@ $exp = new attestation_pdf();
 // Create test data !
 $certificateinfos = new \stdClass();
 $certificateinfos->learnername = "Jean-Claude Confucius";
-$certificateinfos->trainingname = "Creation d Attestation PDF sous Moodle ";
+if ($idtemplate == 0) {
+    $certificateinfos->trainingname = "Creation d Attestation PDF sous Moodle ";
+} else {
+    trainings_factory::get_instance()->create_trainings();
+    $training = trainings_factory::get_instance()->retrieve_training($idtemplate);
+    $certificateinfos->trainingname = $training->get_name();
+    if (!$DB->record_exists('attestoodle_train_template', ['trainingid' => $idtemplate])) {
+        $idtemplate = 0;
+    }
+}
 $certificateinfos->totalminutes = 430;
 $certificateinfos->period = "Du 01/07/2018 au 31/07/2018";
 $activitiesstructured = array();

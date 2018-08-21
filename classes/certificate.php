@@ -22,15 +22,15 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace tool_attestoodle;
-
 
 defined('MOODLE_INTERNAL') || die;
 
 use tool_attestoodle\utils\db_accessor;
 use tool_attestoodle\gabarit\attestation_pdf;
-
+/**
+ * compute data for publish certificate.
+ */
 class certificate {
     /** @var learner Learner for whom the certificate is */
     private $learner;
@@ -141,8 +141,12 @@ class certificate {
             $activitiesstructured[$courseid]["totalminutes"] += $activity->get_milestone();
         }
         // Retrieve global informations.
-        // ...@TODO translations.
-        $period = "Du {$this->begindate->format("d/m/Y")} au {$this->enddate->format("d/m/Y")}";
+        $datformat = get_string('dateformat', 'tool_attestoodle');
+        $datebeg = $this->begindate->format($datformat);
+        $dateend = $this->enddate->format($datformat);
+
+        $period = get_string('fromdate', 'tool_attestoodle', $datebeg) .
+            get_string('todate', 'tool_attestoodle', $dateend);
 
         $certificateinfos = new \stdClass();
         $certificateinfos->learnername = $this->learner->get_fullname();

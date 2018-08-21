@@ -137,8 +137,8 @@ class training_milestones implements \renderable {
             // Instanciate global variables to output to the user.
             $updatecounter = 0;
             $errorcounter = 0;
-            $successlist = "Activities updated:<ul>";
-            $errorlist = "Activities not updated:<ul>";
+            $successlist = \get_string('activitiesupdated', 'tool_attestoodle') . ":<ul>";
+            $errorlist = \get_string('activitiesnoupdated', 'tool_attestoodle') . ":<ul>";
 
             foreach ($datafromform as $key => $value) {
                 $resulthandling = $this->handle_form_activity($key, $value);

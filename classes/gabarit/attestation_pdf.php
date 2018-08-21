@@ -35,7 +35,7 @@ class attestation_pdf {
     protected $certificateinfos;
     /** the width of the Page, orientation landscape or portrait change the width.*/
     protected $pagewidth = 0;
-
+    /** The url of background image (copy tmp).*/
     protected $file;
 
     /**
@@ -70,7 +70,7 @@ class attestation_pdf {
         // Get background file.
         if ($this->filename != null) {
             $fs = get_file_storage();
-            $filestore = $file = $fs->get_file(1, 'tool_attestoodle', 'fichier', $idtemplate, '/', $this->filename);
+            $filestore = $fs->get_file(1, 'tool_attestoodle', 'fichier', $idtemplate, '/', $this->filename);
             if ($filestore) {
                 $this->file = $filestore->copy_content_to_temp();
             } else {
@@ -100,49 +100,70 @@ class attestation_pdf {
 
         foreach ($this->template as $elt) {
             $doc->SetFont($elt->font->family, $elt->font->emphasis, $elt->font->size);
-            $doc->SetXY($elt->location->x, $elt->location->y);
 
-            switch ($elt->type) {
-                case "learnername" :
-                    if (isset($this->certificateinfos->learnername)) {
-                        $doc->Cell($doc->GetStringWidth($this->certificateinfos->learnername), 0,
-                                $this->certificateinfos->learnername, 0, 0, $elt->align, false);
-                    }
-                    break;
-                case "trainingname" :
-                    if (isset($this->certificateinfos->trainingname)) {
-                        $doc->Cell($doc->GetStringWidth($this->certificateinfos->trainingname), 0,
-                                $this->certificateinfos->trainingname, 0, 0, $elt->align, false);
-                    }
-                    break;
-                case "period" :
-                    if (isset($this->certificateinfos->period)) {
-                        $doc->Cell($doc->GetStringWidth($this->certificateinfos->period), 0,
-                                $this->certificateinfos->period, 0, 0, $elt->align, false);
-                    }
-                    break;
-                case "totalminutes" :
-                    if (isset($this->certificateinfos->totalminutes)) {
-                        $texte = parse_minutes_to_hours($this->certificateinfos->totalminutes);
-                        $doc->Cell($doc->GetStringWidth($texte), 0, $texte, 0, 0, $elt->align, false);
-                    }
-                    break;
-                case "activities" :
-                    if (isset($this->certificateinfos->activities)) {
-                        $this->printactivities($doc, $elt, $this->certificateinfos->activities);
-                    }
-                    break;
+            if ($elt->type == "activities" && isset($this->certificateinfos->activities)) {
+                $this->printactivities($doc, $elt, $this->certificateinfos->activities);
+            } else {
+                switch ($elt->type) {
+                    case "learnername" :
+                        if (isset($this->certificateinfos->learnername)) {
+                            $text = $this->certificateinfos->learnername;
+                        }
+                        break;
+                    case "trainingname" :
+                        if (isset($this->certificateinfos->trainingname)) {
+                            $text = $this->certificateinfos->trainingname;
+                        }
+                        break;
+                    case "period" :
+                        if (isset($this->certificateinfos->period)) {
+                            $text = $this->certificateinfos->period;
+                        }
+                        break;
+                    case "totalminutes" :
+                        if (isset($this->certificateinfos->totalminutes)) {
+                            $text = parse_minutes_to_hours($this->certificateinfos->totalminutes);
+                        }
+                        break;
+                    case "text" :
+                        $text = "";
+                }
+                if (isset($elt->lib)) {
+                    $text = $elt->lib . $text;
+                }
+                $x = $this->comput_align($elt, $doc->GetStringWidth($text));
+                $doc->SetXY($x, $elt->location->y);
+                $doc->Cell($doc->GetStringWidth($text), 0, $text, 0, 0, $elt->align, false);
             }
         }
         return $doc;
     }
 
     /**
+     * Compute align with lenth of text and code align.
+     * @param $elt param for display mode
+     * @param $widthtext the size of the data to display.
+     */
+    private function comput_align($elt, $widthtext) {
+        $x = 0;
+        switch ($elt->align) {
+            case 'L' :
+                $x = $elt->location->x;
+                break;
+            case 'R' :
+                $x = $this->pagewidth - $elt->location->x - $widthtext;
+                break;
+            case 'C' :
+                $x = ($this->pagewidth - $elt->location->x - $widthtext) / 2 +
+                    $elt->location->x;
+        }
+        return $x;
+    }
+    /**
      * Instanciate pdf document en prepare the first page
      * with background image en is orientation.
      */
     private function prepare_page() {
-        global $CFG;
         $orientation = 'P';
         $this->pagewidth = 210;
         if (isset($this->filename)) {
@@ -180,15 +201,25 @@ class attestation_pdf {
      * @param $tabactivities the data to place (the activities)
      */
     private function printactivities($pdf, $model, $tabactivities) {
-        $x = intval($model->location->x);
+        $width = 0;
+        if (isset($model->size)) {
+            $width = $model->size;
+        }
+
+        if ($width == 0) {
+            $width = ($this->pagewidth - $model->location->x * 2);
+        }
+
+        $x = $this->comput_align($model, $width);
         $y = intval($model->location->y);
+
         $pdf->SetLineWidth(0.1);
         $heightline = intval($model->font->size);
         if ($heightline == 0) {
             $heightline = 10;
         }
         $height = count($tabactivities) * $heightline + ($heightline * 1.5);
-        $width = ($this->pagewidth - $x * 2);
+
         // Main borders.
         $pdf->Rect($x, $y, $width, $height, "D");
 

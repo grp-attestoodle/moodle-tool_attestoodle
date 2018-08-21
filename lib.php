@@ -45,7 +45,7 @@ function parse_minutes_to_hours($minutes) {
  * @return string The date in a readable format
  */
 function parse_datetime_to_readable_format($datetime) {
-    return $datetime->format("d/m/Y");
+    return $datetime->format(get_string('dateformat', 'tool_attestoodle'));
 }
 
 /**

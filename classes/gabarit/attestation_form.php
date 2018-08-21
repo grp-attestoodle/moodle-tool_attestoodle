@@ -61,6 +61,13 @@ class attestation_form extends moodleform {
         $mform->addElement('hidden', 'trainingid');
         $mform->setType('trainingid', PARAM_INT);
 
+        $mform->addElement('header', 'literaux', get_string('literaux', 'tool_attestoodle'));
+        for ($i = 1; $i <= 5; $i++) {
+            $group = $this->creer_ligne('text' . $i);
+            $mform->addGroup($group, 'text' . $i, get_string('literal', 'tool_attestoodle') . ' ' . $i, ' ', false);
+        }
+        $mform->setExpanded('literaux', false);
+
         $mform->addElement('header', 'actionssection', get_string('actions', 'tool_attestoodle'));
         $actionbuttongroup = array();
         $actionbuttongroup[] =& $mform->createElement('submit', 'save', get_string('savechanges'), array('class' => 'send-button'));
@@ -96,6 +103,15 @@ class attestation_form extends moodleform {
         $group[] =& $mform->createElement('select', $prefix . 'FontSize', '', $sizes, array("size" => 2));
         $group[] =& $mform->createElement("static", null, null, get_string('align', 'tool_attestoodle'));
         $group[] =& $mform->createElement('select', $prefix . 'Align', '', $alignments, array("size" => 1));
+        if ($prefix != "activities") {
+            $group[] =& $mform->createElement("static", null, null, '<br>' . get_string('rubric', 'tool_attestoodle'));
+            $group[] =& $mform->createElement('text', $prefix . 'lib', '', array("size" => 45));
+            $mform->setType($prefix . 'lib', PARAM_TEXT );
+        } else {
+            $group[] =& $mform->createElement("static", null, null, '<br>' . get_string('arraysize', 'tool_attestoodle'));
+            $group[] =& $mform->createElement('text', $prefix . 'size', '', array("size" => 3));
+            $mform->setType($prefix . 'size', PARAM_INT);
+        }
         return $group;
     }
 

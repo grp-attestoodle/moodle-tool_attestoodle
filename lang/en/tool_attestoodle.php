@@ -143,7 +143,7 @@ $string['learner_details_notification_message_overwritten'] = "A new certificate
 
 $string['training_list_link'] = "List of trainings";
 $string['student_list_link'] = "List of students";
-$string['training_setting_link'] = "training\'s setting";
+$string['training_setting_link'] = "setting";
 $string['milestone_manage_link'] = "Monitor activity milestones";
 
 // Unknown strings.
@@ -160,7 +160,7 @@ $string['learner'] = 'Learner\'s fullname';
 $string['training'] = 'Designation of the formation';
 $string['period'] = 'Period';
 $string['totalminute'] = 'Total time validated over the period';
-$string['tabactivities'] = 'table of activities';
+$string['tabactivities'] = 'Table of activities';
 $string['font'] = 'Font :';
 $string['emphasis'] = 'Emphasis :';
 $string['size'] = 'Size :';
@@ -171,3 +171,13 @@ $string['personalize'] = 'Personalize';
 $string['activity_header_col_1'] = 'Courses taken';
 $string['activity_header_col_2'] = 'total hours';
 $string['personalized'] = 'Personalized';
+$string['rubric'] = 'Rubric : ';
+$string['literaux'] = 'Tags';
+$string['literal'] = 'Label ';
+$string['dateformat'] = 'Y-m-d';
+$string['arraysize'] = 'Width of the table : ';
+$string['fromdate'] = 'From {$a}';
+$string['todate'] = ' to {$a}';
+$string['errorformat'] = 'Wrong format';
+$string['activitiesupdated'] = 'Activities updated';
+$string['activitiesnoupdated'] = 'Activities not updated';

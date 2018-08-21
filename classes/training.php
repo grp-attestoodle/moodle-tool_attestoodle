@@ -78,7 +78,12 @@ class training {
      * @return string Name of the training
      */
     public function get_name() {
-        return $this->category->get_name();
+        $name = strip_tags($this->category->get_description());
+
+        if ($name == '') {
+            $name = $this->category->get_name();
+        }
+        return $name;
     }
 
     /**

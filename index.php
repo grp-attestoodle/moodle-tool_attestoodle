@@ -109,7 +109,7 @@ switch($page) {
         $userhascapability = has_capability('tool/attestoodle:displaylearnerslist', $context);
         require_capability('tool/attestoodle:displaylearnerslist', $context);
 
-        // TODO instanciate the training in the renderable.
+        // Instanciate the training in the renderable.
         $training = null;
         $trainingexist = trainings_factory::get_instance()->has_training($trainingid);
         if ($trainingexist) {

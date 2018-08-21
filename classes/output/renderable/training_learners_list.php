@@ -32,7 +32,9 @@ defined('MOODLE_INTERNAL') || die;
 use \renderable;
 use tool_attestoodle\certificate;
 use tool_attestoodle\utils\logger;
-
+/**
+ * Display list of learner of one training.
+ */
 class training_learners_list implements renderable {
     /** @var training Training that is currently displayed */
     public $training = null;
@@ -127,15 +129,16 @@ class training_learners_list implements renderable {
                     . get_string('learner_details_begin_date_label', 'tool_attestoodle') . '</label>'
                     . '<input type="text" id="input_begin_date" name="begindate" value="' . $this->thebegindate . '" '
                     . 'placeholder="ex: ' . (new \DateTime('now'))->format('Y-m-d') . '" />';
+
             if ($this->begindateisinerror) {
-                echo "<span class='error'>Erreur de format</span>";
+                echo "<span class='error'>" . get_string('errorformat', 'tool_attestoodle') . "</span>";
             }
             $output .= '<label for="input_end_date">'
                     . get_string('learner_details_end_date_label', 'tool_attestoodle') . '</label>'
                     . '<input type="text" id="input_end_date" name="enddate" value="' . $this->theenddate . '" '
                     . 'placeholder="ex: ' . (new \DateTime('now'))->format('Y-m-d') . '" />';
             if ($this->enddateisinerror) {
-                $output .= "<span class='error'>Erreur de format</span>";
+                $output .= "<span class='error'>" . get_string('errorformat', 'tool_attestoodle') . "</span>";
             }
             $output .= '<input type="submit" value="'
                     . get_string('learner_details_submit_button_value', 'tool_attestoodle') . '" />'
