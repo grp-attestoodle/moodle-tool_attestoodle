@@ -93,23 +93,22 @@ class trainings_list implements renderable {
                 'page' => 'learners',
                 'training' => $training->get_id());
             $url = new \moodle_url('/admin/tool/attestoodle/index.php', $parameters);
-            // Moodle 3.2 needs pix_url still - only use image_url in 3.3.
-            // $label = "<img src=" . $OUTPUT->image_url ( 'i/group', 'moodle' ). " title='". get_string('student_list_link', 'tool_attestoodle') ."' />";
-            $label = "<img src=" . $OUTPUT->pix_url ( 'i/group', 'moodle' ). " title='". get_string('student_list_link', 'tool_attestoodle') ."' />";
+            $label = "<img src=" . $OUTPUT->image_url ( 'i/group', 'moodle' ). " title='"
+                . get_string('student_list_link', 'tool_attestoodle') ."' />";
 
             $studentlink = \html_writer::link($url, $label);
 
             $parameters = array('page' => 'trainingmanagement', 'categoryid' => $training->get_id());
             $url = new \moodle_url('/admin/tool/attestoodle/index.php', $parameters);
-            // $label = "<img src=" . $OUTPUT->image_url ( 'i/settings', 'moodle' ). " title='". get_string('training_setting_link', 'tool_attestoodle') ."' />";
-            $label = "<img src=" . $OUTPUT->pix_url ( 'i/settings', 'moodle' ). " title='". get_string('training_setting_link', 'tool_attestoodle') ."' />";
+            $label = "<img src=" . $OUTPUT->image_url ( 'i/settings', 'moodle' ). " title='"
+                . get_string('training_setting_link', 'tool_attestoodle') ."' />";
 
             $settinglink = \html_writer::link($url, $label);
 
             $parameters = array('page' => 'managemilestones', 'training' => $training->get_id());
             $url = new \moodle_url('/admin/tool/attestoodle/index.php', $parameters);
-            // $label = "<img src=" . $OUTPUT->image_url ( 'navigation', 'tool_attestoodle' ). " title='" . get_string('milestone_manage_link', 'tool_attestoodle') ."' />";
-            $label = "<img src=" . $OUTPUT->pix_url ( 'navigation', 'tool_attestoodle' ). " title='" . get_string('milestone_manage_link', 'tool_attestoodle') ."' />";
+            $label = "<img src=" . $OUTPUT->image_url ( 'navigation', 'tool_attestoodle' ). " title='"
+                . get_string('milestone_manage_link', 'tool_attestoodle') ."' />";
 
             $milestonelink = \html_writer::link($url, $label);
 

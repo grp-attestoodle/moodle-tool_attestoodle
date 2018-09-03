@@ -34,6 +34,9 @@ class db_accessor extends singleton {
     /** @var $DB Instance of the $DB Moodle variable */
     private static $db;
 
+    /** @var the id of student role.*/
+    protected static $studentroleid;
+
     /**
      * Protected constructor to avoid external instanciation.
      *
@@ -176,14 +179,27 @@ class db_accessor extends singleton {
     }
 
     /**
+     * Retrieve the role id for student.
+     * if is not set we retrieve the value from database.
+     */
+    protected function get_studentrole() {
+        if (isset(self::$studentroleid)) {
+            return self::$studentroleid;
+        }
+
+        $result = self::$db->get_record('role', array('shortname' => 'student'), "id");
+        self::$studentroleid = $result->id;
+        return self::$studentroleid;
+    }
+    /**
      * Retrieves the learners (student users) registered to a specific course
      *
      * @param int $courseid Id of the course to retrieve learners for
      * @return \stdClass Standard Moodle DB object
      */
     public function get_learners_by_course($courseid) {
-        // TODO a remplacer par une requete.
-        $studentroleid = 5; // Ex get_config('attestoodle', 'student_role_id').
+        $studentroleid = self::get_studentrole();
+
         $request = "
                 SELECT u.id, u.firstname, u.lastname
                 FROM {user} u
