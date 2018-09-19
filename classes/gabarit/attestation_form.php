@@ -31,6 +31,13 @@ class attestation_form extends moodleform {
     protected function definition() {
         $mform    = $this->_form;
 
+        $mform->addElement('hidden', 'namelock');
+        $mform->setType('namelock', PARAM_INT);
+
+        $mform->addElement('text', 'name', get_string('templatename', 'tool_attestoodle'), array("size" => 35));
+        $mform->setType('name', PARAM_NOTAGS);
+        $mform->disabledIf('name', 'namelock', 'eq', 1);
+
         $mform->addElement('filemanager', 'fichier', get_string('background', 'tool_attestoodle'),
             null,
             array(
@@ -164,15 +171,29 @@ class attestation_form extends moodleform {
     }
 
     /**
-     *
+     * validate the form.
+     * If name no lock, then name must be not null.
      * @param type $data
      * @param type $files
      * @return type
      */
     public function validation($data, $files) {
+        global $DB;
         $errors = parent::validation($data, $files);
+        if (isset($data['cancel'])) {
+            return $errors;
+        }
 
-        // Add validation rule on $data['trainingPosx'] > 0 !
+        if (empty($data['name']) && $data['namelock'] != 1) {
+            $errors['body'] = get_string('errnotemplatename', 'tool_attestoodle');
+        }
+
+        if (!empty($data['name']) && $data['namelock'] != 1) {
+            $sql = 'select * from {attestoodle_template} where name = ? and id != ?';
+            if ($DB->record_exists_sql($sql, array($data['name'], $data['templateid']))) {
+                $errors['body'] = 'ce nom est déjà utilisé !!';
+            }
+        }
         return $errors;
     }
 

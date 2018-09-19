@@ -44,6 +44,28 @@ class categories_factory extends singleton {
     protected function __construct() {
         parent::__construct();
         $this->categories = array();
+        $tabcateg = db_accessor::get_instance()->get_all_categories();
+        foreach ($tabcateg as $categ) {
+                $this->create_category($categ);
+        }
+    }
+
+    /**
+     * Create a category instance.
+     * @param $enreg structure width id, name, description, parent.
+     */
+    private function create_category($enreg) {
+        $desc = $enreg->description;
+        $category = $this->create($enreg->id);
+
+        $parent = null;
+        if ($enreg->parent > 0) {
+            $parent = $this->retrieve_category($enreg->parent);
+            if (!isset($parent)) {
+                $parent = $this->create($enreg->parent);
+            }
+        }
+        $category->feed($enreg->name, $desc, $parent);
     }
 
     /**
@@ -119,7 +141,6 @@ class categories_factory extends singleton {
      */
     public function retrieve_sub_categories($id) {
         $categories = array();
-
         foreach ($this->categories as $cat) {
             if ($cat->has_parent() && ($cat->get_parent()->get_id() == $id)) {
                 $categories[] = $cat;

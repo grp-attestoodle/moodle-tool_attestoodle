@@ -36,10 +36,11 @@ class category_training_update_form extends \moodleform {
      * all the elements (inputs, titles, buttons, ...) in the form.
      */
     public function definition() {
-        global $CFG;
+        global $CFG, $DB;
         $name = "checkbox_is_training";
         $category = $this->_customdata['data'];
         $idtemplate = $this->_customdata['idtemplate'];
+        $idtraining = $this->_customdata['idtraining'];
 
         $mform = $this->_form;
 
@@ -51,33 +52,23 @@ class category_training_update_form extends \moodleform {
 
         if ($idtemplate > -1) {
             $mform->addElement('header', 'templatesection', get_string('template_certificate', 'tool_attestoodle'));
-            $previewlink = '<a target="preview" href="' . $CFG->wwwroot .
-                '/admin/tool/attestoodle/classes/gabarit/view_export.php?templateid=' . $idtemplate .
-                '" class= "btn-create">'.get_string('preview', 'tool_attestoodle').'</a>';
             $group = array();
-            if ($idtemplate == 0) {
-                $group[] =& $mform->createElement("static", null, null, " Standard ");
-                if (has_capability('tool/attestoodle:viewtemplate', \context_system::instance())) {
-                    $group[] =& $mform->createElement("static", null, null, $previewlink);
-                }
-                if (has_capability('tool/attestoodle:managetemplate', \context_system::instance())) {
-                    $group[] =& $mform->createElement('submit', 'createtemplate', get_string('personalize', 'tool_attestoodle'),
-                        array('class' => 'send-button'));
-                }
-            } else {
-                $group[] =& $mform->createElement("static", null, null, get_string('personalized', 'tool_attestoodle'));
-                if (has_capability('tool/attestoodle:managetemplate', \context_system::instance())) {
-                    $group[] =& $mform->createElement('submit', 'createtemplate', get_string('update'),
-                        array('class' => 'send-button'));
-                }
-                if (has_capability('tool/attestoodle:viewtemplate', \context_system::instance())) {
-                    $group[] =& $mform->createElement("static", null, null, $previewlink);
-                }
-                if (has_capability('tool/attestoodle:deletetemplate', \context_system::instance())) {
-                    $group[] =& $mform->createElement('submit', 'deletetemplate', get_string('delete'),
-                        array('class' => 'send-button'));
-                }
+            // Select template.
+            $rs = $DB->get_records('attestoodle_template', null, null, 'id, name');
+            $lsttemplate = array();
+            foreach ($rs as $result) {
+                $lsttemplate[$result->id] = $result->name;
             }
+            $group[] =& $mform->createElement('select', 'template', '', $lsttemplate, array("size" => 35));
+
+            if (has_capability('tool/attestoodle:viewtemplate', \context_system::instance())) {
+                $previewlink = '<a target="preview" href="' . $CFG->wwwroot .
+                    '/admin/tool/attestoodle/classes/gabarit/view_export.php?templateid=' . $idtemplate .
+                    '&trainingid=' . $idtraining . '" class= "btn-create">'.
+                    get_string('preview', 'tool_attestoodle').'</a>';
+                $group[] =& $mform->createElement("static", null, null, $previewlink);
+            }
+
             $mform->addGroup($group, 'activities', get_string('template_certificate', 'tool_attestoodle'), ' ', false);
             $mform->setExpanded('templatesection', false);
         }

@@ -68,6 +68,7 @@ class training {
      *
      * @return integer Id of the training
      */
+     // Wrong, trainingid != categoryid, Must be fixed !!
     public function get_id() {
         return $this->category->get_id();
     }

@@ -257,7 +257,8 @@ class certificate {
             }
 
             $doc = new attestation_pdf();
-            $doc->set_idtemplate($this->training->get_id());
+            $doc->set_categoryid($this->training->get_id());
+
             $doc->set_infos($this->get_pdf_informations());
             $pdf = $doc->generate_pdf_object();
 

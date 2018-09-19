@@ -38,22 +38,30 @@ $idtemplate = optional_param('templateid', null, PARAM_INT);
 $trainingname = 'standard';
 
 if (!isset($idtemplate)) {
-    $idtemplate = 0;
-} else if ($idtemplate != 0) {
-    if (!$DB->record_exists('attestoodle_train_template', ['trainingid' => $idtemplate])) {
-        $record = new stdClass();
-        $record->trainingid = $idtemplate;
-        $record->templateid = $idtemplate;
-        $DB->insert_record('attestoodle_train_template', $record);
-
-        $sql = "insert into {attestoodle_template_detail} (templateid,type,data) select " . $idtemplate .
-            " , type, data from {attestoodle_template_detail} where templateid = 0 and type != 'background'";
-        $DB->execute($sql);
+    $template = $DB->get_record('attestoodle_template', array('name' => 'Site'));
+    $idtemplate = $template->id;
+    $namelock = 1;
+    $previewok = true;
+} else {
+    $template = $DB->get_record('attestoodle_template', array('id' => $idtemplate));
+    if ($template == null) {
+        // New model copy of template 'Site'.
+        $template = $DB->get_record('attestoodle_template', array('name' => 'Site'));
+        $idtemplate = $template->id;
+        $template->name = '';
+        $namelock = 0;
+        $previewok = false;
+        $create = true;
+    } else {
+        if ($template->name == "Site") {
+            $namelock = 1;
+        } else {
+            if ($DB->record_exists('attestoodle_train_template', array('templateid' => $idtemplate))) {
+                $namelock = 1;
+            }
+        }
+        $previewok = true;
     }
-    // Assume idtemplate = categoryid.
-    trainings_factory::get_instance()->create_trainings();
-    $training = trainings_factory::get_instance()->retrieve_training($idtemplate);
-    $trainingname = $training->get_name();
 }
 
 $PAGE->set_context($context);
@@ -72,14 +80,31 @@ if ($fromform = $mform->get_data()) {
     // In this case you process validated data. $mform->get_data() returns data posted in form. !
     $datas = $mform->get_data();
 
-    $idtemplate = $datas->templateid;
-
     if (isset($datas->cancel)) {
-        $redirecturl = new \moodle_url('/admin/search.php', array());
+        $redirecturl = new \moodle_url('/admin/tool/attestoodle/classes/gabarit/listtemplate.php', array());
         redirect($redirecturl);
         return;
     }
 
+    if ($datas->name != null) {
+        // Create.
+        if (!$DB->record_exists('attestoodle_template', array('name' => $datas->name))) {
+            $model = new stdClass();
+            $model->name = $datas->name;
+            $model->timecreated = usergetdate(time())[0];
+            $model->userid = $USER->id;
+            $created = true;
+            $idtemplate = $DB->insert_record('attestoodle_template', $model);
+        }
+    } else {
+        // Update timemodified et userid.
+        $template = $DB->get_record('attestoodle_template', array('id' => $datas->templateid));
+        $template->timemodified = usergetdate(time())[0];
+        $template->userid = $USER->id;
+        $DB->update_record('attestoodle_template', $template);
+        $idtemplate = $datas->templateid;
+    }
+    $previewok = true;
     $nvxtuples = array();
 
     if ($datas->fichier) {
@@ -92,7 +117,7 @@ if ($fromform = $mform->get_data()) {
         $thefile = reset($arrayfile);
         if ($thefile !== false) {
             $templatedetail = new stdClass();
-            $templatedetail->templateid = $datas->templateid;
+            $templatedetail->templateid = $idtemplate;
             $templatedetail->type = "background";
             $valeurs = new stdClass();
             $valeurs->filename = $thefile->get_filename();
@@ -102,67 +127,74 @@ if ($fromform = $mform->get_data()) {
     }
 
     if (trim($datas->learnerPosx) != '') {
-        $nvxtuples[] = data_to_structure($datas->templateid, "learnername", $datas->learnerFontFamily, $datas->learnerEmphasis,
+        $nvxtuples[] = data_to_structure($idtemplate, "learnername", $datas->learnerFontFamily, $datas->learnerEmphasis,
                 $datas->learnerFontSize, $datas->learnerPosx, $datas->learnerPosy, $datas->learnerAlign,
                 $datas->learnerlib);
     }
 
     if (trim($datas->trainingPosx) != '') {
-        $nvxtuples[] = data_to_structure($datas->templateid, "trainingname", $datas->trainingFontFamily, $datas->trainingEmphasis,
+        $nvxtuples[] = data_to_structure($idtemplate, "trainingname", $datas->trainingFontFamily, $datas->trainingEmphasis,
                 $datas->trainingFontSize, $datas->trainingPosx, $datas->trainingPosy, $datas->trainingAlign,
                 $datas->traininglib);
     }
 
     if (trim($datas->periodPosx) != '') {
-        $nvxtuples[] = data_to_structure($datas->templateid, "period", $datas->periodFontFamily, $datas->periodEmphasis,
+        $nvxtuples[] = data_to_structure($idtemplate, "period", $datas->periodFontFamily, $datas->periodEmphasis,
                 $datas->periodFontSize, $datas->periodPosx, $datas->periodPosy, $datas->periodAlign,
-                $data->periodlib);
+                $datas->periodlib);
     }
 
     if (trim($datas->totminutePosx) != '') {
-        $nvxtuples[] = data_to_structure($datas->templateid, "totalminutes", $datas->totminuteFontFamily, $datas->totminuteEmphasis,
+        $nvxtuples[] = data_to_structure($idtemplate, "totalminutes", $datas->totminuteFontFamily, $datas->totminuteEmphasis,
                 $datas->totminuteFontSize, $datas->totminutePosx, $datas->totminutePosy, $datas->totminuteAlign,
                 $datas->totminutelib);
     }
 
     if (trim($datas->activitiesPosx) != '') {
-        $nvxtuples[] = data_to_structure($datas->templateid, "activities", $datas->activitiesFontFamily, $datas->activitiesEmphasis,
+        $nvxtuples[] = data_to_structure($idtemplate, "activities", $datas->activitiesFontFamily, $datas->activitiesEmphasis,
                 $datas->activitiesFontSize, $datas->activitiesPosx, $datas->activitiesPosy, $datas->activitiesAlign,
                 null, $datas->activitiessize);
     }
 
     if (trim($datas->text1lib) != '') {
-        $nvxtuples[] = data_to_structure($datas->templateid, "text", $datas->text1FontFamily, $datas->text1Emphasis,
+        $nvxtuples[] = data_to_structure($idtemplate, "text", $datas->text1FontFamily, $datas->text1Emphasis,
                 $datas->text1FontSize, $datas->text1Posx, $datas->text1Posy, $datas->text1Align, $datas->text1lib);
     }
 
     if (trim($datas->text2lib) != '') {
-        $nvxtuples[] = data_to_structure($datas->templateid, "text", $datas->text2FontFamily, $datas->text2Emphasis,
+        $nvxtuples[] = data_to_structure($idtemplate, "text", $datas->text2FontFamily, $datas->text2Emphasis,
                 $datas->text2FontSize, $datas->text2Posx, $datas->text2Posy, $datas->text2Align, $datas->text2lib);
     }
 
     if (trim($datas->text3lib) != '') {
-        $nvxtuples[] = data_to_structure($datas->templateid, "text", $datas->text3FontFamily, $datas->text3Emphasis,
+        $nvxtuples[] = data_to_structure($idtemplate, "text", $datas->text3FontFamily, $datas->text3Emphasis,
                 $datas->text3FontSize, $datas->text3Posx, $datas->text3Posy, $datas->text3Align, $datas->text3lib);
     }
 
     if (trim($datas->text4lib) != '') {
-        $nvxtuples[] = data_to_structure($datas->templateid, "text", $datas->text4FontFamily, $datas->text4Emphasis,
+        $nvxtuples[] = data_to_structure($idtemplate, "text", $datas->text4FontFamily, $datas->text4Emphasis,
                 $datas->text4FontSize, $datas->text4Posx, $datas->text4Posy, $datas->text4Align, $datas->text4lib);
     }
 
     if (trim($datas->text5lib) != '') {
-        $nvxtuples[] = data_to_structure($datas->templateid, "text", $datas->text5FontFamily, $datas->text5Emphasis,
+        $nvxtuples[] = data_to_structure($idtemplate, "text", $datas->text5FontFamily, $datas->text5Emphasis,
                 $datas->text5FontSize, $datas->text5Posx, $datas->text5Posy, $datas->text5Align, $datas->text5lib);
     }
 
-    $DB->delete_records('attestoodle_template_detail', array ('templateid' => $datas->templateid));
+    $DB->delete_records('attestoodle_template_detail', array ('templateid' => $idtemplate));
     if (count($nvxtuples) > 0) {
         foreach ($nvxtuples as $record) {
             $DB->insert_record('attestoodle_template_detail', $record);
         }
     }
     \core\notification::success(get_string('enregok', 'tool_attestoodle'));
+    if (isset($created)) {
+        // We can't modified values of the form so we reload page.
+        $redirecturl = new \moodle_url('/admin/tool/attestoodle/classes/gabarit/sitecertificate.php',
+                array("templateid" => $idtemplate));
+        redirect($redirecturl);
+        return;
+    }
 }
 echo $OUTPUT->header();
 $sql = "select type,data from {attestoodle_template_detail} where templateid = " . $idtemplate;
@@ -194,28 +226,34 @@ foreach ($rs as $result) {
             break;
     }
 }
-$valdefault['templateid'] = $idtemplate;
-// Get background image.
-if (empty($entry->id)) {
-    $entry = new stdClass;
-    $entry->id = null;
+if (!isset($create)) {
+    $valdefault['templateid'] = $idtemplate;
+    // Get background image.
+    if (empty($entry->id)) {
+        $entry = new stdClass;
+        $entry->id = null;
+    }
+    $draftitemid = file_get_submitted_draft_itemid('fichier');
+    file_prepare_draft_area($draftitemid, $context->id, 'tool_attestoodle', 'fichier', $idtemplate,
+        array('subdirs' => 0, 'maxbytes' => 10485760, 'maxfiles' => 1));
+    $entry->fichier = $draftitemid;
+    $mform->set_data($entry);
+} else {
+    $valdefault['templateid'] = -1;
 }
-$draftitemid = file_get_submitted_draft_itemid('fichier');
-file_prepare_draft_area($draftitemid, $context->id, 'tool_attestoodle', 'fichier', $idtemplate,
-    array('subdirs' => 0, 'maxbytes' => 10485760, 'maxfiles' => 1));
-$entry->fichier = $draftitemid;
-$mform->set_data($entry);
-
 // Set default data (if any)!
 $formdata = $valdefault;
 $mform->set_data($formdata);
-
+$mform->set_data(array ('namelock' => $namelock));
+$mform->set_data(array ('name' => $template->name));
 // Displays the form !
 $mform->display();
-$previewlink = '<a target="preview" href="' . $CFG->wwwroot .
-    '/admin/tool/attestoodle/classes/gabarit/view_export.php?templateid=' . $idtemplate .
-    '" class= "btn-create pull-right">'.get_string('preview', 'tool_attestoodle').'</a>';
-echo $previewlink;
+if ($previewok) {
+    $previewlink = '<a target="preview" href="' . $CFG->wwwroot .
+        '/admin/tool/attestoodle/classes/gabarit/view_export.php?templateid=' . $idtemplate .
+        '" class= "btn-create pull-right">'.get_string('preview', 'tool_attestoodle').'</a>';
+    echo $previewlink;
+}
 
 echo $OUTPUT->footer();
 

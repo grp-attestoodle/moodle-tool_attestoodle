@@ -52,6 +52,8 @@ class trainings_factory extends singleton {
      * stores them in the main array.
      */
     public function create_trainings() {
+        // Must call categories_factory before find trainings.
+        categories_factory::get_instance();
         $dbtrainings = db_accessor::get_instance()->get_all_trainings();
         $categoryids = array_column($dbtrainings, 'categoryid');
 

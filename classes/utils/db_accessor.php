@@ -150,7 +150,7 @@ class db_accessor extends singleton {
         $result = self::$db->get_records_list(
                 'course_categories',
                 'id',
-                $categoryids,
+                $categoryids, // It must be an array !!
                 null,
                 'id, name, description, parent');
         return $result;
@@ -265,7 +265,9 @@ class db_accessor extends singleton {
      * @param int $categoryid The category ID that we want to delete
      */
     public function delete_training($categoryid) {
+        $training = self::$db->get_record('attestoodle_training', array('categoryid' => $categoryid));
         self::$db->delete_records('attestoodle_training', array('categoryid' => $categoryid));
+        self::$db->delete_records('attestoodle_train_template', array('trainingid' => $training->id));
     }
 
     /**
@@ -277,7 +279,12 @@ class db_accessor extends singleton {
         $dataobject = new \stdClass();
         $dataobject->name = "";
         $dataobject->categoryid = $categoryid;
-        self::$db->insert_record('attestoodle_training', $dataobject);
+        $idtraining = self::$db->insert_record('attestoodle_training', $dataobject);
+        $template = self::$db->get_record('attestoodle_template', array('name' => 'Site'));
+        $record = new \stdClass();
+        $record->trainingid = $idtraining;
+        $record->templateid = $template->id;
+        self::$db->insert_record('attestoodle_train_template', $record);
     }
 
     /**

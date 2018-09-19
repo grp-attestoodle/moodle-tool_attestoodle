@@ -61,18 +61,19 @@ class training_management implements \renderable {
             $idtemplate = -1;
             if ($this->category->is_training()) {
                 $idtemplate = 0;
-                $training = trainings_factory::get_instance()->retrieve_training($this->categoryid);
-                $idtraining = $training->get_id();
+                $idtraining = $DB->get_field('attestoodle_training', 'id', ['categoryid' => $this->categoryid]);
                 if ($DB->record_exists('attestoodle_train_template', ['trainingid' => $idtraining])) {
                     $idtemplate = $DB->get_field('attestoodle_train_template', 'templateid', ['trainingid' => $idtraining]);
                 }
             }
-
             $this->form = new category_training_update_form(
                     new \moodle_url('/admin/tool/attestoodle/index.php',
                         array('page' => 'trainingmanagement', 'categoryid' => $this->categoryid)),
-                        array('data' => $this->category, 'idtemplate' => $idtemplate), 'get' );
-
+                        array('data' => $this->category, 'idtemplate' => $idtemplate,
+                        'idtraining' => $idtraining), 'get' );
+            if ($idtemplate > -1) {
+                $this->form->set_data(array ('template' => $idtemplate));
+            }
             $this->handle_form();
         } else {
             $PAGE->set_heading(get_string('training_management_main_title_no_category', 'tool_attestoodle'));
@@ -164,38 +165,25 @@ class training_management implements \renderable {
                     $category->set_istraining($oldistrainingvalue);
                     $error = true;
                 }
-            }
-
-            if (isset($datafromform->createtemplate)) {
-                $training = trainings_factory::get_instance()->retrieve_training($this->categoryid);
-                $idtraining = $training->get_id();
-                $redirecturl = new \moodle_url('/admin/tool/attestoodle/classes/gabarit/sitecertificate.php',
-                    array('templateid' => $idtraining));
-                redirect($redirecturl);
-                return;
-            }
-            if (isset($datafromform->deletetemplate)) {
-                $training = trainings_factory::get_instance()->retrieve_training($this->categoryid);
-                $idtraining = $training->get_id();
-                $record = $DB->get_record('attestoodle_train_template', ['trainingid' => $idtraining]);
-                $DB->delete_records('attestoodle_template_detail', ['templateid' => $record->templateid]);
-                $DB->delete_records('attestoodle_train_template', ['trainingid' => $idtraining]);
-                // Delete background image.
-                $fs = get_file_storage();
-                $files = $fs->get_area_files(1, 'tool_attestoodle', 'fichier', $record->templateid);
-
-                foreach ($files as $file) {
-                    $file->delete();
+                // Notify the user of the submission result.
+                $this->notify_result($error, $updated, $boolvalue);
+                if (!$error) {
+                    $redirecturl = new \moodle_url('/admin/tool/attestoodle/index.php',
+                        array ('page' => 'trainingmanagement', 'categoryid' => $this->categoryid));
+                    redirect($redirecturl);
+                    return;
                 }
-                // Redirect on this page for redisplay form.
-                $redirecturl = new \moodle_url('/admin/tool/attestoodle/index.php',
-                    array('page' => 'trainingmanagement', 'categoryid' => $this->categoryid));
-                redirect($redirecturl);
+            } else {
+                $nvxtemplate = $datafromform->template;
+                $idtraining = $DB->get_field('attestoodle_training', 'id', ['categoryid' => $this->categoryid]);
+                $oldtemplate = $DB->get_field('attestoodle_train_template', 'templateid', ['trainingid' => $idtraining]);
+                if ($oldtemplate != $nvxtemplate) {
+                    $record = $DB->get_record('attestoodle_train_template', ['trainingid' => $idtraining]);
+                    $record->templateid = $nvxtemplate;
+                    \core\notification::info(get_string('updatetraitemplate', 'tool_attestoodle'));
+                    $DB->update_record('attestoodle_train_template', $record);
+                }
             }
-            // Notify the user of the submission result.
-            $this->notify_result($error, $updated, $boolvalue);
-        } else {
-            return;
         }
     }
 
