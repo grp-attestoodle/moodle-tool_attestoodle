@@ -80,14 +80,18 @@ if (!$DB->record_exists('attestoodle_template', array('name' => 'Site'))) {
     $object->type = 'activities';
     $object->data = '{ "font": {"family":"helvetica","emphasis":"","size":"10"}, "location": {"x":"50","y":"60"}, "align":"C"} ';
     $DB->insert_record('attestoodle_template_detail', $object);
-    // Enreg image background in file storage.
-    $fs = get_file_storage();
-    $file = $fs->get_file(1, 'tool_attestoodle', 'fichier', $idtemplate, '/', 'attest_background.png');
-    if (!$file) {
-        $filerecord = array('contextid' => 1, 'component' => 'tool_attestoodle', 'filearea' => 'fichier',
-            'itemid' => $idtemplate, 'filepath' => '/');
-        $url = "$CFG->wwwroot/admin/tool/attestoodle/pix/attest_background.png";
-        $fs->create_file_from_url($filerecord, $url, null, true);
+    try {
+        // Enreg image background in file storage.
+        $fs = get_file_storage();
+        $file = $fs->get_file(1, 'tool_attestoodle', 'fichier', $idtemplate, '/', 'attest_background.png');
+        if (!$file) {
+            $filerecord = array('contextid' => 1, 'component' => 'tool_attestoodle', 'filearea' => 'fichier',
+                'itemid' => $idtemplate, 'filepath' => '/');
+            $url = "$CFG->wwwroot/admin/tool/attestoodle/pix/attest_background.png";
+            $fs->create_file_from_url($filerecord, $url, null, true);
+        }
+    } catch (Exception $e) {
+        \core\notification::info('repertoire pix inacessible, modele par défaut sans image');
     }
 }
 

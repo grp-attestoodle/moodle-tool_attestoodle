@@ -18,6 +18,7 @@ namespace tool_attestoodle\gabarit;
 defined('MOODLE_INTERNAL') || die();
 
 require_once("$CFG->dirroot/lib/pdflib.php");
+require_once("./simul_pdf.php");
 
 /**
  * Created a pdf representing a certificate according to a model for a learner.
@@ -48,6 +49,12 @@ class attestation_pdf {
 
     protected $acceptoffset = false;
     protected $offset = 0;
+    protected $currentpage = 1;
+    protected $nbpage = 1;
+    protected $numpage = 'never';
+    protected $repeatbackground = false;
+    protected $repeatstart = false;
+    protected $repeatend = false;
     /**
      * Set the information to print.
      * @param \stdClass $info A standard class object containing the following to print provide
@@ -70,13 +77,17 @@ class attestation_pdf {
         global $DB;
         $sql = "select type,data from {attestoodle_template_detail} where templateid = " . $idtemplate;
         $rs = $DB->get_recordset_sql ( $sql, array () );
-
         $this->template = array();
 
         foreach ($rs as $result) {
             $obj = json_decode($result->data);
             if ($result->type == "background") {
                 $this->filename = $obj->filename;
+            } else if ($result->type == "pagebreak") {
+                $this->numpage = $obj->numpage;
+                $this->repeatbackground = $obj->repeatbackground;
+                $this->repeatstart = $obj->repeatstart;
+                $this->repeatend = $obj->repeatend;
             } else {
                 $obj->type = $result->type;
                 $this->template[] = $obj;
@@ -143,6 +154,7 @@ class attestation_pdf {
     public function generate_pdf_object() {
         $doc = $this->prepare_page();
         $this->analysedata();
+        $this->computenbpage($doc);
         foreach ($this->template as $elt) {
             $doc->SetFont($elt->font->family, $elt->font->emphasis, $elt->font->size);
 
@@ -172,15 +184,111 @@ class attestation_pdf {
                         break;
                     case "text" :
                         $text = "";
+                        break;
+                    case "pagenumber" :
+                        $text = "";
+                        if ($this->numpage == 'never') {
+                            continue;
+                        }
+                        if ($this->nbpage < 2 && $this->numpage == 'any') {
+                            continue;
+                        }
+
+                        $text = $this->nbpage;
+                        if ($elt->ontotal) {
+                            $text = $text . " / " . $this->nbpage;
+                        }
+                        if (isset($elt->lib)) {
+                            $text = $elt->lib . $text;
+                        }
                 }
-                if (isset($elt->lib)) {
+                if (isset($elt->lib) && $elt->type != "pagenumber") {
                     $text = $elt->lib . $text;
                 }
                 $text = trim($text);
-                $this->displaytext($text, $elt, $doc);
+                if (!empty($text)) {
+                    $this->displaytext($text, $elt, $doc);
+                }
             }
         }
+        if (isset($this->file)) {
+            @unlink($this->file);
+        }
         return $doc;
+    }
+
+    /**
+     * Il y a forcement plus d'une page dans attest a ce niveau
+     * puisqu'on fait une rupture de page.
+     */
+    protected function displaypagenumber($pdf) {
+        if ($this->numpage == 'never') {
+            return;
+        }
+        $zr = $this->offset;
+        $this->offset = 0;
+        foreach ($this->template as $elt) {
+            if ($elt->type != "pagenumber") {
+                continue;
+            }
+            $pdf->SetFont($elt->font->family, $elt->font->emphasis, $elt->font->size);
+
+            $text = $this->currentpage;
+            if ($elt->ontotal) {
+                $text = $text . " / " . $this->nbpage;
+            }
+            if (isset($elt->lib)) {
+                $text = $elt->lib . $text;
+            }
+            $text = trim($text);
+            $this->displaytext($text, $elt, $pdf);
+        }
+        $this->offset = $zr;
+    }
+
+    protected function displaybeforeactivities($pdf, $model) {
+        if (!$this->repeatstart) {
+            return;
+        }
+        foreach ($this->template as $elt) {
+            if ($elt->location->y > $model->location->y) {
+                break;
+            }
+            if ($elt->type == "pagenumber") {
+                continue;
+            }
+            $pdf->SetFont($elt->font->family, $elt->font->emphasis, $elt->font->size);
+            $text = "";
+            switch ($elt->type) {
+                case "learnername" :
+                    if (isset($this->certificateinfos->learnername)) {
+                        $text = $this->certificateinfos->learnername;
+                    }
+                    break;
+                case "trainingname" :
+                    if (isset($this->certificateinfos->trainingname)) {
+                        $text = $this->certificateinfos->trainingname;
+                    }
+                    break;
+                case "period" :
+                    if (isset($this->certificateinfos->period)) {
+                        $text = $this->certificateinfos->period;
+                    }
+                    break;
+                case "totalminutes" :
+                    if (isset($this->certificateinfos->totalminutes)) {
+                        $text = parse_minutes_to_hours($this->certificateinfos->totalminutes);
+                    }
+                    break;
+                case "text" :
+                    break;
+            }
+            if (isset($elt->lib)) {
+                $text = $elt->lib . $text;
+            }
+            $text = trim($text);
+            $this->displaytext($text, $elt, $pdf);
+        }
     }
 
     /**
@@ -188,8 +296,14 @@ class attestation_pdf {
      * avant ruture de page.
      */
     protected function displayaftertactivities($pdf, $model) {
+        if (!$this->repeatend) {
+            return;
+        }
         foreach ($this->template as $elt) {
             if ($elt->location->y <= $model->location->y) {
+                continue;
+            }
+            if ($elt->type == "pagenumber") {
                 continue;
             }
             $pdf->SetFont($elt->font->family, $elt->font->emphasis, $elt->font->size);
@@ -217,6 +331,7 @@ class attestation_pdf {
                     break;
                 case "text" :
                     $text = "";
+                    break;
             }
             if (isset($elt->lib)) {
                 $text = $elt->lib . $text;
@@ -275,7 +390,6 @@ class attestation_pdf {
 
         if (isset($this->filename)) {
             $doc->Image($this->file, 0, 0, $this->pagewidth, $this->pageheight, 'png', '', true);
-            @unlink($this->file);
         }
 
         return $doc;
@@ -351,9 +465,17 @@ class attestation_pdf {
                 } else {
                     $this->offset = $y - $this->ytabend;
                 }
+
                 $this->displayaftertactivities($pdf, $model);
+                $this->displaypagenumber($pdf);
 
                 $pdf->AddPage();
+                $this->currentpage ++;
+                if (isset($this->filename) && $this->repeatbackground) {
+                    $pdf->Image($this->file, 0, 0, $this->pagewidth, $this->pageheight, 'png', '', true);
+                }
+                $this->offset = 0;
+                $this->displaybeforeactivities($pdf, $model);
                 $y = $this->ytabstart;
                 $ystart = $y;
 
@@ -419,19 +541,11 @@ class attestation_pdf {
      * Get the last y position.
      */
     private function analysedata() {
-        if (!isset($this->filename)) {
-            $this->acceptoffset = true;
-        } else {
-            $this->acceptoffset = true;
-            foreach ($this->template as $elt) {
-                if ($elt->type != "activities" && $elt->type != "text" && $elt->type != "background" &&
-                    $elt->type != "period" ) {
-                    if (!isset($elt->lib)) {
-                        $this->acceptoffset = false;
-                    }
-                }
-            }
-        }
+        $this->setacceptoffset();
+        $this->computepagelimit();
+    }
+
+    private function computepagelimit() {
         $this->yend = 0;
         $this->ytabstart = 0;
         foreach ($this->template as $elt) {
@@ -449,7 +563,26 @@ class attestation_pdf {
         if ($this->ytabend == -1) {
             $this->ytabend = $this->pageheight - 30;
         }
+        if ($this->yend == $this->ytabstart) {
+            $this->yend = $this->ytabend;
+        }
         // Hauteur du tableau = $this->ytabend - $this->ytabstart.
+    }
+
+    private function setacceptoffset() {
+        if (!isset($this->filename)) {
+            $this->acceptoffset = true;
+        } else {
+            $this->acceptoffset = true;
+            foreach ($this->template as $elt) {
+                if ($elt->type != "activities" && $elt->type != "text" && $elt->type != "background" &&
+                    $elt->type != "period" ) {
+                    if (!isset($elt->lib)) {
+                        $this->acceptoffset = false;
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -459,7 +592,6 @@ class attestation_pdf {
         if ($elt->location->x > $this->pagewidth) {
             return;
         }
-
         $relicat = "";
         while ($doc->GetStringWidth($text) + $elt->location->x > $this->pagewidth) {
             $position = strrpos($text, " ");
@@ -470,20 +602,28 @@ class attestation_pdf {
                 break;
             }
         }
-
         // Mark text cut.
         if ($relicat != "" && !$this->acceptoffset) {
             $text = $text . "...";
         }
-
         $x = $this->comput_align($elt, $doc->GetStringWidth($text));
         $doc->SetXY($x, $elt->location->y + $this->offset);
         $doc->Cell($doc->GetStringWidth($text), 0, $text, 0, 0, $elt->align, false);
-
         // Newline ?
         if ($this->acceptoffset && $relicat != "") {
             $this->offset = $this->offset + ($elt->font->size / 2);
             $this->displaytext($relicat, $elt, $doc);
         }
+    }
+
+    /**
+     * Simul génération pdf for computation of number of page.
+     * @param $doc pdf instance
+     */
+    private function computenbpage($doc) {
+        $simulator = new simul_pdf($doc, $this->template);
+        $simulator->initvalues($this->pagewidth, $this->ytabend, $this->yend, $this->pageheight,
+            $this->ytabstart, $this->acceptoffset, $this->certificateinfos);
+        $this->nbpage = $simulator->generate_pdf_object();
     }
 }

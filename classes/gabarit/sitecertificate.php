@@ -107,6 +107,7 @@ if ($fromform = $mform->get_data()) {
     $previewok = true;
     $nvxtuples = array();
 
+    $backgroundexist = false;
     if ($datas->fichier) {
         file_save_draft_area_files($datas->fichier, $context->id, 'tool_attestoodle', 'fichier', $idtemplate,
             array('subdirs' => 0, 'maxbytes' => 10485760, 'maxfiles' => 1));
@@ -124,6 +125,7 @@ if ($fromform = $mform->get_data()) {
             $templatedetail->data = json_encode($valeurs);
             $nvxtuples[] = $templatedetail;
         }
+        $backgroundexist = true;
     }
 
     if (trim($datas->learnerPosx) != '') {
@@ -181,6 +183,16 @@ if ($fromform = $mform->get_data()) {
                 $datas->text5FontSize, $datas->text5Posx, $datas->text5Posy, $datas->text5Align, $datas->text5lib);
     }
 
+    // Type pagebreak.
+    $nvxtuples[] = pagebreak_to_structure($idtemplate, $datas->viewpagenumber, $datas->repeatbackground,
+                $datas->repeatpreactivities, $datas->repeatpostactivities, $backgroundexist);
+    // Type numpage.
+    if ($datas->viewpagenumber > 0) {
+        $nvxtuples[] = data_to_structure($idtemplate, "pagenumber", $datas->pagenumberFontFamily, $datas->pagenumberEmphasis,
+                $datas->pagenumberFontSize, $datas->pagenumberPosx, $datas->pagenumberPosy, $datas->pagenumberAlign,
+                $datas->pagenumberlib, null, $datas->pagenumber_total);
+    }
+
     $DB->delete_records('attestoodle_template_detail', array ('templateid' => $idtemplate));
     if (count($nvxtuples) > 0) {
         foreach ($nvxtuples as $record) {
@@ -223,6 +235,22 @@ foreach ($rs as $result) {
         case "text" :
             $nbtxt ++;
             add_values_from_json($valdefault, $result->type . $nbtxt, $obj);
+            break;
+        case "pagenumber" :
+            add_values_pagenumber($valdefault, $obj);
+            break;
+        case "pagebreak" :
+            $numpage = 0;
+            if ($obj->numpage == 'any') {
+                $numpage = 1;
+            }
+            if ($obj->numpage == 'always') {
+                $numpage = 2;
+            }
+            $valdefault['viewpagenumber'] = $numpage;
+            $valdefault['repeatbackground'] = $obj->repeatbackground;
+            $valdefault['repeatpreactivities'] = $obj->repeatstart;
+            $valdefault['repeatpostactivities'] = $obj->repeatend;
             break;
     }
 }
@@ -280,10 +308,51 @@ function add_values_from_json(&$arrayvalues, $prefixe, $objson) {
     }
 }
 /**
+ * Uses the pagenumber json record as a form value.
+ * @param $arrayvalues form values array.
+ * @param $objson object json to treat.
+ */
+function add_values_pagenumber(&$arrayvalues, $objson) {
+    add_values_from_json($arrayvalues, 'pagenumber', $objson);
+    $arrayvalues['pagenumber_total'] = $objson->ontotal;
+}
+function pagebreak_to_structure($dtotemplateid, $dtoviewpagenum, $dtorepeatbackgr, $dtorepeatstart,
+ $dtorepeatend, $backgroundexist) {
+    $templatedetail = new stdClass();
+    $templatedetail->templateid = $dtotemplateid;
+    $templatedetail->type = 'pagebreak';
+    $valeurs = new stdClass();
+    $numpage = 'never';
+    if ($dtoviewpagenum == 1) {
+        $numpage = 'any';
+    }
+    if ($dtoviewpagenum == 2) {
+        $numpage = 'always';
+    }
+    $valeurs->numpage = $numpage;
+    $repeatbackground = false;
+    if (isset($dtorepeatbackgr) && $backgroundexist) {
+        $repeatbackground = true;
+    }
+    $valeurs->repeatbackground = $repeatbackground;
+    $repeatstart = false;
+    if ($dtorepeatstart == 1) {
+        $repeatstart = true;
+    }
+    $valeurs->repeatstart = $repeatstart;
+    $repeatend = false;
+    if ($dtorepeatend == 1) {
+        $repeatend = true;
+    }
+    $valeurs->repeatend = $repeatend;
+    $templatedetail->data = json_encode($valeurs);
+    return $templatedetail;
+}
+/**
  * create a table TemplateDetail row structure for save into database.
  */
 function data_to_structure($dtotemplateid, $dtotype, $dtofontfamily, $dtoemphasis, $dtofontsize, $dtoposx,
-    $dtoposy, $dtoalign, $dtolib = null, $dtosize = null) {
+    $dtoposy, $dtoalign, $dtolib = null, $dtosize = null, $dtoontotal = null) {
     $emphases = array('', 'B', 'I');
     $alignments = array('L', 'R', 'C', 'J');
     $sizes = array('6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '18', '20', '22', '24', '26', '28', '32',
@@ -310,6 +379,13 @@ function data_to_structure($dtotemplateid, $dtotype, $dtofontfamily, $dtoemphasi
     }
     if ($dtosize != null) {
         $valeurs->size = $dtosize;
+    }
+    if ($dtotype == 'pagenumber') {
+        if ($dtoontotal != null) {
+            $valeurs->ontotal = true;
+        } else {
+            $valeurs->ontotal = false;
+        }
     }
     $templatedetail->data = json_encode($valeurs);
     return $templatedetail;

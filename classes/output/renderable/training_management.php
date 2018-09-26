@@ -59,6 +59,7 @@ class training_management implements \renderable {
             $PAGE->set_heading(get_string('training_management_main_title', 'tool_attestoodle', $this->category->get_name()));
 
             $idtemplate = -1;
+            $idtraining = -1;
             if ($this->category->is_training()) {
                 $idtemplate = 0;
                 $idtraining = $DB->get_field('attestoodle_training', 'id', ['categoryid' => $this->categoryid]);

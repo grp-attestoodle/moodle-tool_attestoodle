@@ -75,6 +75,31 @@ class attestation_form extends moodleform {
         }
         $mform->setExpanded('literaux', false);
 
+        $mform->addElement('header', 'pagebreak', get_string('pagebreak', 'tool_attestoodle'));
+        $radioarray = array();
+        $radioarray[] = $mform->createElement('radio', 'viewpagenumber', '', get_string('nl_never', 'tool_attestoodle'), 0);
+        $radioarray[] = $mform->createElement('radio', 'viewpagenumber', '', get_string('nl_necessary', 'tool_attestoodle'), 1);
+        $radioarray[] = $mform->createElement('radio', 'viewpagenumber', '', get_string('nl_always', 'tool_attestoodle'), 2);
+        $mform->addGroup($radioarray, 'viewpagenumber', get_string('viewpagenumber', 'tool_attestoodle'), array(' '), false);
+        $group = $this->creer_ligne('pagenumber');
+        $group[] =& $mform->createElement('checkbox', 'pagenumber_total', '', get_string('nl_ontotal', 'tool_attestoodle'));
+        $mform->addGroup($group, 'pagenumber', get_string('nl_pagenumber', 'tool_attestoodle'), ' ', false);
+        $mform->disabledIf('pagenumber', 'viewpagenumber', 'eq', 0);
+        $group = array();
+        $group[] =& $mform->createElement('checkbox', 'repeatbackground', '');
+        $mform->addGroup($group, 'repback', get_string('nl_background', 'tool_attestoodle'), ' ', false);
+        $group = array();
+        $group[] =& $mform->createElement('radio', 'repeatpreactivities', '', get_string('nl_preactch1', 'tool_attestoodle'), 0);
+        $group[] =& $mform->createElement('radio', 'repeatpreactivities', '', get_string('nl_preactch2', 'tool_attestoodle'), 1);
+        $mform->addGroup($group, 'reppreact', get_string('nl_preact', 'tool_attestoodle'), ' ', false);
+
+        $group = array();
+        $group[] =& $mform->createElement('radio', 'repeatpostactivities', '', get_string('nl_postactch1', 'tool_attestoodle'), 0);
+        $group[] =& $mform->createElement('radio', 'repeatpostactivities', '', get_string('nl_preactch2', 'tool_attestoodle'), 1);
+        $mform->addGroup($group, 'reppostact', get_string('nl_postact', 'tool_attestoodle'), ' ', false);
+
+        $mform->setExpanded('pagebreak', false);
+
         $mform->addElement('header', 'actionssection', get_string('actions', 'tool_attestoodle'));
         $actionbuttongroup = array();
         $actionbuttongroup[] =& $mform->createElement('submit', 'save', get_string('savechanges'), array('class' => 'send-button'));

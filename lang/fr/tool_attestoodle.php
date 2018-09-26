@@ -38,6 +38,9 @@ $string['attestoodle:managemilestones'] = "Gérer les jalons d'une formation";
 $string['attestoodle:displaylearnerslist'] = "Afficher les détails d'une formation";
 $string['attestoodle:downloadcertificate'] = "Générer/Télécharger les attestations";
 $string['attestoodle:learnerdetails'] = "Afficher les détails d'un apprenant";
+$string['attestoodle:deletetemplate'] = "Supprimer un modèle d'attestation";
+$string['attestoodle:managetemplate'] = "Gérer les modèles d'attestation";
+$string['attestoodle:viewtemplate'] = "Consulter les modèles d'attestation";
 
 // Block strings.
 $string['plugin_access'] = 'Accès au plug-in';
@@ -186,3 +189,16 @@ $string['templatename'] = 'Nom du modèle';
 $string['listtemplate_title'] = 'Liste des modèles d\'attestation';
 $string['confdeltemplate'] = 'Souhaitez-vous vraiment supprimer le modèle "{$a->name}" ?';
 $string['updatetraitemplate'] = 'Mise à jours du modèle de certificat réussie';
+$string['pagebreak'] = 'Rupture de page';
+$string['nl_never'] = ' Jamais ';
+$string['nl_necessary'] = ' Si nécessaire ';
+$string['nl_always'] = ' Toujours';
+$string['viewpagenumber'] = 'Afficher le numéro de page';
+$string['nl_ontotal'] = ' / nombre total';
+$string['nl_pagenumber'] = 'Numéro de Page';
+$string['nl_background'] = 'Répéter l\'image de fond';
+$string['nl_preact'] = 'Informations avant le tableau';
+$string['nl_preactch1'] = 'Uniquement sur la 1ere page';
+$string['nl_preactch2'] = 'Sur toutes les pages';
+$string['nl_postact'] = 'Informations après le tableau';
+$string['nl_postactch1'] = 'Uniquement sur la dernière page';

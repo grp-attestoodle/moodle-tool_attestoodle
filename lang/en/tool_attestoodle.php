@@ -38,6 +38,9 @@ $string['attestoodle:managemilestones'] = "Manage training milestones";
 $string['attestoodle:displaylearnerslist'] = "Display training details";
 $string['attestoodle:downloadcertificate'] = "Generate/Download certificates";
 $string['attestoodle:learnerdetails'] = "Display learner details";
+$string['attestoodle:deletetemplate'] = "Delete certificate's template";
+$string['attestoodle:managetemplate'] = "Manage certificate's template";
+$string['attestoodle:viewtemplate'] = "View certificat's template";
 
 // Block strings.
 $string['plugin_access'] = 'Access to plugin';
@@ -186,3 +189,16 @@ $string['templatename'] = 'Name of template';
 $string['listtemplate_title'] = 'List of attestation templates';
 $string['confdeltemplate'] = 'Are you sure you want to delete the template "{$a->name}" ?';
 $string['updatetraitemplate'] = 'Update the certificate template';
+$string['pagebreak'] = 'Page Break';
+$string['nl_never'] = ' Never ';
+$string['nl_necessary'] = ' If Necessary ';
+$string['nl_always'] = ' Always';
+$string['viewpagenumber'] = 'Display the page number';
+$string['nl_ontotal'] = ' / total page';
+$string['nl_pagenumber'] = 'Page Number';
+$string['nl_background'] = 'Repeat background';
+$string['nl_preact'] = 'Informations before table';
+$string['nl_preactch1'] = 'Only on the 1st page';
+$string['nl_preactch2'] = 'On all pages';
+$string['nl_postact'] = 'Informations after table';
+$string['nl_postactch1'] = 'Only on the last page';
