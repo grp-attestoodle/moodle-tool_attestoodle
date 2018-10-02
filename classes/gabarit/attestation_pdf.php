@@ -18,7 +18,7 @@ namespace tool_attestoodle\gabarit;
 defined('MOODLE_INTERNAL') || die();
 
 require_once("$CFG->dirroot/lib/pdflib.php");
-require_once("./simul_pdf.php");
+use tool_attestoodle\gabarit\simul_pdf;
 
 /**
  * Created a pdf representing a certificate according to a model for a learner.
