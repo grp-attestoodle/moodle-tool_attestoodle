@@ -130,7 +130,8 @@ class training_milestones implements \renderable {
      */
     private function handle_form_has_submitted_data() {
         // If data are valid, process persistance.
-        if (has_capability('tool/attestoodle:managemilestones', \context_system::instance())) {
+        $contextcateg = \context_coursecat::instance($this->trainingid);
+        if (has_capability('tool/attestoodle:managemilestones', $contextcateg)) {
             // Retrieve the submitted data.
             $datafromform = $this->form->get_submitted_data();
 
