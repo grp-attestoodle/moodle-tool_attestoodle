@@ -69,21 +69,25 @@ switch($page) {
 
         $PAGE->set_title(get_string('training_management_page_title', 'tool_attestoodle'));
 
-        $userhascapability = has_capability('tool/attestoodle:managetraining', $context);
-        require_capability('tool/attestoodle:managetraining', $context);
-
+        if (empty($categoryid)) {
+            require_capability('tool/attestoodle:managetraining', $context);
+        } else {
+            $context = context_coursecat::instance($categoryid);
+            $PAGE->set_context($context);
+            require_capability('tool/attestoodle:managetraining', $context);
+        }
         $renderable = new renderable\training_management($categoryid);
 
         break;
     case 'managemilestones':
-        $trainingid = required_param('training', PARAM_INT);
+        $trainingid = required_param('training', PARAM_INT); // its categoryid !
         $PAGE->set_url(new moodle_url($toolpath . '/index.php',
                 ['page' => $page, 'training' => $trainingid]));
         $PAGE->set_title(get_string('training_milestones_page_title', 'tool_attestoodle'));
-
-        $userhascapability = has_capability('tool/attestoodle:managemilestones', $context);
+        $context = context_coursecat::instance($trainingid);
+        $PAGE->set_context($context);
         require_capability('tool/attestoodle:managemilestones', $context);
-
+            
         $renderable = new renderable\training_milestones($trainingid);
         $PAGE->set_heading($renderable->get_heading());
 
@@ -105,10 +109,9 @@ switch($page) {
                 )
         ));
         $PAGE->set_title(get_string('training_learners_list_page_title', 'tool_attestoodle'));
-
-        $userhascapability = has_capability('tool/attestoodle:displaylearnerslist', $context);
+        $context = context_coursecat::instance($trainingid);
+        $PAGE->set_context($context);
         require_capability('tool/attestoodle:displaylearnerslist', $context);
-
         // Instanciate the training in the renderable.
         $training = null;
         $trainingexist = trainings_factory::get_instance()->has_training($trainingid);
