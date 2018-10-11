@@ -27,9 +27,20 @@ defined('MOODLE_INTERNAL') || die;
 
 function xmldb_tool_attestoodle_upgrade($oldversion) {
     // Update this function in need of DB upgrade while installing new version.
-    if ($oldversion) {
-        return true;
+    global $CFG, $DB, $OUTPUT;
+    $dbman = $DB->get_manager();
+    // Add columns grpcriteria1 and grpcriteria2 to attestoodle_train_template.
+    if ($oldversion < 2018101001) {
+        $table = new xmldb_table('attestoodle_train_template');
+        $field = new xmldb_field('grpcriteria1', XMLDB_TYPE_CHAR, '35', null, null, null, null);
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        $field = new xmldb_field('grpcriteria2', XMLDB_TYPE_CHAR, '35', null, null, null, null);
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        upgrade_plugin_savepoint(true, 2018101001, 'tool', 'attestoodle');
     }
-
     return true;
 }

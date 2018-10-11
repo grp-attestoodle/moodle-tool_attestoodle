@@ -55,6 +55,10 @@ class attestation_pdf {
     protected $repeatbackground = false;
     protected $repeatstart = false;
     protected $repeatend = false;
+
+    protected $groupe1 = "coursename";
+    protected $groupe2 = "";
+
     /**
      * Set the information to print.
      * @param \stdClass $info A standard class object containing the following to print provide
@@ -62,13 +66,33 @@ class attestation_pdf {
      */
     public function set_infos($infos) {
         $this->certificateinfos = $infos;
+        $activities = $this->regroup($infos->activities);
+        $this->certificateinfos->activities = $activities;
     }
 
     public function set_categoryid($categoryid) {
         global $DB;
         $idtraining = $DB->get_field('attestoodle_training', 'id', ['categoryid' => $categoryid]);
-        $idtemplate = $DB->get_field('attestoodle_train_template', 'templateid', ['trainingid' => $idtraining]);
-        $this->set_idtemplate($idtemplate);
+        $associate = $DB->get_record('attestoodle_train_template', array('trainingid' => $idtraining));
+
+        $this->set_idtemplate($associate->templateid);
+        $this->set_grpcriteria1($associate->grpcriteria1);
+        $this->set_grpcriteria2($associate->grpcriteria2);
+    }
+    public function set_grpcriteria1($criteria) {
+        if (empty($criteria)) {
+            $this->groupe1 = "coursename";
+        } else {
+            $this->groupe1 = $criteria;
+        }
+    }
+
+    public function set_grpcriteria2($criteria) {
+        if (empty($criteria)) {
+            $this->groupe2 = "";
+        } else {
+            $this->groupe2 = $criteria;
+        }
     }
     /**
      * Extract informations of the template use to print.
@@ -443,7 +467,8 @@ class attestation_pdf {
         // Column title course.
         $pdf->SetFont($model->font->family, 'B', $model->font->size);
         $pdf->SetXY($x + 5, $y + 5);
-        $pdf->Cell($widthfirstcolumn - 10, 0, get_string('activity_header_col_1', 'tool_attestoodle'), 0, 0, 'C', false);
+        $pdf->Cell($widthfirstcolumn - 10, 0, get_string('activity_header_' . $this->groupe1 .
+                                    "_" . $this->groupe2, 'tool_attestoodle'), 0, 0, 'C', false);
         // Column title "total hours".
         $pdf->SetXY($x + $widthfirstcolumn + 5, $y + 5);
         $widthsecondcolumn = $width - $widthfirstcolumn;
@@ -454,12 +479,12 @@ class attestation_pdf {
 
         $lineheight = $model->font->size;
         $y = $y + ($heightline * 1.5);
+        $pdf->Line($widthfirstcolumn + $x, $ystart, $widthfirstcolumn + $x, $y);
 
         foreach ($tabactivities as $course) {
-            // Test rupture page nécessaire ?
+            // Page break needed ?
             if ($y - $this->ytabend + $this->yend + 10 > $this->pageheight) {
                 $pdf->Rect($x, $ystart, $width, $y - $ystart, "D");
-                $pdf->Line($widthfirstcolumn + $x, $ystart, $widthfirstcolumn + $x, $y);
                 if ($y < $this->ytabend) {
                     $this->offset = 0;
                 } else {
@@ -482,25 +507,36 @@ class attestation_pdf {
                 $pdf->Line($x, $y + ($heightline * 1.5), $x + $width , $y + ($heightline * 1.5));
                 $pdf->SetFont($model->font->family, 'B', $model->font->size);
                 $pdf->SetXY($x + 5, $y + 5);
-                $pdf->Cell($widthfirstcolumn - 10, 0, get_string('activity_header_col_1', 'tool_attestoodle'), 0, 0, 'C', false);
+                $pdf->Cell($widthfirstcolumn - 10, 0, get_string('activity_header_' . $this->groupe1 .
+                                    "_" . $this->groupe2, 'tool_attestoodle'), 0, 0, 'C', false);
                 $pdf->SetXY($x + $widthfirstcolumn + 5, $y + 5);
                 $pdf->Cell($widthsecondcolumn - 10, 0, get_string('activity_header_col_2', 'tool_attestoodle'), 0, 0, 'C', false);
                 $pdf->SetFont($model->font->family, '', $model->font->size);
                 $y = $y + ($heightline * 1.5);
+                $pdf->Line($widthfirstcolumn + $x, $ystart, $widthfirstcolumn + $x, $y);
             }
 
             $coursename = $course["coursename"];
             $totalminutes = $course["totalminutes"];
             // Activity type.
-            $nbnewline = $this->displayactivity($pdf, $x + 3, $y, $widthfirstcolumn - 6, $lineheight, $coursename);
+            if ($totalminutes != -1) {
+                $nbnewline = $this->displayactivity($pdf, $x + 3, $y, $widthfirstcolumn - 6, $lineheight, $coursename);
+            } else {
+                $pdf->SetFont($model->font->family, 'B', $model->font->size);
+                $nbnewline = $this->displayactivity($pdf, $x + 1, $y, $widthfirstcolumn - 6, $lineheight, $coursename);
+                $pdf->SetFont($model->font->family, '', $model->font->size);
+            }
             // Activity total hours.
-            $pdf->SetXY($x + $widthfirstcolumn + 5, $y);
-            $pdf->Cell($widthsecondcolumn - 10, $lineheight, parse_minutes_to_hours($totalminutes), 0, 0, 'C');
+            if ($totalminutes != -1) {
+                $pdf->SetXY($x + $widthfirstcolumn + 5, $y);
+                $pdf->Cell($widthsecondcolumn - 10, $lineheight, parse_minutes_to_hours($totalminutes), 0, 0, 'C');
+                $pdf->Line($widthfirstcolumn + $x, $y, $widthfirstcolumn + $x,
+                            $y + $lineheight + ($nbnewline - 1) * $lineheight / 2);
+            }
             $y += $lineheight + ($nbnewline - 1) * $lineheight / 2;
             $pdf->Line($x, $y, $x + $width , $y);
         }
         $pdf->Rect($x, $ystart, $width, $y - $ystart, "D");
-        $pdf->Line($widthfirstcolumn + $x, $ystart, $widthfirstcolumn + $x, $y);
         // Compute offset.
         if ($y < $this->ytabend) {
             $this->offset = 0;
@@ -625,5 +661,47 @@ class attestation_pdf {
         $simulator->initvalues($this->pagewidth, $this->ytabend, $this->yend, $this->pageheight,
             $this->ytabstart, $this->acceptoffset, $this->certificateinfos);
         $this->nbpage = $simulator->generate_pdf_object();
+    }
+
+    protected function regroup($tabactivities) {
+        $tabreturn = array();
+        foreach ($tabactivities as $act) {
+            $subtab = array();
+            $discrim1 = $act[$this->groupe1];
+            $tot1 = 0;
+            foreach ($tabactivities as $key => $subact) {
+                if ($subact[$this->groupe1] == $discrim1) {
+                    $tot1 += $subact["totalminutes"];
+                    $subtab[] = $subact;
+                    unset($tabactivities[$key]);
+                }
+            }
+
+            if (count($subtab) > 0 && empty($this->groupe2) == false) {
+                // Subgroup processing.
+                $tabcomput = array();
+                foreach ($subtab as $subact) {
+                    $val = $subact[$this->groupe2];
+                    if (!array_key_exists($val, $tabcomput)) {
+                        $tabcomput[$val] = array(
+                            "totalminutes" => 0,
+                            "coursename" => $val
+                            );
+                    }
+                    // Increment total minutes for the course id in the training.
+                    $tabcomput[$val]["totalminutes"] += $subact["totalminutes"];
+                }
+                // Add criteria1 with totalminutes = -1.
+                $tabreturn[] = array ("totalminutes" => -1, "coursename" => $discrim1);
+                foreach ($tabcomput as $result) {
+                    $tabreturn[] = $result;
+                }
+            }
+
+            if (empty($this->groupe2) && $tot1 > 0) {
+                $tabreturn[] = array ("totalminutes" => $tot1, "coursename" => $discrim1);
+            }
+        }
+        return $tabreturn;
     }
 }

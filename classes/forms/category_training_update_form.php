@@ -43,7 +43,6 @@ class category_training_update_form extends \moodleform {
         $idtraining = $this->_customdata['idtraining'];
 
         $mform = $this->_form;
-
         $label = get_string('training_management_checkbox_label', 'tool_attestoodle');
         $istraining = $category->is_training();
 
@@ -70,6 +69,15 @@ class category_training_update_form extends \moodleform {
             }
 
             $mform->addGroup($group, 'activities', get_string('template_certificate', 'tool_attestoodle'), ' ', false);
+            // Level of grouping.
+            $level1s = array(
+                    'coursename' => get_string('grp_course', 'tool_attestoodle'),
+                    'name' => get_string('grp_activity', 'tool_attestoodle'),
+                    'type' => get_string('grp_type', 'tool_attestoodle')
+                    );
+            $level2s = array_merge(array('' => ''), $level1s);
+            $mform->addElement('select', 'group1', get_string('grp_level1', 'tool_attestoodle'), $level1s, array("size" => 25));
+            $mform->addElement('select', 'group2', get_string('grp_level2', 'tool_attestoodle'), $level2s, array("size" => 25));
             $mform->setExpanded('templatesection', false);
         }
 

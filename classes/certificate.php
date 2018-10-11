@@ -129,16 +129,15 @@ class certificate {
             $course = $activity->get_course();
             $courseid = $course->get_id();
             $coursename = $course->get_name();
-
-            // Instanciate course in the global array if needed.
-            if (!array_key_exists($courseid, $activitiesstructured)) {
-                $activitiesstructured[$courseid] = array(
-                    "totalminutes" => 0,
-                    "coursename" => $coursename
-                );
-            }
-            // Increment total minutes for the course id in the training.
-            $activitiesstructured[$courseid]["totalminutes"] += $activity->get_milestone();
+            $cmid = $activity->get_id();
+            $activitiesstructured[$cmid]["coursename"] = $coursename;
+            $activitiesstructured[$cmid]["totalminutes"] = $activity->get_milestone();
+            $activitiesstructured[$cmid]["moduleid"] = $activity->get_idmodule();
+            $activitiesstructured[$cmid]["name"] = $activity->get_name();
+            $activitiesstructured[$cmid]["description"] = $activity->get_description();
+            $activitiesstructured[$cmid]["type"] = $activity->get_type();
+            $activitiesstructured[$cmid]["cmid"] = $cmid;
+            $activitiesstructured[$cmid]["courseid"] = $courseid;
         }
         // Retrieve global informations.
         $datformat = get_string('dateformat', 'tool_attestoodle');
@@ -154,7 +153,6 @@ class certificate {
         $certificateinfos->totalminutes = $totalminutes;
         $certificateinfos->period = $period;
         $certificateinfos->activities = $activitiesstructured;
-
         return $certificateinfos;
     }
 

@@ -69,25 +69,23 @@ switch($page) {
 
         $PAGE->set_title(get_string('training_management_page_title', 'tool_attestoodle'));
 
-        if (empty($categoryid)) {
-            require_capability('tool/attestoodle:managetraining', $context);
-        } else {
+        if (!empty($categoryid)) {
             $context = context_coursecat::instance($categoryid);
             $PAGE->set_context($context);
-            require_capability('tool/attestoodle:managetraining', $context);
         }
+        require_capability('tool/attestoodle:managetraining', $context);
         $renderable = new renderable\training_management($categoryid);
 
         break;
     case 'managemilestones':
-        $trainingid = required_param('training', PARAM_INT); // its categoryid !
+        $trainingid = required_param('training', PARAM_INT);
         $PAGE->set_url(new moodle_url($toolpath . '/index.php',
                 ['page' => $page, 'training' => $trainingid]));
         $PAGE->set_title(get_string('training_milestones_page_title', 'tool_attestoodle'));
         $context = context_coursecat::instance($trainingid);
         $PAGE->set_context($context);
         require_capability('tool/attestoodle:managemilestones', $context);
-            
+
         $renderable = new renderable\training_milestones($trainingid);
         $PAGE->set_heading($renderable->get_heading());
 

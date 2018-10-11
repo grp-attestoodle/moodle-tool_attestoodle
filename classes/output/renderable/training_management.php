@@ -60,11 +60,22 @@ class training_management implements \renderable {
 
             $idtemplate = -1;
             $idtraining = -1;
+            $grp1 = null;
+            $grp2 = null;
             if ($this->category->is_training()) {
                 $idtemplate = 0;
                 $idtraining = $DB->get_field('attestoodle_training', 'id', ['categoryid' => $this->categoryid]);
                 if ($DB->record_exists('attestoodle_train_template', ['trainingid' => $idtraining])) {
-                    $idtemplate = $DB->get_field('attestoodle_train_template', 'templateid', ['trainingid' => $idtraining]);
+                    $associate = $DB->get_record('attestoodle_train_template', array('trainingid' => $idtraining));
+                    $idtemplate = $associate->templateid;
+                    $grp1 = $associate->grpcriteria1;
+                    if (empty($grp1)) {
+                        $grp1 = 'coursename';
+                    }
+                    $grp2 = $associate->grpcriteria2;
+                    if (empty($grp2)) {
+                        $grp2 = '';
+                    }
                 }
             }
             $this->form = new category_training_update_form(
@@ -73,7 +84,7 @@ class training_management implements \renderable {
                         array('data' => $this->category, 'idtemplate' => $idtemplate,
                         'idtraining' => $idtraining), 'get' );
             if ($idtemplate > -1) {
-                $this->form->set_data(array ('template' => $idtemplate));
+                $this->form->set_data(array ('template' => $idtemplate, 'group1' => $grp1, 'group2' => $grp2));
             }
             $this->handle_form();
         } else {
@@ -177,13 +188,15 @@ class training_management implements \renderable {
             } else {
                 $nvxtemplate = $datafromform->template;
                 $idtraining = $DB->get_field('attestoodle_training', 'id', ['categoryid' => $this->categoryid]);
-                $oldtemplate = $DB->get_field('attestoodle_train_template', 'templateid', ['trainingid' => $idtraining]);
-                if ($oldtemplate != $nvxtemplate) {
-                    $record = $DB->get_record('attestoodle_train_template', ['trainingid' => $idtraining]);
-                    $record->templateid = $nvxtemplate;
-                    \core\notification::info(get_string('updatetraitemplate', 'tool_attestoodle'));
-                    $DB->update_record('attestoodle_train_template', $record);
+                $record = $DB->get_record('attestoodle_train_template', ['trainingid' => $idtraining]);
+                $record->templateid = $nvxtemplate;
+                $record->grpcriteria1 = $datafromform->group1;
+                $record->grpcriteria2 = $datafromform->group2;
+                if (empty($datafromform->group2)) {
+                    $record->grpcriteria2 = null;
                 }
+                \core\notification::info(get_string('updatetraitemplate', 'tool_attestoodle'));
+                $DB->update_record('attestoodle_train_template', $record);
             }
         }
     }

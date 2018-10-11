@@ -32,10 +32,8 @@ require_once('attestation_form.php');
 
 use tool_attestoodle\factories\trainings_factory;
 
-
 $context = context_system::instance();
 $idtemplate = optional_param('templateid', null, PARAM_INT);
-$trainingname = 'standard';
 
 if (!isset($idtemplate)) {
     $template = $DB->get_record('attestoodle_template', array('name' => 'Site'));
@@ -70,7 +68,7 @@ require_login();
 $PAGE->set_url(new moodle_url(dirname(__FILE__) . '/sitecertificate.php', [] ));
 $PAGE->set_title(get_string('template_certificate', 'tool_attestoodle'));
 $title = get_string('pluginname', 'tool_attestoodle') . " - " .
-    get_string('template_certificate', 'tool_attestoodle') . " - " . $trainingname;
+    get_string('template_certificate', 'tool_attestoodle') . " - " . $template->name;
 $PAGE->set_heading($title);
 
 
