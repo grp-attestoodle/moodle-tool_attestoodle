@@ -171,15 +171,6 @@ class activity {
     }
 
     /**
-     * Setter for $id property.
-     *
-     * @param string $prop Id to set for the activity
-     */
-    public function set_id($prop) {
-        $this->id = $prop;
-    }
-
-    /**
      * Setter for $idmodule property.
      *
      * @param string $prop Id module to set for the activity

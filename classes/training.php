@@ -33,6 +33,9 @@ class training {
     /** @var course[] Courses of the training */
     private $courses;
 
+    /** @var integer Id of the training. */
+    private $id;
+
     /**
      * Constructor of the training class.
      *
@@ -126,12 +129,21 @@ class training {
     }
 
     /**
-     * Shortcut setter for the category $id property.
+     * Shortcut getter for the training $id property.
+     *
+     * @return integer Id of the training
+     */
+    public function get_id() {
+        return $this->id;
+    }
+
+    /**
+     * Shortcut setter for the training $id property.
      *
      * @param string $prop Id to set for the training
      */
     public function set_id($prop) {
-        $this->category->set_id($prop);
+        $this->id = $prop;
     }
 
     /**

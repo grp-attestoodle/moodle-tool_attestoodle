@@ -164,15 +164,6 @@ class category {
     }
 
     /**
-     * Setter for $id property.
-     *
-     * @param string $prop Id to set for the category
-     */
-    public function set_id($prop) {
-        $this->id = $prop;
-    }
-
-    /**
      * Setter for $name property.
      *
      * @param string $prop Name to set for the category

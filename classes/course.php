@@ -121,15 +121,6 @@ class course {
     }
 
     /**
-     * Setter for $id property.
-     *
-     * @param integer $prop Id to set for the course
-     */
-    public function set_id($prop) {
-        $this->id = $prop;
-    }
-
-    /**
      * Setter for $name property.
      *
      * @param string $prop Name to set for the course

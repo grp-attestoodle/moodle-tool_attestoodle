@@ -168,15 +168,6 @@ class learner {
     }
 
     /**
-     * Setter for $id property.
-     *
-     * @param integer $prop Id to set for the learner
-     */
-    public function set_id($prop) {
-        $this->id = $prop;
-    }
-
-    /**
      * Setter for $firstname property.
      *
      * @param string $prop Firstame to set for the learner
