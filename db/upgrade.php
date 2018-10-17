@@ -50,5 +50,13 @@ function xmldb_tool_attestoodle_upgrade($oldversion) {
             upgrade_plugin_savepoint(true, 2018101611, 'tool', 'attestoodle');
         }
     }
+    if ($oldversion < 2018101705) {
+        $table = new xmldb_table('attestoodle_milestone');
+        $field = new xmldb_field('milestone', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null, 'id');
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->rename_field($table, $field, 'creditedtime');
+            upgrade_plugin_savepoint(true, 2018101705, 'tool', 'attestoodle');
+        }
+    }
     return true;
 }

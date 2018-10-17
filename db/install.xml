@@ -20,7 +20,7 @@
     <TABLE NAME="attestoodle_milestone" COMMENT="Table that stores the milestone values in Attestoodle">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" />
-        <FIELD NAME="milestone" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="The milestone value (in minutes) of the activity"/>
+        <FIELD NAME="creditedtime" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="The milestone value (in minutes) of the activity"/>
         <FIELD NAME="moduleid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the course module corresponding to the activity"/>
       </FIELDS>
       <KEYS>

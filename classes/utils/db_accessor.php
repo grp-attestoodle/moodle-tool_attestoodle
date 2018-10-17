@@ -74,10 +74,7 @@ class db_accessor extends singleton {
      * @param activity $activity The activity to delete in table
      */
     public function delete_milestone($activity) {
-        self::$db->delete_records(
-                'attestoodle_milestone',
-                array('moduleid' => $activity->get_id())
-        );
+        self::$db->delete_records('attestoodle_milestone', array('moduleid' => $activity->get_id()));
     }
 
     /**
@@ -87,7 +84,7 @@ class db_accessor extends singleton {
      */
     public function insert_milestone($activity) {
         $dataobject = new \stdClass();
-        $dataobject->milestone = $activity->get_milestone();
+        $dataobject->creditedtime = $activity->get_milestone();
         $dataobject->moduleid = $activity->get_id();
 
         self::$db->insert_record('attestoodle_milestone', $dataobject);
@@ -99,17 +96,10 @@ class db_accessor extends singleton {
      * @param activity $activity The activity to update in table
      */
     public function update_milestone($activity) {
-        $request = "
-                UPDATE {attestoodle_milestone}
-                SET milestone = ?
-                WHERE moduleid = ?
-            ";
-        self::$db->execute(
-                $request,
-                array(
-                        $activity->get_milestone(),
-                        $activity->get_id()
-                ));
+        $request = " UPDATE {attestoodle_milestone}
+                        SET creditedtime = ?
+                      WHERE moduleid = ?";
+        self::$db->execute($request, array($activity->get_milestone(), $activity->get_id()));
     }
 
     /**

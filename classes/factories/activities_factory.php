@@ -57,7 +57,7 @@ class activities_factory extends singleton {
         $this->milestones = array();
         $dbmilestones = db_accessor::get_instance()->get_all_milestones();
         foreach ($dbmilestones as $dbm) {
-            $this->milestones[$dbm->moduleid] = $dbm->milestone;
+            $this->milestones[$dbm->moduleid] = $dbm->creditedtime;
         }
     }
 
