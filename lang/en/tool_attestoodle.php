@@ -216,3 +216,4 @@ $string['activity_header_type_name'] = 'Activities followed by types';
 $string['activity_header_name_'] = 'Followed Activities';
 $string['activity_header_name_coursename'] = 'Courses followed by activity';
 $string['activity_header_name_type'] = 'Type of activity followed by activity';
+$string['infonocourses'] = 'There are no courses with completion monitoring from the category associated with this training';

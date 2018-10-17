@@ -50,7 +50,12 @@ class training_milestones implements \renderable {
         $this->training = trainings_factory::get_instance()->retrieve_training($categoryid);
 
         if ($this->training_exists()) {
-            $this->form = new training_milestones_update_form(
+            $courses = $this->training->get_courses();
+            if (count($courses) == 0) {
+                $message = get_string('infonocourses', 'tool_attestoodle');
+                $this->goback($message);
+            } else {
+                $this->form = new training_milestones_update_form(
                     new \moodle_url(
                             '/admin/tool/attestoodle/index.php',
                             ['page' => 'managemilestones', 'categoryid' => $this->training->get_categoryid()]),
@@ -58,9 +63,9 @@ class training_milestones implements \renderable {
                         'data' => $this->training->get_courses(),
                         'input_name_prefix' => "attestoodle_activity_id_"
                     )
-            );
-
-            $this->handle_form();
+                );
+                $this->handle_form();
+            }
         }
     }
 
@@ -86,14 +91,17 @@ class training_milestones implements \renderable {
      */
     private function handle_form_cancelled() {
         // Handle form cancel operation.
+        $message = get_string('training_milestones_info_form_canceled', 'tool_attestoodle');
+        $this->goback($message);
+    }
+
+    private function goback($message) {
         $redirecturl = new \moodle_url(
                 '/admin/tool/attestoodle/index.php',
                 array('page' => 'trainingmanagement', 'categoryid' => $this->training->get_categoryid())
         );
-        $message = get_string('training_milestones_info_form_canceled', 'tool_attestoodle');
         redirect($redirecturl, $message, null, \core\output\notification::NOTIFY_INFO);
     }
-
     /**
      * Handles the form submission (calls other actual form submission handling
      * methods).
