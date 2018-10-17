@@ -163,7 +163,7 @@ class db_accessor extends singleton {
      * @return \stdClass Standard Moodle DB object
      */
     public function get_courses_by_category($id) {
-        $result = self::$db->get_records('course', array('category' => $id));
+        $result = self::$db->get_records('course', array('category' => $id, 'enablecompletion' => '1'));
         return $result;
     }
 
