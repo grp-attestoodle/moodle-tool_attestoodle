@@ -53,7 +53,7 @@ class training_milestones implements \renderable {
             $this->form = new training_milestones_update_form(
                     new \moodle_url(
                             '/admin/tool/attestoodle/index.php',
-                            ['page' => 'managemilestones', 'training' => $this->training->get_id()]),
+                            ['page' => 'managemilestones', 'training' => $this->training->get_categoryid()]),
                     array(
                         'data' => $this->training->get_courses(),
                         'input_name_prefix' => "attestoodle_activity_id_"
@@ -88,7 +88,7 @@ class training_milestones implements \renderable {
         // Handle form cancel operation.
         $redirecturl = new \moodle_url(
                 '/admin/tool/attestoodle/index.php',
-                array('page' => 'trainingmanagement', 'categoryid' => $this->training->get_id())
+                array('page' => 'trainingmanagement', 'categoryid' => $this->training->get_categoryid())
         );
         $message = get_string('training_milestones_info_form_canceled', 'tool_attestoodle');
         redirect($redirecturl, $message, null, \core\output\notification::NOTIFY_INFO);
@@ -189,7 +189,7 @@ class training_milestones implements \renderable {
             $this->form = new training_milestones_update_form(
                     new \moodle_url(
                             '/admin/tool/attestoodle/index.php',
-                            ['page' => 'managemilestones', 'training' => $this->training->get_id()]
+                            ['page' => 'managemilestones', 'training' => $this->training->get_categoryid()]
                     ),
                     array(
                         'data' => $this->training->get_courses(),

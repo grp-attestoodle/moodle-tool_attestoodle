@@ -81,7 +81,7 @@ class trainings_list implements renderable {
             global $OUTPUT;
             $stdclass = new \stdClass();
 
-            $categorylink = new \moodle_url("/course/index.php", array("categoryid" => $training->get_id()));
+            $categorylink = new \moodle_url("/course/index.php", array("categoryid" => $training->get_categoryid()));
             $stdclass->name = "<a href='{$categorylink}'>{$training->get_name()}</a>";
 
             $stdclass->hierarchy = $training->get_hierarchy();
@@ -91,21 +91,21 @@ class trainings_list implements renderable {
             // Links.
             $parameters = array(
                 'page' => 'learners',
-                'training' => $training->get_id());
+                'training' => $training->get_categoryid());
             $url = new \moodle_url('/admin/tool/attestoodle/index.php', $parameters);
             $label = "<img src=" . $OUTPUT->image_url ( 'i/group', 'moodle' ). " title='"
                 . get_string('student_list_link', 'tool_attestoodle') ."' />";
 
             $studentlink = \html_writer::link($url, $label);
 
-            $parameters = array('page' => 'trainingmanagement', 'categoryid' => $training->get_id());
+            $parameters = array('page' => 'trainingmanagement', 'categoryid' => $training->get_categoryid());
             $url = new \moodle_url('/admin/tool/attestoodle/index.php', $parameters);
             $label = "<img src=" . $OUTPUT->image_url ( 'i/settings', 'moodle' ). " title='"
                 . get_string('training_setting_link', 'tool_attestoodle') ."' />";
 
             $settinglink = \html_writer::link($url, $label);
 
-            $parameters = array('page' => 'managemilestones', 'training' => $training->get_id());
+            $parameters = array('page' => 'managemilestones', 'training' => $training->get_categoryid());
             $url = new \moodle_url('/admin/tool/attestoodle/index.php', $parameters);
             $label = "<img src=" . $OUTPUT->image_url ( 'navigation', 'tool_attestoodle' ). " title='"
                 . get_string('milestone_manage_link', 'tool_attestoodle') ."' />";

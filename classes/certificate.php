@@ -166,14 +166,14 @@ class certificate {
         $begindate = clone $this->begindate;
         $searchenddate = clone $this->enddate;
         $searchenddate->modify('+1 day');
-        $trainingid = $this->training->get_id();
+        $categoryid = $this->training->get_categoryid();
 
         $validatedmilestones = $this->learner->get_validated_activities_with_marker($begindate, $searchenddate);
 
         // Filtering activities based on the training.
-        $filteredmilestones = array_filter($validatedmilestones, function($va) use($trainingid) {
+        $filteredmilestones = array_filter($validatedmilestones, function($va) use($categoryid) {
             $act = $va->get_activity();
-            if ($act->get_course()->get_training()->get_id() == $trainingid) {
+            if ($act->get_course()->get_training()->get_categoryid() == $categoryid) {
                 return true;
             } else {
                 return false;
@@ -255,7 +255,7 @@ class certificate {
             }
 
             $doc = new attestation_pdf();
-            $doc->set_categoryid($this->training->get_id());
+            $doc->set_categoryid($this->training->get_categoryid());
 
             $doc->set_infos($this->get_pdf_informations());
             $pdf = $doc->generate_pdf_object();

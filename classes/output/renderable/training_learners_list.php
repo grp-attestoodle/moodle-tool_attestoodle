@@ -112,7 +112,7 @@ class training_learners_list implements renderable {
             $output .= \html_writer::link(
                     new \moodle_url(
                             '/admin/tool/attestoodle/index.php',
-                            array('page' => 'trainingmanagement', 'categoryid' => $this->training->get_id())
+                            array('page' => 'trainingmanagement', 'categoryid' => $this->training->get_categoryid())
                     ),
                     get_string('backto_training_detail_btn_text', 'tool_attestoodle'),
                     array('class' => 'btn btn-default attestoodle-button'));
@@ -124,7 +124,7 @@ class training_learners_list implements renderable {
             // @TODO use a moodle_quickform.
             $output .= '<form action="?" class="filterform"><div>'
                     . '<input type="hidden" name="page" value="learners" />'
-                    . '<input type="hidden" name="training" value="' . $this->training->get_id() . '" />';
+                    . '<input type="hidden" name="training" value="' . $this->training->get_categoryid() . '" />';
             $output .= '<label for="input_begin_date">'
                     . get_string('learner_details_begin_date_label', 'tool_attestoodle') . '</label>'
                     . '<input type="text" id="input_begin_date" name="begindate" value="' . $this->thebegindate . '" '
@@ -153,7 +153,7 @@ class training_learners_list implements renderable {
                             array(
                                     'page' => 'learners',
                                     'action' => 'downloadzip',
-                                    'training' => $this->training->get_id(),
+                                    'training' => $this->training->get_categoryid(),
                                     'begindate' => $this->thebegindate,
                                     'enddate' => $this->theenddate
                             )
@@ -167,7 +167,7 @@ class training_learners_list implements renderable {
                             array(
                                     'page' => 'learners',
                                     'action' => 'generatecertificates',
-                                    'training' => $this->training->get_id(),
+                                    'training' => $this->training->get_categoryid(),
                                     'begindate' => $this->thebegindate,
                                     'enddate' => $this->theenddate
                             )
@@ -207,7 +207,7 @@ class training_learners_list implements renderable {
         return array_map(function(\tool_attestoodle\learner $o) {
             $stdclass = new \stdClass();
             $totalmarkerperiod = $o->get_total_milestones(
-                    $this->training->get_id(),
+                    $this->training->get_categoryid(),
                     $this->theactualbegindate,
                     $this->theactualenddate
             );

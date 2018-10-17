@@ -106,7 +106,7 @@ class learner_details implements \renderable {
     public function training_has_validated_activites($training) {
         $vas = $this->get_learner_validated_activities();
         $fas = array_filter($vas, function($va) use ($training){
-            return $va->get_activity()->get_course()->get_training()->get_id() == $training->get_id();
+            return $va->get_activity()->get_course()->get_training()->get_categoryid() == $training->get_categoryid();
         });
         return count($fas) > 0;
     }
@@ -250,7 +250,7 @@ class learner_details implements \renderable {
                 new \moodle_url(
                         '/admin/tool/attestoodle/index.php', array(
                                 'page' => 'learners',
-                                'training' => $training->get_id(),
+                                'training' => $training->get_categoryid(),
                                 'begindate' => $this->begindate,
                                 'enddate' => $this->enddate
                         )
@@ -291,7 +291,7 @@ class learner_details implements \renderable {
 
         foreach ($this->get_learner_validated_activities() as $vact) {
             $act = $vact->get_activity();
-            if ($act->get_course()->get_training()->get_id() == $training->get_id()) {
+            if ($act->get_course()->get_training()->get_categoryid() == $training->get_categoryid()) {
                 $stdclassact = new \stdClass();
 
                 $stdclassact->coursename = $act->get_course()->get_name();
@@ -359,7 +359,7 @@ class learner_details implements \renderable {
         $dlcertifoptions = array(
                 'page' => 'learnerdetails',
                 'action' => 'generatecertificate',
-                'training' => $training->get_id(),
+                'training' => $training->get_categoryid(),
                 'learner' => $this->learnerid
         );
         if ($this->actualbegindate) {

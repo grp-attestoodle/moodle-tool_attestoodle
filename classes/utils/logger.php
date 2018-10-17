@@ -90,7 +90,7 @@ class logger extends singleton {
             $certificatelogid = db_accessor::get_instance()->log_certificate(
                     $certificate->get_file_name(),
                     $statusstring,
-                    $certificate->get_training()->get_id(),
+                    $certificate->get_training()->get_categoryid(),
                     $certificate->get_learner()->get_id(),
                     $launchid);
 

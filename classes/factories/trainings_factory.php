@@ -89,9 +89,9 @@ class trainings_factory extends singleton {
         $this->trainings[] = $trainingtoadd;
 
         // Retrieve direct courses.
-        $courses = courses_factory::get_instance()->retrieve_courses_by_training($trainingtoadd->get_id());
+        $courses = courses_factory::get_instance()->retrieve_courses_by_training($trainingtoadd->get_categoryid());
         // Retrieve courses in sub categories.
-        $subcategories = categories_factory::get_instance()->retrieve_sub_categories($trainingtoadd->get_id());
+        $subcategories = categories_factory::get_instance()->retrieve_sub_categories($trainingtoadd->get_categoryid());
         foreach ($subcategories as $subcat) {
             $subcatcourses = courses_factory::get_instance()->retrieve_courses_by_training($subcat->get_id());
             $courses = array_merge($courses, $subcatcourses);
@@ -126,7 +126,7 @@ class trainings_factory extends singleton {
     public function get_training_category_ids() {
         $categoryids = array();
         foreach ($this->trainings as $tr) {
-            $categoryids[] = $tr->get_id();
+            $categoryids[] = $tr->get_categoryid();
         }
         return $categoryids;
     }
@@ -152,7 +152,7 @@ class trainings_factory extends singleton {
     public function retrieve_training($id) {
         $training = null;
         foreach ($this->trainings as $t) {
-            if ($t->get_id() == $id) {
+            if ($t->get_categoryid() == $id) {
                 $training = $t;
                 break;
             }
@@ -171,7 +171,7 @@ class trainings_factory extends singleton {
     public function retrieve_training_index($id) {
         $index = -1;
         foreach ($this->trainings as $i => $t) {
-            if ($t->get_id() == $id) {
+            if ($t->get_categoryid() == $id) {
                 $index = $i;
                 break;
             }

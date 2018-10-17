@@ -70,7 +70,7 @@ class learner {
         $validatedactivities = $this->get_validated_activities_with_marker($begindate, $enddate);
         foreach ($validatedactivities as $va) {
             $act = $va->get_activity();
-            if ($act->get_course()->get_training()->get_id() == $trainingid) {
+            if ($act->get_course()->get_training()->get_categoryid() == $trainingid) {
                 $totalminutes += $act->get_milestone();
             }
         }
@@ -90,7 +90,7 @@ class learner {
             $alllearners = $t->get_learners();
             foreach ($alllearners as $l) {
                 if ($l->get_id() == $this->id) {
-                    $trainingsregistered[$t->get_id()] = $t;
+                    $trainingsregistered[$t->get_categoryid()] = $t;
                 }
             }
         }
