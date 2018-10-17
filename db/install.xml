@@ -63,12 +63,12 @@
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="creditedtime" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="certificateid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
-        <FIELD NAME="milestone" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Module ID of the corresponding milestone"/>
+        <FIELD NAME="moduleid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Module ID of the corresponding milestone"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
         <KEY NAME="fk_certificate_id" TYPE="foreign" FIELDS="certificateid" REFTABLE="attestoodle_certif_log" REFFIELDS="id"/>
-        <KEY NAME="fk_module_id" TYPE="foreign" FIELDS="milestone" REFTABLE="mdl_course_modules" REFFIELDS="id"/>
+        <KEY NAME="fk_module_id" TYPE="foreign" FIELDS="moduleid" REFTABLE="mdl_course_modules" REFFIELDS="id"/>
       </KEYS>
     </TABLE>
 	

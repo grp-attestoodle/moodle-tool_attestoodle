@@ -344,7 +344,7 @@ class db_accessor extends singleton {
             $dataobject = new \stdClass();
             $dataobject->creditedtime = $act->get_milestone();
             $dataobject->certificateid = $certificatelogid;
-            $dataobject->milestone = $act->get_id();
+            $dataobject->moduleid = $act->get_id();
 
             $milestones[] = $dataobject;
         }

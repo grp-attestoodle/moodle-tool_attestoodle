@@ -42,5 +42,13 @@ function xmldb_tool_attestoodle_upgrade($oldversion) {
         }
         upgrade_plugin_savepoint(true, 2018101001, 'tool', 'attestoodle');
     }
+    if ($oldversion < 2018101611) {
+        $table = new xmldb_table('attestoodle_value_log');
+        $field = new xmldb_field('milestone', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null, 'certificateid');
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->rename_field($table, $field, 'moduleid');
+            upgrade_plugin_savepoint(true, 2018101611, 'tool', 'attestoodle');
+        }
+    }
     return true;
 }
