@@ -72,7 +72,9 @@ class trainings_factory extends singleton {
         foreach ($dbtrainings as $dbtr) {
             $catid = $dbtr->categoryid;
             $cat = categories_factory::get_instance()->retrieve_category($catid);
-            $this->create($cat);
+            if (!empty($cat)) {
+                $this->create($cat);
+            }
         }
     }
 
