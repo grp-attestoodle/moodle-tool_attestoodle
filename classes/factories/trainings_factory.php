@@ -145,7 +145,7 @@ class trainings_factory extends singleton {
     /**
      * Method that retrieves a training within the main array based on an ID.
      *
-     * @param integer $id Id of the training (category) to retrieve
+     * @param integer $id Id of the category associate at the training to retrieve
      * @return training|null The training retrieved or NULL if no training has been
      * found with the specified ID
      */

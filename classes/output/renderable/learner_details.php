@@ -359,7 +359,7 @@ class learner_details implements \renderable {
         $dlcertifoptions = array(
                 'page' => 'learnerdetails',
                 'action' => 'generatecertificate',
-                'training' => $training->get_categoryid(),
+                'categoryid' => $training->get_categoryid(),
                 'learner' => $this->learnerid
         );
         if ($this->actualbegindate) {
