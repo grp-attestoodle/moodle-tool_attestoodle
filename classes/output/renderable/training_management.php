@@ -281,7 +281,7 @@ class training_management implements \renderable {
                 // Link to the learners list of the training.
                 $parameters = array(
                         'page' => 'learners',
-                        'training' => $this->category->get_id()
+                        'categoryid' => $this->category->get_id()
                 );
                 $url = new \moodle_url('/admin/tool/attestoodle/index.php', $parameters);
                 $label = get_string('training_management_training_details_link', 'tool_attestoodle');

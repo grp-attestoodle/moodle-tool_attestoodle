@@ -92,7 +92,7 @@ switch($page) {
         break;
     case 'learners':
         // Required params.
-        $trainingid = required_param('training', PARAM_INT);
+        $categoryid = required_param('categoryid', PARAM_INT);
         // Optional params.
         $begindate = optional_param('begindate', null, PARAM_ALPHANUMEXT);
         $enddate = optional_param('enddate', null, PARAM_ALPHANUMEXT);
@@ -101,20 +101,20 @@ switch($page) {
                 array(
                         'page' => $page,
                         'action' => $action,
-                        'training' => $trainingid,
+                        'categoryid' => $categoryid,
                         'begindate' => $begindate,
                         'enddate' => $enddate
                 )
         ));
         $PAGE->set_title(get_string('training_learners_list_page_title', 'tool_attestoodle'));
-        $context = context_coursecat::instance($trainingid);
+        $context = context_coursecat::instance($categoryid);
         $PAGE->set_context($context);
         require_capability('tool/attestoodle:displaylearnerslist', $context);
         // Instanciate the training in the renderable.
         $training = null;
-        $trainingexist = trainings_factory::get_instance()->has_training($trainingid);
+        $trainingexist = trainings_factory::get_instance()->has_training($categoryid);
         if ($trainingexist) {
-            $training = trainings_factory::get_instance()->retrieve_training($trainingid);
+            $training = trainings_factory::get_instance()->retrieve_training($categoryid);
             $PAGE->set_heading(get_string('training_learners_list_main_title', 'tool_attestoodle', $training->get_name()));
         } else {
             $PAGE->set_heading(get_string('training_learners_list_main_title_error', 'tool_attestoodle'));

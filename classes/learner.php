@@ -84,7 +84,6 @@ class learner {
      */
     public function retrieve_training_registered() {
         $trainingsregistered = array();
-
         $alltraining = trainings_factory::get_instance()->get_trainings();
         foreach ($alltraining as $t) {
             $alllearners = $t->get_learners();
@@ -94,7 +93,6 @@ class learner {
                 }
             }
         }
-
         return $trainingsregistered;
     }
 

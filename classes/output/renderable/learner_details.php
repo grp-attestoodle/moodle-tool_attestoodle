@@ -250,7 +250,7 @@ class learner_details implements \renderable {
                 new \moodle_url(
                         '/admin/tool/attestoodle/index.php', array(
                                 'page' => 'learners',
-                                'training' => $training->get_categoryid(),
+                                'categoryid' => $training->get_categoryid(),
                                 'begindate' => $this->begindate,
                                 'enddate' => $this->enddate
                         )

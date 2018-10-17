@@ -91,7 +91,7 @@ class trainings_list implements renderable {
             // Links.
             $parameters = array(
                 'page' => 'learners',
-                'training' => $training->get_categoryid());
+                'categoryid' => $training->get_categoryid());
             $url = new \moodle_url('/admin/tool/attestoodle/index.php', $parameters);
             $label = "<img src=" . $OUTPUT->image_url ( 'i/group', 'moodle' ). " title='"
                 . get_string('student_list_link', 'tool_attestoodle') ."' />";

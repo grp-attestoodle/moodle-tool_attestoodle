@@ -153,7 +153,7 @@ class training_learners_list implements renderable {
                             array(
                                     'page' => 'learners',
                                     'action' => 'downloadzip',
-                                    'training' => $this->training->get_categoryid(),
+                                    'categoryid' => $this->training->get_categoryid(),
                                     'begindate' => $this->thebegindate,
                                     'enddate' => $this->theenddate
                             )
@@ -167,7 +167,7 @@ class training_learners_list implements renderable {
                             array(
                                     'page' => 'learners',
                                     'action' => 'generatecertificates',
-                                    'training' => $this->training->get_categoryid(),
+                                    'categoryid' => $this->training->get_categoryid(),
                                     'begindate' => $this->thebegindate,
                                     'enddate' => $this->theenddate
                             )
