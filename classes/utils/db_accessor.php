@@ -162,7 +162,7 @@ class db_accessor extends singleton {
      * @param int $id Id of the course category to retrieve courses for
      * @return \stdClass Standard Moodle DB object
      */
-    public function get_courses_by_training($id) {
+    public function get_courses_by_category($id) {
         $result = self::$db->get_records('course', array('category' => $id));
         return $result;
     }
