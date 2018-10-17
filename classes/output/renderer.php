@@ -76,10 +76,17 @@ class renderer extends \plugin_renderer_base {
      * @return string HTML content of the page
      */
     public function render_training_learners_list(renderable\training_learners_list $obj) {
+        if (count($obj->training->get_learners()) == 0) {
+            $redirecturl = new \moodle_url(
+                '/admin/tool/attestoodle/index.php',
+                array('page' => 'trainingmanagement', 'categoryid' => $obj->training->get_categoryid()));
+            $message = get_string('infonostudent', 'tool_attestoodle');
+            redirect($redirecturl, $message, null, \core\output\notification::NOTIFY_INFO);
+            return;
+        }
+
         $output = "";
-
         $output .= $obj->get_header();
-
         if ($obj->training_exists()) {
             $table = new \html_table();
             $table->head = $obj->get_table_head();
@@ -94,7 +101,6 @@ class renderer extends \plugin_renderer_base {
         } else {
             $output .= $obj->get_unknown_training_message();
         }
-
         return $output;
     }
 

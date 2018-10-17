@@ -216,4 +216,5 @@ $string['activity_header_type_name'] = 'Activités suivis par types';
 $string['activity_header_name_'] = 'Activités Suivis';
 $string['activity_header_name_coursename'] = 'Cours suivis par activité';
 $string['activity_header_name_type'] = 'Type d\'activité suivis par activité';
-$string['infonocourses'] = 'Il n\'existe aucun cours avec suivi d\'achevement à partir de la catégorie associée à cette formation';
+$string['infonocourses'] = 'Il n\'existe aucun cours avec suivi d\'achèvement à partir de la catégorie associée à cette formation';
+$string['infonostudent'] = 'Aucun apprenant présent dans un cours avec suivi d\'achèvement à partir de la catégorie associée à cette formation';
