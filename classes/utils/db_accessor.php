@@ -285,7 +285,7 @@ class db_accessor extends singleton {
         $record->trainingid = $idtraining;
         $record->templateid = $template->id;
         $record->grpcriteria1 = 'coursename';
-        self::$db->insert_record('attestoodle_train_template', $record);
+        return self::$db->insert_record('attestoodle_train_template', $record);
     }
 
     /**
