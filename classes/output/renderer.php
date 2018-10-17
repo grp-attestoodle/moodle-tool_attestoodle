@@ -108,7 +108,7 @@ class renderer extends \plugin_renderer_base {
         $output = "";
 
         if (!$obj->training_exists()) {
-            $output .= get_string('training_milestones_unknown_training_id', 'tool_attestoodle') . $obj->get_trainingid();
+            $output .= get_string('training_milestones_unknown_training_id', 'tool_attestoodle') . $obj->get_categoryid();
         } else {
             $output .= $obj->get_header();
             $output .= $obj->get_content();

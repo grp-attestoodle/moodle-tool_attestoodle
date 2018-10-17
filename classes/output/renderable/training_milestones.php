@@ -33,8 +33,8 @@ use tool_attestoodle\factories\trainings_factory;
 use tool_attestoodle\forms\training_milestones_update_form;
 
 class training_milestones implements \renderable {
-    /** @var integer Id of the training displayed */
-    private $trainingid;
+    /** @var integer Id of the category associate to training displayed */
+    private $categoryid;
     /** @var training Actual training displayed */
     private $training;
     /** @var training_milestones_update_form The form used to manage milestones */
@@ -43,11 +43,11 @@ class training_milestones implements \renderable {
     /**
      * Constructor method that computes training ID to an actual training.
      *
-     * @param integer $trainingid The training ID requested
+     * @param integer $categoryid The training ID requested
      */
-    public function __construct($trainingid) {
-        $this->trainingid = $trainingid;
-        $this->training = trainings_factory::get_instance()->retrieve_training($trainingid);
+    public function __construct($categoryid) {
+        $this->categoryid = $categoryid;
+        $this->training = trainings_factory::get_instance()->retrieve_training($categoryid);
 
         if ($this->training_exists()) {
             $this->form = new training_milestones_update_form(
@@ -130,7 +130,7 @@ class training_milestones implements \renderable {
      */
     private function handle_form_has_submitted_data() {
         // If data are valid, process persistance.
-        $contextcateg = \context_coursecat::instance($this->trainingid);
+        $contextcateg = \context_coursecat::instance($this->categoryid);
         if (has_capability('tool/attestoodle:managemilestones', $contextcateg)) {
             // Retrieve the submitted data.
             $datafromform = $this->form->get_submitted_data();
@@ -204,9 +204,6 @@ class training_milestones implements \renderable {
     /**
      * Handle the process of update of one activity after the form has been
      * submitted (and its valid).
-     *
-     * @TODO translations
-     *
      * @param string $key Input name being computed
      * @param string $value Input value being computed
      * @return \stdClass A standard object defining the state of the current
@@ -270,7 +267,6 @@ class training_milestones implements \renderable {
                 }
             }
         }
-
         return $returnobject;
     }
 
@@ -327,10 +323,10 @@ class training_milestones implements \renderable {
     /**
      * Getter for $trainingid property.
      *
-     * @return integer The training ID
+     * @return integer The cataegory ID
      */
-    public function get_trainingid() {
-        return $this->trainingid;
+    public function get_categoryid() {
+        return $this->categoryid;
     }
 
     /**
