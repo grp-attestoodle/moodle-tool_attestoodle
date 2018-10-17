@@ -53,7 +53,7 @@ class training_milestones implements \renderable {
             $this->form = new training_milestones_update_form(
                     new \moodle_url(
                             '/admin/tool/attestoodle/index.php',
-                            ['page' => 'managemilestones', 'training' => $this->training->get_categoryid()]),
+                            ['page' => 'managemilestones', 'categoryid' => $this->training->get_categoryid()]),
                     array(
                         'data' => $this->training->get_courses(),
                         'input_name_prefix' => "attestoodle_activity_id_"
@@ -189,7 +189,7 @@ class training_milestones implements \renderable {
             $this->form = new training_milestones_update_form(
                     new \moodle_url(
                             '/admin/tool/attestoodle/index.php',
-                            ['page' => 'managemilestones', 'training' => $this->training->get_categoryid()]
+                            ['page' => 'managemilestones', 'categoryid' => $this->training->get_categoryid()]
                     ),
                     array(
                         'data' => $this->training->get_courses(),

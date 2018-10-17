@@ -78,15 +78,15 @@ switch($page) {
 
         break;
     case 'managemilestones':
-        $trainingid = required_param('training', PARAM_INT);
+        $categoryid = required_param('categoryid', PARAM_INT);
         $PAGE->set_url(new moodle_url($toolpath . '/index.php',
-                ['page' => $page, 'training' => $trainingid]));
+                ['page' => $page, 'categoryid' => $categoryid]));
         $PAGE->set_title(get_string('training_milestones_page_title', 'tool_attestoodle'));
-        $context = context_coursecat::instance($trainingid);
+        $context = context_coursecat::instance($categoryid);
         $PAGE->set_context($context);
         require_capability('tool/attestoodle:managemilestones', $context);
 
-        $renderable = new renderable\training_milestones($trainingid);
+        $renderable = new renderable\training_milestones($categoryid);
         $PAGE->set_heading($renderable->get_heading());
 
         break;

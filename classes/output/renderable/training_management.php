@@ -293,7 +293,7 @@ class training_management implements \renderable {
                 // Link to the milestones management of the training.
                 $parametersmilestones = array(
                         'page' => 'managemilestones',
-                        'training' => $this->category->get_id()
+                        'categoryid' => $this->category->get_id()
                 );
                 $urlmilestones = new \moodle_url('/admin/tool/attestoodle/index.php', $parametersmilestones);
                 $labelmilestones = get_string('training_management_manage_training_link', 'tool_attestoodle');

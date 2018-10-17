@@ -105,7 +105,7 @@ class trainings_list implements renderable {
 
             $settinglink = \html_writer::link($url, $label);
 
-            $parameters = array('page' => 'managemilestones', 'training' => $training->get_categoryid());
+            $parameters = array('page' => 'managemilestones', 'categoryid' => $training->get_categoryid());
             $url = new \moodle_url('/admin/tool/attestoodle/index.php', $parameters);
             $label = "<img src=" . $OUTPUT->image_url ( 'navigation', 'tool_attestoodle' ). " title='"
                 . get_string('milestone_manage_link', 'tool_attestoodle') ."' />";
