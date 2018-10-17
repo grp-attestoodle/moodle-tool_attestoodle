@@ -174,7 +174,7 @@ class db_accessor extends singleton {
      * @return \stdClass Standard Moodle DB object
      */
     public function get_course_modules_by_course($id) {
-        $result = self::$db->get_records('course_modules', array('course' => $id));
+        $result = self::$db->get_records('course_modules', array('course' => $id, 'deletioninprogress' => '0'));
         return $result;
     }
 
