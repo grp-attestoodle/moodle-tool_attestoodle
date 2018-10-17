@@ -57,20 +57,20 @@ class learner {
 
     /**
      * Methods that returns the total amount of milestones validated by the
-     * learner within a training and an optional period of time.
+     * learner within a category and an optional period of time.
      *
-     * @param integer $trainingid Id of the training to filter the activities
+     * @param integer $categoryid Id of the category to filter the activities
      * @param \DateTime $begindate The begining date to filter the activities
      * @param \DateTime $enddate The ending date to filter the activities
      * @return integer The total amount of minutes validated by the learner in
-     * the specified training and the specified period of time
+     * the specified category and the specified period of time
      */
-    public function get_total_milestones($trainingid, $begindate = null, $enddate = null) {
+    public function get_total_milestones($categoryid, $begindate = null, $enddate = null) {
         $totalminutes = 0;
         $validatedactivities = $this->get_validated_activities_with_marker($begindate, $enddate);
         foreach ($validatedactivities as $va) {
             $act = $va->get_activity();
-            if ($act->get_course()->get_training()->get_categoryid() == $trainingid) {
+            if ($act->get_course()->get_training()->get_categoryid() == $categoryid) {
                 $totalminutes += $act->get_milestone();
             }
         }

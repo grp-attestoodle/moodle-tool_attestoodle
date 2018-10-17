@@ -50,7 +50,6 @@ class training {
      */
     public function get_learners() {
         $learners = array();
-
         foreach ($this->courses as $course) {
             $courselearners = $course->get_learners();
             foreach ($courselearners as $courselearner) {
@@ -59,7 +58,6 @@ class training {
                 }
             }
         }
-
         return $learners;
     }
 
@@ -68,7 +66,6 @@ class training {
      *
      * @return integer Id of the training
      */
-     // Wrong, trainingid != categoryid, Must be fixed !!
     public function get_categoryid() {
         return $this->category->get_id();
     }
