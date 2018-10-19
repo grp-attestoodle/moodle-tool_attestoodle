@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die;
 
 function xmldb_tool_attestoodle_upgrade($oldversion) {
     // Update this function in need of DB upgrade while installing new version.
-    global $CFG, $DB, $OUTPUT;
+    global $DB;
     $dbman = $DB->get_manager();
     // Add columns grpcriteria1 and grpcriteria2 to attestoodle_train_template.
     if ($oldversion < 2018101001) {

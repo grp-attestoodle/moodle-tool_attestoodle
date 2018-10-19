@@ -144,8 +144,6 @@ class simul_pdf {
         $widthfirstcolumn = $width * .75;
         // Column title course.
         $this->pdf->SetFont($model->font->family, 'B', $model->font->size);
-        // Column title "total hours".
-        $widthsecondcolumn = $width - $widthfirstcolumn;
         // Activities lines.
         $this->pdf->SetFont($model->font->family, '', $model->font->size);
         $lineheight = $model->font->size;
@@ -164,7 +162,6 @@ class simul_pdf {
                 $y = $y + ($heightline * 1.5);
             }
             $coursename = $course["coursename"];
-            $totalminutes = $course["totalminutes"];
             // Activity type.
             $nbnewline = $this->displayactivity($x + 3, $y, $widthfirstcolumn - 6, $lineheight, $coursename);
             // Activity total hours.
