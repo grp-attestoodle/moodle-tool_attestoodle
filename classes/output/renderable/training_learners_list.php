@@ -220,7 +220,8 @@ class training_learners_list implements renderable {
                 'page' => 'learnerdetails',
                 'learner' => $o->get_id(),
                 'begindate' => $this->thebegindate,
-                'enddate' => $this->theenddate);
+                'enddate' => $this->theenddate,
+                'categorylnk' => $this->training->get_categoryid());
             $url = new \moodle_url('/admin/tool/attestoodle/index.php', $parameters);
             $label = get_string('training_learners_list_table_link_details', 'tool_attestoodle');
             $attributes = array('class' => 'attestoodle-button');

@@ -34,6 +34,7 @@ use tool_attestoodle\factories\trainings_factory;
 
 $context = context_system::instance();
 $idtemplate = optional_param('templateid', null, PARAM_INT);
+$lnkidtemplate = $idtemplate;
 
 if (!isset($idtemplate)) {
     $template = $DB->get_record('attestoodle_template', array('name' => 'Site'));
@@ -63,6 +64,13 @@ if (!isset($idtemplate)) {
 }
 
 $PAGE->set_context($context);
+$PAGE->navbar->ignore_active();
+$navlevel1 = get_string('navlevel1b', 'tool_attestoodle');
+$PAGE->navbar->add($navlevel1, new moodle_url('/admin/tool/attestoodle/classes/gabarit/listtemplate.php', array()));
+$navlevel2 = get_string('navlevel2b', 'tool_attestoodle');
+$PAGE->navbar->add($navlevel2 . $template->name,
+                new moodle_url('/admin/tool/attestoodle/classes/gabarit/sitecertificate.php',
+                    array('templateid' => $lnkidtemplate)));
 require_login();
 
 $PAGE->set_url(new moodle_url(dirname(__FILE__) . '/sitecertificate.php', [] ));

@@ -56,6 +56,8 @@ class learner_details implements \renderable {
     /** @var boolean True if the $enddate property is not parsable by the \DateTime constructor */
     public $enddateerror;
 
+    public $categorylnk;
+
     /**
      * Constructor of the renderable object.
      *
@@ -63,10 +65,10 @@ class learner_details implements \renderable {
      * @param string $begindate Begin date formatted as YYYY-MM-DD (url param)
      * @param string $enddate End date formatted as YYYY-MM-DD (url param)
      */
-    public function __construct($learnerid, $begindate, $enddate) {
+    public function __construct($learnerid, $begindate, $enddate, $categorylnk) {
         $this->learnerid = $learnerid;
         $this->learner = learners_factory::get_instance()->retrieve_learner($learnerid);
-
+        $this->categorylnk = $categorylnk;
         // Default dates are January 1st and December 31st of current year.
         $this->begindate = isset($begindate) ? $begindate : (new \DateTime('first day of January ' . date('Y')))->format('Y-m-d');
         $this->enddate = isset($enddate) ? $enddate : (new \DateTime('last day of December ' . date('Y')))->format('Y-m-d');
@@ -211,6 +213,7 @@ class learner_details implements \renderable {
             // Basic form to allow user filtering the validated activities by begin and end dates.
             $output .= '<form action="?" class="filterform"><div>'
                     . '<input type="hidden" name="page" value="learnerdetails" />'
+                    . '<input type="hidden" name="categorylnk" value="'. $this->categorylnk.'" />'
                     . '<input type="hidden" name="learner" value="' . $this->learnerid . '" />';
             $output .= '<label for="input_begin_date">'
                     . get_string('learner_details_begin_date_label', 'tool_attestoodle') . '</label>'
@@ -252,7 +255,8 @@ class learner_details implements \renderable {
                                 'page' => 'learners',
                                 'categoryid' => $training->get_categoryid(),
                                 'begindate' => $this->begindate,
-                                'enddate' => $this->enddate
+                                'enddate' => $this->enddate,
+                                'categorylnk' => $this->categorylnk
                         )
                 ),
                 \get_string('backto_training_learners_list_btn_text', 'tool_attestoodle'),
@@ -360,7 +364,8 @@ class learner_details implements \renderable {
                 'page' => 'learnerdetails',
                 'action' => 'generatecertificate',
                 'categoryid' => $training->get_categoryid(),
-                'learner' => $this->learnerid
+                'learner' => $this->learnerid,
+                'categorylnk' => $this->categorylnk
         );
         if ($this->actualbegindate) {
             $dlcertifoptions['begindate'] = $this->actualbegindate->format('Y-m-d');

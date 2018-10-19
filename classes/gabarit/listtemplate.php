@@ -32,6 +32,10 @@ $confirm = optional_param('confirm', '', PARAM_ALPHANUM);
 $context = context_system::instance();
 
 $PAGE->set_context($context);
+$PAGE->navbar->ignore_active();
+$navlevel1 = get_string('navlevel1b', 'tool_attestoodle');
+$PAGE->navbar->add($navlevel1, new moodle_url('/admin/tool/attestoodle/classes/gabarit/listtemplate.php', array()));
+
 require_login();
 
 $PAGE->set_url(new moodle_url(dirname(__FILE__) . '/listtemplate.php', [] ));

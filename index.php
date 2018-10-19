@@ -59,15 +59,21 @@ require_login();
 $renderer = $PAGE->get_renderer('tool_attestoodle');
 // Always create trainings.
 trainings_factory::get_instance()->create_trainings();
-
+$PAGE->navbar->ignore_active();
+$navlevel1 = get_string('navlevel1', 'tool_attestoodle');
+$PAGE->navbar->add($navlevel1, new moodle_url('/admin/tool/attestoodle/index.php',
+                                                array()));
 switch($page) {
     case 'trainingmanagement':
         $categoryid = optional_param('categoryid', null, PARAM_INT);
 
-        $PAGE->set_url(new moodle_url($toolpath . '/index.php',
-                ['page' => $page, 'categoryid' => $categoryid]));
+        $urlact = new moodle_url($toolpath . '/index.php', ['page' => $page, 'categoryid' => $categoryid]);
+        $PAGE->set_url($urlact);
 
         $PAGE->set_title(get_string('training_management_page_title', 'tool_attestoodle'));
+        $navlevel2 = get_string('navlevel2', 'tool_attestoodle');
+        $PAGE->navbar->add($navlevel2, new moodle_url('/admin/tool/attestoodle/index.php',
+                                                array('page' => $page, 'categoryid' => $categoryid)));
 
         if (!empty($categoryid)) {
             $context = context_coursecat::instance($categoryid);
@@ -84,6 +90,13 @@ switch($page) {
         $PAGE->set_title(get_string('training_milestones_page_title', 'tool_attestoodle'));
         $context = context_coursecat::instance($categoryid);
         $PAGE->set_context($context);
+        $navlevel2 = get_string('navlevel2', 'tool_attestoodle');
+        $PAGE->navbar->add($navlevel2, new moodle_url('/admin/tool/attestoodle/index.php',
+                                                array('page' => 'trainingmanagement', 'categoryid' => $categoryid)));
+        $navlevel3b = get_string('navlevel3b', 'tool_attestoodle');
+        $PAGE->navbar->add($navlevel3b, new moodle_url('/admin/tool/attestoodle/index.php',
+                                                array('page' => $page, 'categoryid' => $categoryid)));
+
         require_capability('tool/attestoodle:managemilestones', $context);
 
         $renderable = new renderable\training_milestones($categoryid);
@@ -109,6 +122,13 @@ switch($page) {
         $PAGE->set_title(get_string('training_learners_list_page_title', 'tool_attestoodle'));
         $context = context_coursecat::instance($categoryid);
         $PAGE->set_context($context);
+        $navlevel2 = get_string('navlevel2', 'tool_attestoodle');
+        $PAGE->navbar->add($navlevel2, new moodle_url('/admin/tool/attestoodle/index.php',
+                                                array('page' => 'trainingmanagement', 'categoryid' => $categoryid)));
+        $navlevel3a = get_string('navlevel3a', 'tool_attestoodle');
+        $PAGE->navbar->add($navlevel3a, new moodle_url('/admin/tool/attestoodle/index.php',
+                                                array('page' => $page, 'categoryid' => $categoryid)));
+
         require_capability('tool/attestoodle:displaylearnerslist', $context);
         // Instanciate the training in the renderable.
         $training = null;
@@ -132,6 +152,7 @@ switch($page) {
     case 'learnerdetails':
         // Required param.
         $learnerid = required_param('learner', PARAM_INT);
+        $categorylnk = required_param('categorylnk', PARAM_INT);
 
         // Optional params.
         $begindate = optional_param('begindate', null, PARAM_ALPHANUMEXT);
@@ -143,18 +164,29 @@ switch($page) {
                         'action' => $action,
                         'learner' => $learnerid,
                         'begindate' => $begindate,
-                        'enddate' => $enddate
+                        'enddate' => $enddate,
+                        'categorylnk' => $categorylnk
                 )
         ));
 
         // Set page title.
         $PAGE->set_title(get_string('learner_details_page_title', 'tool_attestoodle'));
-
+        $navlevel2 = get_string('navlevel2', 'tool_attestoodle');
+        $PAGE->navbar->add($navlevel2, new moodle_url('/admin/tool/attestoodle/index.php',
+                                                array('page' => 'trainingmanagement', 'categoryid' => $categorylnk)));
+        $navlevel3a = get_string('navlevel3a', 'tool_attestoodle');
+        $PAGE->navbar->add($navlevel3a, new moodle_url('/admin/tool/attestoodle/index.php',
+                                                array('page' => 'learners', 'categoryid' => $categorylnk)));
+        $navlevel4a = get_string('navlevel4a', 'tool_attestoodle');
+        $PAGE->navbar->add($navlevel4a, new moodle_url('/admin/tool/attestoodle/index.php',
+                                                array('page' => $page, 'categorylnk' => $categorylnk,
+                                                'learner' => $learnerid, 'begindate' => $begindate,
+                                                'enddate' => $enddate)));
         // Checking capabilities.
         $userhascapability = has_capability('tool/attestoodle:learnerdetails', $context);
         require_capability('tool/attestoodle:learnerdetails', $context);
 
-        $renderable = new renderable\learner_details($learnerid, $begindate, $enddate);
+        $renderable = new renderable\learner_details($learnerid, $begindate, $enddate, $categorylnk);
         if ($action == 'generatecertificate') {
             $categoryid = required_param('categoryid', PARAM_INT);
             $renderable->generate_certificate_file($categoryid);
