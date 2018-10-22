@@ -186,6 +186,8 @@ class training_management implements \renderable {
                     return;
                 }
             } else {
+                $training = trainings_factory::get_instance()->retrieve_training($category->get_id());
+                $training->changename($datafromform->name);
                 $nvxtemplate = $datafromform->template;
                 $idtraining = $DB->get_field('attestoodle_training', 'id', ['categoryid' => $this->categoryid]);
                 $record = $DB->get_record('attestoodle_train_template', ['trainingid' => $idtraining]);

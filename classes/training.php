@@ -23,7 +23,7 @@
  */
 
 namespace tool_attestoodle;
-
+use tool_attestoodle\utils\db_accessor;
 defined('MOODLE_INTERNAL') || die;
 
 class training {
@@ -35,6 +35,7 @@ class training {
 
     /** @var integer Id of the training. */
     private $id;
+    private $name;
 
     /**
      * Constructor of the training class.
@@ -79,12 +80,19 @@ class training {
      * @return string Name of the training
      */
     public function get_name() {
-        $name = strip_tags($this->category->get_description());
-
-        if ($name == '') {
-            $name = $this->category->get_name();
+        if (empty($this->name)) {
+            return $this->category->get_name();
         }
-        return $name;
+        return $this->name;
+    }
+    public function changename($prop) {
+        if (empty($prop)) {
+            return;
+        }
+        if ($this->name != $prop) {
+            $this->name = $prop;
+            db_accessor::get_instance()->updatetraining($this);
+        }
     }
 
     /**
@@ -147,12 +155,12 @@ class training {
     }
 
     /**
-     * Shortcut setter for the category $name property.
+     * Shortcut setter for the training $name property.
      *
      * @param string $prop Name to set for the training
      */
     public function set_name($prop) {
-        $this->category->set_name($prop);
+        $this->name = $prop;
     }
 
     /**

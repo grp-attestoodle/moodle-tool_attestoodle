@@ -225,3 +225,4 @@ $string['navlevel4a'] = 'Détails';
 $string['navlevel3b'] = 'Jalons';
 $string['navlevel1b'] = 'Liste modèles';
 $string['navlevel2b'] = 'Modèle ';
+$string['trainingname'] = 'Nom de la Formation';

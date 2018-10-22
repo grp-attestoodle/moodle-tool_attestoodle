@@ -1,6 +1,6 @@
 # ATTESTOODLE
 
-This plugin is used to generate periodical training certificates for students on a massive scale, based on learning milestones completion. Parler de la periodicité ?
+This plugin is used to generate periodical training certificates for students on a massive scale, based on learning milestones completion.
 
 An "Attestoodle training" models a training plan: a set of courses in the same Moodle category or sub-categories (an Attestoodle training is necessarily associated with a Moodle category).
 An "Attestoodle milestone" is a Moodle activity (or sequence of activites) set with an activity completion. The state of activity completion is considered by Attestoodle as a milestone validation (completed or not). 

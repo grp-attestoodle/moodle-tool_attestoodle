@@ -73,7 +73,7 @@ class trainings_factory extends singleton {
             $catid = $dbtr->categoryid;
             $cat = categories_factory::get_instance()->retrieve_category($catid);
             if (!empty($cat)) {
-                $this->create($cat, $dbtr->id);
+                $this->create($cat, $dbtr->id, $dbtr->name);
             }
         }
     }
@@ -86,9 +86,10 @@ class trainings_factory extends singleton {
      * @param id $id of the training.
      * @return training The newly created training
      */
-    private function create($category, $id) {
+    private function create($category, $id, $name) {
         $trainingtoadd = new training($category);
         $trainingtoadd->set_id($id);
+        $trainingtoadd->set_name($name);
 
         $this->trainings[] = $trainingtoadd;
 

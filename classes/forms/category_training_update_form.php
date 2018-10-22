@@ -24,7 +24,7 @@
  */
 
 namespace tool_attestoodle\forms;
-
+use tool_attestoodle\factories\trainings_factory;
 defined('MOODLE_INTERNAL') || die;
 
 // Class \moodleform is defined in formslib.php.
@@ -48,6 +48,12 @@ class category_training_update_form extends \moodleform {
 
         $mform->addElement("advcheckbox", $name, $label);
         $mform->setDefault($name, $istraining);
+        if ($istraining) {
+            $mform->addElement('text', 'name', get_string('trainingname', 'tool_attestoodle'), array("size" => 50));
+            $mform->setType('name', PARAM_NOTAGS);
+            $training = trainings_factory::get_instance()->retrieve_training($category->get_id());
+            $mform->setDefault('name', $training->get_name());
+        }
 
         if ($idtemplate > -1) {
             $mform->addElement('header', 'templatesection', get_string('template_certificate', 'tool_attestoodle'));

@@ -112,6 +112,13 @@ class db_accessor extends singleton {
         return $result;
     }
 
+    public function updatetraining($training) {
+        $dataobject = new \stdClass();
+        $dataobject->id = $training->get_id();
+        $dataobject->name = $training->get_name();
+        $dataobject->categoryid = $training->get_categoryid();
+        self::$db->update_record('attestoodle_training', $dataobject);
+    }
     /**
      * Retrieves the path of the course categories that linked
      * to a training in Attestoodle.

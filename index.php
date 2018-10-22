@@ -149,7 +149,7 @@ switch($page) {
             redirect($redirecturl, $message, null, \core\output\notification::NOTIFY_INFO);
             return;
         }
-        
+
         if ($action == 'downloadzip') {
             $renderable->send_certificates_zipped();
         } else if ($action == 'generatecertificates') {
