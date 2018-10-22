@@ -141,7 +141,15 @@ switch($page) {
         }
 
         $renderable = new renderable\training_learners_list($training, $begindate, $enddate);
-
+        if (count($renderable->training->get_learners()) == 0) {
+            $redirecturl = new \moodle_url(
+                '/admin/tool/attestoodle/index.php',
+                array('page' => 'trainingmanagement', 'categoryid' => $categoryid));
+            $message = get_string('infonostudent', 'tool_attestoodle');
+            redirect($redirecturl, $message, null, \core\output\notification::NOTIFY_INFO);
+            return;
+        }
+        
         if ($action == 'downloadzip') {
             $renderable->send_certificates_zipped();
         } else if ($action == 'generatecertificates') {
