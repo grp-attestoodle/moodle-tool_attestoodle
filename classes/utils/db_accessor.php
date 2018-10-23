@@ -347,4 +347,28 @@ class db_accessor extends singleton {
         }
         self::$db->insert_records('attestoodle_value_log', $milestones);
     }
+
+    /**
+     * get module in order of course.
+     */
+    public function get_activiesbysection($courseid) {
+        $request = "SELECT sequence, section, visible, availability
+                      FROM {course_sections}
+                     WHERE course = ?
+                       and sequence != ''
+                  ORDER BY section";
+        $result = self::$db->get_records_sql($request, array($courseid));
+        $ret = array();
+        foreach ($result as $enreg) {
+            $morceaux = explode(",", $enreg->sequence);
+            foreach ($morceaux as $morceau) {
+                $dataobject = new \stdClass();
+                $dataobject->id = $morceau;
+                $dataobject->visible = $enreg->visible;
+                $dataobject->availability = $enreg->availability;
+                $ret[] = $dataobject;
+            }
+        }
+        return $ret;
+    }
 }

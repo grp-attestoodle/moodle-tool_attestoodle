@@ -24,6 +24,7 @@
  */
 
 namespace tool_attestoodle\forms;
+use tool_attestoodle\utils\db_accessor;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -37,43 +38,69 @@ class training_milestones_update_form extends \moodleform {
      */
     public function definition() {
         $inputnameprefix = $this->_customdata['input_name_prefix'];
-        $courses = $this->_customdata['data'];
+        $elements = $this->get_elements($this->_customdata['data'], $inputnameprefix);
 
         $mform = $this->_form;
-
-        // For each course we set a collapsible fieldset.
-        foreach ($courses as $course) {
-            $totalmilestones = parse_minutes_to_hours($course->get_total_milestones());
-            $mform->addElement('header', $course->get_id(), "{$course->get_name()} : {$totalmilestones}");
-            $mform->setExpanded($course->get_id(), false);
-
+        $suffix = get_string("training_milestones_form_input_suffix", "tool_attestoodle");
+        foreach ($elements as $course) {
+            $mform->addElement('header', $course->id, "{$course->name} : {$course->totalmilestones}");
+            $mform->setExpanded($course->id, false);
             // For each activity in this course we add a form input element.
-            foreach ($course->get_activities() as $activity) {
-                $name = $inputnameprefix  . $activity->get_id();
-                $groupname = "group_" . $name;
-                $label = $activity->get_name();
-                $suffix = get_string("training_milestones_form_input_suffix", "tool_attestoodle");
-                $type = get_string('modulename', $activity->get_type());
-                $milestone = $activity->get_milestone();
-
+            foreach ($course->activities as $activity) {
+                $groupname = "group_" . $activity->name;
                 // The group contains the input, the label and a fixed span (required to have more complex form lines).
                 $group = array();
-                $group[] =& $mform->createElement("text", $name, null, array("size" => 5)); // Max 5 char.
-                $mform->setType($name, PARAM_ALPHANUM); // Parsing the value in INT after submit.
-                $mform->setDefault($name, $milestone); // Set default value to the current milestone value.
+                $group[] =& $mform->createElement("text", $activity->name, null, array("size" => 5)); // Max 5 char.
+                $mform->setType($activity->name, PARAM_ALPHANUM); // Parsing the value in INT after submit.
+                $mform->setDefault($activity->name, $activity->milestone); // Set default value to the current milestone value.
                 $group[] =& $mform->createElement("static", null, null, "<span>{$suffix}</span>");
-                $mform->addGroup($group, $groupname, "{$label} ({$type})", array(' '), false);
+                $mform->addGroup($group, $groupname, "{$activity->label} ({$activity->type})", array(' '), false);
                 $mform->addGroupRule($groupname, array(
-                        $name => array(
+                        $activity->name => array(
                                 array(null, 'numeric', null, 'client')
                         )
-                ));
+                    ));
             }
         }
-
         $this->add_action_buttons();
     }
 
+    private function get_elements($courses, $prefix) {
+        $ret = array();
+        foreach ($courses as $course) {
+            $datacourse = new \stdClass();
+            $datacourse->totalmilestones = parse_minutes_to_hours($course->get_total_milestones());
+            $datacourse->id = $course->get_id();
+            $datacourse->name = $course->get_name();
+            $activities = db_accessor::get_instance()->get_activiesbysection($datacourse->id);
+
+            foreach ($course->get_activities() as $activity) {
+                $idfind = -1;
+                foreach ($activities as $key => $value) {
+                    if ($value->id == $activity->get_id()) {
+                        $idfind = $key;
+                    }
+                }
+                if ($idfind == -1) {
+                    continue;
+                }
+
+                $dataactivity = $activities[$idfind];
+                $dataactivity->name = $prefix  . $activity->get_id();
+                $dataactivity->label = $activity->get_name();
+                $dataactivity->type = get_string('modulename', $activity->get_type());
+                $dataactivity->milestone = $activity->get_milestone();
+                if (plugin_supports('mod', $activity->get_type(), FEATURE_MOD_ARCHETYPE) != MOD_ARCHETYPE_RESOURCE) {
+                    $dataactivity->ressource = 0;
+                } else {
+                    $dataactivity->ressource = 1;
+                }
+            }
+            $datacourse->activities = $activities;
+            $ret[] = $datacourse;
+        }
+        return $ret;
+    }
     /**
      * Custom validation function automagically called when the form
      * is submitted. The standard validations, such as required inputs or

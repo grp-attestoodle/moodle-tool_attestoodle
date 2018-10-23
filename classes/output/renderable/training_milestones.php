@@ -55,15 +55,14 @@ class training_milestones implements \renderable {
                 $message = get_string('infonocourses', 'tool_attestoodle');
                 $this->goback($message);
             } else {
-                $this->form = new training_milestones_update_form(
-                    new \moodle_url(
+                $url = new \moodle_url(
                             '/admin/tool/attestoodle/index.php',
-                            ['page' => 'managemilestones', 'categoryid' => $this->training->get_categoryid()]),
-                    array(
-                        'data' => $this->training->get_courses(),
-                        'input_name_prefix' => "attestoodle_activity_id_"
-                    )
-                );
+                            ['page' => 'managemilestones', 'categoryid' => $this->training->get_categoryid()]);
+                $this->form = new training_milestones_update_form($url,
+                                    array(
+                                            'data' => $this->training->get_courses(),
+                                            'input_name_prefix' => "attestoodle_activity_id_"
+                                          ) );
                 $this->handle_form();
             }
         }
