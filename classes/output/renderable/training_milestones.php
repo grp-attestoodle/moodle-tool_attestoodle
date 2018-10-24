@@ -48,6 +48,10 @@ class training_milestones implements \renderable {
     public function __construct($categoryid) {
         $this->categoryid = $categoryid;
         $this->training = trainings_factory::get_instance()->retrieve_training($categoryid);
+        $type = optional_param('type', null, PARAM_ALPHANUMEXT);
+        $namemod = optional_param('namemod', null, PARAM_ALPHANUMEXT);
+        $visibmod = optional_param('visibmod', 1, PARAM_INT);
+        $restrictmod = optional_param('restrictmod', 0, PARAM_INT);
 
         if ($this->training_exists()) {
             $courses = $this->training->get_courses();
@@ -61,7 +65,9 @@ class training_milestones implements \renderable {
                 $this->form = new training_milestones_update_form($url,
                                     array(
                                             'data' => $this->training->get_courses(),
-                                            'input_name_prefix' => "attestoodle_activity_id_"
+                                            'input_name_prefix' => "attestoodle_activity_id_",
+                                            'type' => $type, 'namemod' => $namemod,
+                                            'visibmod' => $visibmod, 'restrictmod' => $restrictmod
                                           ) );
                 $this->handle_form();
             }
@@ -113,6 +119,20 @@ class training_milestones implements \renderable {
         } else {
             // If data are valid, process persistance.
             // Try to retrieve the submitted data.
+            $datafromform = $this->form->get_submitted_data();
+            if ($datafromform->filter) {
+                $url = new \moodle_url('/admin/tool/attestoodle/index.php',
+                [
+                'page' => 'managemilestones',
+                'categoryid' => $this->training->get_categoryid(),
+                'type' => $datafromform->typemod,
+                'namemod' => $datafromform->namemod,
+                'visibmod' => $datafromform->visibmod,
+                'restrictmod' => $datafromform->restrictmod
+                ]);
+                redirect($url);
+                return;
+            }
             $this->handle_form_has_submitted_data();
         }
     }

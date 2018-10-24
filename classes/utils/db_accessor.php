@@ -371,4 +371,9 @@ class db_accessor extends singleton {
         }
         return $ret;
     }
+
+    public function get_allmodules() {
+        $result = self::$db->get_records('modules');
+        return $result;
+    }
 }

@@ -41,12 +41,17 @@ class training_milestones_update_form extends \moodleform {
         $elements = $this->get_elements($this->_customdata['data'], $inputnameprefix);
 
         $mform = $this->_form;
+        $this->add_filter();
         $suffix = get_string("training_milestones_form_input_suffix", "tool_attestoodle");
         foreach ($elements as $course) {
-            $mform->addElement('header', $course->id, "{$course->name} : {$course->totalmilestones}");
+            $totact = count($course->activities);
+            $lstactivities = $this->filter($course->activities);
+            $totfilter = count($lstactivities);
+            $mform->addElement('header', $course->id,
+                    "{$course->name} : {$course->totalmilestones} ({$totfilter} / {$totact})");
             $mform->setExpanded($course->id, false);
             // For each activity in this course we add a form input element.
-            foreach ($course->activities as $activity) {
+            foreach ($lstactivities as $activity) {
                 $groupname = "group_" . $activity->name;
                 // The group contains the input, the label and a fixed span (required to have more complex form lines).
                 $group = array();
@@ -54,7 +59,15 @@ class training_milestones_update_form extends \moodleform {
                 $mform->setType($activity->name, PARAM_ALPHANUM); // Parsing the value in INT after submit.
                 $mform->setDefault($activity->name, $activity->milestone); // Set default value to the current milestone value.
                 $group[] =& $mform->createElement("static", null, null, "<span>{$suffix}</span>");
-                $mform->addGroup($group, $groupname, "{$activity->label} ({$activity->type})", array(' '), false);
+                $libelactivity = "{$activity->label} ({$activity->type})";
+                if (!empty($activity->availability)) {
+                    $libelactivity = "<i class=\"fa fa-key\" aria-hidden=\"true\"></i> " . $libelactivity;
+                }
+                if ($activity->visible == 0) {
+                    $libelactivity = "<i class=\"fa fa-eye-slash\" aria-hidden=\"true\"></i> " . $libelactivity;
+                }
+
+                $mform->addGroup($group, $groupname, $libelactivity, array(' '), false);
                 $mform->addGroupRule($groupname, array(
                         $activity->name => array(
                                 array(null, 'numeric', null, 'client')
@@ -65,6 +78,98 @@ class training_milestones_update_form extends \moodleform {
         $this->add_action_buttons();
     }
 
+    /**
+     * add filter bar to the form.
+     */
+    private function add_filter() {
+        $mform = $this->_form;
+        $filtergroup = array();
+        $modules = db_accessor::get_instance()->get_allmodules();
+        $lstmod = array();
+        $lstmod[] = get_string('filtermodulealltype', 'tool_attestoodle');
+        $lstmod[] = get_string('filtermoduleactivitytype', 'tool_attestoodle');
+        foreach ($modules as $mod) {
+            $lstmod[$mod->name] = get_string('modulename', $mod->name);
+        }
+        $filtergroup[] =& $mform->createElement('static', null, null, get_string('filtermodulename', 'tool_attestoodle'));
+        $filtergroup[] =& $mform->createElement('text', 'namemod', '', array("size" => 10));
+        $mform->setType('namemod', PARAM_TEXT );
+        if (!empty($this->_customdata['namemod'])) {
+            $mform->setDefault('namemod', $this->_customdata['namemod']);
+        }
+
+        $filtergroup[] =& $mform->createElement('static', null, null, get_string('filtermoduletype', 'tool_attestoodle'));
+        $filtergroup[] =& $mform->createElement('select', 'typemod', '', $lstmod, array("size" => 20));
+        if (!empty($this->_customdata['type'])) {
+            $mform->setDefault('typemod', $this->_customdata['type']);
+        }
+
+        $filtergroup[] =& $mform->createElement('static', null, null, get_string('filtermodulevisible', 'tool_attestoodle'));
+        $filtergroup[] =& $mform->createElement('advcheckbox', 'visibmod', '');
+        $mform->setDefault('visibmod', $this->_customdata['visibmod']);
+
+        $filtergroup[] =& $mform->createElement('static', null, null, get_string('filtermodulerestrict', 'tool_attestoodle'));
+        $filtergroup[] =& $mform->createElement('advcheckbox', 'restrictmod', '');
+        $mform->setDefault('restrictmod', $this->_customdata['restrictmod']);
+
+        $filtergroup[] =& $mform->createElement('submit', 'filter',
+            get_string('filtermodulebtn', 'tool_attestoodle'), array('class' => 'send-button'));
+        $mform->addGroup($filtergroup, '', '', ' ', false);
+    }
+    /**
+     * filter the modules according to the chosen filters.
+     * @param array $activities to filter.
+     * @return array of modules that passes the filter.
+     */
+    private function filter($activities) {
+        $ret = array();
+        $lib = "";
+        if (!empty($this->_customdata['type'])) {
+            $filtertype = $this->_customdata['type'];
+            if ($filtertype > "2") {
+                $lib = get_string('modulename', $filtertype);
+            }
+        } else {
+            $filtertype = 0;
+        }
+
+        foreach ($activities as $activity) {
+            $pass = true;
+
+            if ($filtertype == 1 && $activity->ressource == 1) {
+                $pass = false;
+            }
+            if (!empty($lib) && strcmp($activity->type, $lib) !== 0) {
+                $pass = false;
+            }
+
+            if ($pass && $this->_customdata['visibmod'] != $activity->visible) {
+                $pass = false;
+            }
+
+            if ($pass && $this->_customdata['restrictmod'] == 0 && !empty($activity->availability)) {
+                $pass = false;
+            }
+
+            if ($pass && $this->_customdata['restrictmod'] == 1 && empty($activity->availability)) {
+                $pass = false;
+            }
+
+            // Name contains max priority.
+            if (!empty($this->_customdata['namemod'])) {
+                if (stristr($activity->label, $this->_customdata['namemod']) != null) {
+                    $pass = true;
+                } else {
+                    $pass = false;
+                }
+            }
+
+            if ($pass) {
+                $ret[] = $activity;
+            }
+        }
+        return $ret;
+    }
     private function get_elements($courses, $prefix) {
         $ret = array();
         foreach ($courses as $course) {
@@ -90,6 +195,8 @@ class training_milestones_update_form extends \moodleform {
                 $dataactivity->label = $activity->get_name();
                 $dataactivity->type = get_string('modulename', $activity->get_type());
                 $dataactivity->milestone = $activity->get_milestone();
+                $dataactivity->visible = $dataactivity->visible * $activity->get_visible();
+                $dataactivity->availability = $dataactivity->availability . $activity->get_availability();
                 if (plugin_supports('mod', $activity->get_type(), FEATURE_MOD_ARCHETYPE) != MOD_ARCHETYPE_RESOURCE) {
                     $dataactivity->ressource = 0;
                 } else {

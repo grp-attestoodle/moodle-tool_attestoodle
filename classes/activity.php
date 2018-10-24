@@ -54,6 +54,9 @@ class activity {
      */
     private $course;
 
+    private $visible;
+    private $availability;
+
     /**
      * Constructor of the activity class.
      *
@@ -170,6 +173,13 @@ class activity {
         return $this->course;
     }
 
+    public function get_visible() {
+        return $this->visible;
+    }
+
+    public function get_availability() {
+        return $this->availability;
+    }
     /**
      * Setter for $idmodule property.
      *
@@ -232,5 +242,12 @@ class activity {
      */
     public function set_course($prop) {
         $this->course = $prop;
+    }
+    public function set_visible($prop) {
+        $this->visible = $prop;
+    }
+
+    public function set_availability($prop) {
+        $this->availability = $prop;
     }
 }

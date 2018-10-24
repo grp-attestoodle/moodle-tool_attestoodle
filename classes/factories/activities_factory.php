@@ -71,7 +71,7 @@ class activities_factory extends singleton {
      *  in, corresponding to the type of the activity (quiz, folder, file, ...)
      * @return activity The activity created
      */
-    private function create($activityid, $dbactivity, $tablename) {
+    private function create($activityid, $dbactivity, $tablename, $coursemodule) {
         $id = $activityid;
         $idmodule = $dbactivity->id;
         $name = $dbactivity->name;
@@ -79,8 +79,10 @@ class activities_factory extends singleton {
 
         // Retrieve the potential milestone value of the activity.
         $milestone = $this->extract_milestone($id);
-
-        return new activity($id, $idmodule, $name, $desc, $tablename, $milestone);
+        $ret = new activity($id, $idmodule, $name, $desc, $tablename, $milestone);
+        $ret->set_visible($coursemodule->visible);
+        $ret->set_availability($coursemodule->availability);
+        return $ret;
     }
 
     /**
@@ -133,7 +135,7 @@ class activities_factory extends singleton {
             $instanceid = $coursemodule->instance;
             $coursemodulesinfos = db_accessor::get_instance()->get_course_modules_infos($instanceid, $tablename);
 
-            $activities[] = $this->create($activityid, $coursemodulesinfos, $tablename);
+            $activities[] = $this->create($activityid, $coursemodulesinfos, $tablename, $coursemodule);
         }
         return $activities;
     }
