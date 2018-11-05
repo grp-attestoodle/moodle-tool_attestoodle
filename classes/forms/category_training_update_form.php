@@ -66,7 +66,8 @@ class category_training_update_form extends \moodleform {
             }
             $group[] =& $mform->createElement('select', 'template', '', $lsttemplate, array("size" => 35));
 
-            if (has_capability('tool/attestoodle:viewtemplate', \context_system::instance())) {
+            $context = \context_coursecat::instance($category->get_id());
+            if (has_capability('tool/attestoodle:viewtemplate', $context)) {
                 $previewlink = '<a target="preview" href="' . $CFG->wwwroot .
                     '/admin/tool/attestoodle/classes/gabarit/view_export.php?templateid=' . $idtemplate .
                     '&trainingid=' . $idtraining . '" class= "btn-create">'.
