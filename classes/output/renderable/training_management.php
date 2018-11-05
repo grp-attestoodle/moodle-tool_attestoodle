@@ -154,8 +154,8 @@ class training_management implements \renderable {
      */
     private function handle_form_has_submitted_data() {
         global $DB;
-
-        if (has_capability('tool/attestoodle:managetraining', \context_system::instance())) {
+        $context = \context_coursecat::instance($this->categoryid);
+        if (has_capability('tool/attestoodle:managetraining', $context)) {
             $datafromform = $this->form->get_submitted_data();
             // Instanciate global variables to output to the user.
             $error = false;
