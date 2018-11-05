@@ -117,7 +117,7 @@ class training_milestones_update_form extends \moodleform {
         $mform->addGroup($filtergroup, '', '', ' ', false);
     }
     /**
-     * filter the modules according to the chosen filters.
+     * Filter the modules according to the chosen filters.
      * @param array $activities to filter.
      * @return array of modules that passes the filter.
      */
@@ -134,35 +134,13 @@ class training_milestones_update_form extends \moodleform {
         }
 
         foreach ($activities as $activity) {
-            $pass = true;
-
-            if ($filtertype == 1 && $activity->ressource == 1) {
-                $pass = false;
-            }
-            if (!empty($lib) && strcmp($activity->type, $lib) !== 0) {
-                $pass = false;
-            }
-
+            $pass = $this->filtertype($activity, $filtertype, $lib);
             if ($pass && $this->_customdata['visibmod'] != $activity->visible) {
                 $pass = false;
             }
-
-            if ($pass && $this->_customdata['restrictmod'] == 0 && !empty($activity->availability)) {
-                $pass = false;
-            }
-
-            if ($pass && $this->_customdata['restrictmod'] == 1 && empty($activity->availability)) {
-                $pass = false;
-            }
-
-            // Name contains max priority.
-            if (!empty($this->_customdata['namemod'])) {
-                if (stristr($activity->label, $this->_customdata['namemod']) != null) {
-                    $pass = true;
-                } else {
-                    $pass = false;
-                }
-            }
+            $pass = $this->filterrestrict($activity, $pass);
+            // The filter on the name has priority.
+            $pass = $this->filtername($activity, $pass);
 
             if ($pass) {
                 $ret[] = $activity;
@@ -170,6 +148,62 @@ class training_milestones_update_form extends \moodleform {
         }
         return $ret;
     }
+
+    /**
+     * Determines whether the activity crosses the filter type.
+     * @param $activity to test.
+     * @param $filtertype to cross.
+     * @param $lib the name of module.
+     * @return true if activity cross the filter type.
+     */
+    private function filtertype($activity, $filtertype, $lib) {
+        $ret = true;
+        if ($filtertype == 1 && $activity->ressource == 1) {
+            $ret = false;
+        }
+        if (!empty($lib) && strcmp($activity->type, $lib) !== 0) {
+            $ret = false;
+        }
+        return $ret;
+    }
+    /**
+     * Determines whether the activity crosses the filter mane.
+     * @param $activity to test.
+     * @param $pass the actual result of other test.
+     * @return true if activity cross the filter name.
+     */
+    private function filtername($activity, $pass) {
+        $ret = $pass;
+        if (!empty($this->_customdata['namemod'])) {
+            if (stristr($activity->label, $this->_customdata['namemod']) != null) {
+                $ret = true;
+            } else {
+                $ret = false;
+            }
+        }
+        return $ret;
+    }
+
+    /**
+     * Determines whether the activity crosses the filter availability.
+     * @param $activity to test.
+     * @param $pass the actual result of other test.
+     * @return true if activity cross the filter availability.
+     */
+    private function filterrestrict($activity, $pass) {
+        $ret = $pass;
+        if ($ret && $this->_customdata['restrictmod'] == 0 && !empty($activity->availability)) {
+            $ret = false;
+        }
+        if ($ret && $this->_customdata['restrictmod'] == 1 && empty($activity->availability)) {
+            $ret = false;
+        }
+        return $ret;
+    }
+    /**
+     * Build a table of courses and their activities to display.
+     * The activities are arranged in their order of appearance.
+     */
     private function get_elements($courses, $prefix) {
         $ret = array();
         foreach ($courses as $course) {

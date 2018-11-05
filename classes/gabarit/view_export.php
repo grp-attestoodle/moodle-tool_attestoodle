@@ -90,92 +90,77 @@ function create_debordement_test() {
         "totalminutes" => 30,
         "coursename" => "L API PDF de Moodle",
         "name" => "devoir 1",
-        "type" => "assign"
-        );
+        "type" => "assign");
     $activitiesstructured[23] = array(
         "totalminutes" => 180,
         "coursename" => "L API Forms de Moodle",
         "name" => "Evaluation",
-        "type" => "quiz"
-    );
+        "type" => "quiz");
     $activitiesstructured[3] = array(
         "totalminutes" => 10,
         "coursename" => "Un titre de cours acces long pour nécessiter un saut de ligne.",
         "name" => "redaction",
-        "type" => "journal"
-        );
+        "type" => "journal");
     $activitiesstructured[2] = array(
         "totalminutes" => 120,
         "coursename" => "Le langage PHP",
         "name" => "Ecrire un programme hello world",
-        "type" => "assign"
-        );
+        "type" => "assign");
     $activitiesstructured[7] = array(
         "totalminutes" => 5,
         "coursename" => "Un cours avec un titre dont on ne voit pas la fin (il est tres long n est ce pas)",
         "name" => "Chapitre 2",
-        "type" => "label"
-        );
+        "type" => "label");
     $activitiesstructured[30] = array(
         "totalminutes" => 100,
         "coursename" => "L'API File de Moodle",
         "name" => "Evaluation 1",
-        "type" => "quiz"
-        );
+        "type" => "quiz");
     $activitiesstructured[31] = array(
         "totalminutes" => 10,
         "coursename" => "L'API File de Moodle",
         "name" => "Evaluation 2",
-        "type" => "quiz"
-        );
+        "type" => "quiz");
     $activitiesstructured[32] = array(
         "totalminutes" => 10,
         "coursename" => "L'API File de Moodle",
         "name" => "Fichiers et formulaire",
-        "type" => "label"
-        );
+        "type" => "label");
     $activitiesstructured[33] = array(
         "totalminutes" => 10,
         "coursename" => "L API Forms de Moodle",
         "name" => "Ajouter les définitions des termes vu dans le cours",
-        "type" => "wiki"
-        );
+        "type" => "wiki");
     $activitiesstructured[34] = array(
         "totalminutes" => 5,
         "coursename" => "Mathématique",
         "name" => "la logique floue",
-        "type" => "lesson"
-        );
+        "type" => "lesson");
     $activitiesstructured[35] = array(
         "totalminutes" => 20,
         "coursename" => "L API PDF de Moodle",
         "name" => "devoir 2",
-        "type" => "quiz"
-        );
+        "type" => "quiz");
     $activitiesstructured[36] = array(
         "totalminutes" => 20,
         "coursename" => "L API PDF de Moodle",
         "name" => "PDF et géométrie",
-        "type" => "assign"
-        );
+        "type" => "assign");
     $activitiesstructured[37] = array(
         "totalminutes" => 10,
         "coursename" => "L API PDF de Moodle",
         "name" => "Changement de page",
-        "type" => "assign"
-        );
+        "type" => "assign");
     $activitiesstructured[38] = array(
         "totalminutes" => 10,
         "coursename" => "L'API File de Moodle",
         "name" => "Evaluation finale",
-        "type" => "quiz"
-        );
+        "type" => "quiz");
     $activitiesstructured[39] = array(
         "totalminutes" => 10,
         "coursename" => "Le langage PHP",
         "name" => "Traitement des dates",
-        "type" => "assign"
-        );
+        "type" => "assign");
     $certificateinfos->activities = $activitiesstructured;
     return $certificateinfos;
 }

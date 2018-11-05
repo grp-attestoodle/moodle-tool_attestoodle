@@ -34,15 +34,15 @@ class attestation_pdf {
     protected $filename;
     /** Structure of data to print on PDF.*/
     protected $certificateinfos;
-    /** the width of the Page, orientation landscape or portrait change the width.*/
-    protected $pagewidth = 0;
-    protected $pageheight = 0;
-    /** Order from the beginning of the activity's table.*/
-    protected $ytabstart;
-    /** Order from the end of the activity's table.*/
-    protected $ytabend;
-    /** Order from the last detail.*/
-    protected $yend;
+    /**
+     * struct contains :
+     * pagewidth the width of the Page, orientation landscape or portrait change the width.
+     * pageheight the height of the page
+     * ytabstart start of table activities
+     * ytabend end of table activities
+     * yend the last element in the page.
+     */
+    protected $pageparam;
 
     /** The url of background image (copy tmp).*/
     protected $file;
@@ -132,7 +132,7 @@ class attestation_pdf {
     }
 
     /**
-     * Sort $this->template on y ASC.
+     * Sort $this->template on 'y' ASC.
      */
     protected function comparetemplate() {
         $tab = array();
@@ -185,46 +185,9 @@ class attestation_pdf {
             if ($elt->type == "activities" && isset($this->certificateinfos->activities)) {
                 $this->printactivities($doc, $elt, $this->certificateinfos->activities);
             } else {
-                switch ($elt->type) {
-                    case "learnername" :
-                        if (isset($this->certificateinfos->learnername)) {
-                            $text = $this->certificateinfos->learnername;
-                        }
-                        break;
-                    case "trainingname" :
-                        if (isset($this->certificateinfos->trainingname)) {
-                            $text = $this->certificateinfos->trainingname;
-                        }
-                        break;
-                    case "period" :
-                        if (isset($this->certificateinfos->period)) {
-                            $text = $this->certificateinfos->period;
-                        }
-                        break;
-                    case "totalminutes" :
-                        if (isset($this->certificateinfos->totalminutes)) {
-                            $text = parse_minutes_to_hours($this->certificateinfos->totalminutes);
-                        }
-                        break;
-                    case "text" :
-                        $text = "";
-                        break;
-                    case "pagenumber" :
-                        $text = "";
-                        if ($this->numpage == 'never') {
-                            continue;
-                        }
-                        if ($this->nbpage < 2 && $this->numpage == 'any') {
-                            continue;
-                        }
-
-                        $text = $this->nbpage;
-                        if ($elt->ontotal) {
-                            $text = $text . " / " . $this->nbpage;
-                        }
-                        if (isset($elt->lib)) {
-                            $text = $elt->lib . $text;
-                        }
+                $text = $this->handle_type($elt->type);
+                if ($elt->type === "pagenumber") {
+                    $text = $this->handle_pagenumber($elt);
                 }
                 if (isset($elt->lib) && $elt->type != "pagenumber") {
                     $text = $elt->lib . $text;
@@ -282,31 +245,7 @@ class attestation_pdf {
                 continue;
             }
             $pdf->SetFont($elt->font->family, $elt->font->emphasis, $elt->font->size);
-            $text = "";
-            switch ($elt->type) {
-                case "learnername" :
-                    if (isset($this->certificateinfos->learnername)) {
-                        $text = $this->certificateinfos->learnername;
-                    }
-                    break;
-                case "trainingname" :
-                    if (isset($this->certificateinfos->trainingname)) {
-                        $text = $this->certificateinfos->trainingname;
-                    }
-                    break;
-                case "period" :
-                    if (isset($this->certificateinfos->period)) {
-                        $text = $this->certificateinfos->period;
-                    }
-                    break;
-                case "totalminutes" :
-                    if (isset($this->certificateinfos->totalminutes)) {
-                        $text = parse_minutes_to_hours($this->certificateinfos->totalminutes);
-                    }
-                    break;
-                case "text" :
-                    break;
-            }
+            $text = $this->handle_type($elt->type);
             if (isset($elt->lib)) {
                 $text = $elt->lib . $text;
             }
@@ -316,8 +255,7 @@ class attestation_pdf {
     }
 
     /**
-     * affiche les données apres le tableau
-     * avant ruture de page.
+     * Display data after table activities.
      */
     protected function displayaftertactivities($pdf, $model) {
         if (!$this->repeatend) {
@@ -331,32 +269,7 @@ class attestation_pdf {
                 continue;
             }
             $pdf->SetFont($elt->font->family, $elt->font->emphasis, $elt->font->size);
-
-            switch ($elt->type) {
-                case "learnername" :
-                    if (isset($this->certificateinfos->learnername)) {
-                        $text = $this->certificateinfos->learnername;
-                    }
-                    break;
-                case "trainingname" :
-                    if (isset($this->certificateinfos->trainingname)) {
-                        $text = $this->certificateinfos->trainingname;
-                    }
-                    break;
-                case "period" :
-                    if (isset($this->certificateinfos->period)) {
-                        $text = $this->certificateinfos->period;
-                    }
-                    break;
-                case "totalminutes" :
-                    if (isset($this->certificateinfos->totalminutes)) {
-                        $text = parse_minutes_to_hours($this->certificateinfos->totalminutes);
-                    }
-                    break;
-                case "text" :
-                    $text = "";
-                    break;
-            }
+            $text = $this->handle_type($elt->type);
             if (isset($elt->lib)) {
                 $text = $elt->lib . $text;
             }
@@ -370,17 +283,18 @@ class attestation_pdf {
      * @param $elt param for display mode
      * @param $widthtext the size of the data to display.
      */
-    private function comput_align($elt, $widthtext) {
+    protected function comput_align($elt, $widthtext) {
         $x = 0;
+        $pagewidth = $this->pageparam->pagewidth;
         switch ($elt->align) {
             case 'L' :
                 $x = $elt->location->x;
                 break;
             case 'R' :
-                $x = $this->pagewidth - $elt->location->x - $widthtext;
+                $x = $pagewidth - $elt->location->x - $widthtext;
                 break;
             case 'C' :
-                $x = ($this->pagewidth - $elt->location->x - $widthtext) / 2 +
+                $x = ($pagewidth - $elt->location->x - $widthtext) / 2 +
                     $elt->location->x;
         }
         return $x;
@@ -391,8 +305,9 @@ class attestation_pdf {
      */
     private function prepare_page() {
         $orientation = 'P';
-        $this->pagewidth = 210;
-        $this->pageheight = 297;
+        $this->pageparam = new \stdClass();
+        $this->pageparam->pagewidth = 210;
+        $this->pageparam->pageheight = 297;
 
         if (isset($this->filename)) {
             // Set orientation width the size of image.
@@ -400,8 +315,8 @@ class attestation_pdf {
 
             if ($taille[0] > $taille[1]) {
                 $orientation = 'L';
-                $this->pagewidth = 297;
-                $this->pageheight = 210;
+                $this->pageparam->pagewidth = 297;
+                $this->pageparam->pageheight = 210;
             }
         }
 
@@ -413,7 +328,8 @@ class attestation_pdf {
         $doc->AddPage();
 
         if (isset($this->filename)) {
-            $doc->Image($this->file, 0, 0, $this->pagewidth, $this->pageheight, 'png', '', true);
+            $doc->Image($this->file, 0, 0, $this->pageparam->pagewidth, $this->pageparam->pageheight,
+            'png', '', true);
         }
 
         return $doc;
@@ -427,26 +343,13 @@ class attestation_pdf {
      * @param $tabactivities the data to place (the activities)
      */
     private function printactivities($pdf, $model, $tabactivities) {
-        $minwidth = 80;
-        $width = 0;
-        if (isset($model->size)) {
-            $width = $model->size;
-        }
-
-        if ($width == 0) {
-            $width = ($this->pagewidth - $model->location->x * 2);
-        }
-
-        // Force minimum width of activities table.
-        if ($width < $minwidth) {
-            $width = $minwidth;
-        }
-
+        $width = $this->computewidth($model);
+        $widthfirstcolumn = $width * .75;
+        $widthsecondcolumn = $width - $widthfirstcolumn;
         $x = $this->comput_align($model, $width);
-        if ($x + $minwidth > $this->pagewidth) {
-            $x = $this->pagewidth - $minwidth;
+        if ($x + 80 > $this->pageparam->pagewidth) {
+            $x = $this->pageparam->pagewidth - 80;
         }
-
         $y = intval($model->location->y) + $this->offset;
 
         $pdf->SetLineWidth(0.1);
@@ -457,91 +360,54 @@ class attestation_pdf {
 
         // Main borders.
         $ystart = $y;
-
         // Header border.
         $pdf->Line($x, $y + ($heightline * 1.5), $x + $width , $y + ($heightline * 1.5));
-
-        // Columns.
-        $widthfirstcolumn = $width * .75;
-
         // Column title course.
-        $pdf->SetFont($model->font->family, 'B', $model->font->size);
-        $pdf->SetXY($x + 5, $y + 5);
-        $pdf->Cell($widthfirstcolumn - 10, 0, get_string('activity_header_' . $this->groupe1 .
-                                    "_" . $this->groupe2, 'tool_attestoodle'), 0, 0, 'C', false);
-        // Column title "total hours".
-        $pdf->SetXY($x + $widthfirstcolumn + 5, $y + 5);
-        $widthsecondcolumn = $width - $widthfirstcolumn;
-        $pdf->Cell($widthsecondcolumn - 10, 0, get_string('activity_header_col_2', 'tool_attestoodle'), 0, 0, 'C', false);
-
+        $this->displaytitlecolumn($pdf, $model, $x, $y, $widthfirstcolumn, $widthsecondcolumn);
         // Activities lines.
-        $pdf->SetFont($model->font->family, '', $model->font->size);
-
         $lineheight = $model->font->size;
         $y = $y + ($heightline * 1.5);
         $pdf->Line($widthfirstcolumn + $x, $ystart, $widthfirstcolumn + $x, $y);
 
         foreach ($tabactivities as $course) {
             // Page break needed ?
-            if ($y - $this->ytabend + $this->yend + 10 > $this->pageheight) {
+            if ($y - $this->pageparam->ytabend + $this->pageparam->yend + 10 > $this->pageparam->pageheight) {
                 $pdf->Rect($x, $ystart, $width, $y - $ystart, "D");
-                if ($y < $this->ytabend) {
+                if ($y < $this->pageparam->ytabend) {
                     $this->offset = 0;
                 } else {
-                    $this->offset = $y - $this->ytabend;
+                    $this->offset = $y - $this->pageparam->ytabend;
                 }
-
                 $this->displayaftertactivities($pdf, $model);
                 $this->displaypagenumber($pdf);
 
                 $pdf->AddPage();
                 $this->currentpage ++;
                 if (isset($this->filename) && $this->repeatbackground) {
-                    $pdf->Image($this->file, 0, 0, $this->pagewidth, $this->pageheight, 'png', '', true);
+                    $pdf->Image($this->file, 0, 0, $this->pageparam->pagewidth, $this->pageparam->pageheight,
+                    'png', '', true);
                 }
                 $this->offset = 0;
                 $this->displaybeforeactivities($pdf, $model);
-                $y = $this->ytabstart;
+                $y = $this->pageparam->ytabstart;
                 $ystart = $y;
 
                 $pdf->Line($x, $y + ($heightline * 1.5), $x + $width , $y + ($heightline * 1.5));
-                $pdf->SetFont($model->font->family, 'B', $model->font->size);
-                $pdf->SetXY($x + 5, $y + 5);
-                $pdf->Cell($widthfirstcolumn - 10, 0, get_string('activity_header_' . $this->groupe1 .
-                                    "_" . $this->groupe2, 'tool_attestoodle'), 0, 0, 'C', false);
-                $pdf->SetXY($x + $widthfirstcolumn + 5, $y + 5);
-                $pdf->Cell($widthsecondcolumn - 10, 0, get_string('activity_header_col_2', 'tool_attestoodle'), 0, 0, 'C', false);
-                $pdf->SetFont($model->font->family, '', $model->font->size);
+                $this->displaytitlecolumn($pdf, $model, $x, $y, $widthfirstcolumn, $widthsecondcolumn);
+
                 $y = $y + ($heightline * 1.5);
                 $pdf->Line($widthfirstcolumn + $x, $ystart, $widthfirstcolumn + $x, $y);
             }
-
-            $coursename = $course["coursename"];
-            $totalminutes = $course["totalminutes"];
-            // Activity type.
-            if ($totalminutes != -1) {
-                $nbnewline = $this->displayactivity($pdf, $x + 3, $y, $widthfirstcolumn - 6, $lineheight, $coursename);
-            } else {
-                $pdf->SetFont($model->font->family, 'B', $model->font->size);
-                $nbnewline = $this->displayactivity($pdf, $x + 1, $y, $widthfirstcolumn - 6, $lineheight, $coursename);
-                $pdf->SetFont($model->font->family, '', $model->font->size);
-            }
-            // Activity total hours.
-            if ($totalminutes != -1) {
-                $pdf->SetXY($x + $widthfirstcolumn + 5, $y);
-                $pdf->Cell($widthsecondcolumn - 10, $lineheight, parse_minutes_to_hours($totalminutes), 0, 0, 'C');
-                $pdf->Line($widthfirstcolumn + $x, $y, $widthfirstcolumn + $x,
-                            $y + $lineheight + ($nbnewline - 1) * $lineheight / 2);
-            }
+            $nbnewline = $this->displaydetail($pdf, $model, $course, $x, $y , $widthfirstcolumn, $lineheight, $widthsecondcolumn);
             $y += $lineheight + ($nbnewline - 1) * $lineheight / 2;
             $pdf->Line($x, $y, $x + $width , $y);
         }
         $pdf->Rect($x, $ystart, $width, $y - $ystart, "D");
         // Compute offset.
-        if ($y < $this->ytabend) {
+        if ($y < $this->pageparam->ytabend) {
             $this->offset = 0;
         } else {
-            $this->offset = $y - $this->ytabend;
+            $this->offset = $y - $this->pageparam->ytabend;
         }
     }
 
@@ -582,27 +448,26 @@ class attestation_pdf {
     }
 
     private function computepagelimit() {
-        $this->yend = 0;
-        $this->ytabstart = 0;
+        $this->pageparam->yend = 0;
+        $this->pageparam->ytabstart = 0;
         foreach ($this->template as $elt) {
             if ($elt->type == "activities") {
-                $this->ytabstart = $elt->location->y;
+                $this->pageparam->ytabstart = $elt->location->y;
             }
-            $this->yend = $elt->location->y;
+            $this->pageparam->yend = $elt->location->y;
         }
-        $this->ytabend = -1;
+        $this->pageparam->ytabend = -1;
         foreach ($this->template as $elt) {
-            if ($elt->location->y > $this->ytabstart && $this->ytabend == -1) {
-                $this->ytabend = $elt->location->y;
+            if ($elt->location->y > $this->pageparam->ytabstart && $this->pageparam->ytabend == -1) {
+                $this->pageparam->ytabend = $elt->location->y;
             }
         }
-        if ($this->ytabend == -1) {
-            $this->ytabend = $this->pageheight - 30;
+        if ($this->pageparam->ytabend == -1) {
+            $this->pageparam->ytabend = $this->pageparam->pageheight - 30;
         }
-        if ($this->yend == $this->ytabstart) {
-            $this->yend = $this->ytabend;
+        if ($this->pageparam->yend == $this->pageparam->ytabstart) {
+            $this->pageparam->yend = $this->pageparam->ytabend;
         }
-        // Hauteur du tableau = $this->ytabend - $this->ytabstart.
     }
 
     private function setacceptoffset() {
@@ -625,11 +490,11 @@ class attestation_pdf {
      *
      */
     private function displaytext($text, $elt, $doc) {
-        if ($elt->location->x > $this->pagewidth) {
+        if ($elt->location->x > $this->pageparam->pagewidth) {
             return;
         }
         $relicat = "";
-        while ($doc->GetStringWidth($text) + $elt->location->x > $this->pagewidth) {
+        while ($doc->GetStringWidth($text) + $elt->location->x > $this->pageparam->pagewidth) {
             $position = strrpos($text, " ");
             if ($position) {
                 $relicat = substr($text, $position + 1) . " " . $relicat;
@@ -658,8 +523,7 @@ class attestation_pdf {
      */
     private function computenbpage($doc) {
         $simulator = new simul_pdf($doc, $this->template);
-        $simulator->initvalues($this->pagewidth, $this->ytabend, $this->yend, $this->pageheight,
-            $this->ytabstart, $this->acceptoffset, $this->certificateinfos);
+        $simulator->initvalues($this->pageparam, $this->acceptoffset, $this->certificateinfos);
         $this->nbpage = $simulator->generate_pdf_object();
     }
 
@@ -693,9 +557,7 @@ class attestation_pdf {
                 }
                 // Add criteria1 with totalminutes = -1.
                 $tabreturn[] = array ("totalminutes" => -1, "coursename" => $discrim1);
-                foreach ($tabcomput as $result) {
-                    $tabreturn[] = $result;
-                }
+                $tabreturn = array_merge($tabreturn, $tabcomput);
             }
 
             if (empty($this->groupe2) && $tot1 > 0) {
@@ -703,5 +565,98 @@ class attestation_pdf {
             }
         }
         return $tabreturn;
+    }
+    /**
+     * Defines the text according to the type value.
+     */
+    protected function handle_type($type) {
+        $text = "";
+        switch ($type) {
+            case "learnername" :
+                if (isset($this->certificateinfos->learnername)) {
+                    $text = $this->certificateinfos->learnername;
+                }
+                break;
+            case "trainingname" :
+                if (isset($this->certificateinfos->trainingname)) {
+                    $text = $this->certificateinfos->trainingname;
+                }
+                break;
+            case "period" :
+                if (isset($this->certificateinfos->period)) {
+                    $text = $this->certificateinfos->period;
+                }
+                break;
+            case "totalminutes" :
+                if (isset($this->certificateinfos->totalminutes)) {
+                    $text = parse_minutes_to_hours($this->certificateinfos->totalminutes);
+                }
+                break;
+        }
+        return $text;
+    }
+
+    protected function handle_pagenumber($elt) {
+        $text = "";
+        if ($this->numpage != 'never') {
+            if ($this->nbpage > 1 || $this->numpage == 'always') {
+                $text = $this->nbpage;
+                if ($elt->ontotal) {
+                    $text = $text . " / " . $this->nbpage;
+                }
+                if (isset($elt->lib)) {
+                    $text = $elt->lib . $text;
+                }
+            }
+        }
+        return $text;
+    }
+    protected function computewidth($model) {
+        $width = 0;
+        $minwidth = 80;
+        if (isset($model->size)) {
+            $width = $model->size;
+        }
+
+        if ($width == 0) {
+            $width = ($this->pageparam->pagewidth - $model->location->x * 2);
+        }
+
+        // Force minimum width of activities table.
+        if ($width < $minwidth) {
+            $width = $minwidth;
+        }
+        return $width;
+    }
+    protected function displaytitlecolumn($pdf, $model, $x, $y, $widthfirstcolumn, $widthsecondcolumn) {
+        $pdf->SetFont($model->font->family, 'B', $model->font->size);
+        $pdf->SetXY($x + 5, $y + 5);
+        $pdf->Cell($widthfirstcolumn - 10, 0, get_string('activity_header_' . $this->groupe1 .
+                                    "_" . $this->groupe2, 'tool_attestoodle'), 0, 0, 'C', false);
+        // Column title "total hours".
+        $pdf->SetXY($x + $widthfirstcolumn + 5, $y + 5);
+        $pdf->Cell($widthsecondcolumn - 10, 0, get_string('activity_header_col_2', 'tool_attestoodle'), 0, 0, 'C', false);
+        $pdf->SetFont($model->font->family, '', $model->font->size);
+    }
+    private function displaydetail($pdf, $model, $course, $x, $y , $widthfirstcolumn, $lineheight, $widthsecondcolumn) {
+        $nbnewline = 0;
+        $coursename = $course["coursename"];
+        $totalminutes = $course["totalminutes"];
+        // Activity type.
+        if ($totalminutes != -1) {
+            $nbnewline = $this->displayactivity($pdf, $x + 3, $y, $widthfirstcolumn - 6, $lineheight, $coursename);
+        } else {
+            $pdf->SetFont($model->font->family, 'B', $model->font->size);
+            $nbnewline = $this->displayactivity($pdf, $x + 1, $y, $widthfirstcolumn - 6, $lineheight, $coursename);
+            $pdf->SetFont($model->font->family, '', $model->font->size);
+        }
+        // Activity total hours.
+        if ($totalminutes != -1) {
+            $pdf->SetXY($x + $widthfirstcolumn + 5, $y);
+            $pdf->Cell($widthsecondcolumn - 10, $lineheight, parse_minutes_to_hours($totalminutes), 0, 0, 'C');
+            $pdf->Line($widthfirstcolumn + $x, $y, $widthfirstcolumn + $x,
+                            $y + $lineheight + ($nbnewline - 1) * $lineheight / 2);
+        }
+        return $nbnewline;
     }
 }

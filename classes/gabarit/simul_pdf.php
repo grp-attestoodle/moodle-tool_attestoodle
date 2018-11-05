@@ -26,42 +26,20 @@ require_once("$CFG->dirroot/lib/pdflib.php");
  * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
-class simul_pdf {
-    /** template of the pdf document, background, position of elements. etc. */
-    protected $template;
-    /** the name of picture background.*/
-    protected $filename;
-    /** Structure of data to print on PDF.*/
-    protected $certificateinfos;
-    /** the width of the Page, orientation landscape or portrait change the width.*/
-    protected $pagewidth = 0;
-    protected $pageheight = 0;
-    /** Order from the beginning of the activity's table.*/
-    protected $ytabstart;
-    /** Order from the end of the activity's table.*/
-    protected $ytabend;
-    /** Order from the last detail.*/
-    protected $yend;
-
-    /** The url of background image (copy tmp).*/
-    protected $file;
-
-    protected $acceptoffset = false;
-    protected $offset = 0;
-
-    protected $nbpage;
-    protected $pdf;
-
+class simul_pdf extends attestation_pdf {
+    /**
+     * Use the template of attestation_pdf for compute
+     * the number of page necessary.
+     */
     public function __construct($doc, $template) {
         $this->pdf = $doc;
         $this->template = $template;
     }
-    public function initvalues($pagewidth, $ytabend, $yend, $pageheight, $ytabstart, $acceptoffset, $infos) {
-        $this->pagewidth = $pagewidth;
-        $this->ytabend = $ytabend;
-        $this->yend = $yend;
-        $this->pageheight = $pageheight;
-        $this->ytabstart = $ytabstart;
+    /**
+     * Set values with th same values of the model.
+     */
+    public function initvalues($pageparam, $acceptoffset, $infos) {
+        $this->pageparam = $pageparam;
         $this->acceptoffset = $acceptoffset;
         $this->certificateinfos = $infos;
     }
@@ -82,31 +60,8 @@ class simul_pdf {
             if ($elt->type == "activities" && isset($this->certificateinfos->activities)) {
                 $this->printactivities($elt, $this->certificateinfos->activities);
             } else {
-                switch ($elt->type) {
-                    case "learnername" :
-                        if (isset($this->certificateinfos->learnername)) {
-                            $text = $this->certificateinfos->learnername;
-                        }
-                        break;
-                    case "trainingname" :
-                        if (isset($this->certificateinfos->trainingname)) {
-                            $text = $this->certificateinfos->trainingname;
-                        }
-                        break;
-                    case "period" :
-                        if (isset($this->certificateinfos->period)) {
-                            $text = $this->certificateinfos->period;
-                        }
-                        break;
-                    case "totalminutes" :
-                        if (isset($this->certificateinfos->totalminutes)) {
-                            $text = parse_minutes_to_hours($this->certificateinfos->totalminutes);
-                        }
-                        break;
-                    case "text" :
-                        $text = "";
-                }
-                if (isset($elt->lib)) {
+                $text = $this->handle_type($elt->type);
+                if (isset($elt->lib) && $elt->type != "pagenumber") {
                     $text = $elt->lib . $text;
                 }
                 $text = trim($text);
@@ -117,21 +72,10 @@ class simul_pdf {
     }
 
     private function printactivities($model, $tabactivities) {
-        $minwidth = 80;
-        $width = 0;
-        if (isset($model->size)) {
-            $width = $model->size;
-        }
-        if ($width == 0) {
-            $width = ($this->pagewidth - $model->location->x * 2);
-        }
-        // Force minimum width of activities table.
-        if ($width < $minwidth) {
-            $width = $minwidth;
-        }
+        $width = $this->computewidth($model);
         $x = $this->comput_align($model, $width);
-        if ($x + $minwidth > $this->pagewidth) {
-            $x = $this->pagewidth - $minwidth;
+        if ($x + $minwidth > $this->pageparam->pagewidth) {
+            $x = $this->pageparam->pagewidth - $minwidth;
         }
         $y = intval($model->location->y) + $this->offset;
         $heightline = intval($model->font->size);
@@ -150,32 +94,32 @@ class simul_pdf {
         $y = $y + ($heightline * 1.5);
         foreach ($tabactivities as $course) {
             // Test rupture page nécessaire ?
-            if ($y - $this->ytabend + $this->yend + 10 > $this->pageheight) {
-                if ($y < $this->ytabend) {
+            if ($y - $this->pageparam->ytabend + $this->pageparam->yend + 10 > $this->pageparam->pageheight) {
+                if ($y < $this->pageparam->ytabend) {
                     $this->offset = 0;
                 } else {
-                    $this->offset = $y - $this->ytabend;
+                    $this->offset = $y - $this->pageparam->ytabend;
                 }
                 $this->nbpage ++;
-                $y = $this->ytabstart;
+                $y = $this->pageparam->ytabstart;
                 $ystart = $y;
                 $y = $y + ($heightline * 1.5);
             }
             $coursename = $course["coursename"];
             // Activity type.
-            $nbnewline = $this->displayactivity($x + 3, $y, $widthfirstcolumn - 6, $lineheight, $coursename);
+            $nbnewline = $this->displayactivity($widthfirstcolumn - 6, $lineheight, $coursename);
             // Activity total hours.
             $y += $lineheight + ($nbnewline - 1) * $lineheight / 2;
         }
         // Compute offset.
-        if ($y < $this->ytabend) {
+        if ($y < $this->pageparam->ytabend) {
             $this->offset = 0;
         } else {
-            $this->offset = $y - $this->ytabend;
+            $this->offset = $y - $this->pageparam->ytabend;
         }
     }
 
-    private function displayactivity($x, $y, $widthcolumn, $lineheight, $text) {
+    private function displayactivity($widthcolumn, $lineheight, $text) {
         $nbsaut = 0;
         $offsettab = 0;
         while ($nbsaut < 5) {
@@ -199,12 +143,15 @@ class simul_pdf {
         return $nbsaut;
     }
 
+    /**
+     * Just for compute the offset.
+     */
     private function displaytext($text, $elt) {
-        if ($elt->location->x > $this->pagewidth) {
+        if ($elt->location->x > $this->pageparam->pagewidth) {
             return;
         }
         $relicat = "";
-        while ($this->pdf->GetStringWidth($text) + $elt->location->x > $this->pagewidth) {
+        while ($this->pdf->GetStringWidth($text) + $elt->location->x > $this->pageparam->pagewidth) {
             $position = strrpos($text, " ");
             if ($position) {
                 $relicat = substr($text, $position + 1) . " " . $relicat;
@@ -217,32 +164,9 @@ class simul_pdf {
         if ($relicat != "" && !$this->acceptoffset) {
             $text = $text . "...";
         }
-        $x = $this->comput_align($elt, $this->pdf->GetStringWidth($text));
-        // Newline ?
         if ($this->acceptoffset && $relicat != "") {
             $this->offset = $this->offset + ($elt->font->size / 2);
             $this->displaytext($relicat, $elt);
         }
-    }
-
-    /**
-     * Compute align with lenth of text and code align.
-     * @param $elt param for display mode
-     * @param $widthtext the size of the data to display.
-     */
-    private function comput_align($elt, $widthtext) {
-        $x = 0;
-        switch ($elt->align) {
-            case 'L' :
-                $x = $elt->location->x;
-                break;
-            case 'R' :
-                $x = $this->pagewidth - $elt->location->x - $widthtext;
-                break;
-            case 'C' :
-                $x = ($this->pagewidth - $elt->location->x - $widthtext) / 2 +
-                    $elt->location->x;
-        }
-        return $x;
     }
 }
