@@ -92,15 +92,7 @@ class trainings_factory extends singleton {
         $trainingtoadd->set_name($name);
 
         $this->trainings[] = $trainingtoadd;
-
-        // Retrieve direct courses.
-        $courses = courses_factory::get_instance()->retrieve_courses_by_category($trainingtoadd->get_categoryid());
-        // Retrieve courses in sub categories.
-        $subcategories = categories_factory::get_instance()->retrieve_sub_categories($trainingtoadd->get_categoryid());
-        foreach ($subcategories as $subcat) {
-            $subcatcourses = courses_factory::get_instance()->retrieve_courses_by_category($subcat->get_id());
-            $courses = array_merge($courses, $subcatcourses);
-        }
+        $courses = courses_factory::get_instance()->retrieve_courses_childof_category($trainingtoadd->get_categoryid());
 
         // Add courses to the training.
         foreach ($courses as $course) {

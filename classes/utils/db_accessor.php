@@ -376,4 +376,14 @@ class db_accessor extends singleton {
         $result = self::$db->get_records('modules');
         return $result;
     }
+
+    public function get_courses_childof_category($id) {
+        $req = "select * from {course}
+                 where enablecompletion = 1
+                   and category in (select id
+                                      from {course_categories}
+                                     where path like '%/".$id."/%');";
+        $result = self::$db->get_records_sql($req, array());
+        return $result;
+    }
 }

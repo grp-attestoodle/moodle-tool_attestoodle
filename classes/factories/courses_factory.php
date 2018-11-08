@@ -76,4 +76,19 @@ class courses_factory extends singleton {
         }
         return $courses;
     }
+
+    /**
+     * Function that retrieves the courses corresponding to a specific category
+     *
+     * @param integer $id Id of the category to search courses for
+     * @return course[] Array containing the courses objects
+     */
+    public function retrieve_courses_childof_category($id) {
+        $dbcourses = db_accessor::get_instance()->get_courses_childof_category($id);
+        $courses = array();
+        foreach ($dbcourses as $course) {
+            $courses[] = $this->create($course);
+        }
+        return $courses;
+    }
 }
