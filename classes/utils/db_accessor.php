@@ -199,6 +199,7 @@ class db_accessor extends singleton {
                 WHERE 1=1
                     AND c.id = ?
                     AND ra.roleid = ?
+                GROUP by u.id, u.firstname, u.lastname
                 ORDER BY u.lastname
             ";
         $result = self::$db->get_records_sql($request, array($courseid, $studentroleid));
