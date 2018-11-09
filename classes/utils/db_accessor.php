@@ -154,17 +154,6 @@ class db_accessor extends singleton {
     }
 
     /**
-     * Retrieves the courses under a specific course category (training).
-     *
-     * @param int $id Id of the course category to retrieve courses for
-     * @return \stdClass Standard Moodle DB object
-     */
-    public function get_courses_by_category($id) {
-        $result = self::$db->get_records('course', array('category' => $id, 'enablecompletion' => '1'));
-        return $result;
-    }
-
-    /**
      * Retrieves the modules (activities) under a specific course.
      *
      * @param int $id Id of the course to retrieve activities for
@@ -372,11 +361,22 @@ class db_accessor extends singleton {
         return $ret;
     }
 
+    /**
+     * Retrieves all the plugin mod visible.
+     *
+     * @return \stdClass Standard Moodle DB object (module).
+     */
     public function get_allmodules() {
-        $result = self::$db->get_records('modules');
+        $result = self::$db->get_records('modules', array('visible' => 1));
         return $result;
     }
 
+    /**
+     * Retrieves the courses under a specific course category (training).
+     *
+     * @param int $id Id of the course category to retrieve courses for
+     * @return \stdClass Standard Moodle DB object
+     */
     public function get_courses_childof_category($id) {
         $req = "select * from {course}
                  where enablecompletion = 1

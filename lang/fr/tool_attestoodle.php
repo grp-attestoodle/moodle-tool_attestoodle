@@ -150,7 +150,6 @@ $string['training_setting_link'] = "Paramètres de la formation";
 $string['milestone_manage_link'] = "Gestion des jalons";
 
 // Unknown strings.
-// @todo review these strings.
 $string['attestoodle:addinstance'] = 'Ajout un block Attestoodle';
 $string['attestoodle:myaddinstance'] = 'Ajouter un block attestoodle à mon Moodle';
 $string['blockstring'] = 'Block string';

@@ -99,7 +99,7 @@ class training_milestones_update_form extends \moodleform {
         }
 
         $filtergroup[] =& $mform->createElement('static', null, null, get_string('filtermoduletype', 'tool_attestoodle'));
-        $filtergroup[] =& $mform->createElement('select', 'typemod', '', $lstmod, array("size" => 20));
+        $filtergroup[] =& $mform->createElement('select', 'typemod', '', $lstmod, null);
         if (!empty($this->_customdata['type'])) {
             $mform->setDefault('typemod', $this->_customdata['type']);
         }
