@@ -557,7 +557,9 @@ class attestation_pdf {
                 }
                 // Add criteria1 with totalminutes = -1.
                 $tabreturn[] = array ("totalminutes" => -1, "coursename" => $discrim1);
-                $tabreturn = array_merge($tabreturn, $tabcomput);
+                foreach ($tabcomput as $result) {
+                    $tabreturn[] = $result;
+                }
             }
 
             if (empty($this->groupe2) && $tot1 > 0) {

@@ -132,27 +132,6 @@ class categories_factory extends singleton {
     }
 
     /**
-     * Method that retrieves all the sub categories of a specific category.
-     * The method works recursively (meaning that the sub-sub-categories, and
-     * bellow, are also returned).
-     *
-     * @param integer $id The id of the category to search sub-categories for
-     * @return category[] An array containing all the sub-categories
-     */
-    public function retrieve_sub_categories($id) {
-        $categories = array();
-        foreach ($this->categories as $cat) {
-            if ($cat->has_parent() && ($cat->get_parent()->get_id() == $id)) {
-                $categories[] = $cat;
-                // Recursivity.
-                $categories = array_merge($categories, $this->retrieve_sub_categories($cat->get_id()));
-                break;
-            }
-        }
-        return $categories;
-    }
-
-    /**
      * Method that creates a new category object with a given id.
      *
      * @param integer $id The id of the category to instanciate
