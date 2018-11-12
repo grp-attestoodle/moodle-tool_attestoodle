@@ -64,7 +64,7 @@ class category_training_update_form extends \moodleform {
             foreach ($rs as $result) {
                 $lsttemplate[$result->id] = $result->name;
             }
-            $group[] =& $mform->createElement('select', 'template', '', $lsttemplate, array("size" => 35));
+            $group[] =& $mform->createElement('select', 'template', '', $lsttemplate, null);
 
             $context = \context_coursecat::instance($category->get_id());
             if (has_capability('tool/attestoodle:viewtemplate', $context)) {
@@ -83,8 +83,8 @@ class category_training_update_form extends \moodleform {
                     'type' => get_string('grp_type', 'tool_attestoodle')
                     );
             $level2s = array_merge(array('' => ''), $level1s);
-            $mform->addElement('select', 'group1', get_string('grp_level1', 'tool_attestoodle'), $level1s, array("size" => 25));
-            $mform->addElement('select', 'group2', get_string('grp_level2', 'tool_attestoodle'), $level2s, array("size" => 25));
+            $mform->addElement('select', 'group1', get_string('grp_level1', 'tool_attestoodle'), $level1s, null);
+            $mform->addElement('select', 'group2', get_string('grp_level2', 'tool_attestoodle'), $level2s, null);
             $mform->setExpanded('templatesection', false);
         }
 
