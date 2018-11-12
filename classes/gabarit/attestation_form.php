@@ -128,13 +128,13 @@ class attestation_form extends moodleform {
         $group[] =& $mform->createElement('text', $prefix . 'Posy', '', array("size" => 3));
         $mform->setType($prefix . 'Posy', PARAM_INT);
         $group[] =& $mform->createElement("static", null, null, get_string('font', 'tool_attestoodle'));
-        $group[] =& $mform->createElement('select', $prefix . 'FontFamily', '', $familles, array("size" => 12));
+        $group[] =& $mform->createElement('select', $prefix . 'FontFamily', '', $familles, null);
         $group[] =& $mform->createElement("static", null, null, get_string('emphasis', 'tool_attestoodle'));
-        $group[] =& $mform->createElement('select', $prefix . 'Emphasis', '', $emphases, array("size" => 1));
+        $group[] =& $mform->createElement('select', $prefix . 'Emphasis', '', $emphases, null);
         $group[] =& $mform->createElement("static", null, null, get_string('size', 'tool_attestoodle'));
-        $group[] =& $mform->createElement('select', $prefix . 'FontSize', '', $sizes, array("size" => 2));
+        $group[] =& $mform->createElement('select', $prefix . 'FontSize', '', $sizes, null);
         $group[] =& $mform->createElement("static", null, null, get_string('align', 'tool_attestoodle'));
-        $group[] =& $mform->createElement('select', $prefix . 'Align', '', $alignments, array("size" => 1));
+        $group[] =& $mform->createElement('select', $prefix . 'Align', '', $alignments, null);
         if ($prefix != "activities") {
             $group[] =& $mform->createElement("static", null, null, '<br>' . get_string('rubric', 'tool_attestoodle'));
             $group[] =& $mform->createElement('text', $prefix . 'lib', '', array("size" => 45));
