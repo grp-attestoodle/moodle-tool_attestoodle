@@ -57,7 +57,7 @@ div.editor_atto_content > span.tps_jalon::after {
 }
 
 .attestoodle-button {
-    float: right;
+    display: inline-block;
 }
 
 .training-management-content {
