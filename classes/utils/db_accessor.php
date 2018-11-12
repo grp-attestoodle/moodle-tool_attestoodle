@@ -187,7 +187,7 @@ class db_accessor extends singleton {
         $studentroleid = self::get_studentrole();
 
         $request = "
-                SELECT u.id, u.firstname, u.lastname
+                SELECT DISTINCT u.id, u.firstname, u.lastname
                 FROM {user} u
                 JOIN {role_assignments} ra
                     ON u.id = ra.userid
