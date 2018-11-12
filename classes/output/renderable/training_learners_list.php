@@ -121,10 +121,9 @@ class training_learners_list implements renderable {
             $output .= \html_writer::start_div('clearfix training-report-header');
 
             // Basic form to allow user filtering the validated activities by begin and end dates.
-            // @TODO use a moodle_quickform.
             $output .= '<form action="?" class="filterform"><div>'
                     . '<input type="hidden" name="page" value="learners" />'
-                    . '<input type="hidden" name="training" value="' . $this->training->get_categoryid() . '" />';
+                    . '<input type="hidden" name="categoryid" value="' . $this->training->get_categoryid() . '" />';
             $output .= '<label for="input_begin_date">'
                     . get_string('learner_details_begin_date_label', 'tool_attestoodle') . '</label>'
                     . '<input type="text" id="input_begin_date" name="begindate" value="' . $this->thebegindate . '" '
