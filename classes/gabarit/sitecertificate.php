@@ -291,9 +291,13 @@ if ($previewok) {
 
 echo $OUTPUT->footer();
 
-
+/**
+ * Fill the array from the values ​​from json.
+ * @param array $arrayvalues array to fill.
+ * @param string $prefixe text add as a prefix to the table index.
+ * @param string $objson values ​​in json format.
+ */
 function add_values_from_json(&$arrayvalues, $prefixe, $objson) {
-    // TODO placer ces tableaux dans un seul endroit ex lib.php.
     $emphases = array('', 'B', 'I');
     $alignments = array('L', 'R', 'C', 'J');
     $sizes = array('6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '18', '20', '22', '24', '26', '28', '32',
@@ -313,15 +317,27 @@ function add_values_from_json(&$arrayvalues, $prefixe, $objson) {
         $arrayvalues[$prefixe . 'size'] = $objson->size;
     }
 }
+
 /**
  * Uses the pagenumber json record as a form value.
- * @param $arrayvalues form values array.
- * @param $objson object json to treat.
+ * @param array $arrayvalues form values array.
+ * @param string $objson object json to handle.
  */
 function add_values_pagenumber(&$arrayvalues, $objson) {
     add_values_from_json($arrayvalues, 'pagenumber', $objson);
     $arrayvalues['pagenumber_total'] = $objson->ontotal;
 }
+
+/**
+ * Create a 'pagebreak' element.
+ * @param integer $dtotemplateid technical identifier of the template.
+ * @param integer $dtoviewpagenum name of the behavior to apply to the page number.
+ * @param integer $dtorepeatbackgr indicates if the user wants the background image on each page.
+ * @param integer $dtorepeatstart indicates if the user wants the page header on each page.
+ * @param integer $dtorepeatend indicates if the user wants the page footer on each page.
+ * @param integer $backgroundexist indicates if background image exist.
+ * @return stdClass a 'pagebreak' element for save in bdd.
+ */
 function pagebreak_to_structure($dtotemplateid, $dtoviewpagenum, $dtorepeatbackgr, $dtorepeatstart,
  $dtorepeatend, $backgroundexist) {
     $templatedetail = new stdClass();
@@ -354,8 +370,21 @@ function pagebreak_to_structure($dtotemplateid, $dtoviewpagenum, $dtorepeatbackg
     $templatedetail->data = json_encode($valeurs);
     return $templatedetail;
 }
+
 /**
- * create a table TemplateDetail row structure for save into database.
+ * Create a table TemplateDetail row structure for save into database.
+ * @param integer $dtotemplateid technical identifier of the template.
+ * @param string $dtotype type of element.
+ * @param integer $dtofontfamily index of the font family.
+ * @param integer $dtoemphasis index of the emphasis.
+ * @param integer $dtofontsize index of the size of the font.
+ * @param integer $dtoposx abscissa of the element.
+ * @param integer $dtoposy ordinate of the element.
+ * @param integer $dtoalign index of type of align.
+ * @param string $dtolib literal of the element (optional).
+ * @param integer $dtosize width for the element (optional).
+ * @param integer $dtoontotal indicate if number page on total (only for type pagenumber).
+ * @return stdClass an element for save in bdd.
  */
 function data_to_structure($dtotemplateid, $dtotype, $dtofontfamily, $dtoemphasis, $dtofontsize, $dtoposx,
     $dtoposy, $dtoalign, $dtolib = null, $dtosize = null, $dtoontotal = null) {

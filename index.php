@@ -31,9 +31,7 @@ require_once(dirname(__FILE__) .'/lib.php');
 
 /*
  * Imports of class files.
- * @todo create an autoloader.
  */
-
 $toolpath = dirname(__FILE__);
 
 require_once($toolpath . "/classes/factories/learners_factory.php");
@@ -42,7 +40,6 @@ require_once($toolpath . "/classes/output/renderable/training_management.php");
 require_once($toolpath . "/classes/output/renderable/training_learners_list.php");
 require_once($toolpath . "/classes/output/renderable/learner_details.php");
 require_once($toolpath . "/classes/output/renderable/training_milestones.php");
-
 require_once($toolpath . "/classes/certificate.php");
 
 use tool_attestoodle\factories\trainings_factory;

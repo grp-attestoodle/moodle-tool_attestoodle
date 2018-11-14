@@ -15,8 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This is the class describing an activity validated by a learner in
- * Attestoodle. A validated activity is an activity with a validated DateTime.
+ * This file describe an activity validated by a learner in Attestoodle.
+ *
+ * A validated activity is an activity with a validated DateTime.
  *
  * @package    tool_attestoodle
  * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
@@ -26,7 +27,12 @@
 namespace tool_attestoodle;
 
 defined('MOODLE_INTERNAL') || die;
-
+/**
+ * This is the class describing an activity validated by a learner in Attestoodle.
+ *
+ * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class validated_activity {
     /** @var activity Activity validated by a learner */
     private $activity;
@@ -42,7 +48,7 @@ class validated_activity {
      */
     public function __construct($activity, $unixtime) {
         $this->activity = $activity;
-        // The '@' is necessary for unixtime (@link https://bugs.php.net/bug.php?id=40171).
+        // The '@' is necessary for unixtime {@link https://bugs.php.net/bug.php?id=40171}.
         $this->datetime = new \DateTime("@$unixtime");
     }
 

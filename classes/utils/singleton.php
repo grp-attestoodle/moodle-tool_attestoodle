@@ -15,18 +15,23 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This is the abstract class implementing the Singleton pattern to
- * help factories creating their own objects.
+ * Pattern of singleton.
  *
- * @package    tool_attestoodle
  * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    tool_attestoodle
  */
 
 namespace tool_attestoodle\utils;
 
 defined('MOODLE_INTERNAL') || die;
 
+/**
+ * This is the abstract class to help factories creating their own objects.
+ *
+ * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 abstract class singleton {
     /** @var singleton Instance of the singleton */
     protected static $instance;

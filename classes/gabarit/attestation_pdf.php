@@ -14,6 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Responsible for the creation of the certificate in the form of pdf.
+ *
+ * @package tool_attestoodle
+ * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
+ * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
+ */
+
 namespace tool_attestoodle\gabarit;
 defined('MOODLE_INTERNAL') || die();
 
@@ -23,19 +31,18 @@ use tool_attestoodle\gabarit\simul_pdf;
 /**
  * Created a pdf representing a certificate according to a model for a learner.
  *
- * @package tool_attestoodle
  * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
 class attestation_pdf {
-    /** template of the pdf document, background, position of elements. etc. */
+    /** @var stdClass Template of the pdf document, background, position of elements. etc. */
     protected $template;
-    /** the name of picture background.*/
+    /** @var string The name of picture background.*/
     protected $filename;
-    /** Structure of data to print on PDF.*/
+    /** @var stdClass Data to print on PDF.*/
     protected $certificateinfos;
     /**
-     * struct contains :
+     * @var stdClass Object contains :
      * pagewidth the width of the Page, orientation landscape or portrait change the width.
      * pageheight the height of the page
      * ytabstart start of table activities
@@ -44,24 +51,32 @@ class attestation_pdf {
      */
     protected $pageparam;
 
-    /** The url of background image (copy tmp).*/
+    /** @var string The url of background image (copy tmp).*/
     protected $file;
-
+    /** @var boolean Indicates if the offsets are accepted by the model.*/
     protected $acceptoffset = false;
+    /** @var integer number of line breaks needed.*/
     protected $offset = 0;
+    /** @var integer Number of the current page.*/
     protected $currentpage = 1;
+    /** @var integer Total number of pages.*/
     protected $nbpage = 1;
+    /** @var string behavior to follow with respect to page numbers.*/
     protected $numpage = 'never';
+    /** @var bool background display required or not.*/
     protected $repeatbackground = false;
+    /** @var bool repeat the header display or not.*/
     protected $repeatstart = false;
+    /** @var bool repeat the footer display or not.*/
     protected $repeatend = false;
-
+    /** @var string first grouping criterion.*/
     protected $groupe1 = "coursename";
+    /** @var string second grouping criterion.*/
     protected $groupe2 = "";
 
     /**
      * Set the information to print.
-     * @param \stdClass $info A standard class object containing the following to print provide
+     * @param stdClass $infos A standard class object containing the following to print provide
      * by methode certificate:get_pdf_informations().
      */
     public function set_infos($infos) {
@@ -70,6 +85,10 @@ class attestation_pdf {
         $this->certificateinfos->activities = $activities;
     }
 
+    /**
+     * Enter the identifier of the category to find the corresponding attestation template.
+     * @param integer $categoryid identifier of the category associated with the training.
+     */
     public function set_categoryid($categoryid) {
         global $DB;
         $idtraining = $DB->get_field('attestoodle_training', 'id', ['categoryid' => $categoryid]);
@@ -79,6 +98,13 @@ class attestation_pdf {
         $this->set_grpcriteria1($associate->grpcriteria1);
         $this->set_grpcriteria2($associate->grpcriteria2);
     }
+
+    /**
+     * Setter for $groupe1 property.
+     *
+     * @param string $criteria first criterion of grouping milestones crossed.
+     * if empty the value is 'coursename'
+     */
     public function set_grpcriteria1($criteria) {
         if (empty($criteria)) {
             $this->groupe1 = "coursename";
@@ -87,6 +113,12 @@ class attestation_pdf {
         }
     }
 
+    /**
+     * Setter for $groupe2 property.
+     *
+     * @param string $criteria second criterion of grouping milestones crossed.
+     * if empty the value is ''
+     */
     public function set_grpcriteria2($criteria) {
         if (empty($criteria)) {
             $this->groupe2 = "";
@@ -94,8 +126,10 @@ class attestation_pdf {
             $this->groupe2 = $criteria;
         }
     }
+
     /**
      * Extract informations of the template use to print.
+     * @param integer $idtemplate Technical identifier of the certification template.
      */
     public function set_idtemplate($idtemplate) {
         global $DB;
@@ -171,8 +205,6 @@ class attestation_pdf {
      * Methods that create the virtual PDF file which can be "print" on an
      * actual PDF file within moodledata
      *
-     * @todo translations
-     *
      * @return \pdf The virtual pdf file using the moodle pdf class
      */
     public function generate_pdf_object() {
@@ -205,8 +237,9 @@ class attestation_pdf {
     }
 
     /**
-     * Il y a forcement plus d'une page dans attest a ce niveau
-     * puisqu'on fait une rupture de page.
+     * Displays the page number.
+     * There is more than one page on this call so we don't need to test 'any' option.
+     * @param pdfObject $pdf where we display the page number.
      */
     protected function displaypagenumber($pdf) {
         if ($this->numpage == 'never') {
@@ -233,6 +266,12 @@ class attestation_pdf {
         $this->offset = $zr;
     }
 
+    /**
+     * write the items before the activity table.
+     *
+     * @param pdfObject $pdf where we display the items.
+     * @param stdClass $model model to follow to print the attestation.
+     */
     protected function displaybeforeactivities($pdf, $model) {
         if (!$this->repeatstart) {
             return;
@@ -256,6 +295,9 @@ class attestation_pdf {
 
     /**
      * Display data after table activities.
+     *
+     * @param pdfObject $pdf where we display the data.
+     * @param stdClass $model model to follow to print the attestation
      */
     protected function displayaftertactivities($pdf, $model) {
         if (!$this->repeatend) {
@@ -280,8 +322,8 @@ class attestation_pdf {
 
     /**
      * Compute align with lenth of text and code align.
-     * @param $elt param for display mode
-     * @param $widthtext the size of the data to display.
+     * @param stdClass $elt param for display mode
+     * @param integer $widthtext the size of the data to display.
      */
     protected function comput_align($elt, $widthtext) {
         $x = 0;
@@ -299,6 +341,7 @@ class attestation_pdf {
         }
         return $x;
     }
+
     /**
      * Instanciate pdf document en prepare the first page
      * with background image en is orientation.
@@ -337,10 +380,10 @@ class attestation_pdf {
 
     /**
      * Display array of activities on pdf document.
-     * @param $pdf the document pdf where we place activities
-     * @param $model contains informations to place activities, only
+     * @param pdfObject $pdf the document pdf where we place activities
+     * @param stdClass $model contains informations to place activities, only
      * the array is concerned (elements of array are relative to the array's corner top left)
-     * @param $tabactivities the data to place (the activities)
+     * @param array $tabactivities the data to place (the activities)
      */
     private function printactivities($pdf, $model, $tabactivities) {
         $width = $this->computewidth($model);
@@ -411,6 +454,15 @@ class attestation_pdf {
         }
     }
 
+    /**
+     * show an activity in the table.
+     * @param pdfObject $pdf where we display the activity.
+     * @param int $x colonne where activity is print.
+     * @param int $y line where activity is print.
+     * @param int $widthcolumn the width of the column.
+     * @param int $lineheight the height of one line.
+     * @param string $text to print.
+     */
     private function displayactivity($pdf, $x, $y, $widthcolumn, $lineheight, $text) {
         $nbsaut = 0;
         $offsettab = 0;
@@ -447,6 +499,9 @@ class attestation_pdf {
         $this->computepagelimit();
     }
 
+    /**
+     * calculates the limitation of the activity table within the page ($pageparam).
+     */
     private function computepagelimit() {
         $this->pageparam->yend = 0;
         $this->pageparam->ytabstart = 0;
@@ -470,6 +525,9 @@ class attestation_pdf {
         }
     }
 
+    /**
+     * Determines whether or not line breaks can be made.
+     */
     private function setacceptoffset() {
         if (!isset($this->filename)) {
             $this->acceptoffset = true;
@@ -487,14 +545,17 @@ class attestation_pdf {
     }
 
     /**
-     *
+     * Displays text on multiple lines if necessary and if possible.
+     * @param string $text to display.
+     * @param stdClass $elt style to apply to the text.
+     * @param pdfObject $pdf where text is display.
      */
-    private function displaytext($text, $elt, $doc) {
+    private function displaytext($text, $elt, $pdf) {
         if ($elt->location->x > $this->pageparam->pagewidth) {
             return;
         }
         $relicat = "";
-        while ($doc->GetStringWidth($text) + $elt->location->x > $this->pageparam->pagewidth) {
+        while ($pdf->GetStringWidth($text) + $elt->location->x > $this->pageparam->pagewidth) {
             $position = strrpos($text, " ");
             if ($position) {
                 $relicat = substr($text, $position + 1) . " " . $relicat;
@@ -507,19 +568,19 @@ class attestation_pdf {
         if ($relicat != "" && !$this->acceptoffset) {
             $text = $text . "...";
         }
-        $x = $this->comput_align($elt, $doc->GetStringWidth($text));
-        $doc->SetXY($x, $elt->location->y + $this->offset);
-        $doc->Cell($doc->GetStringWidth($text), 0, $text, 0, 0, $elt->align, false);
+        $x = $this->comput_align($elt, $pdf->GetStringWidth($text));
+        $pdf->SetXY($x, $elt->location->y + $this->offset);
+        $pdf->Cell($pdf->GetStringWidth($text), 0, $text, 0, 0, $elt->align, false);
         // Newline ?
         if ($this->acceptoffset && $relicat != "") {
             $this->offset = $this->offset + ($elt->font->size / 2);
-            $this->displaytext($relicat, $elt, $doc);
+            $this->displaytext($relicat, $elt, $pdf);
         }
     }
 
     /**
-     * Simul génération pdf for computation of number of page.
-     * @param $doc pdf instance
+     * Calculation of the number of pages necessary for the realization of the certificate.
+     * @param pdfObject $doc pdf instance.
      */
     private function computenbpage($doc) {
         $simulator = new simul_pdf($doc, $this->template);
@@ -527,6 +588,10 @@ class attestation_pdf {
         $this->nbpage = $simulator->generate_pdf_object();
     }
 
+    /**
+     * Perform a grouping of activities according to specified criteria.
+     * @param array $tabactivities sets of activities performed.
+     */
     protected function regroup($tabactivities) {
         $tabreturn = array();
         foreach ($tabactivities as $act) {
@@ -568,8 +633,10 @@ class attestation_pdf {
         }
         return $tabreturn;
     }
+
     /**
      * Defines the text according to the type value.
+     * @param string $type Type of data.
      */
     protected function handle_type($type) {
         $text = "";
@@ -598,6 +665,11 @@ class attestation_pdf {
         return $text;
     }
 
+    /**
+     * Determines the text indicating the page number.
+     *
+     * @param stdClass $elt literal of the page number.
+     */
     protected function handle_pagenumber($elt) {
         $text = "";
         if ($this->numpage != 'never') {
@@ -613,6 +685,12 @@ class attestation_pdf {
         }
         return $text;
     }
+
+    /**
+     * Calculates the width of the activity table according to the alignment and positioning.
+     * The width will be at least 80.
+     * @param stdClass $model contains style to applicate.
+     */
     protected function computewidth($model) {
         $width = 0;
         $minwidth = 80;
@@ -630,6 +708,17 @@ class attestation_pdf {
         }
         return $width;
     }
+
+    /**
+     * Show the columns of headings of the table of activities.
+     *
+     * @param pdfObject $pdf where we print table of activities.
+     * @param stdClass $model contains style to applicate.
+     * @param integer $x abcisse where the array should begin.
+     * @param integer $y ordinate where the array should begin.
+     * @param integer $widthfirstcolumn the width of the first column.
+     * @param integer $widthsecondcolumn the with of th second column.
+     */
     protected function displaytitlecolumn($pdf, $model, $x, $y, $widthfirstcolumn, $widthsecondcolumn) {
         $pdf->SetFont($model->font->family, 'B', $model->font->size);
         $pdf->SetXY($x + 5, $y + 5);
@@ -640,6 +729,20 @@ class attestation_pdf {
         $pdf->Cell($widthsecondcolumn - 10, 0, get_string('activity_header_col_2', 'tool_attestoodle'), 0, 0, 'C', false);
         $pdf->SetFont($model->font->family, '', $model->font->size);
     }
+
+    /**
+     * Shows a row of the activity table.
+     *
+     * @param pdfObject $pdf where we print table of activities.
+     * @param stdClass $model contains style to applicate.
+     * @param array $course contains name of activity and credited time.
+     * @param integer $x abcisse where the line should begin.
+     * @param integer $y ordinate where the line should begin.
+     * @param integer $widthfirstcolumn the width of the first column.
+     * @param integer $lineheight the height of one line.
+     * @param integer $widthsecondcolumn the with of th second column.
+     * @return integer $nbnewline The number of line needed.
+     */
     private function displaydetail($pdf, $model, $course, $x, $y , $widthfirstcolumn, $lineheight, $widthsecondcolumn) {
         $nbnewline = 0;
         $coursename = $course["coursename"];

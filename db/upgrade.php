@@ -15,8 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * File that allow to manipulate data when an upgrade of the plug-in has been
- * detected. The main method is automagically called by Moodle.
+ * This file manipulate data when an upgrade of the plug-in has been detected.
  *
  * @package    tool_attestoodle
  * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
@@ -25,6 +24,12 @@
 
 defined('MOODLE_INTERNAL') || die;
 
+/**
+ * Upgrade code according to the evolution of the database.
+ * This method is automagically called by Moodle.
+ * @param int $oldversion number of the old version
+ * @return bool
+ */
 function xmldb_tool_attestoodle_upgrade($oldversion) {
     // Update this function in need of DB upgrade while installing new version.
     global $DB;

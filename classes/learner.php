@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This is the class describing a learner in Attestoodle.
+ * This File describe a learner in Attestoodle.
  *
  * @package    tool_attestoodle
  * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
@@ -27,7 +27,12 @@ namespace tool_attestoodle;
 defined('MOODLE_INTERNAL') || die;
 
 use tool_attestoodle\factories\trainings_factory;
-
+/**
+ * This is the class describing a learner in Attestoodle.
+ *
+ * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class learner {
     /** @var integer Id of the learner */
     private $id;

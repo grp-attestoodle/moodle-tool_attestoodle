@@ -15,8 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This is the class that implements the pattern Factory to create the
- * courses used by Attestoodle
+ * This File describe factory to create the courses used by Attestoodle.
  *
  * @package    tool_attestoodle
  * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
@@ -30,7 +29,12 @@ use tool_attestoodle\utils\db_accessor;
 use tool_attestoodle\course;
 
 defined('MOODLE_INTERNAL') || die;
-
+/**
+ * Implements the pattern Factory to create the courses used by Attestoodle.
+ *
+ * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class courses_factory extends singleton {
     /** @var courses_factory Instance of the courses_factory singleton */
     protected static $instance;

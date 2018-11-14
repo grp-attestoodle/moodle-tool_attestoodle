@@ -34,6 +34,9 @@ use tool_attestoodle\certificate;
 use tool_attestoodle\utils\logger;
 /**
  * Display list of learner of one training.
+ *
+ * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class training_learners_list implements renderable {
     /** @var training Training that is currently displayed */

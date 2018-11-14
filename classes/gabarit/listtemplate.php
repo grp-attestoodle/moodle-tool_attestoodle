@@ -125,5 +125,4 @@ if (has_capability('tool/attestoodle:managetemplate', \context_system::instance(
                           ['templateid' => -1]);
     echo $OUTPUT->single_button($addurl, get_string('add'), 'post');
 }
-
 echo $OUTPUT->footer();

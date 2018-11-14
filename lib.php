@@ -49,9 +49,44 @@ function parse_datetime_to_readable_format($datetime) {
 }
 
 /**
+ * Function automagically called by moodle to add a setting navigation entry.
+ * @param navigation_node $parentnode The navigation node to extend.
+ * @param context_coursecat $context The context for extention.
+ */
+function tool_attestoodle_extend_navigation_category_settings(navigation_node $parentnode, context_coursecat $context) {
+    global $PAGE, $CFG;
+    $userhascapability = has_capability('tool/attestoodle:managetraining', $context);
+    $toolpath = $CFG->wwwroot. "/" . $CFG->admin . "/tool/attestoodle";
+    if ($userhascapability) {
+        $categoryid = $PAGE->context->instanceid;
+        $url = new moodle_url($toolpath . '/index.php',
+                array(
+                        "page" => "trainingmanagement",
+                        "categoryid" => $categoryid,
+                        "call" => "categ"
+                ));
+        $node = navigation_node::create(
+                "Attestoodle",
+                $url,
+                navigation_node::NODETYPE_LEAF,
+                'admincompetences',
+                'admincompetences',
+                new pix_icon('navigation', "Attestoodle", "tool_attestoodle"));
+        $node->showinflatnavigation = false;
+        $parentnode->add_node($node);
+    }
+}
+
+/**
  * Function automagically called by moodle to retrieve a file on the server that
  * the plug-in can interact with.
- *
+ * @param object $course course allow to acces filemanager
+ * @param object $cm course module allow to access filemanager
+ * @param object $context where we can access filemanager
+ * @param object $filearea where filemanager stock file.
+ * @param object $args arguments of path
+ * @param bool $forcedownload if force donwload or not.
+ * @param array $options optional parameter for form's component.
  * @link See doc at https://docs.moodle.org/dev/File_API#Serving_files_to_users
  */
 function tool_attestoodle_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options=array()) {
@@ -94,36 +129,4 @@ function tool_attestoodle_pluginfile($course, $cm, $context, $filearea, $args, $
     // We can now send the file back to the browser - in this case with a cache lifetime of 1 day and no filtering.
     // From Moodle 2.3, use send_stored_file instead.
     send_stored_file($file, 1, 0, $forcedownload, $options);
-}
-
-/**
- * Function automagically called by moodle to add a setting navigation entry
- *
- * @param array     $settingsnav
- * @param object    $context
- * @return void
- */
-
-function tool_attestoodle_extend_navigation_category_settings(navigation_node $parentnode, context_coursecat $context) {
-    global $PAGE, $CFG;
-    $userhascapability = has_capability('tool/attestoodle:managetraining', $context);
-    $toolpath = $CFG->wwwroot. "/" . $CFG->admin . "/tool/attestoodle";
-    if ($userhascapability) {
-        $categoryid = $PAGE->context->instanceid;
-        $url = new moodle_url($toolpath . '/index.php',
-                array(
-                        "page" => "trainingmanagement",
-                        "categoryid" => $categoryid,
-                        "call" => "categ"
-                ));
-        $node = navigation_node::create(
-                "Attestoodle",
-                $url,
-                navigation_node::NODETYPE_LEAF,
-                'admincompetences',
-                'admincompetences',
-                new pix_icon('navigation', "Attestoodle", "tool_attestoodle"));
-        $node->showinflatnavigation = false;
-        $parentnode->add_node($node);
-    }
 }

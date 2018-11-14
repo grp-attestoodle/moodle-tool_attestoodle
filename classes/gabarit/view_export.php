@@ -77,7 +77,9 @@ $exp->set_infos($certificateinfos);
 $exp->print_activity();
 echo $OUTPUT->footer();
 
-
+/**
+ * creating a test set to trigger overflows.
+ */
 function create_debordement_test() {
     $certificateinfos = new \stdClass();
     $certificateinfos->trainingname = "UN TITRE DE FORMATION EXTREMEMENT LONG POUR DECLENCHER UN CHANGEMENT " .

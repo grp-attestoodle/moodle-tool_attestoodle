@@ -15,8 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This is the class that implements the pattern Factory to create the
- * learners used by Attestoodle.
+ * This File describe factory of the learners used by Attestoodle.
  *
  * @package    tool_attestoodle
  * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
@@ -31,7 +30,12 @@ use tool_attestoodle\learner;
 use tool_attestoodle\validated_activity;
 
 defined('MOODLE_INTERNAL') || die;
-
+/**
+ * Implements the pattern Factory to create the learners used by Attestoodle.
+ *
+ * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class learners_factory extends singleton {
     /** @var learners_factory Instance of the learner_factory singleton */
     protected static $instance;

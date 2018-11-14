@@ -30,7 +30,12 @@ namespace tool_attestoodle\output\renderable;
 defined('MOODLE_INTERNAL') || die;
 
 use \renderable;
-
+/**
+ * Display the list of all the trainings declared in Attestoodle.
+ *
+ * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class trainings_list implements renderable {
     /** @var training[] Trainings in Attestoodle */
     private $trainings = [];

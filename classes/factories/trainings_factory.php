@@ -15,8 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This is the class that implements the pattern Factory to create the
- * trainings used by Attestoodle.
+ * This File describe factory of the trainings used by Attestoodle.
  *
  * @package    tool_attestoodle
  * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
@@ -31,7 +30,12 @@ use tool_attestoodle\factories\categories_factory;
 use tool_attestoodle\training;
 
 defined('MOODLE_INTERNAL') || die;
-
+/**
+ * Implements the pattern Factory to create the trainings used by Attestoodle.
+ *
+ * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class trainings_factory extends singleton {
     /** @var trainings_factory Instance of the trainings_factory singleton */
     protected static $instance;
@@ -83,7 +87,8 @@ class trainings_factory extends singleton {
      * main array then return it.
      *
      * @param category $category The category that the training comes from
-     * @param id $id of the training.
+     * @param integer $id of the training.
+     * @param string $name of the training.
      * @return training The newly created training
      */
     private function create($category, $id, $name) {

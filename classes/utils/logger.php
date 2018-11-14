@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This is the singleton class that manage the logs into the Attestoodle tables
+ * This file manage the logs into the Attestoodle tables
  *
  * @package    tool_attestoodle
  * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
@@ -26,6 +26,12 @@ namespace tool_attestoodle\utils;
 
 defined('MOODLE_INTERNAL') || die;
 
+/**
+ * This is the singleton class that manage the logs into the Attestoodle tables
+ *
+ * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class logger extends singleton {
     /** @var db_accessor Instance of the db_accessor singleton */
     protected static $instance;
@@ -33,8 +39,6 @@ class logger extends singleton {
     /**
      * Method that inserts a launch record into DB and return the newly created
      * id of the launch
-     *
-     * @global type $USER Global $USER Moodle object
      *
      * @param string $begindate The begin date of the generation launch
      * @param string $enddate The end date of the generation launch

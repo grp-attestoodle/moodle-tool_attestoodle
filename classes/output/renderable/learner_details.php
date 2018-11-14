@@ -35,6 +35,8 @@ use tool_attestoodle\certificate;
 use tool_attestoodle\utils\logger;
 /**
  * Display learner's information of a training.
+ * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class learner_details implements \renderable {
     /** @var integer Id of the learner being displayed */
@@ -55,7 +57,7 @@ class learner_details implements \renderable {
     public $searchenddate;
     /** @var boolean True if the $enddate property is not parsable by the \DateTime constructor */
     public $enddateerror;
-
+    /** @var string the category id for navigation bar. */
     public $categorylnk;
 
     /**
@@ -64,6 +66,7 @@ class learner_details implements \renderable {
      * @param integer $learnerid Id of the learner being displayed (url param)
      * @param string $begindate Begin date formatted as YYYY-MM-DD (url param)
      * @param string $enddate End date formatted as YYYY-MM-DD (url param)
+     * @param integer $categorylnk Id of the category associate with learners (nav bar)
      */
     public function __construct($learnerid, $begindate, $enddate, $categorylnk) {
         $this->learnerid = $learnerid;

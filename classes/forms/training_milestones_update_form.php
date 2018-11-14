@@ -15,8 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This is the class that handles the modification of milestones values through
- * a moodle moodleform object.
+ * This is form for the modification of milestones values.
  *
  * @package    tool_attestoodle
  * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
@@ -30,7 +29,12 @@ defined('MOODLE_INTERNAL') || die;
 
 // Class \moodleform is defined in formslib.php.
 require_once("$CFG->libdir/formslib.php");
-
+/**
+ * This is the class that handles the modification of milestones values through moodleform.
+ *
+ * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class training_milestones_update_form extends \moodleform {
     /**
      * Method automagically called when the form is instanciated. It defines
@@ -151,9 +155,9 @@ class training_milestones_update_form extends \moodleform {
 
     /**
      * Determines whether the activity crosses the filter type.
-     * @param $activity to test.
-     * @param $filtertype to cross.
-     * @param $lib the name of module.
+     * @param stdClass $activity to test.
+     * @param integer $filtertype to cross.
+     * @param string $lib the name of module.
      * @return true if activity cross the filter type.
      */
     private function filtertype($activity, $filtertype, $lib) {
@@ -168,8 +172,8 @@ class training_milestones_update_form extends \moodleform {
     }
     /**
      * Determines whether the activity crosses the filter mane.
-     * @param $activity to test.
-     * @param $pass the actual result of other test.
+     * @param stdClass $activity to test.
+     * @param bool $pass the actual result of other test.
      * @return true if activity cross the filter name.
      */
     private function filtername($activity, $pass) {
@@ -186,8 +190,8 @@ class training_milestones_update_form extends \moodleform {
 
     /**
      * Determines whether the activity crosses the filter availability.
-     * @param $activity to test.
-     * @param $pass the actual result of other test.
+     * @param stdClass $activity to test.
+     * @param bool $pass the actual result of other test.
      * @return true if activity cross the filter availability.
      */
     private function filterrestrict($activity, $pass) {
@@ -203,6 +207,8 @@ class training_milestones_update_form extends \moodleform {
     /**
      * Build a table of courses and their activities to display.
      * The activities are arranged in their order of appearance.
+     * @param stdClass[] $courses list of courses children of categories.
+     * @param string $prefix text add to the elements of activities for make Id in the form.
      */
     private function get_elements($courses, $prefix) {
         $ret = array();
@@ -246,8 +252,10 @@ class training_milestones_update_form extends \moodleform {
      * Custom validation function automagically called when the form
      * is submitted. The standard validations, such as required inputs or
      * value type check, are done by the parent validation() method.
-     *
      * See validation() method in moodleform class for more details.
+     * @param stdClass $data of form
+     * @param string $files list of the form files
+     * @return array of error.
      */
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);

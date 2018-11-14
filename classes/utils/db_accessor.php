@@ -15,8 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This is the singleton class that allows other classes to access the
- * database and manipulate its data.
+ * Allows other classes to access the database and manipulate its data.
  *
  * @package    tool_attestoodle
  * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
@@ -27,6 +26,12 @@ namespace tool_attestoodle\utils;
 
 defined('MOODLE_INTERNAL') || die;
 
+/**
+ * This is the singleton class that allows other classes to access the database.
+ *
+ * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class db_accessor extends singleton {
     /** @var db_accessor Instance of the db_accessor singleton */
     protected static $instance;
@@ -39,8 +44,6 @@ class db_accessor extends singleton {
 
     /**
      * Protected constructor to avoid external instanciation.
-     *
-     * @global type $DB The global moodle $DB object
      */
     protected function __construct() {
         global $DB;
@@ -112,6 +115,10 @@ class db_accessor extends singleton {
         return $result;
     }
 
+    /**
+     * Update training in the attestoodle_training in moodle DB.
+     * @param \stdClass $training training to update in DB.
+     */
     public function updatetraining($training) {
         $dataobject = new \stdClass();
         $dataobject->id = $training->get_id();
@@ -119,6 +126,7 @@ class db_accessor extends singleton {
         $dataobject->categoryid = $training->get_categoryid();
         self::$db->update_record('attestoodle_training', $dataobject);
     }
+
     /**
      * Retrieves the path of the course categories that linked
      * to a training in Attestoodle.
@@ -338,7 +346,8 @@ class db_accessor extends singleton {
     }
 
     /**
-     * get module in order of course.
+     * Get module in order of course.
+     * @param integer $courseid technical idenitifiant of the course carrying the modules.
      */
     public function get_activiesbysection($courseid) {
         $request = "SELECT sequence, section, visible, availability

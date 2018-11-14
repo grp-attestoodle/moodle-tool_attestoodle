@@ -15,9 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This class is the main renderer of the Attestoodle plug-in.
- * It handles the rendering of each page, called in index.php. The method called
- * depends on the parameters passed to the index.php page (page and action)
+ * The renderer of the Attestoodle plug-in.
  *
  * @package    tool_attestoodle
  * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
@@ -28,7 +26,15 @@ namespace tool_attestoodle\output;
 defined('MOODLE_INTERNAL') || die;
 
 use tool_attestoodle\output\renderable;
-
+/**
+ * This class is the main renderer of the Attestoodle plug-in.
+ *
+ * It handles the rendering of each page, called in index.php. The method called
+ * depends on the parameters passed to the index.php page (page and action)
+ *
+ * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class renderer extends \plugin_renderer_base {
     /**
      * Page trainings list (default page)

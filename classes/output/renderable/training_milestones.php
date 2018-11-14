@@ -15,10 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Page training management.
- *
- * Renderable class that is used to render the page that allow user to manage
- * the milestones of a training.
+ * Page training-milestone management.
  *
  * @package    tool_attestoodle
  * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
@@ -31,7 +28,15 @@ defined('MOODLE_INTERNAL') || die;
 
 use tool_attestoodle\factories\trainings_factory;
 use tool_attestoodle\forms\training_milestones_update_form;
-
+/**
+ * Display milestone of one training.
+ *
+ * Renderable class that is used to render the page that allow user to manage
+ * the milestones of a training.
+ *
+ * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class training_milestones implements \renderable {
     /** @var integer Id of the category associate to training displayed */
     private $categoryid;
@@ -100,6 +105,10 @@ class training_milestones implements \renderable {
         $this->goback($message);
     }
 
+    /**
+     * Redirect and display message.
+     * @param string $message to display.
+     */
     private function goback($message) {
         $redirecturl = new \moodle_url(
                 '/admin/tool/attestoodle/index.php',
@@ -107,6 +116,7 @@ class training_milestones implements \renderable {
         );
         redirect($redirecturl, $message, null, \core\output\notification::NOTIFY_INFO);
     }
+
     /**
      * Handles the form submission (calls other actual form submission handling
      * methods).

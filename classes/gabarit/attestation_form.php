@@ -14,6 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * This is the form for setting the attestation template.
+ *
+ * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    tool_attestoodle
+ */
 defined('MOODLE_INTERNAL') || die();
 
 // Load repository lib, will load filelib and formslib !
@@ -22,12 +29,15 @@ require_once($CFG->dirroot . '/repository/lib.php');
 /**
  * Form to create or modify the template of certificate.
  *
- * @package tool_attestoodle
  * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
 class attestation_form extends moodleform {
 
+    /**
+     * Method automagically called when the form is instanciated. It defines
+     * all the elements (inputs, titles, buttons, ...) in the form.
+     */
     protected function definition() {
         $mform    = $this->_form;
 
@@ -48,19 +58,19 @@ class attestation_form extends moodleform {
                 'accepted_types' => array('.png'),
                 'return_types' => FILE_INTERNAL | FILE_EXTERNAL));
 
-        $learnergroup = $this->creer_ligne('learner');
+        $learnergroup = $this->create_line('learner');
         $mform->addGroup($learnergroup, 'learnergroup', get_string('learner', 'tool_attestoodle'), ' ', false);
 
-        $traininggroup = $this->creer_ligne('training');
+        $traininggroup = $this->create_line('training');
         $mform->addGroup($traininggroup, 'training', get_string('training', 'tool_attestoodle'), ' ', false);
 
-        $periodgroup = $this->creer_ligne('period');
+        $periodgroup = $this->create_line('period');
         $mform->addGroup($periodgroup, 'period', get_string('period', 'tool_attestoodle'), ' ', false);
 
-        $totminutegroup = $this->creer_ligne('totminute');
+        $totminutegroup = $this->create_line('totminute');
         $mform->addGroup($totminutegroup, 'totalminute', get_string('totalminute', 'tool_attestoodle'), ' ', false);
 
-        $activitiesgroup = $this->creer_ligne('activities');
+        $activitiesgroup = $this->create_line('activities');
         $mform->addGroup($activitiesgroup, 'activities', get_string('tabactivities', 'tool_attestoodle'), ' ', false);
 
         $mform->addElement('hidden', 'templateid');
@@ -70,7 +80,7 @@ class attestation_form extends moodleform {
 
         $mform->addElement('header', 'literaux', get_string('literaux', 'tool_attestoodle'));
         for ($i = 1; $i <= 5; $i++) {
-            $group = $this->creer_ligne('text' . $i);
+            $group = $this->create_line('text' . $i);
             $mform->addGroup($group, 'text' . $i, get_string('literal', 'tool_attestoodle') . ' ' . $i, ' ', false);
         }
         $mform->setExpanded('literaux', false);
@@ -81,7 +91,7 @@ class attestation_form extends moodleform {
         $radioarray[] = $mform->createElement('radio', 'viewpagenumber', '', get_string('nl_necessary', 'tool_attestoodle'), 1);
         $radioarray[] = $mform->createElement('radio', 'viewpagenumber', '', get_string('nl_always', 'tool_attestoodle'), 2);
         $mform->addGroup($radioarray, 'viewpagenumber', get_string('viewpagenumber', 'tool_attestoodle'), array(' '), false);
-        $group = $this->creer_ligne('pagenumber');
+        $group = $this->create_line('pagenumber');
         $group[] =& $mform->createElement('checkbox', 'pagenumber_total', '', get_string('nl_ontotal', 'tool_attestoodle'));
         $mform->addGroup($group, 'pagenumber', get_string('nl_pagenumber', 'tool_attestoodle'), ' ', false);
         $mform->disabledIf('pagenumber', 'viewpagenumber', 'eq', 0);
@@ -110,9 +120,9 @@ class attestation_form extends moodleform {
 
     /**
      * Create a group with all elements of a line.
-     * @param $prefix name of the subject of the line.
+     * @param string $prefix name of the subject of the line.
      */
-    protected function creer_ligne($prefix) {
+    protected function create_line($prefix) {
         $familles = array('courier', 'helvetica', 'times');
         $emphases = array('', 'B', 'I');
         $alignments = array('L', 'R', 'C', 'J');
@@ -148,9 +158,7 @@ class attestation_form extends moodleform {
     }
 
     /**
-     * Intercept the display of form so can format errors as notifications
-     *
-     * @global type $OUTPUT
+     * Intercept the display of form so can format errors as notifications.
      */
     public function display() {
         global $OUTPUT;
@@ -183,10 +191,10 @@ class attestation_form extends moodleform {
 
     /**
      * Helper method
-     * @param type $name
-     * @param type $options
-     * @param type $selected
-     * @return type
+     * @param string $name of form element to update
+     * @param string $options of the element.
+     * @param array $selected list of selected elements.
+     * @return bool
      */
     public function update_selectgroup($name, $options, $selected=array()) {
         $mform   = $this->_form;
@@ -198,9 +206,9 @@ class attestation_form extends moodleform {
     /**
      * validate the form.
      * If name no lock, then name must be not null.
-     * @param type $data
-     * @param type $files
-     * @return type
+     * @param stdClass $data of form
+     * @param string $files list of the form files
+     * @return array of error.
      */
     public function validation($data, $files) {
         global $DB;
@@ -223,8 +231,8 @@ class attestation_form extends moodleform {
     }
 
     /**
-     *
-     * @return null
+     * Indicates if action equal submit.
+     * @return null or action.
      */
     public function get_submit_action() {
         $submitactions = array('send', 'save', 'cancel', 'trash');

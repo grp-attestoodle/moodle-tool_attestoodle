@@ -17,9 +17,9 @@
 /**
  * This is the class describing a certificate in Attestoodle
  *
- * @package    tool_attestoodle
  * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    tool_attestoodle
  */
 
 namespace tool_attestoodle;
@@ -30,6 +30,8 @@ use tool_attestoodle\utils\db_accessor;
 use tool_attestoodle\gabarit\attestation_pdf;
 /**
  * compute data for publish certificate.
+ * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class certificate {
     /** @var learner Learner for whom the certificate is */

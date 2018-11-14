@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This is the class describing a training in Attestoodle.
+ * This File describe a training in Attestoodle.
  *
  * @package    tool_attestoodle
  * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
@@ -25,7 +25,12 @@
 namespace tool_attestoodle;
 use tool_attestoodle\utils\db_accessor;
 defined('MOODLE_INTERNAL') || die;
-
+/**
+ * This is the class describing a training in Attestoodle.
+ *
+ * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class training {
     /** @var category Category corresponding to the training */
     private $category;
@@ -35,6 +40,8 @@ class training {
 
     /** @var integer Id of the training. */
     private $id;
+
+    /** @var string The name of the training. */
     private $name;
 
     /**
@@ -85,6 +92,11 @@ class training {
         }
         return $this->name;
     }
+
+    /**
+     * Setter for property name, and save in bdd the value.
+     * @param string $prop the new name of the training.
+     */
     public function changename($prop) {
         if (empty($prop)) {
             return;

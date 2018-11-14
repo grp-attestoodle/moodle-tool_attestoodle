@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This is the class describing an activity in Attestoodle.
+ * This File describe activity in Attestoodle.
  *
  * @package    tool_attestoodle
  * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
@@ -29,11 +29,17 @@ defined('MOODLE_INTERNAL') || die;
 use tool_attestoodle\utils\db_accessor;
 use tool_attestoodle\factories\activities_factory;
 
+/**
+ * This is the class describing an activity in Attestoodle.
+ *
+ * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class activity {
-    /** @var string Id of the activity */
+    /** @var integer Id of the activity */
     private $id;
 
-    /** @var string Id of the activity from its specific module type */
+    /** @var integer Id of the activity from its specific module type */
     private $idmodule;
 
     /** @var string Name of the activity */
@@ -54,13 +60,17 @@ class activity {
      */
     private $course;
 
+    /** @var bool The visibility of the activity.*/
     private $visible;
+
+    /** @var bool The availability of the activity.*/
     private $availability;
 
     /**
      * Constructor of the activity class.
      *
-     * @param string $id Id of the activity
+     * @param integer $id Id of the activity
+     * @param integer $idmodule Id of the module corresponding to activity.
      * @param string $name Name of the activity
      * @param string $description Description of the activity
      * @param string $type Type of the activity
@@ -173,13 +183,24 @@ class activity {
         return $this->course;
     }
 
+    /**
+     * Getter for $visible property.
+     *
+     * @return visible The visibility of the activity
+     */
     public function get_visible() {
         return $this->visible;
     }
 
+    /**
+     * Getter for $availability property.
+     *
+     * @return availability The Availability of the activity
+     */
     public function get_availability() {
         return $this->availability;
     }
+
     /**
      * Setter for $idmodule property.
      *
@@ -243,10 +264,21 @@ class activity {
     public function set_course($prop) {
         $this->course = $prop;
     }
+
+    /**
+     * Setter for $visible property.
+     *
+     * @param bool $prop Visibility of the activity
+     */
     public function set_visible($prop) {
         $this->visible = $prop;
     }
 
+    /**
+     * Setter for $availability property.
+     *
+     * @param bool $prop Availability of the activity
+     */
     public function set_availability($prop) {
         $this->availability = $prop;
     }

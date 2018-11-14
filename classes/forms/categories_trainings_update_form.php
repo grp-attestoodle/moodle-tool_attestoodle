@@ -15,8 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This is the class that handles the addition/suppression of trainings through
- * a moodleform moodle object.
+ * This is form for addition/suppression of training.
  *
  * @package    tool_attestoodle
  * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
@@ -29,7 +28,12 @@ defined('MOODLE_INTERNAL') || die;
 
 // Class \moodleform is defined in formslib.php.
 require_once("$CFG->libdir/formslib.php");
-
+/**
+ * This is the class that handles the manage of trainings through a moodleform moodle object.
+ *
+ * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class categories_trainings_update_form extends \moodleform {
     /**
      * Method automagically called when the form is instanciated. It defines
@@ -58,8 +62,11 @@ class categories_trainings_update_form extends \moodleform {
      * Custom validation function automagically called when the form
      * is submitted. The standard validations, such as required inputs or
      * value type check, are done by the parent validation() method.
-     *
      * See validation() method in moodleform class for more details.
+     *
+     * @param stdClass $data of form
+     * @param string $files list of the form files
+     * @return array of error.
      */
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);

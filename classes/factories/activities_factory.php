@@ -15,11 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This is the class that implements the pattern Factory to create the
- * activities used by Attestoodle (corresponding to the moodle "modules").
+ * This File describe factory of the activity used by Attestoodle.
  *
  * @package    tool_attestoodle
- * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
+ * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -30,7 +29,12 @@ use tool_attestoodle\utils\db_accessor;
 use tool_attestoodle\activity;
 
 defined('MOODLE_INTERNAL') || die;
-
+/**
+ * Implements the pattern Factory to create the activities used by Attestoodle.
+ *
+ * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class activities_factory extends singleton {
     /** @var activities_factory Instance of the activities_factory singleton */
     protected static $instance;
@@ -69,6 +73,7 @@ class activities_factory extends singleton {
      * @param stdClass $dbactivity Standard object from the Moodle request
      * @param string $tablename Name of the db table where the activity is stored
      *  in, corresponding to the type of the activity (quiz, folder, file, ...)
+     * @param stdClass $coursemodule Contains activity's attributes.
      * @return activity The activity created
      */
     private function create($activityid, $dbactivity, $tablename, $coursemodule) {

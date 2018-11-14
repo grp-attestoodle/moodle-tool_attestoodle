@@ -32,7 +32,12 @@ defined('MOODLE_INTERNAL') || die;
 use tool_attestoodle\factories\categories_factory;
 use tool_attestoodle\factories\trainings_factory;
 use tool_attestoodle\forms\category_training_update_form;
-
+/**
+ * Display information of a single training in Attestoodle.
+ *
+ * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class training_management implements \renderable {
     /** @var category_training_update_form The form used to manage trainings */
     private $form;
@@ -45,6 +50,7 @@ class training_management implements \renderable {
 
     /**
      * Constructor method that instanciates the form.
+     * @param integer $categoryid Id of the category associate with training (nav bar)
      */
     public function __construct($categoryid) {
         global $PAGE, $DB;

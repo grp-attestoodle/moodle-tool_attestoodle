@@ -29,7 +29,10 @@ use tool_attestoodle\factories\trainings_factory;
 defined('MOODLE_INTERNAL') || die;
 /**
  * Category Moodle with the ability of training.
+ *
  * Warning : category and training seem similar but they don't.
+ * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class category {
     /** @var integer Id of the category */
@@ -67,7 +70,6 @@ class category {
      *
      * @param string $name Name of the category
      * @param string $description Description of the category
-     * @param boolean $istraining If the category is a training
      * @param category|null $parent The parent category, if any
      */
     public function feed($name, $description, $parent) {

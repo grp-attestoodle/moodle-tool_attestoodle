@@ -14,6 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * pdf simulation utility file.
+ * @package tool_attestoodle
+ * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
+ * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
+ */
 namespace tool_attestoodle\gabarit;
 defined('MOODLE_INTERNAL') || die();
 
@@ -21,8 +27,6 @@ require_once("$CFG->dirroot/lib/pdflib.php");
 
 /**
  * Simul a pdf for compute nb page required.
- *
- * @package tool_attestoodle
  * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
@@ -30,13 +34,18 @@ class simul_pdf extends attestation_pdf {
     /**
      * Use the template of attestation_pdf for compute
      * the number of page necessary.
+     * @param pdfObject $doc required for compute text size.
+     * @param jsonobject[] $template design the background image, the position of the elements and so on.
      */
     public function __construct($doc, $template) {
         $this->pdf = $doc;
         $this->template = $template;
     }
     /**
-     * Set values with th same values of the model.
+     * Set values with the same values of the origin.
+     * @param stdClass $pageparam contains the dimensions of the page and some benchmarks.
+     * @param boolean $acceptoffset indicates if the offsets are accepted by the model.
+     * @param stdClass $infos Structure of data to print on PDF.
      */
     public function initvalues($pageparam, $acceptoffset, $infos) {
         $this->pageparam = $pageparam;
@@ -47,8 +56,6 @@ class simul_pdf extends attestation_pdf {
     /**
      * Methods that create the virtual PDF file which can be "print" on an
      * actual PDF file within moodledata
-     *
-     * @todo translations
      *
      * @return \pdf The virtual pdf file using the moodle pdf class
      */
@@ -71,6 +78,12 @@ class simul_pdf extends attestation_pdf {
         return $this->nbpage;
     }
 
+    /**
+     * Calculates the number of rows and pages needed to display the activity table.
+     * @param stdClass $model contains informations to place activities, only
+     * the array is concerned
+     * @param stdClass[] $tabactivities the data to place the activities.
+     */
     private function printactivities($model, $tabactivities) {
         $width = $this->computewidth($model);
         $x = $this->comput_align($model, $width);
@@ -119,6 +132,12 @@ class simul_pdf extends attestation_pdf {
         }
     }
 
+    /**
+     * Compute the space need to show an activity in the table.
+     * @param integer $widthcolumn the width of the column.
+     * @param integer $lineheight the height of one line.
+     * @param string $text to print.
+     */
     private function displayactivity($widthcolumn, $lineheight, $text) {
         $nbsaut = 0;
         $offsettab = 0;
@@ -145,6 +164,8 @@ class simul_pdf extends attestation_pdf {
 
     /**
      * Just for compute the offset.
+     * @param string $text to display.
+     * @param stdClass $elt contains display settings.
      */
     private function displaytext($text, $elt) {
         if ($elt->location->x > $this->pageparam->pagewidth) {
