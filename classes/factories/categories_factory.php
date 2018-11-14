@@ -100,17 +100,6 @@ class categories_factory extends singleton {
         }
     }
 
-    /**
-     * Method that checks if the main categories array contains a specific
-     * category based on an id.
-     *
-     * @param integer $id The id of the category to search for
-     * @return boolean True if the main array contains the specified category
-     */
-    public function has_category($id) {
-        $c = $this->retrieve_category($id);
-        return isset($c);
-    }
 
     /**
      * Method that retrieves a specific category in the main categories array
@@ -143,13 +132,5 @@ class categories_factory extends singleton {
         return $category;
     }
 
-    /**
-     * Getter for the $categories property.
-     *
-     * @return category[] The main categories array of the factory
-     */
-    public function get_categories() {
-        return $this->categories;
-    }
 }
 
