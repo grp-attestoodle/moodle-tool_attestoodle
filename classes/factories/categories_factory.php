@@ -48,10 +48,6 @@ class categories_factory extends singleton {
     protected function __construct() {
         parent::__construct();
         $this->categories = array();
-        $tabcateg = db_accessor::get_instance()->get_all_categories();
-        foreach ($tabcateg as $categ) {
-                $this->create_category($categ);
-        }
     }
 
     /**
