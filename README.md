@@ -1,5 +1,8 @@
 # ATTESTOODLE
 
+
+[![Build Status](https://travis-ci.org/grp-attestoodle/attestoodle.svg?branch=master)](https://travis-ci.org/grp-attestoodle/attestoodle)
+
 This plugin is used to generate periodical training certificates for students on a massive scale, based on learning milestones completion.
 
 An "Attestoodle training" models a training plan: a set of courses in the same Moodle category or sub-categories (an Attestoodle training is necessarily associated with a Moodle category).
