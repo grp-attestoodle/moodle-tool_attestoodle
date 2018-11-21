@@ -106,6 +106,16 @@ switch($page) {
         $begindate = optional_param('begindate', null, PARAM_ALPHANUMEXT);
         $enddate = optional_param('enddate', null, PARAM_ALPHANUMEXT);
 
+        $start = optional_param('input_begin_date', null, PARAM_INT);
+        $end = optional_param('input_end_date', null, PARAM_INT);
+
+        if (isset($start)) {
+            $begindate = "" . $start['year'] . "-" . $start['month'] . "-" . $start['day'];
+        }
+        if (isset($end)) {
+            $enddate = "" . $end['year'] . "-" . $end['month'] . "-" . $end['day'];
+        }
+
         $PAGE->set_url(new moodle_url($toolpath . '/index.php',
                 array(
                         'page' => $page,
@@ -161,6 +171,15 @@ switch($page) {
         // Optional params.
         $begindate = optional_param('begindate', null, PARAM_ALPHANUMEXT);
         $enddate = optional_param('enddate', null, PARAM_ALPHANUMEXT);
+        $start = optional_param('input_begin_date', null, PARAM_INT);
+        $end = optional_param('input_end_date', null, PARAM_INT);
+
+        if (isset($start)) {
+            $begindate = "" . $start['year'] . "-" . $start['month'] . "-" . $start['day'];
+        }
+        if (isset($end)) {
+            $enddate = "" . $end['year'] . "-" . $end['month'] . "-" . $end['day'];
+        }
 
         $PAGE->set_url(new moodle_url($toolpath . '/index.php',
                 array(

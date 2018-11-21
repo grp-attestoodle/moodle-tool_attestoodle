@@ -232,3 +232,9 @@ $string['filtermoduletype'] = ' Type :';
 $string['filtermodulevisible'] = ' Visible :';
 $string['filtermodulerestrict'] = ' Restriction :';
 $string['filtermodulebtn'] = 'Filtrer';
+$string['period_form'] = 'Règle sur les dates';
+$string['period_form_help'] = 'Indiquer la période à prendre en compte
+<br>A partir de la date de début incluse jusqu\'à la date de fin incluse.
+<br><b>Exemple :</b> Pour sélectionner la journée du 24 septembre 2018,
+ vous devez sélectionner du 24 septembre 2018 au 24 septembre 2018';
+$string['errduplicatename'] = 'Ce nom est déjà utilisé !!';

@@ -33,12 +33,16 @@ use tool_attestoodle\factories\learners_factory;
 use tool_attestoodle\factories\trainings_factory;
 use tool_attestoodle\certificate;
 use tool_attestoodle\utils\logger;
+use tool_attestoodle\forms\period_form;
 /**
  * Display learner's information of a training.
  * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class learner_details implements \renderable {
+    /** @var period_form The form used to select period */
+    private $form;
+
     /** @var integer Id of the learner being displayed */
     public $learnerid;
     /** @var learner Learner being displayed */
@@ -91,6 +95,16 @@ class learner_details implements \renderable {
         } catch (\Exception $ex) {
             $this->enddateerror = true;
         }
+
+        $this->form = new period_form(
+                    new \moodle_url('/admin/tool/attestoodle/index.php',
+                        array('page' => 'learnerdetails', 'categorylnk' => $this->categorylnk, 'learner' => $this->learnerid)),
+                        array(), 'get' );
+
+        $stime = \DateTime::createFromFormat("Y-m-d", $this->begindate);
+        $etime = \DateTime::createFromFormat("Y-m-d", $this->enddate);
+        $this->form->set_data(array ('input_begin_date' => $stime->getTimestamp(),
+                    'input_end_date' => $etime->getTimestamp()));
     }
 
     /**
@@ -207,35 +221,15 @@ class learner_details implements \renderable {
      */
     public function get_header() {
         $output = "";
+        $output .= "<style>.col-md-3 {float:left;width:auto}</style>";
 
         // Verifying learner id.
         if (!$this->learner_exists()) {
             $output .= \get_string('unknown_learner_id', 'tool_attestoodle', $this->learnerid);
         } else {
             $output .= \html_writer::start_div('clearfix learner-detail-header');
-            // Basic form to allow user filtering the validated activities by begin and end dates.
-            $output .= '<form action="?" class="filterform"><div>'
-                    . '<input type="hidden" name="page" value="learnerdetails" />'
-                    . '<input type="hidden" name="categorylnk" value="'. $this->categorylnk.'" />'
-                    . '<input type="hidden" name="learner" value="' . $this->learnerid . '" />';
-            $output .= '<label for="input_begin_date">'
-                    . get_string('learner_details_begin_date_label', 'tool_attestoodle') . '</label>'
-                    . '<input type="text" id="input_begin_date" name="begindate" value="' . $this->begindate . '" '
-                    . 'placeholder="ex: ' . (new \DateTime('now'))->format('Y-m-d') . '" />';
-            if ($this->begindateerror) {
-                echo "<span class='error'>" . get_string('errorformat', 'tool_attestoodle') . "</span>";
-            }
-            $output .= '<label for="input_end_date">'
-                    . get_string('learner_details_end_date_label', 'tool_attestoodle') . '</label>'
-                    . '<input type="text" id="input_end_date" name="enddate" value="' . $this->enddate . '" '
-                    . 'placeholder="ex: ' . (new \DateTime('now'))->format('Y-m-d') . '" />';
-            if ($this->enddateerror) {
-                $output .= "<span class='error'>" . get_string('errorformat', 'tool_attestoodle') . "</span>";
-            }
-            $output .= '<input type="submit" value="'
-                    . get_string('learner_details_submit_button_value', 'tool_attestoodle') . '" />'
-                    . '</div></form>' . "\n";
-
+            // Render the form.
+            $output .= $this->form->render();
             $output .= \html_writer::end_div();
         }
 

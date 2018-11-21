@@ -32,6 +32,8 @@ defined('MOODLE_INTERNAL') || die;
 use \renderable;
 use tool_attestoodle\certificate;
 use tool_attestoodle\utils\logger;
+use tool_attestoodle\forms\period_form;
+
 /**
  * Display list of learner of one training.
  *
@@ -39,6 +41,9 @@ use tool_attestoodle\utils\logger;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class training_learners_list implements renderable {
+    /** @var period_form The form used to select period */
+    private $form;
+
     /** @var training Training that is currently displayed */
     public $training = null;
     /** @var string Begin date formatted as YYYY-MM-DD */
@@ -69,6 +74,7 @@ class training_learners_list implements renderable {
         // Default dates are January 1st and December 31st of current year.
         $this->thebegindate = isset($begindate) ? $begindate :
             (new \DateTime('first day of January ' . date('Y')))->format('Y-m-d');
+
         $this->theenddate = isset($enddate) ? $enddate : (new \DateTime('last day of December ' . date('Y')))->format('Y-m-d');
         // Parsing begin date.
         try {
@@ -86,6 +92,16 @@ class training_learners_list implements renderable {
         } catch (\Exception $ex) {
             $this->enddateisinerror = true;
         }
+
+        $this->form = new period_form(
+                    new \moodle_url('/admin/tool/attestoodle/index.php',
+                        array('page' => 'learners', 'categoryid' => $training->get_categoryid())),
+                        array(), 'post' );
+
+        $stime = \DateTime::createFromFormat("Y-m-d", $this->thebegindate);
+        $etime = \DateTime::createFromFormat("Y-m-d", $this->theenddate);
+        $this->form->set_data(array ('input_begin_date' => $stime->getTimestamp(),
+            'input_end_date' => $etime->getTimestamp()));
     }
 
     /**
@@ -106,7 +122,7 @@ class training_learners_list implements renderable {
      */
     public function get_header() {
         $output = "";
-
+        $output .= "<style>.col-md-3 {float:left;width:auto}</style>";
         $output .= \html_writer::start_div('clearfix');
         if (!$this->training_exists()) {
             $output .= \html_writer::end_div();
@@ -123,28 +139,8 @@ class training_learners_list implements renderable {
 
             $output .= \html_writer::start_div('clearfix training-report-header');
 
-            // Basic form to allow user filtering the validated activities by begin and end dates.
-            $output .= '<form action="?" class="filterform"><div>'
-                    . '<input type="hidden" name="page" value="learners" />'
-                    . '<input type="hidden" name="categoryid" value="' . $this->training->get_categoryid() . '" />';
-            $output .= '<label for="input_begin_date">'
-                    . get_string('learner_details_begin_date_label', 'tool_attestoodle') . '</label>'
-                    . '<input type="text" id="input_begin_date" name="begindate" value="' . $this->thebegindate . '" '
-                    . 'placeholder="ex: ' . (new \DateTime('now'))->format('Y-m-d') . '" />';
-
-            if ($this->begindateisinerror) {
-                echo "<span class='error'>" . get_string('errorformat', 'tool_attestoodle') . "</span>";
-            }
-            $output .= '<label for="input_end_date">'
-                    . get_string('learner_details_end_date_label', 'tool_attestoodle') . '</label>'
-                    . '<input type="text" id="input_end_date" name="enddate" value="' . $this->theenddate . '" '
-                    . 'placeholder="ex: ' . (new \DateTime('now'))->format('Y-m-d') . '" />';
-            if ($this->enddateisinerror) {
-                $output .= "<span class='error'>" . get_string('errorformat', 'tool_attestoodle') . "</span>";
-            }
-            $output .= '<input type="submit" value="'
-                    . get_string('learner_details_submit_button_value', 'tool_attestoodle') . '" />'
-                    . '</div></form>' . "\n";
+            // Render the form.
+            $output .= $this->form->render();
 
             // Certicates related links.
             $output .= \html_writer::start_div('clearfix');
@@ -211,7 +207,7 @@ class training_learners_list implements renderable {
             $totalmarkerperiod = $o->get_total_milestones(
                     $this->training->get_categoryid(),
                     $this->theactualbegindate,
-                    $this->theactualenddate
+                    $this->searchingenddate
             );
 
             $stdclass->lastname = $o->get_lastname();

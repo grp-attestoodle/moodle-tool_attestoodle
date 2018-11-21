@@ -224,7 +224,7 @@ class attestation_form extends moodleform {
         if (!empty($data['name']) && $data['namelock'] != 1) {
             $sql = 'select * from {attestoodle_template} where name = ? and id != ?';
             if ($DB->record_exists_sql($sql, array($data['name'], $data['templateid']))) {
-                $errors['body'] = 'ce nom est déjà utilisé !!';
+                $errors['body'] = get_string('errduplicatename', 'tool_attestoodle');
             }
         }
         return $errors;

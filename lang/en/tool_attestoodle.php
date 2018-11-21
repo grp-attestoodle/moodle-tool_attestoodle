@@ -232,3 +232,9 @@ $string['filtermoduletype'] = ' Type :';
 $string['filtermodulevisible'] = ' Visible :';
 $string['filtermodulerestrict'] = ' Availability :';
 $string['filtermodulebtn'] = 'Filter';
+$string['period_form'] = 'Rule on dates';
+$string['period_form_help'] = 'Indicate the period
+ from the included start date
+ until the end date
+ included.';
+$string['errduplicatename'] = 'Duplicate nane detected !!';
