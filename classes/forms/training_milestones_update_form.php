@@ -41,6 +41,7 @@ class training_milestones_update_form extends \moodleform {
      * all the elements (inputs, titles, buttons, ...) in the form.
      */
     public function definition() {
+        global $CFG;
         $inputnameprefix = $this->_customdata['input_name_prefix'];
         $elements = $this->get_elements($this->_customdata['data'], $inputnameprefix);
 
@@ -63,7 +64,8 @@ class training_milestones_update_form extends \moodleform {
                 $mform->setType($activity->name, PARAM_ALPHANUM); // Parsing the value in INT after submit.
                 $mform->setDefault($activity->name, $activity->milestone); // Set default value to the current milestone value.
                 $group[] =& $mform->createElement("static", null, null, "<span>{$suffix}</span>");
-                $libelactivity = "{$activity->label} ({$activity->type})";
+                $libelactivity = "<a href='{$CFG->wwwroot}/course/modedit.php?update={$activity->id}'>"
+                    . "{$activity->label} ({$activity->type})</a>";
                 if (!empty($activity->availability)) {
                     $libelactivity = "<i class=\"fa fa-key\" aria-hidden=\"true\"></i> " . $libelactivity;
                 }
@@ -231,6 +233,7 @@ class training_milestones_update_form extends \moodleform {
                 }
 
                 $dataactivity = $activities[$idfind];
+                $dataactivity->id = $activity->get_id();
                 $dataactivity->name = $prefix  . $activity->get_id();
                 $dataactivity->label = $activity->get_name();
                 $dataactivity->type = get_string('modulename', $activity->get_type());
