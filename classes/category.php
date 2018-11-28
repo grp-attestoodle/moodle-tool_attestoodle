@@ -25,6 +25,7 @@
 namespace tool_attestoodle;
 
 use tool_attestoodle\factories\trainings_factory;
+use tool_attestoodle\factories\categories_factory;
 
 defined('MOODLE_INTERNAL') || die;
 /**
@@ -50,6 +51,9 @@ class category {
     /** @var category|null Parent category of the current category */
     private $parent;
 
+    /** @var category id of parent.*/
+    private $idparent;
+
     /**
      * Constructor of the category class. The properties are first set to null,
      * then set to the actual value after a data parsing in categories_factory.
@@ -62,6 +66,7 @@ class category {
         $this->description = null;
         $this->istraining = null;
         $this->parent = null;
+        $this->idparent = 0;
     }
 
     /**
@@ -71,14 +76,16 @@ class category {
      * @param string $name Name of the category
      * @param string $description Description of the category
      * @param category|null $parent The parent category, if any
+     * @param integer $idparent The id of the parent's category.
      */
-    public function feed($name, $description, $parent) {
+    public function feed($name, $description, $parent, $idparent = 0) {
         $istraining = trainings_factory::get_instance()->has_training($this->id);
 
         $this->name = $name;
         $this->description = $description;
         $this->istraining = $istraining;
         $this->parent = $parent;
+        $this->idparent = $idparent;
     }
 
     /**
@@ -140,6 +147,9 @@ class category {
      * @return category|null Parent category of the current category, if any
      */
     public function get_parent() {
+        if ($this->parent == null && $this->idparent > 0) {
+            $this->parent = categories_factory::get_instance()->get_category($this->idparent);
+        }
         return $this->parent;
     }
 
@@ -149,6 +159,7 @@ class category {
      * @return boolean True if the category has a parent
      */
     public function has_parent() {
+        $this->get_parent();
         return isset($this->parent);
     }
 

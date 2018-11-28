@@ -57,25 +57,11 @@ class trainings_factory extends singleton {
      */
     public function create_trainings() {
         // Must call categories_factory before find trainings.
-        categories_factory::get_instance();
         $dbtrainings = db_accessor::get_instance()->get_all_trainings();
-        $categoryids = array_column($dbtrainings, 'categoryid');
-
-        $paths = db_accessor::get_instance()->get_categories_paths($categoryids);
-
-        foreach ($paths as $path) {
-            $matches = array();
-            if (preg_match("/\/(\d+)/", $path->path, $matches)) {
-                if (!in_array($matches[1], $categoryids)) {
-                    $categoryids[] = $matches[1];
-                }
-            }
-        }
-        categories_factory::get_instance()->create_categories_by_ids($categoryids);
 
         foreach ($dbtrainings as $dbtr) {
             $catid = $dbtr->categoryid;
-            $cat = categories_factory::get_instance()->retrieve_category($catid);
+            $cat = categories_factory::get_instance()->get_category($catid);
             if (!empty($cat)) {
                 $this->create($cat, $dbtr->id, $dbtr->name);
             }
@@ -91,7 +77,7 @@ class trainings_factory extends singleton {
      * @param string $name of the training.
      * @return training The newly created training
      */
-    private function create($category, $id, $name) {
+    private function create($category, $id, $name = '') {
         $trainingtoadd = new training($category);
         $trainingtoadd->set_id($id);
         $trainingtoadd->set_name($name);

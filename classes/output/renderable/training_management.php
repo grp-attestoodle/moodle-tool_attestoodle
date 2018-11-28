@@ -56,9 +56,7 @@ class training_management implements \renderable {
         global $PAGE, $DB;
 
         $this->categoryid = $categoryid;
-
-        categories_factory::get_instance()->create_categories_by_ids(array($categoryid));
-        $this->category = categories_factory::get_instance()->retrieve_category($categoryid);
+        $this->category = categories_factory::get_instance()->get_category($categoryid);
 
         // Handling form is useful only if the category exists.
         if (isset($this->category)) {
@@ -169,18 +167,17 @@ class training_management implements \renderable {
 
             $value = $datafromform->checkbox_is_training;
 
-            $category = categories_factory::get_instance()->retrieve_category($this->categoryid);
-            $oldistrainingvalue = $category->is_training();
+            $oldistrainingvalue = $this->category->is_training();
             $boolvalue = boolval($value);
 
-            if ($category->set_istraining($boolvalue)) {
+            if ($this->category->set_istraining($boolvalue)) {
                 $updated = true;
                 try {
                     // Try to persist training in DB.
-                    $category->persist_training();
+                    $this->category->persist_training();
                 } catch (\Exception $ex) {
                     // If record in DB failed, re-set the old value.
-                    $category->set_istraining($oldistrainingvalue);
+                    $this->category->set_istraining($oldistrainingvalue);
                     $error = true;
                 }
                 // Notify the user of the submission result.
@@ -192,19 +189,21 @@ class training_management implements \renderable {
                     return;
                 }
             } else {
-                $training = trainings_factory::get_instance()->retrieve_training($category->get_id());
-                $training->changename($datafromform->name);
-                $nvxtemplate = $datafromform->template;
-                $idtraining = $DB->get_field('attestoodle_training', 'id', ['categoryid' => $this->categoryid]);
-                $record = $DB->get_record('attestoodle_train_template', ['trainingid' => $idtraining]);
-                $record->templateid = $nvxtemplate;
-                $record->grpcriteria1 = $datafromform->group1;
-                $record->grpcriteria2 = $datafromform->group2;
-                if (empty($datafromform->group2)) {
-                    $record->grpcriteria2 = null;
+                $training = trainings_factory::get_instance()->retrieve_training($this->category->get_id());
+                if (!empty($training)) {
+                    $training->changename($datafromform->name);
+                    $nvxtemplate = $datafromform->template;
+                    $idtraining = $DB->get_field('attestoodle_training', 'id', ['categoryid' => $this->categoryid]);
+                    $record = $DB->get_record('attestoodle_train_template', ['trainingid' => $idtraining]);
+                    $record->templateid = $nvxtemplate;
+                    $record->grpcriteria1 = $datafromform->group1;
+                    $record->grpcriteria2 = $datafromform->group2;
+                    if (empty($datafromform->group2)) {
+                        $record->grpcriteria2 = null;
+                    }
+                    \core\notification::info(get_string('updatetraitemplate', 'tool_attestoodle'));
+                    $DB->update_record('attestoodle_train_template', $record);
                 }
-                \core\notification::info(get_string('updatetraitemplate', 'tool_attestoodle'));
-                $DB->update_record('attestoodle_train_template', $record);
             }
         }
     }
