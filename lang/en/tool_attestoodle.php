@@ -238,3 +238,4 @@ $string['period_form_help'] = 'Indicate the period
  until the end date
  included.';
 $string['errduplicatename'] = 'Duplicate nane detected !!';
+$string['createtemplate'] = 'Create new template';

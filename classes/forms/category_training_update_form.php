@@ -79,6 +79,13 @@ class category_training_update_form extends \moodleform {
                 $group[] =& $mform->createElement("static", null, null, $previewlink);
             }
 
+            if (has_capability('tool/attestoodle:managetemplate', \context_system::instance())) {
+                $previewlink = '&nbsp;<a target="preview" href="' . $CFG->wwwroot .
+                    '/admin/tool/attestoodle/classes/gabarit/sitecertificate.php?templateid=-1"
+                    class= "btn-create">' . get_string('createtemplate', 'tool_attestoodle').'</a>';
+                $group[] =& $mform->createElement("static", null, null, $previewlink);
+            }
+
             $mform->addGroup($group, 'activities', get_string('template_certificate', 'tool_attestoodle'), ' ', false);
             // Level of grouping.
             $level1s = array(

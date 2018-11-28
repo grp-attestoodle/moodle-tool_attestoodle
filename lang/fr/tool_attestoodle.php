@@ -238,3 +238,4 @@ $string['period_form_help'] = 'Indiquer la période à prendre en compte
 <br><b>Exemple :</b> Pour sélectionner la journée du 24 septembre 2018,
  vous devez sélectionner du 24 septembre 2018 au 24 septembre 2018';
 $string['errduplicatename'] = 'Ce nom est déjà utilisé !!';
+$string['createtemplate'] = 'Créer un nouveau modèle';
