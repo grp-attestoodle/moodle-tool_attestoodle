@@ -88,11 +88,10 @@ class trainings_factory extends singleton {
         // Add courses to the training.
         foreach ($courses as $course) {
             $trainingtoadd->add_course($course);
+            foreach ($course->get_learners() as $learner) {
+                learners_factory::get_instance()->retrieve_validated_activities($learner);
+            }
         }
-
-        // Waiting for all the courses being instanciate to retrieve the...
-        // ...validated activities for each learner.
-        learners_factory::get_instance()->retrieve_all_validated_activities();
 
         return $trainingtoadd;
     }
