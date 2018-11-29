@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->release   = 'v0.5';		 // The current plugin release
+$plugin->release   = 'v0.5';             // The current plugin release
 $plugin->version   = 2018112904;         // The current plugin version (Date: YYYYMMDDXX).10
 $plugin->requires  = 2012112900;         // Requires this Moodle version.
 $plugin->component = 'tool_attestoodle'; // Full name of the plugin (used for diagnostics).
