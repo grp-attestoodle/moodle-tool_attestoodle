@@ -110,12 +110,17 @@ class training_milestones_update_form extends \moodleform {
             $mform->setDefault('typemod', $this->_customdata['type']);
         }
 
+        $selectyesno = array();
+        $selectyesno[] = " ";
+        $selectyesno[] = get_string('yes');
+        $selectyesno[] = get_string('no');
+
         $filtergroup[] =& $mform->createElement('static', null, null, get_string('filtermodulevisible', 'tool_attestoodle'));
-        $filtergroup[] =& $mform->createElement('advcheckbox', 'visibmod', '');
+        $filtergroup[] =& $mform->createElement('select', 'visibmod', '', $selectyesno, null);
         $mform->setDefault('visibmod', $this->_customdata['visibmod']);
 
         $filtergroup[] =& $mform->createElement('static', null, null, get_string('filtermodulerestrict', 'tool_attestoodle'));
-        $filtergroup[] =& $mform->createElement('advcheckbox', 'restrictmod', '');
+        $filtergroup[] =& $mform->createElement('select', 'restrictmod', '', $selectyesno, null);
         $mform->setDefault('restrictmod', $this->_customdata['restrictmod']);
 
         $filtergroup[] =& $mform->createElement('submit', 'filter',
@@ -141,8 +146,11 @@ class training_milestones_update_form extends \moodleform {
 
         foreach ($activities as $activity) {
             $pass = $this->filtertype($activity, $filtertype, $lib);
-            if ($pass && $this->_customdata['visibmod'] != $activity->visible) {
-                $pass = false;
+            if ($pass && $this->_customdata['visibmod'] == 1) {
+                $pass = $activity->visible;
+            }
+            if ($pass && $this->_customdata['visibmod'] == 2) {
+                $pass = !$activity->visible;
             }
             $pass = $this->filterrestrict($activity, $pass);
             // The filter on the name has priority.
@@ -198,7 +206,10 @@ class training_milestones_update_form extends \moodleform {
      */
     private function filterrestrict($activity, $pass) {
         $ret = $pass;
-        if ($ret && $this->_customdata['restrictmod'] == 0 && !empty($activity->availability)) {
+        if ($ret && $this->_customdata['restrictmod'] == 0) {
+            return $ret;
+        }
+        if ($ret && $this->_customdata['restrictmod'] == 2 && !empty($activity->availability)) {
             $ret = false;
         }
         if ($ret && $this->_customdata['restrictmod'] == 1 && empty($activity->availability)) {

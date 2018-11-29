@@ -230,7 +230,7 @@ $string['filtermoduleactivitytype'] = 'Only Activity';
 $string['filtermodulename'] = ' Name  :';
 $string['filtermoduletype'] = ' Type :';
 $string['filtermodulevisible'] = ' Visible :';
-$string['filtermodulerestrict'] = ' Availability :';
+$string['filtermodulerestrict'] = ' With availability :';
 $string['filtermodulebtn'] = 'Filter';
 $string['period_form'] = 'Rule on dates';
 $string['period_form_help'] = 'Indicate the period
@@ -238,3 +238,4 @@ $string['period_form_help'] = 'Indicate the period
  until the end date
  included.';
 $string['errduplicatename'] = 'Duplicate nane detected !!';
+$string['createtemplate'] = 'Create new template';

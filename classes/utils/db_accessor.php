@@ -52,16 +52,6 @@ class db_accessor extends singleton {
     }
 
     /**
-     * Retrieves all the course_categories in moodle DB.
-     *
-     * @return \stdClass Standard Moodle DB object
-     */
-    public function get_all_categories() {
-        $result = self::$db->get_records('course_categories', null, null, 'id, name, description, parent');
-        return $result;
-    }
-
-    /**
      * Retrieves all the attestoodle milestones in moodle DB.
      *
      * @return \stdClass Standard Moodle DB object
@@ -128,36 +118,13 @@ class db_accessor extends singleton {
     }
 
     /**
-     * Retrieves the path of the course categories that linked
-     * to a training in Attestoodle.
+     * Retrieves one category based on its ID.
      *
-     * @param int[] $categoryids The ids of the categories to retrieve
+     * @param int $id The category ID to search the name for
      * @return \stdClass Standard Moodle DB object
      */
-    public function get_categories_paths($categoryids) {
-        $result = self::$db->get_records_list(
-                'course_categories',
-                'id',
-                $categoryids,
-                null,
-                'path');
-        return $result;
-    }
-
-    /**
-     * Retrieves informations of the course categories that linked
-     * to a training in Attestoodle.
-     *
-     * @param int[] $categoryids The ids of the categories to retrieve
-     * @return \stdClass Standard Moodle DB object
-     */
-    public function get_categories_by_id($categoryids) {
-        $result = self::$db->get_records_list(
-                'course_categories',
-                'id',
-                $categoryids, // It must be an array !!
-                null,
-                'id, name, description, parent');
+    public function get_category($id) {
+        $result = self::$db->get_record('course_categories', array('id' => $id), 'id, name, description, parent');
         return $result;
     }
 
