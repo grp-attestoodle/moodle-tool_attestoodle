@@ -24,11 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-<<<<<<< HEAD
 $plugin->release   = 'v0.7';             // The current plugin release
-=======
-$plugin->release   = 'v0.5';		 // The current plugin release
->>>>>>> be8fa48... Ajout du numéro de release dans version.php
 $plugin->version   = 2018112904;         // The current plugin version (Date: YYYYMMDDXX).10
 $plugin->requires  = 2012112900;         // Requires this Moodle version.
 $plugin->component = 'tool_attestoodle'; // Full name of the plugin (used for diagnostics).
