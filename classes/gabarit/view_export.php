@@ -65,7 +65,7 @@ if (!empty($criteria1)) {
 
 if (isset($idtraining)) {
     trainings_factory::get_instance()->create_trainings();
-    $idcategory = $DB->get_field('attestoodle_training', 'categoryid', ['id' => $idtraining]);
+    $idcategory = $DB->get_field('tool_attestoodle_training', 'categoryid', ['id' => $idtraining]);
     $training = trainings_factory::get_instance()->retrieve_training($idcategory);
     if ($training != null) {
         $certificateinfos->trainingname = $training->get_name();

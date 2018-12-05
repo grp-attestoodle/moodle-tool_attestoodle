@@ -63,7 +63,7 @@ class category_training_update_form extends \moodleform {
             $mform->addElement('header', 'templatesection', get_string('template_certificate', 'tool_attestoodle'));
             $group = array();
             // Select template.
-            $rs = $DB->get_records('attestoodle_template', null, null, 'id, name');
+            $rs = $DB->get_records('tool_attestoodle_template', null, null, 'id, name');
             $lsttemplate = array();
             foreach ($rs as $result) {
                 $lsttemplate[$result->id] = $result->name;

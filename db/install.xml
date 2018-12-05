@@ -5,7 +5,7 @@
 >
   <TABLES>
       
-    <TABLE NAME="attestoodle_training" COMMENT="Table that describes the trainings in Attestoodle">
+    <TABLE NAME="tool_attestoodle_training" COMMENT="Table that describes the trainings in Attestoodle">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="The name of the training"/>
@@ -17,7 +17,7 @@
       </KEYS>
     </TABLE>
     
-    <TABLE NAME="attestoodle_milestone" COMMENT="Table that stores the milestone values in Attestoodle">
+    <TABLE NAME="tool_attestoodle_milestone" COMMENT="Table that stores the milestone values in Attestoodle">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" />
         <FIELD NAME="creditedtime" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="The milestone value (in minutes) of the activity"/>
@@ -28,7 +28,7 @@
         <KEY NAME="fk_module_id" TYPE="foreign" FIELDS="moduleid" REFTABLE="mdl_course_modules" REFFIELDS="id"/>
       </KEYS>
     </TABLE>
-    <TABLE NAME="attestoodle_launch_log" COMMENT="Table that logs the launch of a generation by an operator">
+    <TABLE NAME="tool_attestoodle_launch_log" COMMENT="Table that logs the launch of a generation by an operator">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="timegenerated" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Timestamp of the generation"/>
@@ -42,7 +42,7 @@
         <KEY NAME="fk_user_id" TYPE="foreign" FIELDS="operatorid" REFTABLE="mdl_user" REFFIELDS="id"/>
       </KEYS>
     </TABLE>
-    <TABLE NAME="attestoodle_certif_log" COMMENT="Table that logs the information of a uniq certificate when generated">
+    <TABLE NAME="tool_attestoodle_certif_log" COMMENT="Table that logs the information of a uniq certificate when generated">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="status" TYPE="char" LENGTH="11" NOTNULL="true" SEQUENCE="false"/>
@@ -55,10 +55,10 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
         <KEY NAME="fk_category_id" TYPE="foreign" FIELDS="trainingid" REFTABLE="mdl_course_categories" REFFIELDS="id"/>
         <KEY NAME="fk_user_id" TYPE="foreign" FIELDS="learnerid" REFTABLE="mdl_user" REFFIELDS="id"/>
-        <KEY NAME="fk_launch_id" TYPE="foreign" FIELDS="launchid" REFTABLE="attestoodle_launch_log" REFFIELDS="id"/>
+        <KEY NAME="fk_launch_id" TYPE="foreign" FIELDS="launchid" REFTABLE="tool_attestoodle_launch_log" REFFIELDS="id"/>
       </KEYS>
     </TABLE>
-    <TABLE NAME="attestoodle_value_log" COMMENT="Table that logs a uniq milestone information when a certificate is generated">
+    <TABLE NAME="tool_attestoodle_value_log" COMMENT="Table that logs a uniq milestone information when a certificate is generated">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="creditedtime" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
@@ -67,12 +67,11 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-        <KEY NAME="fk_certificate_id" TYPE="foreign" FIELDS="certificateid" REFTABLE="attestoodle_certif_log" REFFIELDS="id"/>
+        <KEY NAME="fk_certificate_id" TYPE="foreign" FIELDS="certificateid" REFTABLE="tool_attestoodle_certif_log" REFFIELDS="id"/>
         <KEY NAME="fk_module_id" TYPE="foreign" FIELDS="moduleid" REFTABLE="mdl_course_modules" REFFIELDS="id"/>
       </KEYS>
     </TABLE>
-	
-	<TABLE NAME="attestoodle_train_template" COMMENT="relation between model and training">
+	<TABLE NAME="tool_attestoodle_train_style" COMMENT="relation between model and training">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="trainingid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
@@ -84,7 +83,7 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
-	<TABLE NAME="attestoodle_template_detail" COMMENT="Detail of the model">
+	<TABLE NAME="tool_attestoodle_tpl_detail" COMMENT="Detail of the model">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="templateid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
@@ -95,7 +94,7 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
-	<TABLE NAME="attestoodle_template" COMMENT="model of certificate">
+	<TABLE NAME="tool_attestoodle_template" COMMENT="model of certificate">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="name" TYPE="char" LENGTH="35" NOTNULL="true" SEQUENCE="false"/>
