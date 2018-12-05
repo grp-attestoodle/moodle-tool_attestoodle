@@ -68,9 +68,9 @@ class training_management implements \renderable {
             $grp2 = null;
             if ($this->category->is_training()) {
                 $idtemplate = 0;
-                $idtraining = $DB->get_field('attestoodle_training', 'id', ['categoryid' => $this->categoryid]);
-                if ($DB->record_exists('attestoodle_train_template', ['trainingid' => $idtraining])) {
-                    $associate = $DB->get_record('attestoodle_train_template', array('trainingid' => $idtraining));
+                $idtraining = $DB->get_field('tool_attestoodle_training', 'id', ['categoryid' => $this->categoryid]);
+                if ($DB->record_exists('tool_attestoodle_train_style', ['trainingid' => $idtraining])) {
+                    $associate = $DB->get_record('tool_attestoodle_train_style', array('trainingid' => $idtraining));
                     $idtemplate = $associate->templateid;
                     $grp1 = $associate->grpcriteria1;
                     if (empty($grp1)) {
@@ -193,8 +193,8 @@ class training_management implements \renderable {
                 if (!empty($training)) {
                     $training->changename($datafromform->name);
                     $nvxtemplate = $datafromform->template;
-                    $idtraining = $DB->get_field('attestoodle_training', 'id', ['categoryid' => $this->categoryid]);
-                    $record = $DB->get_record('attestoodle_train_template', ['trainingid' => $idtraining]);
+                    $idtraining = $DB->get_field('tool_attestoodle_training', 'id', ['categoryid' => $this->categoryid]);
+                    $record = $DB->get_record('tool_attestoodle_train_style', ['trainingid' => $idtraining]);
                     $record->templateid = $nvxtemplate;
                     $record->grpcriteria1 = $datafromform->group1;
                     $record->grpcriteria2 = $datafromform->group2;
@@ -202,7 +202,7 @@ class training_management implements \renderable {
                         $record->grpcriteria2 = null;
                     }
                     \core\notification::info(get_string('updatetraitemplate', 'tool_attestoodle'));
-                    $DB->update_record('attestoodle_train_template', $record);
+                    $DB->update_record('tool_attestoodle_train_style', $record);
                 }
             }
         }

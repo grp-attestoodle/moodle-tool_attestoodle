@@ -37,15 +37,15 @@ $idtemplate = optional_param('templateid', null, PARAM_INT);
 $lnkidtemplate = $idtemplate;
 
 if (!isset($idtemplate)) {
-    $template = $DB->get_record('attestoodle_template', array('name' => 'Site'));
+    $template = $DB->get_record('tool_attestoodle_template', array('name' => 'Site'));
     $idtemplate = $template->id;
     $namelock = 1;
     $previewok = true;
 } else {
-    $template = $DB->get_record('attestoodle_template', array('id' => $idtemplate));
+    $template = $DB->get_record('tool_attestoodle_template', array('id' => $idtemplate));
     if ($template == null) {
         // New model copy of template 'Site'.
-        $template = $DB->get_record('attestoodle_template', array('name' => 'Site'));
+        $template = $DB->get_record('tool_attestoodle_template', array('name' => 'Site'));
         $idtemplate = $template->id;
         $template->name = '';
         $namelock = 0;
@@ -55,7 +55,7 @@ if (!isset($idtemplate)) {
         if ($template->name == "Site") {
             $namelock = 1;
         } else {
-            if ($DB->record_exists('attestoodle_train_template', array('templateid' => $idtemplate))) {
+            if ($DB->record_exists('tool_attestoodle_train_style', array('templateid' => $idtemplate))) {
                 $namelock = 1;
             }
         }
@@ -94,20 +94,20 @@ if ($fromform = $mform->get_data()) {
 
     if ($datas->name != null) {
         // Create.
-        if (!$DB->record_exists('attestoodle_template', array('name' => $datas->name))) {
+        if (!$DB->record_exists('tool_attestoodle_template', array('name' => $datas->name))) {
             $model = new stdClass();
             $model->name = $datas->name;
             $model->timecreated = usergetdate(time())[0];
             $model->userid = $USER->id;
             $created = true;
-            $idtemplate = $DB->insert_record('attestoodle_template', $model);
+            $idtemplate = $DB->insert_record('tool_attestoodle_template', $model);
         }
     } else {
         // Update timemodified et userid.
-        $template = $DB->get_record('attestoodle_template', array('id' => $datas->templateid));
+        $template = $DB->get_record('tool_attestoodle_template', array('id' => $datas->templateid));
         $template->timemodified = usergetdate(time())[0];
         $template->userid = $USER->id;
-        $DB->update_record('attestoodle_template', $template);
+        $DB->update_record('tool_attestoodle_template', $template);
         $idtemplate = $datas->templateid;
     }
     $previewok = true;
@@ -199,10 +199,10 @@ if ($fromform = $mform->get_data()) {
                 $datas->pagenumberlib, null, $datas->pagenumber_total);
     }
 
-    $DB->delete_records('attestoodle_template_detail', array ('templateid' => $idtemplate));
+    $DB->delete_records('tool_attestoodle_tpl_detail', array ('templateid' => $idtemplate));
     if (count($nvxtuples) > 0) {
         foreach ($nvxtuples as $record) {
-            $DB->insert_record('attestoodle_template_detail', $record);
+            $DB->insert_record('tool_attestoodle_tpl_detail', $record);
         }
     }
     \core\notification::success(get_string('enregok', 'tool_attestoodle'));
@@ -215,7 +215,7 @@ if ($fromform = $mform->get_data()) {
     }
 }
 echo $OUTPUT->header();
-$sql = "select type,data from {attestoodle_template_detail} where templateid = " . $idtemplate;
+$sql = "select type,data from {tool_attestoodle_tpl_detail} where templateid = " . $idtemplate;
 $rs = $DB->get_recordset_sql ( $sql, array () );
 $valdefault = array();
 $nbtxt = 0;

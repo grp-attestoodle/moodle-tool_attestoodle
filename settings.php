@@ -37,49 +37,49 @@ if ($hassiteconfig) {
 
 global $DB, $USER;
 // If there aren't any entries in the table then we need to prepare them!
-if (!$DB->record_exists('attestoodle_template', array('name' => 'Site'))) {
+if (!$DB->record_exists('tool_attestoodle_template', array('name' => 'Site'))) {
     $model = new stdClass();
     $model->name = 'Site';
     $model->timecreated = usergetdate(time())[0];
     $model->userid = $USER->id;
 
-    $idtemplate = $DB->insert_record('attestoodle_template', $model);
+    $idtemplate = $DB->insert_record('tool_attestoodle_template', $model);
 
     $object = new stdClass();
     $object->templateid = $idtemplate;
     $object->type = 'background';
     $object->data = '{ "filename": "attest_background.png" } ';
-    $DB->insert_record('attestoodle_template_detail', $object);
+    $DB->insert_record('tool_attestoodle_tpl_detail', $object);
 
     $object = new stdClass();
     $object->templateid = $idtemplate;
     $object->type = 'learnername';
     $object->data = '{ "font": {"family":"helvetica","emphasis":"","size":"14"}, "location": {"x":"66","y":"33"}, "align":"L"} ';
-    $DB->insert_record('attestoodle_template_detail', $object);
+    $DB->insert_record('tool_attestoodle_tpl_detail', $object);
 
     $object = new stdClass();
     $object->templateid = $idtemplate;
     $object->type = 'trainingname';
     $object->data = '{ "font": {"family":"helvetica","emphasis":"","size":"14"}, "location": {"x":"66","y":"39"}, "align":"L"} ';
-    $DB->insert_record('attestoodle_template_detail', $object);
+    $DB->insert_record('tool_attestoodle_tpl_detail', $object);
 
     $object = new stdClass();
     $object->templateid = $idtemplate;
     $object->type = 'period';
     $object->data = '{ "font": {"family":"helvetica","emphasis":"B","size":"14"}, "location": {"x":"110","y":"18"}, "align":"L"} ';
-    $DB->insert_record('attestoodle_template_detail', $object);
+    $DB->insert_record('tool_attestoodle_tpl_detail', $object);
 
     $object = new stdClass();
     $object->templateid = $idtemplate;
     $object->type = 'totalminutes';
     $object->data = '{ "font": {"family":"helvetica","emphasis":"B","size":"14"}, "location": {"x":"86","y":"45"}, "align":"L"} ';
-    $DB->insert_record('attestoodle_template_detail', $object);
+    $DB->insert_record('tool_attestoodle_tpl_detail', $object);
 
     $object = new stdClass();
     $object->templateid = $idtemplate;
     $object->type = 'activities';
     $object->data = '{ "font": {"family":"helvetica","emphasis":"","size":"10"}, "location": {"x":"50","y":"60"}, "align":"C"} ';
-    $DB->insert_record('attestoodle_template_detail', $object);
+    $DB->insert_record('tool_attestoodle_tpl_detail', $object);
     try {
         // Enreg image background in file storage.
         $fs = get_file_storage();

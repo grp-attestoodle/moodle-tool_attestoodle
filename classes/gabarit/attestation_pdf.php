@@ -91,8 +91,8 @@ class attestation_pdf {
      */
     public function set_categoryid($categoryid) {
         global $DB;
-        $idtraining = $DB->get_field('attestoodle_training', 'id', ['categoryid' => $categoryid]);
-        $associate = $DB->get_record('attestoodle_train_template', array('trainingid' => $idtraining));
+        $idtraining = $DB->get_field('tool_attestoodle_training', 'id', ['categoryid' => $categoryid]);
+        $associate = $DB->get_record('tool_attestoodle_train_style', array('trainingid' => $idtraining));
 
         $this->set_idtemplate($associate->templateid);
         $this->set_grpcriteria1($associate->grpcriteria1);
@@ -133,7 +133,7 @@ class attestation_pdf {
      */
     public function set_idtemplate($idtemplate) {
         global $DB;
-        $sql = "select type,data from {attestoodle_template_detail} where templateid = " . $idtemplate;
+        $sql = "select type,data from {tool_attestoodle_tpl_detail} where templateid = " . $idtemplate;
         $rs = $DB->get_recordset_sql ( $sql, array () );
         $this->template = array();
 

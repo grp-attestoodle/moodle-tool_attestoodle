@@ -63,5 +63,45 @@ function xmldb_tool_attestoodle_upgrade($oldversion) {
             upgrade_plugin_savepoint(true, 2018101705, 'tool', 'attestoodle');
         }
     }
+
+    if ($oldversion < 2018120501) {
+        // Define table to be renamed.
+        $table = new xmldb_table('attestoodle_train_template');
+        if ($dbman->table_exists($table)) {
+            // Rename the table to use the correct Moodle naming convention.
+            $dbman->rename_table($table, 'tool_attestoodle_train_style');
+        }
+
+        $table = new xmldb_table('attestoodle_template_detail');
+        if ($dbman->table_exists($table)) {
+            $dbman->rename_table($table, 'tool_attestoodle_tpl_detail');
+        }
+        $table = new xmldb_table('attestoodle_template');
+        if ($dbman->table_exists($table)) {
+            $dbman->rename_table($table, 'tool_attestoodle_template');
+        }
+        $table = new xmldb_table('attestoodle_value_log');
+        if ($dbman->table_exists($table)) {
+            $dbman->rename_table($table, 'tool_attestoodle_value_log');
+        }
+        $table = new xmldb_table('attestoodle_certif_log');
+        if ($dbman->table_exists($table)) {
+            $dbman->rename_table($table, 'tool_attestoodle_certif_log');
+        }
+        $table = new xmldb_table('attestoodle_launch_log');
+        if ($dbman->table_exists($table)) {
+            $dbman->rename_table($table, 'tool_attestoodle_launch_log');
+        }
+        $table = new xmldb_table('attestoodle_milestone');
+        if ($dbman->table_exists($table)) {
+            $dbman->rename_table($table, 'tool_attestoodle_milestone');
+        }
+        $table = new xmldb_table('attestoodle_training');
+        if ($dbman->table_exists($table)) {
+            $dbman->rename_table($table, 'tool_attestoodle_training');
+        }
+        
+        upgrade_plugin_savepoint(true, 2018120501, 'tool', 'attestoodle');
+    }
     return true;
 }

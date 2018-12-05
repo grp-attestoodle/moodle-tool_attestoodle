@@ -57,7 +57,7 @@ class db_accessor extends singleton {
      * @return \stdClass Standard Moodle DB object
      */
     public function get_all_milestones() {
-        $result = self::$db->get_records('attestoodle_milestone');
+        $result = self::$db->get_records('tool_attestoodle_milestone');
         return $result;
     }
 
@@ -67,7 +67,7 @@ class db_accessor extends singleton {
      * @param activity $activity The activity to delete in table
      */
     public function delete_milestone($activity) {
-        self::$db->delete_records('attestoodle_milestone', array('moduleid' => $activity->get_id()));
+        self::$db->delete_records('tool_attestoodle_milestone', array('moduleid' => $activity->get_id()));
     }
 
     /**
@@ -80,7 +80,7 @@ class db_accessor extends singleton {
         $dataobject->creditedtime = $activity->get_milestone();
         $dataobject->moduleid = $activity->get_id();
 
-        self::$db->insert_record('attestoodle_milestone', $dataobject);
+        self::$db->insert_record('tool_attestoodle_milestone', $dataobject);
     }
 
     /**
@@ -89,7 +89,7 @@ class db_accessor extends singleton {
      * @param activity $activity The activity to update in table
      */
     public function update_milestone($activity) {
-        $request = " UPDATE {attestoodle_milestone}
+        $request = " UPDATE {tool_attestoodle_milestone}
                         SET creditedtime = ?
                       WHERE moduleid = ?";
         self::$db->execute($request, array($activity->get_milestone(), $activity->get_id()));
@@ -101,7 +101,7 @@ class db_accessor extends singleton {
      * @return \stdClass Standard Moodle DB object
      */
     public function get_all_trainings() {
-        $result = self::$db->get_records('attestoodle_training');
+        $result = self::$db->get_records('tool_attestoodle_training');
         return $result;
     }
 
@@ -114,7 +114,7 @@ class db_accessor extends singleton {
         $dataobject->id = $training->get_id();
         $dataobject->name = $training->get_name();
         $dataobject->categoryid = $training->get_categoryid();
-        self::$db->update_record('attestoodle_training', $dataobject);
+        self::$db->update_record('tool_attestoodle_training', $dataobject);
     }
 
     /**
@@ -226,9 +226,9 @@ class db_accessor extends singleton {
      * @param int $categoryid The category ID that we want to delete
      */
     public function delete_training($categoryid) {
-        $training = self::$db->get_record('attestoodle_training', array('categoryid' => $categoryid));
-        self::$db->delete_records('attestoodle_training', array('categoryid' => $categoryid));
-        self::$db->delete_records('attestoodle_train_template', array('trainingid' => $training->id));
+        $training = self::$db->get_record('tool_attestoodle_training', array('categoryid' => $categoryid));
+        self::$db->delete_records('tool_attestoodle_training', array('categoryid' => $categoryid));
+        self::$db->delete_records('tool_attestoodle_train_style', array('trainingid' => $training->id));
     }
 
     /**
@@ -240,13 +240,13 @@ class db_accessor extends singleton {
         $dataobject = new \stdClass();
         $dataobject->name = "";
         $dataobject->categoryid = $categoryid;
-        $idtraining = self::$db->insert_record('attestoodle_training', $dataobject);
-        $template = self::$db->get_record('attestoodle_template', array('name' => 'Site'));
+        $idtraining = self::$db->insert_record('tool_attestoodle_training', $dataobject);
+        $template = self::$db->get_record('tool_attestoodle_template', array('name' => 'Site'));
         $record = new \stdClass();
         $record->trainingid = $idtraining;
         $record->templateid = $template->id;
         $record->grpcriteria1 = 'coursename';
-        return self::$db->insert_record('attestoodle_train_template', $record);
+        return self::$db->insert_record('tool_attestoodle_train_style', $record);
     }
 
     /**
@@ -265,7 +265,7 @@ class db_accessor extends singleton {
         $dataobject->enddate = $enddate;
         $dataobject->operatorid = $operatorid;
 
-        $launchid = self::$db->insert_record('attestoodle_launch_log', $dataobject, true);
+        $launchid = self::$db->insert_record('tool_attestoodle_launch_log', $dataobject, true);
         return $launchid;
     }
 
@@ -287,7 +287,7 @@ class db_accessor extends singleton {
         $dataobject->learnerid = $learnerid;
         $dataobject->launchid = $launchid;
 
-        $certificateid = self::$db->insert_record('attestoodle_certif_log', $dataobject, true);
+        $certificateid = self::$db->insert_record('tool_attestoodle_certif_log', $dataobject, true);
         return $certificateid;
     }
 
@@ -309,7 +309,7 @@ class db_accessor extends singleton {
 
             $milestones[] = $dataobject;
         }
-        self::$db->insert_records('attestoodle_value_log', $milestones);
+        self::$db->insert_records('tool_attestoodle_value_log', $milestones);
     }
 
     /**

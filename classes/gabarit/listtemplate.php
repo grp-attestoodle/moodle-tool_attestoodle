@@ -53,15 +53,15 @@ if ($delete) {
         $deleteurl = new moodle_url($returnurl, $optionsyes);
 
         $deletebutton = new single_button($deleteurl, get_string('delete'), 'post');
-        $template = $DB->get_record('attestoodle_template', array('id' => $delete));
+        $template = $DB->get_record('tool_attestoodle_template', array('id' => $delete));
 
         echo $OUTPUT->confirm(get_string('confdeltemplate', 'tool_attestoodle', $template),
                               $deletebutton, $returnurl);
         echo $OUTPUT->footer();
         die;
     } else { // Delete after confirmation.
-        $DB->delete_records('attestoodle_template_detail', array('templateid' => $delete));
-        $DB->delete_records('attestoodle_template', array('id' => $delete));
+        $DB->delete_records('tool_attestoodle_tpl_detail', array('templateid' => $delete));
+        $DB->delete_records('tool_attestoodle_template', array('id' => $delete));
     }
 }
 
@@ -83,14 +83,14 @@ $table->column_style('idactions', 'width', '15%');
 
 $table->setup();
 
-$rs = $DB->get_records('attestoodle_template', null, null, 'id, name');
+$rs = $DB->get_records('tool_attestoodle_template', null, null, 'id, name');
 
 $rows = array();
 foreach ($rs as $result) {
     // Possible suppression test.
     $dellink = "";
     if (has_capability('tool/attestoodle:deletetemplate', \context_system::instance())) {
-        if ($result->name != 'Site' && !$DB->record_exists('attestoodle_train_template', array('templateid' => $result->id))) {
+        if ($result->name != 'Site' && !$DB->record_exists('tool_attestoodle_train_style', array('templateid' => $result->id))) {
             $deleteurl = new moodle_url('/admin/tool/attestoodle/classes/gabarit/listtemplate.php',
                           ['delete' => $result->id]);
             $dellink = "<a href=" . $deleteurl . "><i class='fa fa-trash'></i></a>&nbsp;&nbsp;";
