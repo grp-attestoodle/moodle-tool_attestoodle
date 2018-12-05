@@ -100,7 +100,7 @@ function xmldb_tool_attestoodle_upgrade($oldversion) {
         if ($dbman->table_exists($table)) {
             $dbman->rename_table($table, 'tool_attestoodle_training');
         }
-        
+
         upgrade_plugin_savepoint(true, 2018120501, 'tool', 'attestoodle');
     }
     return true;
