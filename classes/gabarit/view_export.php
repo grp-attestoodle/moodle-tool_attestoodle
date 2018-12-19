@@ -75,7 +75,6 @@ if (isset($idtraining)) {
 
 $exp->set_infos($certificateinfos);
 $exp->print_activity();
-echo $OUTPUT->footer();
 
 /**
  * creating a test set to trigger overflows.

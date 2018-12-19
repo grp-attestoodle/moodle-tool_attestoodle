@@ -214,7 +214,7 @@ class trainings_factory extends singleton {
         $lastid = db_accessor::get_instance()->insert_training($category->get_id());
 
         // If OK, call $this->create with the category object.
-        $this->create($category, $lastid);
+        $this->create($category, $lastid, "");
 
         return true;
     }
