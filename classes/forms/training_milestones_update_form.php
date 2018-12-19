@@ -117,11 +117,15 @@ class training_milestones_update_form extends \moodleform {
 
         $filtergroup[] =& $mform->createElement('static', null, null, get_string('filtermodulevisible', 'tool_attestoodle'));
         $filtergroup[] =& $mform->createElement('select', 'visibmod', '', $selectyesno, null);
-        $mform->setDefault('visibmod', $this->_customdata['visibmod']);
+        if (isset($this->_customdata['visibmod'])) {
+            $mform->setDefault('visibmod', $this->_customdata['visibmod']);
+        }
 
         $filtergroup[] =& $mform->createElement('static', null, null, get_string('filtermodulerestrict', 'tool_attestoodle'));
         $filtergroup[] =& $mform->createElement('select', 'restrictmod', '', $selectyesno, null);
-        $mform->setDefault('restrictmod', $this->_customdata['restrictmod']);
+        if (isset($this->_customdata['restrictmod'])) {
+            $mform->setDefault('restrictmod', $this->_customdata['restrictmod']);
+        }
 
         $filtergroup[] =& $mform->createElement('submit', 'filter',
             get_string('filtermodulebtn', 'tool_attestoodle'), array('class' => 'send-button'));
@@ -146,11 +150,13 @@ class training_milestones_update_form extends \moodleform {
 
         foreach ($activities as $activity) {
             $pass = $this->filtertype($activity, $filtertype, $lib);
-            if ($pass && $this->_customdata['visibmod'] == 1) {
-                $pass = $activity->visible;
-            }
-            if ($pass && $this->_customdata['visibmod'] == 2) {
-                $pass = !$activity->visible;
+            if (isset($this->_customdata['visibmod'])) {
+                if ($pass && $this->_customdata['visibmod'] == 1) {
+                    $pass = $activity->visible;
+                }
+                if ($pass && $this->_customdata['visibmod'] == 2) {
+                    $pass = !$activity->visible;
+                }
             }
             $pass = $this->filterrestrict($activity, $pass);
             // The filter on the name has priority.
@@ -206,6 +212,9 @@ class training_milestones_update_form extends \moodleform {
      */
     private function filterrestrict($activity, $pass) {
         $ret = $pass;
+        if (!isset($this->_customdata['restrictmod'])) {
+            return $ret;
+        }
         if ($ret && $this->_customdata['restrictmod'] == 0) {
             return $ret;
         }
