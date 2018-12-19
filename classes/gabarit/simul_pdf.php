@@ -87,8 +87,8 @@ class simul_pdf extends attestation_pdf {
     private function printactivities($model, $tabactivities) {
         $width = $this->computewidth($model);
         $x = $this->comput_align($model, $width);
-        if ($x + $minwidth > $this->pageparam->pagewidth) {
-            $x = $this->pageparam->pagewidth - $minwidth;
+        if ($x + 80 > $this->pageparam->pagewidth) {
+            $x = $this->pageparam->pagewidth - 80;
         }
         $y = intval($model->location->y) + $this->offset;
         $heightline = intval($model->font->size);
