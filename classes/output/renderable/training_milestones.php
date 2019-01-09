@@ -130,7 +130,7 @@ class training_milestones implements \renderable {
             // If data are valid, process persistance.
             // Try to retrieve the submitted data.
             $datafromform = $this->form->get_submitted_data();
-            if ($datafromform->filter) {
+            if (isset($datafromform->filter)) {
                 $url = new \moodle_url('/admin/tool/attestoodle/index.php',
                 [
                 'page' => 'managemilestones',

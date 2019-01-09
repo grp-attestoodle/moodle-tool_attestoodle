@@ -36,6 +36,8 @@ $context = context_system::instance();
 $idtemplate = optional_param('templateid', null, PARAM_INT);
 $lnkidtemplate = $idtemplate;
 
+$namelock = 0;
+
 if (!isset($idtemplate)) {
     $template = $DB->get_record('tool_attestoodle_template', array('name' => 'Site'));
     $idtemplate = $template->id;
@@ -48,7 +50,6 @@ if (!isset($idtemplate)) {
         $template = $DB->get_record('tool_attestoodle_template', array('name' => 'Site'));
         $idtemplate = $template->id;
         $template->name = '';
-        $namelock = 0;
         $previewok = false;
         $create = true;
     } else {
@@ -92,7 +93,7 @@ if ($fromform = $mform->get_data()) {
         return;
     }
 
-    if ($datas->name != null) {
+    if (isset($datas->name)) {
         // Create.
         if (!$DB->record_exists('tool_attestoodle_template', array('name' => $datas->name))) {
             $model = new stdClass();
@@ -190,7 +191,11 @@ if ($fromform = $mform->get_data()) {
     }
 
     // Type pagebreak.
-    $nvxtuples[] = pagebreak_to_structure($idtemplate, $datas->viewpagenumber, $datas->repeatbackground,
+    $repeatimg = false;
+    if (isset($datas->repeatbackground)) {
+        $repeatimg = true;
+    }
+    $nvxtuples[] = pagebreak_to_structure($idtemplate, $datas->viewpagenumber, $repeatimg,
                 $datas->repeatpreactivities, $datas->repeatpostactivities, $backgroundexist);
     // Type numpage.
     if ($datas->viewpagenumber > 0) {
@@ -353,7 +358,7 @@ function pagebreak_to_structure($dtotemplateid, $dtoviewpagenum, $dtorepeatbackg
     }
     $valeurs->numpage = $numpage;
     $repeatbackground = false;
-    if (isset($dtorepeatbackgr) && $backgroundexist) {
+    if ($dtorepeatbackgr && $backgroundexist) {
         $repeatbackground = true;
     }
     $valeurs->repeatbackground = $repeatbackground;

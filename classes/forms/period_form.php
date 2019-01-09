@@ -39,7 +39,6 @@ class period_form extends \moodleform {
      * all the elements (inputs, titles, buttons, ...) in the form.
      */
     public function definition() {
-        $inputnameprefix = $this->_customdata['input_name_prefix'];
         $mform = $this->_form;
         $group = array();
         $group[] =& $mform->createElement('date_selector', 'input_begin_date', '');
