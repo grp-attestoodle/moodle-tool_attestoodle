@@ -1,3 +1,5 @@
+# Source : https://github.com/blackboard-open-source/moodle-plugin-ci/blob/master/.travis.dist.yml
+
 language: php
 
 sudo: true
