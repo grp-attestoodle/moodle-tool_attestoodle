@@ -39,16 +39,16 @@ $begindate = required_param('begindate', PARAM_ALPHANUMEXT);
 $enddate = required_param('enddate', PARAM_ALPHANUMEXT);
 
 // NavBar.
-$PAGE->navbar->ignore_active();
 $navlevel1 = get_string('navlevel1', 'tool_attestoodle');
-$PAGE->navbar->add($navlevel1, new moodle_url('/admin/tool/attestoodle/index.php', array()));
 $navlevel2 = get_string('navlevel2', 'tool_attestoodle');
+$navlevel3a = get_string('navlevel3a', 'tool_attestoodle');
+
+$PAGE->navbar->ignore_active();
+$PAGE->navbar->add($navlevel1, new moodle_url('/admin/tool/attestoodle/index.php', array()));
 $PAGE->navbar->add($navlevel2, new moodle_url('/admin/tool/attestoodle/index.php',
                             array('page' => 'trainingmanagement', 'categoryid' => $categoryid)));
-$navlevel3a = get_string('navlevel3a', 'tool_attestoodle');
 $PAGE->navbar->add($navlevel3a, new moodle_url('/admin/tool/attestoodle/index.php',
                             array('page' => 'learners', 'categoryid' => $categoryid)));
-
 $PAGE->set_url(new moodle_url(dirname(__FILE__) . '/preparedinf.php', [] ));
 
 $PAGE->set_title(get_string('confirmation', 'tool_attestoodle'));
