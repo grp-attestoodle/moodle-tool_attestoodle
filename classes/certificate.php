@@ -64,7 +64,7 @@ class certificate {
      *
      * @return array The array containing the infos well formed
      */
-    private function get_file_infos() {
+    public function get_file_infos() {
         $usercontext = \context_user::instance($this->learner->get_id());
 
         // Prepare file record object.
@@ -112,7 +112,7 @@ class certificate {
      * name and the course total validated milestones (in minutes). This last
      * property may be a void array.
      */
-    private function get_pdf_informations() {
+    public function get_pdf_informations() {
         $trainingname = $this->training->get_name();
         $totalminutes = 0;
 
@@ -120,6 +120,7 @@ class certificate {
 
         // Retrieve activities informations in an array structure.
         $activitiesstructured = array();
+        $index = 0;
         foreach ($filteredmilestones as $fva) {
             // Retrieve activity.
             $activity = $fva->get_activity();
@@ -132,14 +133,16 @@ class certificate {
             $courseid = $course->get_id();
             $coursename = $course->get_name();
             $cmid = $activity->get_id();
-            $activitiesstructured[$cmid]["coursename"] = $coursename;
-            $activitiesstructured[$cmid]["totalminutes"] = $activity->get_milestone();
-            $activitiesstructured[$cmid]["moduleid"] = $activity->get_idmodule();
-            $activitiesstructured[$cmid]["name"] = $activity->get_name();
-            $activitiesstructured[$cmid]["description"] = $activity->get_description();
-            $activitiesstructured[$cmid]["type"] = $activity->get_type();
-            $activitiesstructured[$cmid]["cmid"] = $cmid;
-            $activitiesstructured[$cmid]["courseid"] = $courseid;
+            $nomind = "act" . $index;
+            $activitiesstructured[$nomind]["coursename"] = $coursename;
+            $activitiesstructured[$nomind]["totalminutes"] = $activity->get_milestone();
+            $activitiesstructured[$nomind]["moduleid"] = $activity->get_idmodule();
+            $activitiesstructured[$nomind]["name"] = $activity->get_name();
+            $activitiesstructured[$nomind]["description"] = $activity->get_description();
+            $activitiesstructured[$nomind]["type"] = $activity->get_type();
+            $activitiesstructured[$nomind]["cmid"] = $cmid;
+            $activitiesstructured[$nomind]["courseid"] = $courseid;
+            $index++;
         }
         // Retrieve global informations.
         $datformat = get_string('dateformat', 'tool_attestoodle');

@@ -239,3 +239,8 @@ $string['period_form_help'] = 'Indicate the period
  included.';
 $string['errduplicatename'] = 'Duplicate nane detected !!';
 $string['createtemplate'] = 'Create new template';
+$string['stop'] = 'Stop';
+$string['confirmation'] = 'Confirmation';
+$string['certificategenerate'] = 'Certification generation';
+$string['msgongoing'] = 'Ongoing treatment';
+$string['questgenerate'] = 'Do you want to generate {$a} certificates ?';
