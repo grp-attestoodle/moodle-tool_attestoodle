@@ -160,19 +160,17 @@ class training_learners_list implements renderable {
                     array('class' => 'btn btn-default attestoodle-button'));
             // Generate all certificates link.
             $output .= \html_writer::link(
-                    new \moodle_url(
-                            '/admin/tool/attestoodle/index.php',
+                new \moodle_url(
+                            '/admin/tool/attestoodle/classes/generated/preparedinf.php',
                             array(
-                                    'page' => 'learners',
-                                    'action' => 'generatecertificates',
-                                    'categoryid' => $this->training->get_categoryid(),
-                                    'begindate' => $this->thebegindate,
-                                    'enddate' => $this->theenddate
+                                'trainingid' => $this->training->get_id(),
+                                'categoryid' => $this->training->get_categoryid(),
+                                'begindate' => $this->thebegindate,
+                                'enddate' => $this->theenddate
                             )
                     ),
                     get_string('training_learners_list_generate_certificates_link', 'tool_attestoodle'),
                     array('class' => 'btn btn-default attestoodle-button'));
-            $output .= \html_writer::end_div();
 
             $output .= \html_writer::end_div();
         }

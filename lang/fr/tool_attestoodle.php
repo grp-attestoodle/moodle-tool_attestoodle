@@ -239,3 +239,8 @@ $string['period_form_help'] = 'Indiquer la période à prendre en compte
  vous devez sélectionner du 24 septembre 2018 au 24 septembre 2018';
 $string['errduplicatename'] = 'Ce nom est déjà utilisé !!';
 $string['createtemplate'] = 'Créer un nouveau modèle';
+$string['stop'] = 'Stop';
+$string['confirmation'] = 'Confirmation';
+$string['certificategenerate'] = 'Génération des attestations';
+$string['msgongoing'] = 'Traitement en cours';
+$string['questgenerate'] = 'Souhaitez-vous générer les {$a} certificats ?';

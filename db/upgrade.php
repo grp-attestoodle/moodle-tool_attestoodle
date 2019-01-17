@@ -103,5 +103,25 @@ function xmldb_tool_attestoodle_upgrade($oldversion) {
 
         upgrade_plugin_savepoint(true, 2018120501, 'tool', 'attestoodle');
     }
+
+    // Create temporary table.
+    if ($oldversion < 2018122601) {
+        // Define table to be created.
+        $table = new xmldb_table('tool_attestoodle_tmp');
+        // Adding fields to table.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('trainingid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        $table->add_field('fileinfo', XMLDB_TYPE_TEXT, 'medium', null, null, null, null);
+        $table->add_field('pdfinfo', XMLDB_TYPE_TEXT, 'medium', null, null, null, null);
+        $table->add_field('learnerid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        // Adding keys to table.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+        // Create table.
+        if ($dbman->table_exists($table)) {
+            $dbman->drop_table($table);
+        }
+        $dbman->create_table($table);
+        upgrade_plugin_savepoint(true, 2018122601, 'tool', 'attestoodle');
+    }
     return true;
 }
