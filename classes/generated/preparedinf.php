@@ -101,7 +101,10 @@ $linkyes = \html_writer::link(
 
 $linkno = \html_writer::link(
                 new moodle_url('/admin/tool/attestoodle/index.php',
-                            array('page' => 'learners', 'categoryid' => $categoryid)
+                            array('page' => 'learners',
+                            'categoryid' => $categoryid,
+                            'begindate' => $begindate,
+                            'enddate' => $enddate)
                     ),
                     get_string('no'),
                     array('class' => 'btn btn-default attestoodle-button'));

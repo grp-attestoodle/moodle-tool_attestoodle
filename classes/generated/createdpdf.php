@@ -131,7 +131,10 @@ echo ("<br/><div id='btn_stop' style='display:inline'>" . $btnstop . "</div>");
 echo ("&nbsp;<div id='btn_ret' style='display:none'>");
 $linkno = \html_writer::link(
                 new moodle_url('/admin/tool/attestoodle/index.php',
-                            array('page' => 'learners', 'categoryid' => $categoryid)
+                            array('page' => 'learners',
+                            'categoryid' => $categoryid,
+                            'begindate' => $begindate,
+                            'enddate' => $enddate)
                     ),
                     get_string('back'),
                     array('class' => 'btn btn-default attestoodle-button'));
