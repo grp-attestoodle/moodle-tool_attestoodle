@@ -46,10 +46,10 @@ $navlevel1 = get_string('navlevel1', 'tool_attestoodle');
 $PAGE->navbar->add($navlevel1, new moodle_url('/admin/tool/attestoodle/index.php', array()));
 $navlevel2 = get_string('navlevel2', 'tool_attestoodle');
 $PAGE->navbar->add($navlevel2, new moodle_url('/admin/tool/attestoodle/index.php',
-                            array('page' => 'trainingmanagement', 'categoryid' => $categoryid)));
+                            array('typepage' => 'trainingmanagement', 'categoryid' => $categoryid)));
 $navlevel3a = get_string('navlevel3a', 'tool_attestoodle');
 $PAGE->navbar->add($navlevel3a, new moodle_url('/admin/tool/attestoodle/index.php',
-                            array('page' => 'learners', 'categoryid' => $categoryid)));
+                            array('typepage' => 'learners', 'categoryid' => $categoryid)));
 
 $PAGE->set_url(new moodle_url(dirname(__FILE__) . '/preparedinf.php', [] ));
 $PAGE->set_title(get_string('certificategenerate', 'tool_attestoodle'));
@@ -131,7 +131,7 @@ echo ("<br/><div id='btn_stop' style='display:inline'>" . $btnstop . "</div>");
 echo ("&nbsp;<div id='btn_ret' style='display:none'>");
 $linkno = \html_writer::link(
                 new moodle_url('/admin/tool/attestoodle/index.php',
-                            array('page' => 'learners',
+                            array('typepage' => 'learners',
                             'categoryid' => $categoryid,
                             'begindate' => $begindate,
                             'enddate' => $enddate)

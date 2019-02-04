@@ -91,15 +91,6 @@ class learners_factory extends singleton {
     }
 
     /**
-     * Getter for the $learners property.
-     *
-     * @return learner[] The learners stored in the factory
-     */
-    public function get_learners() {
-        return $this->learners;
-    }
-
-    /**
      * Method that checks if a learner exists in the main array based on an ID.
      *
      * @param integer $id Id to search against
