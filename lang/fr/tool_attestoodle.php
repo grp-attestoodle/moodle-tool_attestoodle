@@ -244,3 +244,4 @@ $string['confirmation'] = 'Confirmation';
 $string['certificategenerate'] = 'Génération des attestations';
 $string['msgongoing'] = 'Traitement en cours';
 $string['questgenerate'] = 'Souhaitez-vous générer les {$a} certificats ?';
+$string['error_same_criteria'] = 'Les regroupements ne peuvent pas être identiques !!';

@@ -244,3 +244,4 @@ $string['confirmation'] = 'Confirmation';
 $string['certificategenerate'] = 'Certification generation';
 $string['msgongoing'] = 'Ongoing treatment';
 $string['questgenerate'] = 'Do you want to generate {$a} certificates ?';
+$string['error_same_criteria'] = 'Groupings can not be identical !!';

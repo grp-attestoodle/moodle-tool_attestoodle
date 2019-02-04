@@ -113,6 +113,10 @@ class category_training_update_form extends \moodleform {
      */
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);
+
+        if ($data['group2'] == $data['group1']) {
+            $errors['group2'] = get_string('error_same_criteria', 'tool_attestoodle');
+        }
         return $errors;
     }
 }
