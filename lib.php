@@ -61,7 +61,7 @@ function tool_attestoodle_extend_navigation_category_settings(navigation_node $p
         $categoryid = $PAGE->context->instanceid;
         $url = new moodle_url($toolpath . '/index.php',
                 array(
-                        "page" => "trainingmanagement",
+                        "typepage" => "trainingmanagement",
                         "categoryid" => $categoryid,
                         "call" => "categ"
                 ));

@@ -84,7 +84,7 @@ class training_management implements \renderable {
             }
             $this->form = new category_training_update_form(
                     new \moodle_url('/admin/tool/attestoodle/index.php',
-                        array('page' => 'trainingmanagement', 'categoryid' => $this->categoryid)),
+                        array('typepage' => 'trainingmanagement', 'categoryid' => $this->categoryid)),
                         array('data' => $this->category, 'idtemplate' => $idtemplate,
                         'idtraining' => $idtraining), 'get' );
             if ($idtemplate > -1) {
@@ -118,7 +118,7 @@ class training_management implements \renderable {
      */
     private function handle_form_cancelled() {
         // Handle form cancel operation.
-        $redirecturl = new \moodle_url('/admin/tool/attestoodle/index.php', ['page' => 'trainingslist']);
+        $redirecturl = new \moodle_url('/admin/tool/attestoodle/index.php', ['typepage' => 'trainingslist']);
         $message = get_string('training_management_info_form_canceled', 'tool_attestoodle');
         redirect($redirecturl, $message, null, \core\output\notification::NOTIFY_INFO);
     }
@@ -184,7 +184,7 @@ class training_management implements \renderable {
                 $this->notify_result($error, $updated, $boolvalue);
                 if (!$error) {
                     $redirecturl = new \moodle_url('/admin/tool/attestoodle/index.php',
-                        array ('page' => 'trainingmanagement', 'categoryid' => $this->categoryid));
+                        array ('typepage' => 'trainingmanagement', 'categoryid' => $this->categoryid));
                     redirect($redirecturl);
                     return;
                 }
@@ -287,7 +287,7 @@ class training_management implements \renderable {
 
                 // Link to the learners list of the training.
                 $parameters = array(
-                        'page' => 'learners',
+                        'typepage' => 'learners',
                         'categoryid' => $this->category->get_id()
                 );
                 $url = new \moodle_url('/admin/tool/attestoodle/index.php', $parameters);
@@ -299,7 +299,7 @@ class training_management implements \renderable {
 
                 // Link to the milestones management of the training.
                 $parametersmilestones = array(
-                        'page' => 'managemilestones',
+                        'typepage' => 'managemilestones',
                         'categoryid' => $this->category->get_id()
                 );
                 $urlmilestones = new \moodle_url('/admin/tool/attestoodle/index.php', $parametersmilestones);

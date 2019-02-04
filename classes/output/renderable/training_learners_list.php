@@ -95,7 +95,7 @@ class training_learners_list implements renderable {
 
         $this->form = new period_form(
                     new \moodle_url('/admin/tool/attestoodle/index.php',
-                        array('page' => 'learners', 'categoryid' => $training->get_categoryid())),
+                        array('typepage' => 'learners', 'categoryid' => $training->get_categoryid())),
                         array(), 'post' );
 
         $stime = \DateTime::createFromFormat("Y-m-d", $this->thebegindate);
@@ -131,7 +131,7 @@ class training_learners_list implements renderable {
             $output .= \html_writer::link(
                     new \moodle_url(
                             '/admin/tool/attestoodle/index.php',
-                            array('page' => 'trainingmanagement', 'categoryid' => $this->training->get_categoryid())
+                            array('typepage' => 'trainingmanagement', 'categoryid' => $this->training->get_categoryid())
                     ),
                     get_string('backto_training_detail_btn_text', 'tool_attestoodle'),
                     array('class' => 'btn btn-default attestoodle-button'));
@@ -149,7 +149,7 @@ class training_learners_list implements renderable {
                     new \moodle_url(
                             '/admin/tool/attestoodle/index.php',
                             array(
-                                    'page' => 'learners',
+                                    'typepage' => 'learners',
                                     'action' => 'downloadzip',
                                     'categoryid' => $this->training->get_categoryid(),
                                     'begindate' => $this->thebegindate,
@@ -213,7 +213,7 @@ class training_learners_list implements renderable {
             $stdclass->totalmarkers = parse_minutes_to_hours($totalmarkerperiod);
 
             $parameters = array(
-                'page' => 'learnerdetails',
+                'typepage' => 'learnerdetails',
                 'learner' => $o->get_id(),
                 'begindate' => $this->thebegindate,
                 'enddate' => $this->theenddate,
@@ -234,46 +234,6 @@ class training_learners_list implements renderable {
      */
     public function get_unknown_training_message() {
         return get_string('training_details_unknown_training_id', 'tool_attestoodle');
-    }
-
-    /**
-     * Method that generates certificates for all the learners in the training,
-     * filtering activities by period given.
-     * It creates the files on the server then notify the user if there is
-     * any error or warning (file not created or other file creation error).
-     */
-    public function generate_certificates() {
-        $errorcounter = 0;
-        $newfilecounter = 0;
-        $overwrittencounter = 0;
-
-        // Log the generation launch.
-        $launchid = logger::log_launch($this->thebegindate, $this->theenddate);
-
-        foreach ($this->training->get_learners() as $learner) {
-            $certificate = new certificate($learner, $this->training, $this->theactualbegindate, $this->theactualenddate);
-            $status = $certificate->create_file_on_server();
-            switch ($status) {
-                case 0:
-                    // Error.
-                    $errorcounter++;
-                    break;
-                case 1:
-                    // New file.
-                    $newfilecounter++;
-                    break;
-                case 2:
-                    // File overwritten.
-                    $overwrittencounter++;
-                    break;
-            }
-            // Log the certificate informations.
-            if (isset($launchid)) {
-                logger::log_certificate($launchid, $status, $certificate);
-            }
-        }
-
-        $this->notify_results($newfilecounter, $overwrittencounter, $errorcounter);
     }
 
     /**

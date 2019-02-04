@@ -98,7 +98,7 @@ class learner_details implements \renderable {
 
         $this->form = new period_form(
                     new \moodle_url('/admin/tool/attestoodle/index.php',
-                        array('page' => 'learnerdetails', 'categorylnk' => $this->categorylnk, 'learner' => $this->learnerid)),
+                        array('typepage' => 'learnerdetails', 'categorylnk' => $this->categorylnk, 'learner' => $this->learnerid)),
                         array(), 'get' );
 
         $stime = \DateTime::createFromFormat("Y-m-d", $this->begindate);
@@ -249,7 +249,7 @@ class learner_details implements \renderable {
         $output .= \html_writer::link(
                 new \moodle_url(
                         '/admin/tool/attestoodle/index.php', array(
-                                'page' => 'learners',
+                                'typepage' => 'learners',
                                 'categoryid' => $training->get_categoryid(),
                                 'begindate' => $this->begindate,
                                 'enddate' => $this->enddate,
@@ -358,7 +358,7 @@ class learner_details implements \renderable {
 
         // Instanciate the "Generate certificate" link with specified filters.
         $dlcertifoptions = array(
-                'page' => 'learnerdetails',
+                'typepage' => 'learnerdetails',
                 'action' => 'generatecertificate',
                 'categoryid' => $training->get_categoryid(),
                 'learner' => $this->learnerid,

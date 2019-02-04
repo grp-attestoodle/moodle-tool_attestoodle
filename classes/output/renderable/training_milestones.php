@@ -66,7 +66,7 @@ class training_milestones implements \renderable {
             } else {
                 $url = new \moodle_url(
                             '/admin/tool/attestoodle/index.php',
-                            ['page' => 'managemilestones', 'categoryid' => $this->training->get_categoryid()]);
+                            ['typepage' => 'managemilestones', 'categoryid' => $this->training->get_categoryid()]);
                 $this->form = new training_milestones_update_form($url,
                                     array(
                                             'data' => $this->training->get_courses(),
@@ -112,7 +112,7 @@ class training_milestones implements \renderable {
     private function goback($message) {
         $redirecturl = new \moodle_url(
                 '/admin/tool/attestoodle/index.php',
-                array('page' => 'trainingmanagement', 'categoryid' => $this->training->get_categoryid())
+                array('typepage' => 'trainingmanagement', 'categoryid' => $this->training->get_categoryid())
         );
         redirect($redirecturl, $message, null, \core\output\notification::NOTIFY_INFO);
     }
@@ -133,7 +133,7 @@ class training_milestones implements \renderable {
             if (isset($datafromform->filter)) {
                 $url = new \moodle_url('/admin/tool/attestoodle/index.php',
                 [
-                'page' => 'managemilestones',
+                'typepage' => 'managemilestones',
                 'categoryid' => $this->training->get_categoryid(),
                 'type' => $datafromform->typemod,
                 'namemod' => $datafromform->namemod,
@@ -226,7 +226,7 @@ class training_milestones implements \renderable {
             $this->form = new training_milestones_update_form(
                     new \moodle_url(
                             '/admin/tool/attestoodle/index.php',
-                            ['page' => 'managemilestones', 'categoryid' => $this->training->get_categoryid()]
+                            ['typepage' => 'managemilestones', 'categoryid' => $this->training->get_categoryid()]
                     ),
                     array(
                         'data' => $this->training->get_courses(),

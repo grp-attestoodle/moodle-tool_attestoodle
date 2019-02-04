@@ -96,16 +96,6 @@ class db_accessor extends singleton {
     }
 
     /**
-     * Retrieves all the attestoodle trainings in moodle DB.
-     *
-     * @return \stdClass Standard Moodle DB object
-     */
-    public function get_all_trainings() {
-        $result = self::$db->get_records('tool_attestoodle_training');
-        return $result;
-    }
-
-    /**
      * Update training in the attestoodle_training in moodle DB.
      * @param \stdClass $training training to update in DB.
      */
@@ -218,6 +208,32 @@ class db_accessor extends singleton {
     public function get_course_modules_infos($instanceid, $tablename) {
         $result = self::$db->get_record($tablename, array('id' => $instanceid));
         return $result;
+    }
+
+    /**
+     * Retrieves the attestoodle trainings in moodle DB, associate with a category.
+     *
+     * @return \stdClass Standard Moodle DB object
+     */
+    public function get_training_by_category($categoryid) {
+        return self::$db->get_record('tool_attestoodle_training', array('categoryid' => $categoryid));
+    }
+
+    /**
+     * Retrieves one page of attestoodle trainings in moodle DB.
+     *
+     * @return \stdClass Standard Moodle DB object
+     */
+    public function get_page_trainings($numpage, $perpage) {
+        $req = 'select * from {tool_attestoodle_training} order by name';
+        return self::$db->get_recordset_sql($req, null, $numpage, $perpage);
+    }
+
+    /**
+     * Retrieve count training.
+     */
+    public function get_training_matchcount() {
+        return self::$db->count_records_sql("SELECT COUNT(id) from {tool_attestoodle_training}");
     }
 
     /**
