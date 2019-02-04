@@ -52,16 +52,6 @@ class db_accessor extends singleton {
     }
 
     /**
-     * Retrieves all the attestoodle milestones in moodle DB.
-     *
-     * @return \stdClass Standard Moodle DB object
-     */
-    public function get_all_milestones() {
-        $result = self::$db->get_records('tool_attestoodle_milestone');
-        return $result;
-    }
-
-    /**
      * Retrieves one milestone based on moduleID.
      *
      * @param int $id The module ID to search the credited time.

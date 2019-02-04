@@ -82,11 +82,13 @@ class training_management implements \renderable {
                     }
                 }
             }
+            $context = \context_coursecat::instance($this->categoryid);
+            $editmode = has_capability('tool/attestoodle:managetraining', $context);
             $this->form = new category_training_update_form(
                     new \moodle_url('/admin/tool/attestoodle/index.php',
                         array('typepage' => 'trainingmanagement', 'categoryid' => $this->categoryid)),
                         array('data' => $this->category, 'idtemplate' => $idtemplate,
-                        'idtraining' => $idtraining), 'get' );
+                        'idtraining' => $idtraining, 'editmode' => $editmode), 'get' );
             if ($idtemplate > -1) {
                 $this->form->set_data(array ('template' => $idtemplate, 'group1' => $grp1, 'group2' => $grp2));
             }

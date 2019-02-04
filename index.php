@@ -76,7 +76,11 @@ switch($page) {
             $context = context_coursecat::instance($categoryid);
             $PAGE->set_context($context);
         }
-        require_capability('tool/attestoodle:managetraining', $context);
+
+        // Must have viewtraining capacity !
+        if (!has_capability('tool/attestoodle:managetraining', $context)) {
+            require_capability('tool/attestoodle:viewtraining', $context);
+        }
         $renderable = new renderable\training_management($categoryid);
 
         break;
@@ -89,8 +93,10 @@ switch($page) {
         $PAGE->set_title(get_string('training_milestones_page_title', 'tool_attestoodle'));
         $context = context_coursecat::instance($categoryid);
         $PAGE->set_context($context);
-        require_capability('tool/attestoodle:managemilestones', $context);
 
+        if (!has_capability('tool/attestoodle:managemilestones', $context)) {
+            require_capability('tool/attestoodle:viewtraining', $context);
+        }
         $navlevel2 = get_string('navlevel2', 'tool_attestoodle');
         $PAGE->navbar->add($navlevel2, new moodle_url('/admin/tool/attestoodle/index.php',
                                                 array('typepage' => 'trainingmanagement', 'categoryid' => $categoryid)));

@@ -32,6 +32,7 @@ $string['settings_student_role_label'] = 'Id du rôle Etudiant';
 $string['settings_student_role_helper'] = 'Id du rôle Etudiant dans la base de données';
 
 // Capabilities strings.
+$string['attestoodle:viewtraining'] = "Consulter une formation";
 $string['attestoodle:displaytrainings'] = "Afficher les formations";
 $string['attestoodle:managetraining'] = "Ajouter/Supprimer une formation";
 $string['attestoodle:managemilestones'] = "Gérer les jalons d'une formation";
@@ -245,3 +246,4 @@ $string['certificategenerate'] = 'Génération des attestations';
 $string['msgongoing'] = 'Traitement en cours';
 $string['questgenerate'] = 'Souhaitez-vous générer les {$a} certificats ?';
 $string['error_same_criteria'] = 'Les regroupements ne peuvent pas être identiques !!';
+$string['nottraining'] = 'Cette catégorie n\'est pas une formation';

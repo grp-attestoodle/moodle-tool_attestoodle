@@ -143,9 +143,11 @@ class training_learners_list implements renderable {
             $output .= $this->form->render();
 
             // Certicates related links.
-            $output .= \html_writer::start_div('clearfix');
             // Download ZIP link.
-            $output .= \html_writer::link(
+            $context = \context_coursecat::instance($this->training->get_categoryid());
+            if (has_capability('tool/attestoodle:downloadcertificate', $context)) {
+                $output .= \html_writer::start_div('clearfix');
+                $output .= \html_writer::link(
                     new \moodle_url(
                             '/admin/tool/attestoodle/index.php',
                             array(
@@ -158,9 +160,9 @@ class training_learners_list implements renderable {
                     ),
                     get_string('training_learners_list_download_zip_link', 'tool_attestoodle'),
                     array('class' => 'btn btn-default attestoodle-button'));
-            // Generate all certificates link.
-            $output .= \html_writer::link(
-                new \moodle_url(
+                // Generate all certificates link.
+                $output .= \html_writer::link(
+                    new \moodle_url(
                             '/admin/tool/attestoodle/classes/generated/preparedinf.php',
                             array(
                                 'trainingid' => $this->training->get_id(),
@@ -171,8 +173,8 @@ class training_learners_list implements renderable {
                     ),
                     get_string('training_learners_list_generate_certificates_link', 'tool_attestoodle'),
                     array('class' => 'btn btn-default attestoodle-button'));
-
-            $output .= \html_writer::end_div();
+                $output .= \html_writer::end_div();
+            }
         }
 
         return $output;
@@ -221,7 +223,11 @@ class training_learners_list implements renderable {
             $url = new \moodle_url('/admin/tool/attestoodle/index.php', $parameters);
             $label = get_string('training_learners_list_table_link_details', 'tool_attestoodle');
             $attributes = array('class' => 'attestoodle-button');
-            $stdclass->link = \html_writer::link($url, $label, $attributes);
+            $stdclass->link = "";
+            $context = \context_coursecat::instance($this->training->get_categoryid());
+            if (has_capability('tool/attestoodle:learnerdetails', $context)) {
+                $stdclass->link = \html_writer::link($url, $label, $attributes);
+            }
 
             return $stdclass;
         }, $this->training->get_learners());

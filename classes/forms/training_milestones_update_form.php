@@ -47,6 +47,15 @@ class training_milestones_update_form extends \moodleform {
 
         $mform = $this->_form;
         $this->add_filter();
+
+        $mform->addElement('hidden', 'edition');
+        $mform->setType('edition', PARAM_INT);
+        if ($this->_customdata['modifallow']) {
+            $mform->setDefault('edition', 1);
+        } else {
+            $mform->setDefault('edition', 0);
+        }
+
         $suffix = get_string("training_milestones_form_input_suffix", "tool_attestoodle");
         foreach ($elements as $course) {
             $totact = count($course->activities);
@@ -63,6 +72,8 @@ class training_milestones_update_form extends \moodleform {
                 $group[] =& $mform->createElement("text", $activity->name, null, array("size" => 5)); // Max 5 char.
                 $mform->setType($activity->name, PARAM_ALPHANUM); // Parsing the value in INT after submit.
                 $mform->setDefault($activity->name, $activity->milestone); // Set default value to the current milestone value.
+                $mform->disabledIf($activity->name, 'edition', 'eq', 0);
+
                 $group[] =& $mform->createElement("static", null, null, "<span>{$suffix}</span>");
                 $libelactivity = "<a href='{$CFG->wwwroot}/course/modedit.php?update={$activity->id}'>"
                     . "{$activity->label} ({$activity->type})</a>";
@@ -84,7 +95,9 @@ class training_milestones_update_form extends \moodleform {
                     ));
             }
         }
-        $this->add_action_buttons();
+        if ($this->_customdata['modifallow']) {
+            $this->add_action_buttons();
+        }
     }
 
     /**
@@ -153,6 +166,9 @@ class training_milestones_update_form extends \moodleform {
 
         foreach ($activities as $activity) {
             $pass = $this->filtertype($activity, $filtertype, $lib);
+            if (!$this->_customdata['modifallow'] && $activity->milestone == 0) {
+                $pass = false;
+            }
             if (isset($this->_customdata['visibmod'])) {
                 if ($pass && $this->_customdata['visibmod'] == 1) {
                     $pass = $activity->visible;

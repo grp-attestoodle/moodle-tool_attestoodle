@@ -56,6 +56,9 @@ function parse_datetime_to_readable_format($datetime) {
 function tool_attestoodle_extend_navigation_category_settings(navigation_node $parentnode, context_coursecat $context) {
     global $PAGE, $CFG;
     $userhascapability = has_capability('tool/attestoodle:managetraining', $context);
+    if (!$userhascapability) {
+        $userhascapability = has_capability('tool/attestoodle:viewtraining', $context);
+    }
     $toolpath = $CFG->wwwroot. "/" . $CFG->admin . "/tool/attestoodle";
     if ($userhascapability) {
         $categoryid = $PAGE->context->instanceid;
@@ -129,4 +132,50 @@ function tool_attestoodle_pluginfile($course, $cm, $context, $filearea, $args, $
     // We can now send the file back to the browser - in this case with a cache lifetime of 1 day and no filtering.
     // From Moodle 2.3, use send_stored_file instead.
     send_stored_file($file, 1, 0, $forcedownload, $options);
+}
+
+/**
+ * Add nodes to myprofile page.
+ *
+ * @param \core_user\output\myprofile\tree $tree Tree object
+ * @param stdClass $user user object
+ * @param bool $iscurrentuser
+ * @param stdClass $course Course object
+ *
+ * @return bool
+ */
+function tool_attestoodle_myprofile_navigation(\core_user\output\myprofile\tree $tree, $user, $iscurrentuser, $course) {
+    global $CFG, $PAGE, $USER, $SITE;
+
+    $context = context_user::instance($user->id);
+    $courseid = empty($course) ? 0 : $course->id;
+    $viewlinkattestoodle = has_capability('tool/attestoodle:managetraining', $context);
+    $viewlinkattestoodle = viewlinkattestoodle || has_capability('tool/attestoodle:displaytrainings', $context);
+    $viewlinkattestoodle = viewlinkattestoodle || has_capability('tool/attestoodle:viewtemplate', $context);
+
+    if ($USER->id == $user->id && has_capability('tool/attestoodle:viewtraining', $context)) {
+        $category = new core_user\output\myprofile\category('attestoodle', 'Attestoodle', null);
+        $tree->add_category($category);
+
+        if (has_capability('tool/attestoodle:managetraining', $context)) {
+            $urladdtrain = new moodle_url("$CFG->wwwroot/course/");
+            $content = \html_writer::link($urladdtrain, get_string('add_training', 'tool_attestoodle'), array());
+            $localnode = new core_user\output\myprofile\node('attestoodle', 'newtrain', null, null, null, $content);
+            $tree->add_node($localnode);
+        }
+
+        if (has_capability('tool/attestoodle:displaytrainings', $context)) {
+            $url = new moodle_url('/admin/tool/attestoodle/index.php', array());
+            $content = \html_writer::link($url, get_string('training_list_link', 'tool_attestoodle'), array());
+            $localnode = new core_user\output\myprofile\node('attestoodle', 'listtrain', null, null, null, $content);
+            $tree->add_node($localnode);
+        }
+
+        if (has_capability('tool/attestoodle:viewtemplate', $context)) {
+            $urllisttemplate = new moodle_url("$CFG->wwwroot/$CFG->admin/tool/attestoodle/classes/gabarit/listtemplate.php");
+            $content = \html_writer::link($urllisttemplate, get_string('template_certificate', 'tool_attestoodle'), array());
+            $localnode = new core_user\output\myprofile\node('attestoodle', 'lsttemplate', null, null, null, $content);
+            $tree->add_node($localnode);
+        }
+    }
 }

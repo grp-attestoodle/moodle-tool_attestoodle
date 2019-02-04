@@ -25,6 +25,13 @@
 defined('MOODLE_INTERNAL') || die();
 
 $capabilities = array(
+        'tool/attestoodle:viewtraining' => array(
+                'captype' => 'read',
+                'contextlevel' => CONTEXT_SYSTEM,
+                'archetypes' => array(
+                        'manager' => CAP_ALLOW
+                )
+        ),
         'tool/attestoodle:managetraining' => array(
                 'riskbitmask' => RISK_CONFIG | RISK_DATALOSS,
 

@@ -64,6 +64,11 @@ class training_milestones implements \renderable {
                 $message = get_string('infonocourses', 'tool_attestoodle');
                 $this->goback($message);
             } else {
+                $context = \context_coursecat::instance($categoryid);
+                $modifallow = false;
+                if (has_capability('tool/attestoodle:managemilestones', $context)) {
+                    $modifallow = true;
+                }
                 $url = new \moodle_url(
                             '/admin/tool/attestoodle/index.php',
                             ['typepage' => 'managemilestones', 'categoryid' => $this->training->get_categoryid()]);
@@ -72,7 +77,8 @@ class training_milestones implements \renderable {
                                             'data' => $this->training->get_courses(),
                                             'input_name_prefix' => "attestoodle_activity_id_",
                                             'type' => $type, 'namemod' => $namemod,
-                                            'visibmod' => $visibmod, 'restrictmod' => $restrictmod
+                                            'visibmod' => $visibmod, 'restrictmod' => $restrictmod,
+                                            'modifallow' => $modifallow
                                           ) );
                 $this->handle_form();
             }
