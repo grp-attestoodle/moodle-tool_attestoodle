@@ -56,6 +56,8 @@ class trainings_factory extends singleton {
     /**
      * Method that instanciates one page of trainings used by Attestoodle and
      * stores them in the main array.
+     *
+     * @param int $numpage the page number searched.
      */
     public function create_trainings($numpage = 0) {
         // Must call categories_factory before find trainings.
@@ -78,7 +80,7 @@ class trainings_factory extends singleton {
     }
 
     /**
-     * Get count factory.
+     * Provides the total number of training.
      */
     public function get_matchcount() {
         return db_accessor::get_instance()->get_training_matchcount();
@@ -86,9 +88,11 @@ class trainings_factory extends singleton {
 
     /**
      * Method that instanciates the training associate with a category.
+     *
+     * @param int $categoryid the identifier of the category associated with the training.
      */
-    public function create_training_by_category($idcategory) {
-        $dbtr = db_accessor::get_instance()->get_training_by_category($idcategory);
+    public function create_training_by_category($categoryid) {
+        $dbtr = db_accessor::get_instance()->get_training_by_category($categoryid);
         if (!empty($dbtr->categoryid)) {
             $catid = $dbtr->categoryid;
             $cat = categories_factory::get_instance()->get_category($catid);

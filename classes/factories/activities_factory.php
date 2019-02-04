@@ -87,6 +87,7 @@ class activities_factory extends singleton {
         $ret = new activity($id, $idmodule, $name, $desc, $tablename, $milestone);
         $ret->set_visible($coursemodule->visible);
         $ret->set_availability($coursemodule->availability);
+        $ret->set_completion($coursemodule->completion);
         return $ret;
     }
 

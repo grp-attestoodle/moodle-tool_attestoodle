@@ -72,6 +72,9 @@ class training_milestones_update_form extends \moodleform {
                 if ($activity->visible == 0) {
                     $libelactivity = "<i class=\"fa fa-eye-slash\" aria-hidden=\"true\"></i> " . $libelactivity;
                 }
+                if ($activity->completion == 0) {
+                    $libelactivity = "<i class=\"fa fa-exclamation-triangle\" aria-hidden=\"true\"></i> " . $libelactivity;
+                }
 
                 $mform->addGroup($group, $groupname, $libelactivity, array(' '), false);
                 $mform->addGroupRule($groupname, array(
@@ -260,6 +263,7 @@ class training_milestones_update_form extends \moodleform {
                 $dataactivity->milestone = $activity->get_milestone();
                 $dataactivity->visible = $dataactivity->visible * $activity->get_visible();
                 $dataactivity->availability = $dataactivity->availability . $activity->get_availability();
+                $dataactivity->completion = $activity->get_completion();
                 if (plugin_supports('mod', $activity->get_type(), FEATURE_MOD_ARCHETYPE) != MOD_ARCHETYPE_RESOURCE) {
                     $dataactivity->ressource = 0;
                 } else {

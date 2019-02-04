@@ -15,8 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Method call by ajax, that method created Certificate PDF
- * from tmp table information.
+ * Method call by ajax, that method created Certificate PDF from tmp table information.
+ *
+ * @package    tool_attestoodle
+ * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 define('AJAX_SCRIPT', true);
 require_once(dirname(__FILE__) . '/../../../../../config.php');

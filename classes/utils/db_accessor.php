@@ -213,6 +213,7 @@ class db_accessor extends singleton {
     /**
      * Retrieves the attestoodle trainings in moodle DB, associate with a category.
      *
+     * @param int $categoryid the identifier of the category associated with the training.
      * @return \stdClass Standard Moodle DB object
      */
     public function get_training_by_category($categoryid) {
@@ -222,6 +223,8 @@ class db_accessor extends singleton {
     /**
      * Retrieves one page of attestoodle trainings in moodle DB.
      *
+     * @param int $numpage the page number searched.
+     * @param int $perpage the number of records per page.
      * @return \stdClass Standard Moodle DB object
      */
     public function get_page_trainings($numpage, $perpage) {

@@ -66,6 +66,9 @@ class activity {
     /** @var bool The availability of the activity.*/
     private $availability;
 
+    /** @var bool The completion enable of the activity.*/
+    private $completion;
+
     /**
      * Constructor of the activity class.
      *
@@ -199,6 +202,24 @@ class activity {
      */
     public function get_availability() {
         return $this->availability;
+    }
+
+    /**
+     * Getter for $completion property.
+     *
+     * @return availability The Availability of the activity
+     */
+    public function get_completion() {
+        return $this->completion;
+    }
+
+    /**
+     * Setter for $completion property.
+     *
+     * @param int $prop completion to set for the activity
+     */
+    public function set_completion($prop) {
+        $this->completion = $prop;
     }
 
     /**
