@@ -46,23 +46,11 @@ class activities_factory extends singleton {
     private $modulenames;
 
     /**
-     * @var array Associative array containing the module IDs with their milestone value
-     * in a key => value format where key = id of the module and value = milestone
-     */
-    private $milestones;
-
-    /**
      * Constructor method (protected to avoid external instanciation)
      */
     protected function __construct() {
         parent::__construct();
         $this->modulenames = array();
-
-        $this->milestones = array();
-        $dbmilestones = db_accessor::get_instance()->get_all_milestones();
-        foreach ($dbmilestones as $dbm) {
-            $this->milestones[$dbm->moduleid] = $dbm->creditedtime;
-        }
     }
 
     /**
@@ -100,9 +88,10 @@ class activities_factory extends singleton {
      */
     private function extract_milestone($moduleid) {
         $milestone = null;
+        $rec = db_accessor::get_instance()->get_milestone_by_module($moduleid);
 
-        if (array_key_exists($moduleid, $this->milestones)) {
-            $milestone = (integer)$this->milestones[$moduleid];
+        if (!empty($rec)) {
+            $milestone = (integer)$rec->creditedtime;
         }
 
         return $milestone;
@@ -152,26 +141,7 @@ class activities_factory extends singleton {
      * @param activity $activity The activity to check against
      */
     public function is_milestone($activity) {
-        return array_key_exists($activity->get_id(), $this->milestones);
-    }
-
-    /**
-     * Method that adds a milestone in the global $milestones array after
-     * it being instanciate (can be used to update a value).
-     *
-     * @param activity $activity The activity to update value for
-     */
-    public function add_milestone($activity) {
-        $this->milestones[$activity->get_id()] = $activity->get_milestone();
-    }
-
-    /**
-     * Method that removes a milestone in the global $milestones array after
-     * it being instanciate.
-     *
-     * @param activity $activity The activity to delete value for
-     */
-    public function remove_milestone($activity) {
-        unset($this->milestones[$activity->get_id()]);
+        $rec = db_accessor::get_instance()->get_milestone_by_module($moduleid);
+        return !empty($rec);
     }
 }

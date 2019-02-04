@@ -62,6 +62,16 @@ class db_accessor extends singleton {
     }
 
     /**
+     * Retrieves one milestone based on moduleID.
+     *
+     * @param int $id The module ID to search the credited time.
+     * @return \stdClass Standard Moodle DB object
+     */
+    public function get_milestone_by_module($id) {
+        $result = self::$db->get_record('tool_attestoodle_milestone', array('moduleid' => $id));
+        return $result;
+    }
+    /**
      * Method that deletes an activity in the attestoodle_milestone table.
      *
      * @param activity $activity The activity to delete in table

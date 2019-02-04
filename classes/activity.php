@@ -110,16 +110,13 @@ class activity {
             if (activities_factory::get_instance()->is_milestone($this)) {
                 // It already was one, so update.
                 $dba->update_milestone($this);
-                activities_factory::get_instance()->add_milestone($this);
             } else {
                 // It wasn't already one, so insert.
                 $dba->insert_milestone($this);
-                activities_factory::get_instance()->add_milestone($this);
             }
         } else {
             // Not a milestone anymore, delete.
             $dba->delete_milestone($this);
-            activities_factory::get_instance()->remove_milestone($this);
         }
     }
 
