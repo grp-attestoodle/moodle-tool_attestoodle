@@ -63,17 +63,26 @@ $training = trainings_factory::get_instance()->retrieve_training($categoryid);
 $nb = 0;
 $DB->delete_records('tool_attestoodle_tmp', array ('trainingid' => $trainingid));
 foreach ($training->get_learners() as $learner) {
-    $certificate = new certificate($learner, $training, new \DateTime($begindate), new \DateTime($enddate));
-    $elvinfo = $certificate->get_pdf_informations();
-    $fileinfo = $certificate->get_file_infos();
-    // Store in DataBase.
-    $object = new \stdClass();
-    $object->trainingid = $trainingid;
-    $object->fileinfo = json_encode($fileinfo);
-    $object->pdfinfo = json_encode($elvinfo);
-    $object->learnerid = $learner->get_id();
-    $DB->insert_record('tool_attestoodle_tmp', $object);
-    $nb++;
+    $template = $DB->get_record('tool_attestoodle_user_style',
+                array('userid' => $learner->get_id(), 'trainingid' => $trainingid));
+    $enablecertificate = 1;
+    if (isset($template->enablecertificate)) {
+        $enablecertificate = $template->enablecertificate;
+    }
+
+    if ($enablecertificate == 1) {
+        $certificate = new certificate($learner, $training, new \DateTime($begindate), new \DateTime($enddate));
+        $elvinfo = $certificate->get_pdf_informations();
+        $fileinfo = $certificate->get_file_infos();
+        // Store in DataBase.
+        $object = new \stdClass();
+        $object->trainingid = $trainingid;
+        $object->fileinfo = json_encode($fileinfo);
+        $object->pdfinfo = json_encode($elvinfo);
+        $object->learnerid = $learner->get_id();
+        $DB->insert_record('tool_attestoodle_tmp', $object);
+        $nb++;
+    }
 }
 
 // Display page.

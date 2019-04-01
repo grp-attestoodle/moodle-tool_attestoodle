@@ -267,6 +267,8 @@ class db_accessor extends singleton {
         $training = self::$db->get_record('tool_attestoodle_training', array('categoryid' => $categoryid));
         self::$db->delete_records('tool_attestoodle_training', array('categoryid' => $categoryid));
         self::$db->delete_records('tool_attestoodle_train_style', array('trainingid' => $training->id));
+        self::$db->delete_records('tool_attestoodle_user_style', array('trainingid' => $training->id));
+        self::$db->delete_records('tool_attestoodle_milestone', array('trainingid' => $training->id));
     }
 
     /**
@@ -507,5 +509,17 @@ class db_accessor extends singleton {
                         SET timemodified = ?
                       WHERE trainingid = ?";
         self::$db->execute($request, array(\time(), $trainingid));
+    }
+
+    /**
+     * Provides a learner's personalized attestation template.
+     *
+     * @param int $userid The learner's technical identifier.
+     * @param int $trainingid The training's technical identifier.
+     * @return \stdClass Standard Moodle DB object (all columns of the table)
+     */
+    public function get_user_template($userid, $trainingid) {
+        return self::$db->get_record('tool_attestoodle_user_style',
+                array('userid' => $userid, 'trainingid' => $trainingid));
     }
 }

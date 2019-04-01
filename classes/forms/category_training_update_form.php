@@ -96,7 +96,7 @@ class category_training_update_form extends \moodleform {
             }
 
             if (has_capability('tool/attestoodle:managetemplate', \context_system::instance())) {
-                $previewlink = '&nbsp;<a target="preview" href="' . $CFG->wwwroot .
+                $previewlink = '&nbsp;<a href="' . $CFG->wwwroot .
                     '/admin/tool/attestoodle/classes/gabarit/sitecertificate.php?templateid=-1"
                     class= "btn-create">' . get_string('createtemplate', 'tool_attestoodle').'</a>';
                 $group[] =& $mform->createElement("static", null, null, $previewlink);
@@ -135,7 +135,7 @@ class category_training_update_form extends \moodleform {
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);
 
-        if ($data['group2'] == $data['group1']) {
+        if (array_key_exists('group1', $data) && $data['group2'] == $data['group1']) {
             $errors['group2'] = get_string('error_same_criteria', 'tool_attestoodle');
         }
         return $errors;

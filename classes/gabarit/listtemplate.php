@@ -107,7 +107,9 @@ foreach ($rs as $result) {
     // Possible suppression test.
     $dellink = "";
     if (has_capability('tool/attestoodle:deletetemplate', \context_system::instance())) {
-        if ($result->name != 'Site' && !$DB->record_exists('tool_attestoodle_train_style', array('templateid' => $result->id))) {
+        if ($result->name != 'Site'
+        && !$DB->record_exists('tool_attestoodle_train_style', array('templateid' => $result->id))
+        && !$DB->record_exists('tool_attestoodle_user_style', array('templateid' => $result->id))) {
             $deleteurl = new moodle_url('/admin/tool/attestoodle/classes/gabarit/listtemplate.php',
                           ['delete' => $result->id]);
             $dellink = "<a href=" . $deleteurl . "><i class='fa fa-trash'></i></a>&nbsp;&nbsp;";

@@ -77,8 +77,16 @@ foreach ($rs as $result) {
         $status = 2;
     }
 
+    $template = $DB->get_record('tool_attestoodle_user_style',
+                array('userid' => $pdfinfo->learnerid, 'trainingid' => $trainingid));
     $pdf = new attestation_pdf();
-    $pdf->set_categoryid($categoryid);
+    if (!isset($template->id)) {
+        $pdf->set_categoryid($categoryid);
+    } else {
+        $pdf->set_idtemplate($template->templateid);
+        $pdf->set_grpcriteria1($template->grpcriteria1);
+        $pdf->set_grpcriteria2($template->grpcriteria2);
+    }
     $pdf->set_infos($pdfinfo);
     $pdfgen = $pdf->generate_pdf_object();
     $pdfstring = $pdfgen->Output('', 'S');
