@@ -101,22 +101,23 @@ class activity {
     /**
      * Method that stores the milestone information into the database (insert,
      * update or delete in attestoodle_milestone table).
+     * @param int $trainingid The training ID containing the activity
      */
-    public function persist() {
+    public function persist($trainingid) {
         $dba = db_accessor::get_instance();
 
         if ($this->is_milestone()) {
             // The activity is a milestone.
-            if (activities_factory::get_instance()->is_milestone($this)) {
+            if (activities_factory::get_instance()->is_milestone($this, $trainingid)) {
                 // It already was one, so update.
-                $dba->update_milestone($this);
+                $dba->update_milestone($this, $trainingid);
             } else {
                 // It wasn't already one, so insert.
-                $dba->insert_milestone($this);
+                $dba->insert_milestone($this, $trainingid);
             }
         } else {
             // Not a milestone anymore, delete.
-            $dba->delete_milestone($this);
+            $dba->delete_milestone($this, $trainingid);
         }
     }
 

@@ -48,12 +48,16 @@ class training_milestones_update_form extends \moodleform {
         $mform = $this->_form;
         $this->add_filter();
 
+        $editmode = optional_param('edition', 0, PARAM_INT);
+        if ($editmode != 0) {
+            $this->_customdata['modifallow'] = true;
+        }
         $mform->addElement('hidden', 'edition');
         $mform->setType('edition', PARAM_INT);
         if ($this->_customdata['modifallow']) {
             $mform->setDefault('edition', 1);
         } else {
-            $mform->setDefault('edition', 0);
+            $mform->setDefault('edition', $editmode);
         }
 
         $suffix = get_string("training_milestones_form_input_suffix", "tool_attestoodle");
@@ -286,7 +290,14 @@ class training_milestones_update_form extends \moodleform {
                     $dataactivity->ressource = 1;
                 }
             }
-            $datacourse->activities = $activities;
+
+            $reste = array();
+            foreach ($activities as $menage) {
+                if (isset($menage->name)) {
+                    $reste[] = $menage;
+                }
+            }
+            $datacourse->activities = $reste;
             $ret[] = $datacourse;
         }
         return $ret;

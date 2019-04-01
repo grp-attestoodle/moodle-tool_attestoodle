@@ -150,8 +150,8 @@ function tool_attestoodle_myprofile_navigation(\core_user\output\myprofile\tree 
     $context = context_user::instance($user->id);
     $courseid = empty($course) ? 0 : $course->id;
     $viewlinkattestoodle = has_capability('tool/attestoodle:managetraining', $context);
-    $viewlinkattestoodle = viewlinkattestoodle || has_capability('tool/attestoodle:displaytrainings', $context);
-    $viewlinkattestoodle = viewlinkattestoodle || has_capability('tool/attestoodle:viewtemplate', $context);
+    $viewlinkattestoodle = $viewlinkattestoodle || has_capability('tool/attestoodle:displaytrainings', $context);
+    $viewlinkattestoodle = $viewlinkattestoodle || has_capability('tool/attestoodle:viewtemplate', $context);
 
     if ($USER->id == $user->id && has_capability('tool/attestoodle:viewtraining', $context)) {
         $category = new core_user\output\myprofile\category('attestoodle', 'Attestoodle', null);
