@@ -214,7 +214,10 @@ class db_accessor extends singleton {
      */
     public function get_module_table_name($id) {
         $result = self::$db->get_record('modules', array('id' => $id), "name");
-        return $result->name;
+        if ($result) {
+            return $result->name;
+        }
+        return;
     }
 
     /**

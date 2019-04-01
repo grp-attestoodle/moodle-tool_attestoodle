@@ -353,7 +353,7 @@ class training_management implements \renderable {
                                 $milestonedelete->creditedtime);
         }
         $ret .= \html_writer::table($table);
-        $deletelink .= \html_writer::link(
+        $deletelink = \html_writer::link(
                     new \moodle_url(
                             '/admin/tool/attestoodle/index.php',
                             array(
@@ -389,7 +389,7 @@ class training_management implements \renderable {
         }
         $ret .= \html_writer::table($table);
 
-        $deletelink .= \html_writer::link(
+        $deletelink = \html_writer::link(
                     new \moodle_url(
                             '/admin/tool/attestoodle/index.php',
                             array(
