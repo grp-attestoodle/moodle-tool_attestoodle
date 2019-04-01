@@ -180,5 +180,27 @@ function xmldb_tool_attestoodle_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2019021911, 'tool', 'attestoodle');
     }
 
+    // Create table learner - template.
+    if ($oldversion < 2019030825) {
+        $table = new xmldb_table('tool_attestoodle_user_style');
+        // Adding fields to table.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        $table->add_field('trainingid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        $table->add_field('templateid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        $table->add_field('grpcriteria1', XMLDB_TYPE_CHAR, '35', null, null, null, null);
+        $table->add_field('grpcriteria2', XMLDB_TYPE_CHAR, '35', null, null, null, null);
+        $table->add_field('enablecertificate', XMLDB_TYPE_INTEGER, '1', null, null, null, null);
+        $table->add_field('withdateformat', XMLDB_TYPE_CHAR, '127', null, null, null, null);
+        // Adding keys to table.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+        // Create table.
+        if ($dbman->table_exists($table)) {
+            $dbman->drop_table($table);
+        }
+        $dbman->create_table($table);
+        upgrade_plugin_savepoint(true, 2019030825, 'tool', 'attestoodle');
+    }
+
     return true;
 }

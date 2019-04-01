@@ -154,6 +154,7 @@ class certificate {
 
         $certificateinfos = new \stdClass();
         $certificateinfos->learnername = $this->learner->get_fullname();
+        $certificateinfos->learnerid = $this->learner->get_id();
         $certificateinfos->trainingname = $trainingname;
         $certificateinfos->totalminutes = $totalminutes;
         $certificateinfos->period = $period;
@@ -259,9 +260,17 @@ class certificate {
                 $status = 2;
             }
 
-            $doc = new attestation_pdf();
-            $doc->set_categoryid($this->training->get_categoryid());
+            $template = db_accessor::get_instance()->get_user_template(
+                $this->learner->get_id(), $this->training->get_id());
 
+            $doc = new attestation_pdf();
+            if (!isset($template->id)) {
+                $doc->set_categoryid($this->training->get_categoryid());
+            } else {
+                $doc->set_idtemplate($template->templateid);
+                $doc->set_grpcriteria1($template->grpcriteria1);
+                $doc->set_grpcriteria2($template->grpcriteria2);
+            }
             $doc->set_infos($this->get_pdf_informations());
             $pdf = $doc->generate_pdf_object();
 

@@ -253,6 +253,11 @@ $string['milestonenews'] = 'List of training courses that have received new acti
 $string['nbnewactivity'] = 'Number of new activity';
 $string['btn_deletemilestonerr'] = 'Remove milestones in error';
 $string['btn_deletenotification'] = 'Delete the notification';
+$string['disablecertif'] = 'Exclude';
+$string['disablecertiflib'] = ' (No certificate will be generated for this learner)';
+$string['customizecertif'] = 'Custom edition';
+$string['customizecertiflib'] = ' Customize the attestation of this learner';
+$string['showcompletiondate'] = 'View the completion date';
 
 // Url help (if they not exist no help icon was display).
 $string['UrlHlpTo_training_management'] = 'https://github.com/grp-attestoodle/moodle-tool_attestoodle/wiki/training_parameters';
