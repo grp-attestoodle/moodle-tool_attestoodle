@@ -34,6 +34,8 @@ use tool_attestoodle\factories\trainings_factory;
 use tool_attestoodle\certificate;
 use tool_attestoodle\utils\logger;
 use tool_attestoodle\forms\period_form;
+use tool_attestoodle\forms\learner_certificate_form;
+use tool_attestoodle\utils\db_accessor;
 /**
  * Display learner's information of a training.
  * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
@@ -42,6 +44,8 @@ use tool_attestoodle\forms\period_form;
 class learner_details implements \renderable {
     /** @var period_form The form used to select period */
     private $form;
+    /** @var learner_certificate_form The form used to customize certificate */
+    private $form2;
 
     /** @var integer Id of the learner being displayed */
     public $learnerid;
@@ -73,6 +77,7 @@ class learner_details implements \renderable {
      * @param integer $categorylnk Id of the category associate with learners (nav bar)
      */
     public function __construct($learnerid, $begindate, $enddate, $categorylnk) {
+        global $DB;
         $this->learnerid = $learnerid;
         $this->learner = learners_factory::get_instance()->retrieve_learner($learnerid);
         $this->categorylnk = $categorylnk;
@@ -105,6 +110,97 @@ class learner_details implements \renderable {
         $etime = \DateTime::createFromFormat("Y-m-d", $this->enddate);
         $this->form->set_data(array ('input_begin_date' => $stime->getTimestamp(),
                     'input_end_date' => $etime->getTimestamp()));
+
+        $training = trainings_factory::get_instance()->retrieve_training($this->categorylnk);
+        $trainingid = $training->get_id();
+        $idtemplate = 0;
+        if ($DB->record_exists('tool_attestoodle_train_style', ['trainingid' => $trainingid ])) {
+            $associate = $DB->get_record('tool_attestoodle_train_style', array('trainingid' => $trainingid));
+            $idtemplate = $associate->templateid;
+            $grp1 = $associate->grpcriteria1;
+            if (empty($grp1)) {
+                $grp1 = 'coursename';
+            }
+            $grp2 = $associate->grpcriteria2;
+            if (empty($grp2)) {
+                $grp2 = '';
+            }
+        }
+        $template = db_accessor::get_instance()->get_user_template($this->learnerid, $trainingid);
+
+        $displaydate = false;
+        $custom = false;
+        $disablecertif = false;
+        if (isset($template->id)) {
+            $grp1 = $template->grpcriteria1;
+            $grp2 = $template->grpcriteria2;
+            if (isset($template->withdateformat)) {
+                $displaydate = true;
+            }
+            $custom = true;
+            if ($template->enablecertificate == 0) {
+                $disablecertif = true;
+            }
+            $idtemplate = $template->templateid;
+        }
+
+        $this->form2 = new learner_certificate_form(
+                    new \moodle_url('/admin/tool/attestoodle/index.php',
+                        array('typepage' => 'learnerdetails', 'categorylnk' => $this->categorylnk, 'learner' => $this->learnerid)),
+                        array('userid' => $this->learnerid,
+                        'categoryid' => $categorylnk,
+                        'idtraining' => $trainingid,
+                        'idtemplate' => $idtemplate), 'get' );
+
+        $this->form2->set_data(array ('group1' => $grp1, 'group2' => $grp2,
+                'displaydate' => $displaydate, 'custom' => $custom,
+                'disablecertif' => $disablecertif));
+        if ($this->form2->is_submitted()) {
+            $this->handle_form2_submitted();
+        }
+    }
+
+    /**
+     * Handles the form2 submission, customize treaner's template.
+     */
+    private function handle_form2_submitted() {
+        global $DB;
+        if ($this->form2->is_validated()) {
+            $datafromform = $this->form2->get_submitted_data();
+            if (!$datafromform->custom) {
+                $DB->delete_records('tool_attestoodle_user_style',
+                    array('userid' => $this->learnerid, 'trainingid' => $datafromform->idtraining));
+            } else {
+                $dataobject = new \stdClass();
+                $dataobject->userid = $this->learnerid;
+                $dataobject->trainingid = $datafromform->idtraining;
+                $dataobject->templateid = $datafromform->template;
+                $dataobject->grpcriteria1 = $datafromform->group1;
+                $dataobject->grpcriteria2 = $datafromform->group2;
+                if (empty($datafromform->group2)) {
+                    $dataobject->grpcriteria2 = null;
+                }
+                if ($datafromform->disablecertif) {
+                    $dataobject->enablecertificate = 0;
+                } else {
+                    $dataobject->enablecertificate = 1;
+                }
+                if (isset($datafromform->displaydate) && $datafromform->displaydate) {
+                    $dataobject->withdateformat = get_string('dateformat', 'tool_attestoodle');
+                    $dataobject->grpcriteria2 = null;
+                } else {
+                    $dataobject->withdateformat = null;
+                }
+                $rec = $DB->get_record('tool_attestoodle_user_style', array('userid' => $this->learnerid,
+                                                                    'trainingid' => $datafromform->idtraining));
+                if (isset($rec->id)) {
+                    $dataobject->id = $rec->id;
+                    $DB->update_record('tool_attestoodle_user_style', $dataobject);
+                } else {
+                    $DB->insert_record('tool_attestoodle_user_style', $dataobject);
+                }
+            }
+        }
     }
 
     /**
@@ -231,6 +327,7 @@ class learner_details implements \renderable {
             // Render the form.
             $output .= $this->form->render();
             $output .= \html_writer::end_div();
+            $output .= $this->form2->render();
         }
 
         return $output;

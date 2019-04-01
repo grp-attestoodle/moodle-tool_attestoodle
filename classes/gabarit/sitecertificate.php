@@ -220,6 +220,12 @@ if ($fromform = $mform->get_data()) {
     }
 }
 echo $OUTPUT->header();
+if (get_string_manager()->string_exists('UrlHlpTo_sitecertificate', 'tool_attestoodle')) {
+    $urlhlp = get_string('UrlHlpTo_sitecertificate', 'tool_attestoodle');
+    echo "<a href='" . $urlhlp . "' target='aide' title='" . get_string('help') .
+         "'><i class='fa fa-question-circle-o' aria-hidden='true'></i></a>";
+}
+
 $sql = "select type,data from {tool_attestoodle_tpl_detail} where templateid = " . $idtemplate;
 $rs = $DB->get_recordset_sql ( $sql, array () );
 $valdefault = array();

@@ -58,10 +58,12 @@ $renderer = $PAGE->get_renderer('tool_attestoodle');
 // Always create trainings.
 $PAGE->navbar->ignore_active();
 $navlevel1 = get_string('navlevel1', 'tool_attestoodle');
-$PAGE->navbar->add($navlevel1, new moodle_url('/admin/tool/attestoodle/index.php',
-                                                array()));
+$PAGE->navbar->add($navlevel1, new moodle_url('/admin/tool/attestoodle/index.php', array()));
+$iconhelp = '';
+
 switch($page) {
     case 'trainingmanagement':
+        $iconhelp = 'UrlHlpTo_training_management';
         $categoryid = required_param('categoryid', PARAM_INT);
         trainings_factory::get_instance()->create_training_by_category($categoryid);
 
@@ -96,6 +98,7 @@ switch($page) {
         $renderable = new renderable\training_management($categoryid);
         break;
     case 'managemilestones':
+        $iconhelp = 'UrlHlpTo_manage_milestones';
         $categoryid = required_param('categoryid', PARAM_INT);
         trainings_factory::get_instance()->create_training_for_managemilestone($categoryid);
 
@@ -119,6 +122,7 @@ switch($page) {
 
         break;
     case 'learners':
+        $iconhelp = 'UrlHlpTo_global_report';
         // Required params.
         $categoryid = required_param('categoryid', PARAM_INT);
         trainings_factory::get_instance()->create_training_by_category($categoryid);
@@ -183,6 +187,7 @@ switch($page) {
 
         break;
     case 'learnerdetails':
+        $iconhelp = 'UrlHlpTo_detailled_report';
         // Required param.
         $learnerid = required_param('learner', PARAM_INT);
         $categorylnk = required_param('categorylnk', PARAM_INT);
@@ -191,8 +196,8 @@ switch($page) {
         // Optional params.
         $begindate = optional_param('begindate', null, PARAM_ALPHANUMEXT);
         $enddate = optional_param('enddate', null, PARAM_ALPHANUMEXT);
-        $start = optional_param('input_begin_date', null, PARAM_INT);
-        $end = optional_param('input_end_date', null, PARAM_INT);
+        $start = optional_param_array('input_begin_date', null, PARAM_INT);
+        $end = optional_param_array('input_end_date', null, PARAM_INT);
 
         if (isset($start)) {
             $begindate = "" . $start['year'] . "-" . $start['month'] . "-" . $start['day'];
@@ -242,6 +247,7 @@ switch($page) {
         break;
     case 'trainingslist':
     default:
+        $iconhelp = 'UrlHlpTo_trainings_list';
         $page = optional_param('page', 0, PARAM_INT);
         trainings_factory::get_instance()->create_trainings($page);
         $PAGE->set_url(new moodle_url($toolpath . '/index.php'));
@@ -256,7 +262,11 @@ switch($page) {
 }
 
 echo $OUTPUT->header();
-
+if (get_string_manager()->string_exists($iconhelp, 'tool_attestoodle')) {
+    $urlhlp = get_string($iconhelp, 'tool_attestoodle');
+    echo "<a href='" . $urlhlp . "' target='aide' title='" . get_string('help') .
+         "'><i class='fa fa-question-circle-o' aria-hidden='true'></i></a>";
+}
 // ... to be callable by the output->render method bellow.
 // Note: the method automagically call the method "render_[renderable_class]"...
 // ...defined in the renderer object (here $output).

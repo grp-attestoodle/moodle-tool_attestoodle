@@ -129,11 +129,12 @@ class activities_factory extends singleton {
 
             $moduleid = $coursemodule->module;
             $tablename = $this->get_module_table_name($moduleid);
+            if ($tablename) {
+                $instanceid = $coursemodule->instance;
+                $coursemodulesinfos = db_accessor::get_instance()->get_course_modules_infos($instanceid, $tablename);
 
-            $instanceid = $coursemodule->instance;
-            $coursemodulesinfos = db_accessor::get_instance()->get_course_modules_infos($instanceid, $tablename);
-
-            $activities[] = $this->create($activityid, $coursemodulesinfos, $tablename, $coursemodule, $trainingid);
+                $activities[] = $this->create($activityid, $coursemodulesinfos, $tablename, $coursemodule, $trainingid);
+            }
         }
         return $activities;
     }

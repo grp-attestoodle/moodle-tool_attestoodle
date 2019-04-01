@@ -203,7 +203,7 @@ class training_management implements \renderable {
                     if (empty($datafromform->group2)) {
                         $record->grpcriteria2 = null;
                     }
-                    \core\notification::info(get_string('updatetraitemplate', 'tool_attestoodle'));
+                    \core\notification::info(get_string('updatetraintemplate', 'tool_attestoodle'));
                     $DB->update_record('tool_attestoodle_train_style', $record);
                 }
             }
@@ -299,15 +299,19 @@ class training_management implements \renderable {
                 $training = trainings_factory::get_instance()->retrieve_training($this->category->get_id());
                 $tempstotal = db_accessor::get_instance()->is_milestone_set($training->get_id());
                 if (isset($tempstotal)) {
-                    $output .= "<br/> Temps total de la formation : " . parse_minutes_to_hours($tempstotal) . "<br/>";
+                    $output .= "<br/> ". get_string('totaltimetraining', 'tool_attestoodle') .
+                        " " . parse_minutes_to_hours($tempstotal) . "<br/>";
 
-                    $jalonssuppr = db_accessor::get_instance()->get_milestone_off($training->get_id());
-                    $newsact = db_accessor::get_instance()->get_new_activities($training->get_id());
-                    if (count($jalonssuppr) > 0) {
-                        $output .= "<br/>" . $this->display_deleted_milestone($jalonssuppr);
-                    }
-                    if (count($newsact) > 0) {
-                        $output .= "<br/>" . $this->display_new_activity($newsact);
+                    $context = \context_coursecat::instance($this->categoryid);
+                    if (has_capability('tool/attestoodle:managetraining', $context)) {
+                        $jalonssuppr = db_accessor::get_instance()->get_milestone_off($training->get_id());
+                        $newsact = db_accessor::get_instance()->get_new_activities($training->get_id());
+                        if (count($jalonssuppr) > 0) {
+                            $output .= "<br/>" . $this->display_deleted_milestone($jalonssuppr);
+                        }
+                        if (count($newsact) > 0) {
+                            $output .= "<br/>" . $this->display_new_activity($newsact);
+                        }
                     }
                     $output .= "<br /> ";
                     // Link to the milestones management of the training.
@@ -323,7 +327,7 @@ class training_management implements \renderable {
                     $attributes = array('class' => 'attestoodle-button');
                     $output .= \html_writer::link($url, $label, $attributes);
                 } else {
-                    $output .= "<br /> Aucun jalon définit ";
+                    $output .= "<br /> " . get_string('nomilestone', 'tool_attestoodle') . "&nbsp;";
                     $output .= \html_writer::link($urlmilestones, $labelmilestones, $attributesmilestones);
                     $output .= "<br /> ";
                 }
@@ -353,7 +357,7 @@ class training_management implements \renderable {
                                 $milestonedelete->creditedtime);
         }
         $ret .= \html_writer::table($table);
-        $deletelink .= \html_writer::link(
+        $deletelink = \html_writer::link(
                     new \moodle_url(
                             '/admin/tool/attestoodle/index.php',
                             array(
@@ -389,7 +393,7 @@ class training_management implements \renderable {
         }
         $ret .= \html_writer::table($table);
 
-        $deletelink .= \html_writer::link(
+        $deletelink = \html_writer::link(
                     new \moodle_url(
                             '/admin/tool/attestoodle/index.php',
                             array(

@@ -75,6 +75,11 @@ if ($delete) {
 
 // Data preparation.
 echo $OUTPUT->header();
+if (get_string_manager()->string_exists('UrlHlpTo_listtemplate', 'tool_attestoodle')) {
+    $urlhlp = get_string('UrlHlpTo_listtemplate', 'tool_attestoodle');
+    echo "<a href='" . $urlhlp . "' target='aide' title='" . get_string('help') .
+         "'><i class='fa fa-question-circle-o' aria-hidden='true'></i></a>";
+}
 
 $table = new flexible_table('admin_tool_lst');
 $tablecolumns = array('idnom', 'idactions');
@@ -102,7 +107,9 @@ foreach ($rs as $result) {
     // Possible suppression test.
     $dellink = "";
     if (has_capability('tool/attestoodle:deletetemplate', \context_system::instance())) {
-        if ($result->name != 'Site' && !$DB->record_exists('tool_attestoodle_train_style', array('templateid' => $result->id))) {
+        if ($result->name != 'Site'
+        && !$DB->record_exists('tool_attestoodle_train_style', array('templateid' => $result->id))
+        && !$DB->record_exists('tool_attestoodle_user_style', array('templateid' => $result->id))) {
             $deleteurl = new moodle_url('/admin/tool/attestoodle/classes/gabarit/listtemplate.php',
                           ['delete' => $result->id]);
             $dellink = "<a href=" . $deleteurl . "><i class='fa fa-trash'></i></a>&nbsp;&nbsp;";

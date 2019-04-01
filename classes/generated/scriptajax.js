@@ -25,7 +25,7 @@ function ajax_certif_generate(e, args) {
                 displayBar(data.nb);
             },
             failure: function (o, response) {
-                alert('Not OK!');
+                alert(response.toSource());
             }
         }
     };

@@ -56,7 +56,6 @@ class trainings_list implements renderable {
      */
     public function get_header() {
         $output = "";
-
         return $output;
     }
 
