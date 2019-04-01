@@ -26,8 +26,12 @@
 require_once(dirname(__FILE__) . '/../../../../../config.php');
 require_once($CFG->libdir.'/tablelib.php');
 
+define('DEFAULT_PAGE_SIZE', 10);
+
 $delete = optional_param('delete', 0, PARAM_INT);
 $confirm = optional_param('confirm', '', PARAM_ALPHANUM);
+$page    = optional_param('page', 0, PARAM_INT); // Which page to show.
+$perpage = optional_param('perpage', DEFAULT_PAGE_SIZE, PARAM_INT); // How many per page.
 
 $context = context_system::instance();
 
@@ -43,6 +47,10 @@ $PAGE->set_title(get_string('listtemplate_title', 'tool_attestoodle'));
 $title = get_string('pluginname', 'tool_attestoodle') . " - " .
             get_string('listtemplate_title', 'tool_attestoodle');
 $PAGE->set_heading($title);
+
+$baseurl = new moodle_url('/admin/tool/attestoodle/classes/gabarit/listtemplate.php', array(
+        'page' => $page,
+        'perpage' => $perpage));
 
 if ($delete) {
     if ($confirm != md5($delete)) { // Must be confirm.
@@ -74,7 +82,7 @@ $tableheaders = array('Nom', 'Actions');
 
 $table->define_columns($tablecolumns);
 $table->define_headers($tableheaders);
-$table->define_baseurl($PAGE->url);
+$table->define_baseurl($baseurl->out());
 $table->sortable(false);
 $table->set_attribute('width', '80%');
 $table->set_attribute('class', 'generaltable');
@@ -82,8 +90,12 @@ $table->set_attribute('class', 'generaltable');
 $table->column_style('idactions', 'width', '15%');
 
 $table->setup();
+$matchcount = $DB->count_records_sql("SELECT COUNT(id) from {tool_attestoodle_template}");
 
-$rs = $DB->get_records('tool_attestoodle_template', null, null, 'id, name');
+$table->pagesize($perpage, $matchcount);
+
+$rs = $DB->get_recordset_sql('select id, name from {tool_attestoodle_template} order by name', null,
+    $table->get_page_start(), $table->get_page_size());
 
 $rows = array();
 foreach ($rs as $result) {
@@ -125,4 +137,5 @@ if (has_capability('tool/attestoodle:managetemplate', \context_system::instance(
                           ['templateid' => -1]);
     echo $OUTPUT->single_button($addurl, get_string('add'), 'post');
 }
+
 echo $OUTPUT->footer();

@@ -64,15 +64,21 @@ class training_milestones implements \renderable {
                 $message = get_string('infonocourses', 'tool_attestoodle');
                 $this->goback($message);
             } else {
+                $context = \context_coursecat::instance($categoryid);
+                $modifallow = false;
+                if (has_capability('tool/attestoodle:managemilestones', $context)) {
+                    $modifallow = true;
+                }
                 $url = new \moodle_url(
                             '/admin/tool/attestoodle/index.php',
-                            ['page' => 'managemilestones', 'categoryid' => $this->training->get_categoryid()]);
+                            ['typepage' => 'managemilestones', 'categoryid' => $this->training->get_categoryid()]);
                 $this->form = new training_milestones_update_form($url,
                                     array(
                                             'data' => $this->training->get_courses(),
                                             'input_name_prefix' => "attestoodle_activity_id_",
                                             'type' => $type, 'namemod' => $namemod,
-                                            'visibmod' => $visibmod, 'restrictmod' => $restrictmod
+                                            'visibmod' => $visibmod, 'restrictmod' => $restrictmod,
+                                            'modifallow' => $modifallow
                                           ) );
                 $this->handle_form();
             }
@@ -112,7 +118,7 @@ class training_milestones implements \renderable {
     private function goback($message) {
         $redirecturl = new \moodle_url(
                 '/admin/tool/attestoodle/index.php',
-                array('page' => 'trainingmanagement', 'categoryid' => $this->training->get_categoryid())
+                array('typepage' => 'trainingmanagement', 'categoryid' => $this->training->get_categoryid())
         );
         redirect($redirecturl, $message, null, \core\output\notification::NOTIFY_INFO);
     }
@@ -133,7 +139,7 @@ class training_milestones implements \renderable {
             if (isset($datafromform->filter)) {
                 $url = new \moodle_url('/admin/tool/attestoodle/index.php',
                 [
-                'page' => 'managemilestones',
+                'typepage' => 'managemilestones',
                 'categoryid' => $this->training->get_categoryid(),
                 'type' => $datafromform->typemod,
                 'namemod' => $datafromform->namemod,
@@ -226,7 +232,7 @@ class training_milestones implements \renderable {
             $this->form = new training_milestones_update_form(
                     new \moodle_url(
                             '/admin/tool/attestoodle/index.php',
-                            ['page' => 'managemilestones', 'categoryid' => $this->training->get_categoryid()]
+                            ['typepage' => 'managemilestones', 'categoryid' => $this->training->get_categoryid()]
                     ),
                     array(
                         'data' => $this->training->get_courses(),
@@ -273,7 +279,7 @@ class training_milestones implements \renderable {
 
                     try {
                         // Try to persist activity in DB.
-                        $activity->persist();
+                        $activity->persist($this->training->get_id());
 
                         // No Exception return, status to updated.
                         $returnobject->status = 1;

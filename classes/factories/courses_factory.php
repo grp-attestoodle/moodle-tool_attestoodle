@@ -44,25 +44,28 @@ class courses_factory extends singleton {
      * to the array then return it
      *
      * @param stdClass $dbcourse Standard object from the Moodle request
+     * @param boolean $withlearner indicates whether or not to load students
+     * @param int $trainingid The training ID whose course is being searched
      * @return course The course newly created
      */
-    private function create($dbcourse) {
+    private function create($dbcourse, $withlearner, $trainingid) {
         $id = $dbcourse->id;
         $name = $dbcourse->fullname;
 
         $coursetoadd = new course($id, $name);
 
         // Retrieve the activities of the course being created.
-        $activities = activities_factory::get_instance()->retrieve_activities_by_course($id);
+        $activities = activities_factory::get_instance()->retrieve_activities_by_course($id, $trainingid);
 
         foreach ($activities as $activity) {
             $coursetoadd->add_activity($activity);
         }
 
-        // Retrieve the learners registered to the course being created.
-        $learners = learners_factory::get_instance()->retrieve_learners_by_course($id);
-        $coursetoadd->set_learners($learners);
-
+        if ($withlearner) {
+            // Retrieve the learners registered to the course being created.
+            $learners = learners_factory::get_instance()->retrieve_learners_by_course($id);
+            $coursetoadd->set_learners($learners);
+        }
         return $coursetoadd;
     }
 
@@ -70,13 +73,30 @@ class courses_factory extends singleton {
      * Function that retrieves the courses corresponding to a specific category
      *
      * @param integer $id Id of the category to search courses for
+     * @param boolean $withlearner indicates whether or not to load students
+     * @param int $trainingid The training ID whose course is being searched
      * @return course[] Array containing the courses objects
      */
-    public function retrieve_courses_childof_category($id) {
+    public function retrieve_courses_childof_category($id, $withlearner = true, $trainingid = 0) {
         $dbcourses = db_accessor::get_instance()->get_courses_childof_category($id);
+
         $courses = array();
         foreach ($dbcourses as $course) {
-            $courses[] = $this->create($course);
+            $courses[] = $this->create($course, $withlearner, $trainingid);
+        }
+        return $courses;
+    }
+    /**
+     * Function that retrieves the courses corresponding to a specific training
+     *
+     * @param integer $trainingid Id of the training to search courses for
+     * @return course[] Array containing the courses objects
+     */
+    public function retrieve_courses_of_training($trainingid) {
+        $dbcourses = db_accessor::get_instance()->get_courses_of_training($trainingid);
+        $courses = array();
+        foreach ($dbcourses as $course) {
+            $courses[] = $this->create($course, true, $trainingid);
         }
         return $courses;
     }

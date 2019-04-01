@@ -98,7 +98,7 @@ class learner_details implements \renderable {
 
         $this->form = new period_form(
                     new \moodle_url('/admin/tool/attestoodle/index.php',
-                        array('page' => 'learnerdetails', 'categorylnk' => $this->categorylnk, 'learner' => $this->learnerid)),
+                        array('typepage' => 'learnerdetails', 'categorylnk' => $this->categorylnk, 'learner' => $this->learnerid)),
                         array(), 'get' );
 
         $stime = \DateTime::createFromFormat("Y-m-d", $this->begindate);
@@ -249,7 +249,7 @@ class learner_details implements \renderable {
         $output .= \html_writer::link(
                 new \moodle_url(
                         '/admin/tool/attestoodle/index.php', array(
-                                'page' => 'learners',
+                                'typepage' => 'learners',
                                 'categoryid' => $training->get_categoryid(),
                                 'begindate' => $this->begindate,
                                 'enddate' => $this->enddate,
@@ -344,43 +344,45 @@ class learner_details implements \renderable {
         $linktext = get_string('learner_details_generate_certificate_link', 'tool_attestoodle');
         $certificate = new certificate($this->learner, $training, $this->actualbegindate, $this->actualenddate);
 
-        $output .= \html_writer::start_div('clearfix');
+        $context = \context_coursecat::instance($this->categorylnk);
+        if (has_capability('tool/attestoodle:downloadcertificate', $context)) {
+            $output .= \html_writer::start_div('clearfix');
 
-        // If the file already exists, add a link to it.
-        if ($certificate->file_exists()) {
-            $linktext = get_string('learner_details_regenerate_certificate_link', 'tool_attestoodle');
+            // If the file already exists, add a link to it.
+            if ($certificate->file_exists()) {
+                $linktext = get_string('learner_details_regenerate_certificate_link', 'tool_attestoodle');
 
-            $output .= "<a href='" . $certificate->get_existing_file_url() . "' target='_blank'>" .
+                $output .= "<a href='" . $certificate->get_existing_file_url() . "' target='_blank'>" .
                     get_string('learner_details_download_certificate_link', 'tool_attestoodle') .
                     "</a>";
-            $output .= "&nbsp;ou&nbsp;";
-        }
+                $output .= "&nbsp;ou&nbsp;";
+            }
 
-        // Instanciate the "Generate certificate" link with specified filters.
-        $dlcertifoptions = array(
-                'page' => 'learnerdetails',
+            // Instanciate the "Generate certificate" link with specified filters.
+            $dlcertifoptions = array(
+                'typepage' => 'learnerdetails',
                 'action' => 'generatecertificate',
                 'categoryid' => $training->get_categoryid(),
                 'learner' => $this->learnerid,
                 'categorylnk' => $this->categorylnk
-        );
-        if ($this->actualbegindate) {
-            $dlcertifoptions['begindate'] = $this->actualbegindate->format('Y-m-d');
-        }
-        if ($this->actualenddate) {
-            $dlcertifoptions['enddate'] = $this->actualenddate->format('Y-m-d');
-        }
-        // Print the "Generate certificate" link.
-        $output .= \html_writer::link(
+            );
+            if ($this->actualbegindate) {
+                $dlcertifoptions['begindate'] = $this->actualbegindate->format('Y-m-d');
+            }
+            if ($this->actualenddate) {
+                $dlcertifoptions['enddate'] = $this->actualenddate->format('Y-m-d');
+            }
+            // Print the "Generate certificate" link.
+            $output .= \html_writer::link(
                 new \moodle_url(
                         '/admin/tool/attestoodle/index.php',
                         $dlcertifoptions
                 ),
                 $linktext,
                 array('class' => 'attestoodle-link')
-        );
-        $output .= \html_writer::end_div();
-
+            );
+            $output .= \html_writer::end_div();
+        }
         return $output;
     }
 }

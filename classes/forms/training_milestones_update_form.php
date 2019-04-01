@@ -47,6 +47,19 @@ class training_milestones_update_form extends \moodleform {
 
         $mform = $this->_form;
         $this->add_filter();
+
+        $editmode = optional_param('edition', 0, PARAM_INT);
+        if ($editmode != 0) {
+            $this->_customdata['modifallow'] = true;
+        }
+        $mform->addElement('hidden', 'edition');
+        $mform->setType('edition', PARAM_INT);
+        if ($this->_customdata['modifallow']) {
+            $mform->setDefault('edition', 1);
+        } else {
+            $mform->setDefault('edition', $editmode);
+        }
+
         $suffix = get_string("training_milestones_form_input_suffix", "tool_attestoodle");
         foreach ($elements as $course) {
             $totact = count($course->activities);
@@ -63,6 +76,8 @@ class training_milestones_update_form extends \moodleform {
                 $group[] =& $mform->createElement("text", $activity->name, null, array("size" => 5)); // Max 5 char.
                 $mform->setType($activity->name, PARAM_ALPHANUM); // Parsing the value in INT after submit.
                 $mform->setDefault($activity->name, $activity->milestone); // Set default value to the current milestone value.
+                $mform->disabledIf($activity->name, 'edition', 'eq', 0);
+
                 $group[] =& $mform->createElement("static", null, null, "<span>{$suffix}</span>");
                 $libelactivity = "<a href='{$CFG->wwwroot}/course/modedit.php?update={$activity->id}'>"
                     . "{$activity->label} ({$activity->type})</a>";
@@ -71,6 +86,9 @@ class training_milestones_update_form extends \moodleform {
                 }
                 if ($activity->visible == 0) {
                     $libelactivity = "<i class=\"fa fa-eye-slash\" aria-hidden=\"true\"></i> " . $libelactivity;
+                }
+                if ($activity->completion == 0) {
+                    $libelactivity = "<i class=\"fa fa-exclamation-triangle\" aria-hidden=\"true\"></i> " . $libelactivity;
                 }
 
                 $mform->addGroup($group, $groupname, $libelactivity, array(' '), false);
@@ -81,7 +99,9 @@ class training_milestones_update_form extends \moodleform {
                     ));
             }
         }
-        $this->add_action_buttons();
+        if ($this->_customdata['modifallow']) {
+            $this->add_action_buttons();
+        }
     }
 
     /**
@@ -150,6 +170,9 @@ class training_milestones_update_form extends \moodleform {
 
         foreach ($activities as $activity) {
             $pass = $this->filtertype($activity, $filtertype, $lib);
+            if (!$this->_customdata['modifallow'] && $activity->milestone == 0) {
+                $pass = false;
+            }
             if (isset($this->_customdata['visibmod'])) {
                 if ($pass && $this->_customdata['visibmod'] == 1) {
                     $pass = $activity->visible;
@@ -260,13 +283,21 @@ class training_milestones_update_form extends \moodleform {
                 $dataactivity->milestone = $activity->get_milestone();
                 $dataactivity->visible = $dataactivity->visible * $activity->get_visible();
                 $dataactivity->availability = $dataactivity->availability . $activity->get_availability();
+                $dataactivity->completion = $activity->get_completion();
                 if (plugin_supports('mod', $activity->get_type(), FEATURE_MOD_ARCHETYPE) != MOD_ARCHETYPE_RESOURCE) {
                     $dataactivity->ressource = 0;
                 } else {
                     $dataactivity->ressource = 1;
                 }
             }
-            $datacourse->activities = $activities;
+
+            $reste = array();
+            foreach ($activities as $menage) {
+                if (isset($menage->name)) {
+                    $reste[] = $menage;
+                }
+            }
+            $datacourse->activities = $reste;
             $ret[] = $datacourse;
         }
         return $ret;

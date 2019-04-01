@@ -32,6 +32,7 @@ $string['settings_student_role_label'] = 'Student role ID';
 $string['settings_student_role_helper'] = 'Id of the student role in database';
 
 // Capabilities strings.
+$string['attestoodle:viewtraining'] = "View a training";
 $string['attestoodle:displaytrainings'] = "Display trainings list";
 $string['attestoodle:managetraining'] = "Add/Remove training";
 $string['attestoodle:managemilestones'] = "Manage training milestones";
@@ -244,3 +245,11 @@ $string['confirmation'] = 'Confirmation';
 $string['certificategenerate'] = 'Certification generation';
 $string['msgongoing'] = 'Ongoing treatment';
 $string['questgenerate'] = 'Do you want to generate {$a} certificates ?';
+$string['error_same_criteria'] = 'Groupings can not be identical !!';
+$string['nottraining'] = 'it\'s category is not training';
+$string['milestoneorphan'] = 'List of milestones in error (their activity is deleted)';
+$string['timecredited'] = 'Credited duration';
+$string['milestonenews'] = 'List of training courses that have received new activities';
+$string['nbnewactivity'] = 'Number of new activity';
+$string['btn_deletemilestonerr'] = 'Remove milestones in error';
+$string['btn_deletenotification'] = 'Delete the notification';

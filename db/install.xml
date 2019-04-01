@@ -4,7 +4,6 @@
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
   <TABLES>
-      
     <TABLE NAME="tool_attestoodle_training" COMMENT="Table that describes the trainings in Attestoodle">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
@@ -16,12 +15,15 @@
         <KEY NAME="fk_category_id" TYPE="foreign" FIELDS="categoryid" REFTABLE="mdl_course_categories" REFFIELDS="id"/>
       </KEYS>
     </TABLE>
-    
     <TABLE NAME="tool_attestoodle_milestone" COMMENT="Table that stores the milestone values in Attestoodle">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" />
         <FIELD NAME="creditedtime" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="The milestone value (in minutes) of the activity"/>
         <FIELD NAME="moduleid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the course module corresponding to the activity"/>
+        <FIELD NAME="trainingid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="ID of the training"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="time of the last modification"/>
+        <FIELD NAME="course" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="ID of the course of the module"/>        
+        <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="The name of activity"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -71,7 +73,7 @@
         <KEY NAME="fk_module_id" TYPE="foreign" FIELDS="moduleid" REFTABLE="mdl_course_modules" REFFIELDS="id"/>
       </KEYS>
     </TABLE>
-	<TABLE NAME="tool_attestoodle_train_style" COMMENT="relation between model and training">
+    <TABLE NAME="tool_attestoodle_train_style" COMMENT="relation between model and training">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="trainingid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
@@ -83,7 +85,7 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
-	<TABLE NAME="tool_attestoodle_tpl_detail" COMMENT="Detail of the model">
+    <TABLE NAME="tool_attestoodle_tpl_detail" COMMENT="Detail of the model">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="templateid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
@@ -94,19 +96,19 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
-	<TABLE NAME="tool_attestoodle_template" COMMENT="model of certificate">
+    <TABLE NAME="tool_attestoodle_template" COMMENT="model of certificate">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="name" TYPE="char" LENGTH="35" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
-		<FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
-    	<TABLE NAME="tool_attestoodle_tmp" COMMENT="temporary calculated data to speed up the generation of certificates">
+    <TABLE NAME="tool_attestoodle_tmp" COMMENT="temporary calculated data to speed up the generation of certificates">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="trainingid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
@@ -118,5 +120,5 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
-    </TABLES>
+  </TABLES>
 </XMLDB>

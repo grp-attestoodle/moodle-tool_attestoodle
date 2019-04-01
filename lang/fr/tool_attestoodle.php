@@ -32,6 +32,7 @@ $string['settings_student_role_label'] = 'Id du rôle Etudiant';
 $string['settings_student_role_helper'] = 'Id du rôle Etudiant dans la base de données';
 
 // Capabilities strings.
+$string['attestoodle:viewtraining'] = "Consulter une formation";
 $string['attestoodle:displaytrainings'] = "Afficher les formations";
 $string['attestoodle:managetraining'] = "Ajouter/Supprimer une formation";
 $string['attestoodle:managemilestones'] = "Gérer les jalons d'une formation";
@@ -244,3 +245,11 @@ $string['confirmation'] = 'Confirmation';
 $string['certificategenerate'] = 'Génération des attestations';
 $string['msgongoing'] = 'Traitement en cours';
 $string['questgenerate'] = 'Souhaitez-vous générer les {$a} certificats ?';
+$string['error_same_criteria'] = 'Les regroupements ne peuvent pas être identiques !!';
+$string['nottraining'] = 'Cette catégorie n\'est pas une formation';
+$string['milestoneorphan'] = 'Liste des jalons en erreurs (leur activité est supprimée)';
+$string['timecredited'] = 'Temps crédité';
+$string['milestonenews'] = 'Liste des cours de la formation ayant reçus des nouvelles activités';
+$string['nbnewactivity'] = 'Nombre de nouvelle activité';
+$string['btn_deletemilestonerr'] = 'Supprimer les jalons en erreurs';
+$string['btn_deletenotification'] = 'supprimer la notification';

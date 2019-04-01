@@ -24,6 +24,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+global $DB, $USER, $PAGE;
+
 if ($hassiteconfig) {
     $ADMIN->add('courses', new admin_category('attestoodle', 'Attestoodle'));
     $ADMIN->add('attestoodle',
@@ -35,7 +37,6 @@ if ($hassiteconfig) {
         "$CFG->wwwroot/$CFG->admin/tool/attestoodle/classes/gabarit/listtemplate.php"));
 }
 
-global $DB, $USER;
 // If there aren't any entries in the table then we need to prepare them!
 if (!$DB->record_exists('tool_attestoodle_template', array('name' => 'Site'))) {
     $model = new stdClass();

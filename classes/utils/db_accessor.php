@@ -52,33 +52,47 @@ class db_accessor extends singleton {
     }
 
     /**
-     * Retrieves all the attestoodle milestones in moodle DB.
+     * Retrieves one milestone based on moduleID.
      *
+     * @param int $id The module ID to search the credited time.
+     * @param int $trainingid The training ID of the milestone formation to look for
      * @return \stdClass Standard Moodle DB object
      */
-    public function get_all_milestones() {
-        $result = self::$db->get_records('tool_attestoodle_milestone');
+    public function get_milestone_by_module($id, $trainingid) {
+        if ($trainingid == 0) {
+            $result = self::$db->get_record('tool_attestoodle_milestone', array('moduleid' => $id));
+        } else {
+            $result = self::$db->get_record('tool_attestoodle_milestone', array('moduleid' => $id, 'trainingid' => $trainingid));
+        }
         return $result;
     }
-
     /**
      * Method that deletes an activity in the attestoodle_milestone table.
      *
      * @param activity $activity The activity to delete in table
+     * @param int $trainingid The training ID of the milestone to be deleted
      */
-    public function delete_milestone($activity) {
-        self::$db->delete_records('tool_attestoodle_milestone', array('moduleid' => $activity->get_id()));
+    public function delete_milestone($activity, $trainingid) {
+        self::$db->delete_records('tool_attestoodle_milestone',
+                    array('moduleid' => $activity->get_id(),
+                        'trainingid' => $trainingid));
     }
 
     /**
      * Method that insert an activity in the attestoodle_milestone table.
      *
      * @param activity $activity The activity to insert in table
+     * @param integer $trainingid The training ID of the milestone to be add
      */
-    public function insert_milestone($activity) {
+    public function insert_milestone($activity, $trainingid) {
         $dataobject = new \stdClass();
         $dataobject->creditedtime = $activity->get_milestone();
         $dataobject->moduleid = $activity->get_id();
+
+        $dataobject->timemodified = \time();
+        $dataobject->course = $activity->get_course()->get_id();
+        $dataobject->name = $activity->get_name();
+        $dataobject->trainingid = $trainingid;
 
         self::$db->insert_record('tool_attestoodle_milestone', $dataobject);
     }
@@ -87,22 +101,15 @@ class db_accessor extends singleton {
      * Method that update an activity in the attestoodle_milestone table.
      *
      * @param activity $activity The activity to update in table
+     * @param integer $trainingid The training ID of the milestone to be update
      */
-    public function update_milestone($activity) {
+    public function update_milestone($activity, $trainingid) {
         $request = " UPDATE {tool_attestoodle_milestone}
-                        SET creditedtime = ?
-                      WHERE moduleid = ?";
-        self::$db->execute($request, array($activity->get_milestone(), $activity->get_id()));
-    }
+                        SET creditedtime = ?, timemodified = ?
+                      WHERE moduleid = ? and trainingid = ?";
 
-    /**
-     * Retrieves all the attestoodle trainings in moodle DB.
-     *
-     * @return \stdClass Standard Moodle DB object
-     */
-    public function get_all_trainings() {
-        $result = self::$db->get_records('tool_attestoodle_training');
-        return $result;
+        self::$db->execute($request, array($activity->get_milestone(), \time(),
+                $activity->get_id(), $trainingid));
     }
 
     /**
@@ -135,7 +142,9 @@ class db_accessor extends singleton {
      * @return \stdClass Standard Moodle DB object
      */
     public function get_course_modules_by_course($id) {
-        $result = self::$db->get_records('course_modules', array('course' => $id, 'deletioninprogress' => '0'));
+        $request = "select * from {course_modules} where course = ? and deletioninprogress = 0 and completion > 0";
+        $result = self::$db->get_records_sql($request, array($id));
+
         return $result;
     }
 
@@ -221,6 +230,35 @@ class db_accessor extends singleton {
     }
 
     /**
+     * Retrieves the attestoodle trainings in moodle DB, associate with a category.
+     *
+     * @param int $categoryid the identifier of the category associated with the training.
+     * @return \stdClass Standard Moodle DB object
+     */
+    public function get_training_by_category($categoryid) {
+        return self::$db->get_record('tool_attestoodle_training', array('categoryid' => $categoryid));
+    }
+
+    /**
+     * Retrieves one page of attestoodle trainings in moodle DB.
+     *
+     * @param int $numpage the page number searched.
+     * @param int $perpage the number of records per page.
+     * @return \stdClass Standard Moodle DB object
+     */
+    public function get_page_trainings($numpage, $perpage) {
+        $req = 'select * from {tool_attestoodle_training} order by name';
+        return self::$db->get_recordset_sql($req, null, $numpage, $perpage);
+    }
+
+    /**
+     * Retrieve count training.
+     */
+    public function get_training_matchcount() {
+        return self::$db->count_records_sql("SELECT COUNT(id) from {tool_attestoodle_training}");
+    }
+
+    /**
      * Delete a training in training table based on the category ID.
      *
      * @param int $categoryid The category ID that we want to delete
@@ -274,7 +312,7 @@ class db_accessor extends singleton {
      *
      * @param string $filename Name of the file on the server
      * @param string $status Status of the file creation (ERROR, NEW, OVERWRITTEN)
-     * @param integer $trainingid The training ID corresponding to the certificate
+     * @param integer $trainingid The training ID corresponding to the certicate
      * @param integer $learnerid The learner ID corresponding to the certificate
      * @param integer $launchid The launch_log ID corresponding to this certificate log
      * @return integer The newly created certificate_log id
@@ -360,7 +398,114 @@ class db_accessor extends singleton {
                                       from {course_categories}
                                      where path like '%/".$id."/%')
                         or category = ".$id.");";
+
         $result = self::$db->get_records_sql($req, array());
         return $result;
+    }
+
+    /**
+     * Retrieves the courses under a specific training.
+     *
+     * @param int $idtraining Id of the training to retrieve courses for
+     * @return \stdClass Standard Moodle DB object
+     */
+    public function get_courses_of_training($idtraining) {
+        $req = "select * from {course}
+                 where id in (select course
+                                      from {tool_attestoodle_milestone}
+                                     where trainingid = ". $idtraining .");";
+
+        $result = self::$db->get_records_sql($req, array());
+        return $result;
+    }
+
+    /**
+     * Check milestones exist and provides the total time of training.
+     *
+     * @param int $trainingid The training ID of the milestone to find.
+     * @return int total time of training.
+     */
+    public function is_milestone_set($trainingid) {
+        $req = "select sum(creditedtime) as tot from {tool_attestoodle_milestone} where trainingid = ?";
+        return self::$db->get_field_sql($req, array ($trainingid));
+    }
+
+    /**
+     * Provides orphan milestones, milestones that no longer have associated activities.
+     *
+     * @param int $trainingid The training ID of the milestone to find.
+     * @return \stdClass Standard Moodle DB object (id,creditedtime, name, shortname).
+     */
+    public function get_milestone_off($trainingid) {
+        $req = "select count(*) as nb from {tool_attestoodle_milestone} where trainingid = ?";
+        $nb1 = self::$db->get_field_sql($req, array ($trainingid));
+
+        $req = "select count(*) as nb
+                  from {tool_attestoodle_milestone} a, {course_modules} c
+                 where a.moduleid = c.id
+                   and c.deletioninprogress = 0
+                   and a.course = c.course
+                   and a.trainingid = ?";
+
+        $nb2 = self::$db->get_field_sql($req, array ($trainingid));
+        if ($nb1 != $nb2) {
+            $req = "select a.id, a.creditedtime,a.name, b.fullname
+                      from {tool_attestoodle_milestone} a, {course} b
+                     where b.id = a.course and a.trainingid = ?
+                       and a.moduleid not in (select id
+                                                from {course_modules}
+                                                where deletioninprogress = 0)";
+            return self::$db->get_records_sql($req, array ($trainingid));
+        }
+        return array();
+    }
+
+    /**
+     * Provides new training activities.
+     *
+     * @param int $trainingid The training ID of the milestone to delete.
+     * @return \stdClass Standard Moodle DB object (course's fullname and number
+     * of new activity)
+     */
+    public function get_new_activities($trainingid) {
+        $req = "select max(timemodified) as timemodified from {tool_attestoodle_milestone} where trainingid = ?";
+        $lastupdate = self::$db->get_field_sql($req, array ($trainingid));
+        if (!isset($lastupdate)) {
+            return null;
+        }
+        $req = "select b.fullname as fullname, count(m.id) as nb
+                  from {course_modules} m, {course} b
+                 where m.added > ?
+                   and m.course = b.id
+                   and m.completion > 0
+                   and m.course in (select course
+                                      from {tool_attestoodle_milestone}
+                                     where trainingid = ?)
+                   group by shortname";
+        return self::$db->get_records_sql($req, array ($lastupdate, $trainingid));
+    }
+
+    /**
+     * Delete orphaned milestones.
+     *
+     * @param int $trainingid The training ID of the milestone to delete.
+     */
+    public function delete_milestones_off($trainingid) {
+        $milestones = self::get_milestone_off($trainingid);
+        foreach ($milestones as $milestone) {
+            self::$db->delete_records('tool_attestoodle_milestone', array('id' => $milestone->id));
+        }
+    }
+
+    /**
+     * Updated milestones to be more recent than the activities
+     *
+     * @param int $trainingid The training ID of the milestone formation to update.
+     */
+    public function update_milestones($trainingid) {
+        $request = " UPDATE {tool_attestoodle_milestone}
+                        SET timemodified = ?
+                      WHERE trainingid = ?";
+        self::$db->execute($request, array(\time(), $trainingid));
     }
 }

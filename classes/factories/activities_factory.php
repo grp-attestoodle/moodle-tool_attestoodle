@@ -46,23 +46,11 @@ class activities_factory extends singleton {
     private $modulenames;
 
     /**
-     * @var array Associative array containing the module IDs with their milestone value
-     * in a key => value format where key = id of the module and value = milestone
-     */
-    private $milestones;
-
-    /**
      * Constructor method (protected to avoid external instanciation)
      */
     protected function __construct() {
         parent::__construct();
         $this->modulenames = array();
-
-        $this->milestones = array();
-        $dbmilestones = db_accessor::get_instance()->get_all_milestones();
-        foreach ($dbmilestones as $dbm) {
-            $this->milestones[$dbm->moduleid] = $dbm->creditedtime;
-        }
     }
 
     /**
@@ -74,19 +62,21 @@ class activities_factory extends singleton {
      * @param string $tablename Name of the db table where the activity is stored
      *  in, corresponding to the type of the activity (quiz, folder, file, ...)
      * @param stdClass $coursemodule Contains activity's attributes.
+     * @param int $trainingid The training ID containing the activity
      * @return activity The activity created
      */
-    private function create($activityid, $dbactivity, $tablename, $coursemodule) {
+    private function create($activityid, $dbactivity, $tablename, $coursemodule, $trainingid) {
         $id = $activityid;
         $idmodule = $dbactivity->id;
         $name = $dbactivity->name;
         $desc = isset($dbactivity->intro) ? $dbactivity->intro : null;
 
         // Retrieve the potential milestone value of the activity.
-        $milestone = $this->extract_milestone($id);
+        $milestone = $this->extract_milestone($id, $trainingid);
         $ret = new activity($id, $idmodule, $name, $desc, $tablename, $milestone);
         $ret->set_visible($coursemodule->visible);
         $ret->set_availability($coursemodule->availability);
+        $ret->set_completion($coursemodule->completion);
         return $ret;
     }
 
@@ -94,14 +84,16 @@ class activities_factory extends singleton {
      * Method that retrieves the milestone value of a specific module.
      *
      * @param integer $moduleid The module id that may have a milestone time value
+     * @param int $trainingid The milestone formation identifier
      * @return integer|null The milestone time within the string or null if
      * no milestone time has been found
      */
-    private function extract_milestone($moduleid) {
+    private function extract_milestone($moduleid, $trainingid) {
         $milestone = null;
+        $rec = db_accessor::get_instance()->get_milestone_by_module($moduleid, $trainingid);
 
-        if (array_key_exists($moduleid, $this->milestones)) {
-            $milestone = (integer)$this->milestones[$moduleid];
+        if (!empty($rec)) {
+            $milestone = (integer)$rec->creditedtime;
         }
 
         return $milestone;
@@ -126,9 +118,10 @@ class activities_factory extends singleton {
      * Method that retrieves all activities in a course.
      *
      * @param string $id Id of the course to search activities for
+     * @param int $trainingid The training ID containing the courses
      * @return activity[] Array containing all the activity objects of the course
      */
-    public function retrieve_activities_by_course($id) {
+    public function retrieve_activities_by_course($id, $trainingid) {
         $dbcoursemodules = db_accessor::get_instance()->get_course_modules_by_course($id);
         $activities = array();
         foreach ($dbcoursemodules as $coursemodule) {
@@ -140,7 +133,7 @@ class activities_factory extends singleton {
             $instanceid = $coursemodule->instance;
             $coursemodulesinfos = db_accessor::get_instance()->get_course_modules_infos($instanceid, $tablename);
 
-            $activities[] = $this->create($activityid, $coursemodulesinfos, $tablename, $coursemodule);
+            $activities[] = $this->create($activityid, $coursemodulesinfos, $tablename, $coursemodule, $trainingid);
         }
         return $activities;
     }
@@ -149,28 +142,10 @@ class activities_factory extends singleton {
      * Method that checks if an activity is a milestone in the $milestone array.
      *
      * @param activity $activity The activity to check against
+     * @param int $trainingid The training ID where we search the activity
      */
-    public function is_milestone($activity) {
-        return array_key_exists($activity->get_id(), $this->milestones);
-    }
-
-    /**
-     * Method that adds a milestone in the global $milestones array after
-     * it being instanciate (can be used to update a value).
-     *
-     * @param activity $activity The activity to update value for
-     */
-    public function add_milestone($activity) {
-        $this->milestones[$activity->get_id()] = $activity->get_milestone();
-    }
-
-    /**
-     * Method that removes a milestone in the global $milestones array after
-     * it being instanciate.
-     *
-     * @param activity $activity The activity to delete value for
-     */
-    public function remove_milestone($activity) {
-        unset($this->milestones[$activity->get_id()]);
+    public function is_milestone($activity, $trainingid) {
+        $rec = db_accessor::get_instance()->get_milestone_by_module($activity->get_id(), $trainingid);
+        return !empty($rec);
     }
 }

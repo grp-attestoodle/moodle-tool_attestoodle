@@ -24,8 +24,10 @@
 namespace tool_attestoodle\output;
 
 defined('MOODLE_INTERNAL') || die;
+require_once($CFG->libdir.'/tablelib.php');
 
 use tool_attestoodle\output\renderable;
+use tool_attestoodle\factories\trainings_factory;
 /**
  * This class is the main renderer of the Attestoodle plug-in.
  *
@@ -48,11 +50,25 @@ class renderer extends \plugin_renderer_base {
         $output .= $obj->get_header();
 
         if (count($obj->get_trainings()) > 0) {
-            $table = new \html_table();
-            $table->head = $obj->get_table_head();
-            $table->data = $obj->get_table_content();
+            $table = new \flexible_table('training_lst');
+            $table->define_columns(array('idnom', 'idhiearchie', 'iddescription', 'idactions'));
+            $table->define_headers($obj->get_table_head());
+            $parameters = array('typepage' => 'trainingslist');
+            $url = new \moodle_url('/admin/tool/attestoodle/index.php', $parameters);
 
-            $output .= \html_writer::table($table);
+            $table->define_baseurl($url->out());
+            $table->sortable(false);
+            $table->set_attribute('class', 'generaltable');
+            $table->setup();
+
+            $matchcount = trainings_factory::get_instance()->get_matchcount();
+            $table->pagesize(trainings_factory::get_instance()->get_perpage(), $matchcount);
+
+            $datas = $obj->get_table_content();
+            foreach ($datas as $ligne) {
+                $table->add_data(array($ligne->name, $ligne->hierarchy, $ligne->description, $ligne->link));
+            }
+            $output .= $table->print_html();
         } else {
             $output .= $obj->get_no_training_message();
         }

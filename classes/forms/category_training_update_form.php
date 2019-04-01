@@ -41,22 +41,38 @@ class category_training_update_form extends \moodleform {
      */
     public function definition() {
         global $CFG, $DB;
+        $editmode = 0;
+        if ($this->_customdata['editmode']) {
+            $editmode = 1;
+        }
+        $mform = $this->_form;
+
+        $mform->addElement('hidden', 'edition');
+        $mform->setType('edition', PARAM_INT);
+        $mform->setDefault('edition', $editmode);
+
         $name = "checkbox_is_training";
-        $category = $this->_customdata['data'];
+        $label = get_string('training_management_checkbox_label', 'tool_attestoodle');
+
         $idtemplate = $this->_customdata['idtemplate'];
         $idtraining = $this->_customdata['idtraining'];
-
-        $mform = $this->_form;
-        $label = get_string('training_management_checkbox_label', 'tool_attestoodle');
+        $category = $this->_customdata['data'];
         $istraining = $category->is_training();
 
-        $mform->addElement("advcheckbox", $name, $label);
-        $mform->setDefault($name, $istraining);
+        if (!$istraining && $editmode == 0) {
+            $mform->addElement("static", null, null, get_string('nottraining', 'tool_attestoodle'));
+        } else {
+            $mform->addElement("advcheckbox", $name, $label);
+            $mform->setDefault($name, $istraining);
+            $mform->disabledIf($name, 'edition', 'eq', 0);
+        }
+
         if ($istraining) {
             $mform->addElement('text', 'name', get_string('trainingname', 'tool_attestoodle'), array("size" => 50));
             $mform->setType('name', PARAM_NOTAGS);
             $training = trainings_factory::get_instance()->retrieve_training($category->get_id());
             $mform->setDefault('name', $training->get_name());
+            $mform->disabledIf('name', 'edition', 'eq', 0);
         }
 
         if ($idtemplate > -1) {
@@ -87,6 +103,7 @@ class category_training_update_form extends \moodleform {
             }
 
             $mform->addGroup($group, 'activities', get_string('template_certificate', 'tool_attestoodle'), ' ', false);
+            $mform->disabledIf('activities', 'edition', 'eq', 0);
             // Level of grouping.
             $level1s = array(
                     'coursename' => get_string('grp_course', 'tool_attestoodle'),
@@ -95,11 +112,15 @@ class category_training_update_form extends \moodleform {
                     );
             $level2s = array_merge(array('' => ''), $level1s);
             $mform->addElement('select', 'group1', get_string('grp_level1', 'tool_attestoodle'), $level1s, null);
+            $mform->disabledIf('group1', 'edition', 'eq', 0);
+
             $mform->addElement('select', 'group2', get_string('grp_level2', 'tool_attestoodle'), $level2s, null);
+            $mform->disabledIf('group2', 'edition', 'eq', 0);
             $mform->setExpanded('templatesection', false);
         }
-
-        $this->add_action_buttons(false);
+        if ($editmode == 1) {
+            $this->add_action_buttons(false);
+        }
     }
 
     /**
@@ -113,6 +134,10 @@ class category_training_update_form extends \moodleform {
      */
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);
+
+        if ($data['group2'] == $data['group1']) {
+            $errors['group2'] = get_string('error_same_criteria', 'tool_attestoodle');
+        }
         return $errors;
     }
 }

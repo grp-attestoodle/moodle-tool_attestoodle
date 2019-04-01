@@ -42,6 +42,8 @@ class trainings_factory extends singleton {
 
     /** @var training[] Array containing all the trainings */
     private $trainings;
+    /** @var number training per page.*/
+    private $perpage = 10;
 
     /**
      * Constructor method that instanciates the main trainings array.
@@ -52,18 +54,99 @@ class trainings_factory extends singleton {
     }
 
     /**
-     * Method that instanciates all the trainings used by Attestoodle and
+     * Method that instanciates one page of trainings used by Attestoodle and
      * stores them in the main array.
+     *
+     * @param int $numpage the page number searched.
      */
-    public function create_trainings() {
+    public function create_trainings($numpage = 0) {
         // Must call categories_factory before find trainings.
-        $dbtrainings = db_accessor::get_instance()->get_all_trainings();
+        $dbtrainings = db_accessor::get_instance()->get_page_trainings($numpage, $this->perpage);
 
         foreach ($dbtrainings as $dbtr) {
             $catid = $dbtr->categoryid;
             $cat = categories_factory::get_instance()->get_category($catid);
             if (!empty($cat)) {
-                $this->create($cat, $dbtr->id, $dbtr->name);
+                $trainingtoadd = new training($cat);
+                $trainingtoadd->set_id($dbtr->id);
+                $trainingtoadd->set_name($dbtr->name);
+                $this->trainings[] = $trainingtoadd;
+            }
+        }
+    }
+
+    /**
+     * Getter on number training per page.
+     */
+    public function get_perpage() {
+        return $this->perpage;
+    }
+
+    /**
+     * Provides the total number of training.
+     */
+    public function get_matchcount() {
+        return db_accessor::get_instance()->get_training_matchcount();
+    }
+
+    /**
+     * Method that instanciates the training associate with a category.
+     *
+     * @param int $categoryid the identifier of the category associated with the training.
+     */
+    public function create_training_by_category($categoryid) {
+        $dbtr = db_accessor::get_instance()->get_training_by_category($categoryid);
+        if (!empty($dbtr->categoryid)) {
+            $catid = $dbtr->categoryid;
+            $cat = categories_factory::get_instance()->get_category($catid);
+            if (!empty($cat)) {
+                $this->create4learner($cat, $dbtr->id, $dbtr->name);
+            }
+        }
+    }
+
+    /**
+     * Create a training based on a specific category, stores it in the
+     * main array then return it.
+     * We limit the training to the course used.
+     *
+     * @param category $category The category that the training comes from
+     * @param integer $id of the training.
+     * @param string $name of the training.
+     * @return training The newly created training
+     */
+    private function create4learner($category, $id, $name = '') {
+        $trainingtoadd = new training($category);
+        $trainingtoadd->set_id($id);
+        $trainingtoadd->set_name($name);
+
+        $this->trainings[] = $trainingtoadd;
+        $categoryid = $trainingtoadd->get_categoryid();
+        $courses = courses_factory::get_instance()->retrieve_courses_of_training($id);
+
+        // Add courses to the training.
+        foreach ($courses as $course) {
+            $trainingtoadd->add_course($course);
+            foreach ($course->get_learners() as $learner) {
+                learners_factory::get_instance()->retrieve_validated_activities($learner);
+            }
+        }
+
+        return $trainingtoadd;
+    }
+
+    /**
+     * Method that instanciates the training associate with a category.
+     *
+     * @param int $categoryid the identifier of the category associated with the training.
+     */
+    public function create_training_for_managemilestone($categoryid) {
+        $dbtr = db_accessor::get_instance()->get_training_by_category($categoryid);
+        if (!empty($dbtr->categoryid)) {
+            $catid = $dbtr->categoryid;
+            $cat = categories_factory::get_instance()->get_category($catid);
+            if (!empty($cat)) {
+                $this->create($cat, $dbtr->id, $dbtr->name, false);
             }
         }
     }
@@ -75,21 +158,25 @@ class trainings_factory extends singleton {
      * @param category $category The category that the training comes from
      * @param integer $id of the training.
      * @param string $name of the training.
+     * @param boolean $withlearner indicate to load learner or not.
      * @return training The newly created training
      */
-    private function create($category, $id, $name = '') {
+    private function create($category, $id, $name = '', $withlearner = true) {
         $trainingtoadd = new training($category);
         $trainingtoadd->set_id($id);
         $trainingtoadd->set_name($name);
 
         $this->trainings[] = $trainingtoadd;
-        $courses = courses_factory::get_instance()->retrieve_courses_childof_category($trainingtoadd->get_categoryid());
+        $categoryid = $trainingtoadd->get_categoryid();
+        $courses = courses_factory::get_instance()->retrieve_courses_childof_category($categoryid, $withlearner, $id);
 
         // Add courses to the training.
         foreach ($courses as $course) {
             $trainingtoadd->add_course($course);
-            foreach ($course->get_learners() as $learner) {
-                learners_factory::get_instance()->retrieve_validated_activities($learner);
+            if ($withlearner) {
+                foreach ($course->get_learners() as $learner) {
+                    learners_factory::get_instance()->retrieve_validated_activities($learner);
+                }
             }
         }
 
