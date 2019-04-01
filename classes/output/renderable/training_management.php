@@ -28,10 +28,12 @@
 namespace tool_attestoodle\output\renderable;
 
 defined('MOODLE_INTERNAL') || die;
+require_once($CFG->libdir.'/tablelib.php');
 
 use tool_attestoodle\factories\categories_factory;
 use tool_attestoodle\factories\trainings_factory;
 use tool_attestoodle\forms\category_training_update_form;
+use tool_attestoodle\utils\db_accessor;
 /**
  * Display information of a single training in Attestoodle.
  *
@@ -153,8 +155,6 @@ class training_management implements \renderable {
      * Handles form submission if its valid. Return a notification message
      * to the user to let him know how much categories have been updated and if
      * there is any error while save in DB.
-     *
-     * @todo create a new private method to notify the user
      *
      * @return void Return void if the user has not the rights to update in DB
      */
@@ -284,34 +284,124 @@ class training_management implements \renderable {
         } else {
             $output .= $this->form->render();
 
-            if ($this->category->is_training()) {
-                $output .= \html_writer::start_div('clearfix training-management-content');
+            // Link to the milestones management of the training.
+            $parametersmilestones = array(
+                'typepage' => 'managemilestones',
+                'categoryid' => $this->category->get_id()
+                );
+            $urlmilestones = new \moodle_url('/admin/tool/attestoodle/index.php', $parametersmilestones);
+            $labelmilestones = get_string('training_management_manage_training_link', 'tool_attestoodle');
+            $attributesmilestones = array('class' => 'attestoodle-button');
 
-                // Link to the learners list of the training.
-                $parameters = array(
+            if ($this->category->is_training()) {
+                $output .= "<br/>";
+
+                $training = trainings_factory::get_instance()->retrieve_training($this->category->get_id());
+                $tempstotal = db_accessor::get_instance()->is_milestone_set($training->get_id());
+                if (isset($tempstotal)) {
+                    $output .= "<br/> Temps total de la formation : " . parse_minutes_to_hours($tempstotal) . "<br/>";
+
+                    $jalonssuppr = db_accessor::get_instance()->get_milestone_off($training->get_id());
+                    $newsact = db_accessor::get_instance()->get_new_activities($training->get_id());
+                    if (count($jalonssuppr) > 0) {
+                        $output .= "<br/>" . $this->display_deleted_milestone($jalonssuppr);
+                    }
+                    if (count($newsact) > 0) {
+                        $output .= "<br/>" . $this->display_new_activity($newsact);
+                    }
+                    $output .= "<br /> ";
+                    // Link to the milestones management of the training.
+                    $output .= \html_writer::link($urlmilestones, $labelmilestones, $attributesmilestones);
+                    $output .= "<br /> ";
+                    // Link to the learners list of the training.
+                    $parameters = array(
                         'typepage' => 'learners',
                         'categoryid' => $this->category->get_id()
-                );
-                $url = new \moodle_url('/admin/tool/attestoodle/index.php', $parameters);
-                $label = get_string('training_management_training_details_link', 'tool_attestoodle');
-                $attributes = array('class' => 'attestoodle-button');
-                $output .= \html_writer::link($url, $label, $attributes);
-
-                $output .= "<br />";
-
-                // Link to the milestones management of the training.
-                $parametersmilestones = array(
-                        'typepage' => 'managemilestones',
-                        'categoryid' => $this->category->get_id()
-                );
-                $urlmilestones = new \moodle_url('/admin/tool/attestoodle/index.php', $parametersmilestones);
-                $labelmilestones = get_string('training_management_manage_training_link', 'tool_attestoodle');
-                $attributesmilestones = array('class' => 'attestoodle-button');
-                $output .= \html_writer::link($urlmilestones, $labelmilestones, $attributesmilestones);
-
-                $output .= \html_writer::end_div();
+                    );
+                    $url = new \moodle_url('/admin/tool/attestoodle/index.php', $parameters);
+                    $label = get_string('training_management_training_details_link', 'tool_attestoodle');
+                    $attributes = array('class' => 'attestoodle-button');
+                    $output .= \html_writer::link($url, $label, $attributes);
+                } else {
+                    $output .= "<br /> Aucun jalon définit ";
+                    $output .= \html_writer::link($urlmilestones, $labelmilestones, $attributesmilestones);
+                    $output .= "<br /> ";
+                }
             }
         }
         return $output;
+    }
+
+    /**
+     * Displays the list of orphaned milestones (the activity on which it is based no longer exists).
+     *
+     * @param stdClass $jalonssuppr List of milestone deleted.
+     */
+    private function display_deleted_milestone($jalonssuppr) {
+        $ret = \html_writer::start_div('clearfix training-management-error');
+        $ret .= "<h4>" . get_string('milestoneorphan', 'tool_attestoodle') ."</h4>";
+        $table = new \html_table();
+
+        $table->head = array(get_string('grp_course', 'tool_attestoodle'),
+            get_string('grp_activity', 'tool_attestoodle'),
+            get_string('timecredited', 'tool_attestoodle'));
+
+        foreach ($jalonssuppr as $milestonedelete) {
+            $table->data[] = array(
+                                $milestonedelete->fullname,
+                                $milestonedelete->name,
+                                $milestonedelete->creditedtime);
+        }
+        $ret .= \html_writer::table($table);
+        $deletelink .= \html_writer::link(
+                    new \moodle_url(
+                            '/admin/tool/attestoodle/index.php',
+                            array(
+                                    'typepage' => 'trainingmanagement',
+                                    'action' => 'deleteErrMilestone',
+                                    'categoryid' => $this->categoryid
+                            )
+                    ),
+                    get_string('btn_deletemilestonerr', 'tool_attestoodle'),
+                    array('class' => 'btn btn-default attestoodle-button'));
+        $ret .= "<br/>" . $deletelink;
+        $ret .= \html_writer::end_div();
+        return $ret;
+    }
+
+    /**
+     * Displays the list of new activities.
+     * Their creation date is more recent than the last modification of a milestone.
+     *
+     * @param stdClass $newsact List of activities added.
+     */
+    private function display_new_activity($newsact) {
+        $ret = \html_writer::start_div('clearfix training-management-notif');
+        $ret .= "<h4>" . get_string('milestonenews', 'tool_attestoodle') ."</h4>";
+        $table = new \html_table();
+        $table->head = array(get_string('grp_course', 'tool_attestoodle'),
+            get_string('nbnewactivity', 'tool_attestoodle'));
+
+        foreach ($newsact as $newact) {
+            $table->data[] = array(
+                                $newact->fullname,
+                                $newact->nb);
+        }
+        $ret .= \html_writer::table($table);
+
+        $deletelink .= \html_writer::link(
+                    new \moodle_url(
+                            '/admin/tool/attestoodle/index.php',
+                            array(
+                                    'typepage' => 'trainingmanagement',
+                                    'action' => 'deleteNotification',
+                                    'categoryid' => $this->categoryid
+                            )
+                    ),
+                    get_string('btn_deletenotification', 'tool_attestoodle'),
+                    array('class' => 'btn btn-default attestoodle-button'));
+        $ret .= "<br/>" . $deletelink;
+        $ret .= \html_writer::end_div();
+        return $ret;
     }
 }

@@ -279,7 +279,7 @@ class training_milestones implements \renderable {
 
                     try {
                         // Try to persist activity in DB.
-                        $activity->persist();
+                        $activity->persist($this->training->get_id());
 
                         // No Exception return, status to updated.
                         $returnobject->status = 1;

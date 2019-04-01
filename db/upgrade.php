@@ -123,5 +123,62 @@ function xmldb_tool_attestoodle_upgrade($oldversion) {
         $dbman->create_table($table);
         upgrade_plugin_savepoint(true, 2018122601, 'tool', 'attestoodle');
     }
+
+    // Add information on milestone.
+    if ($oldversion < 2019021911) {
+        $table = new xmldb_table('tool_attestoodle_milestone');
+        $field = new xmldb_field('trainingid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        $field = new xmldb_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        $field = new xmldb_field('course', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        $field = new xmldb_field('name', XMLDB_TYPE_CHAR, '255', null, null, null, null);
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        // Update records.
+        $items = $DB->get_records('tool_attestoodle_milestone');
+        foreach ($items as $item) {
+            if ($item->trainingid != null) {
+                continue;
+            }
+            $item->timemodified = \time();
+            $rec = $DB->get_record('course_modules', array('id' => $item->moduleid));
+            if (!isset($rec->course)) {
+                continue;
+            }
+            $item->course = $rec->course;
+
+            $table = $DB->get_field('modules', 'name', array('id' => $rec->module));
+            $infocm = $DB->get_record($table, array('id' => $rec->instance));
+            $item->name = $infocm->name;
+
+            $categ = $DB->get_field('course', 'category', array('id' => $rec->course));
+            $training = $DB->get_field('tool_attestoodle_training', 'id', array('categoryid' => $categ));
+
+            $notfind = ($training == 0);
+            while ($notfind) {
+                $categ = $DB->get_field('course_categories', 'parent', array('id' => $categ));
+                if ($categ != 0) {
+                    $training = $DB->get_field('tool_attestoodle_training', 'id', array('categoryid' => $categ));
+                    $notfind = ($training == 0);
+                } else {
+                    $notfind = false;
+                }
+            }
+
+            $item->trainingid = $training;
+            $DB->update_record("tool_attestoodle_milestone", $item);
+        }
+        upgrade_plugin_savepoint(true, 2019021911, 'tool', 'attestoodle');
+    }
+
     return true;
 }

@@ -56,11 +56,8 @@ $title = get_string('pluginname', 'tool_attestoodle') . " - " . get_string('conf
 $PAGE->set_heading($title);
 
 // Compute time credited for all learners.
-trainings_factory::get_instance()->create_trainings();
-$trainingexist = trainings_factory::get_instance()->has_training($categoryid);
-if ($trainingexist) {
-    $training = trainings_factory::get_instance()->retrieve_training($categoryid);
-}
+trainings_factory::get_instance()->create_training_by_category($categoryid);
+$training = trainings_factory::get_instance()->retrieve_training($categoryid);
 
 // Data preparation.
 $nb = 0;

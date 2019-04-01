@@ -44,6 +44,7 @@ require_once($toolpath . "/classes/certificate.php");
 
 use tool_attestoodle\factories\trainings_factory;
 use tool_attestoodle\output\renderable;
+use tool_attestoodle\utils\db_accessor;
 
 $page = optional_param('typepage', '', PARAM_ALPHA);
 $action = optional_param('action', '', PARAM_ALPHA);
@@ -81,12 +82,22 @@ switch($page) {
         if (!has_capability('tool/attestoodle:managetraining', $context)) {
             require_capability('tool/attestoodle:viewtraining', $context);
         }
-        $renderable = new renderable\training_management($categoryid);
 
+        if ($action == 'deleteErrMilestone') {
+            $dbtraining = db_accessor::get_instance()->get_training_by_category($categoryid);
+            db_accessor::get_instance()->delete_milestones_off($dbtraining->id);
+        }
+
+        if ($action == 'deleteNotification') {
+            $dbtraining = db_accessor::get_instance()->get_training_by_category($categoryid);
+            db_accessor::get_instance()->update_milestones($dbtraining->id);
+        }
+
+        $renderable = new renderable\training_management($categoryid);
         break;
     case 'managemilestones':
         $categoryid = required_param('categoryid', PARAM_INT);
-        trainings_factory::get_instance()->create_training_by_category($categoryid);
+        trainings_factory::get_instance()->create_training_for_managemilestone($categoryid);
 
         $PAGE->set_url(new moodle_url($toolpath . '/index.php',
                 ['typepage' => $page, 'categoryid' => $categoryid]));

@@ -64,7 +64,15 @@ div.editor_atto_content > span.tps_jalon::after {
     padding: 1rem;
     background-color: #ececec;
 }
+.training-management-error {
+    padding: 1rem;
+    background-color: #ff9020;
+}
 
+.training-management-notif {
+    padding: 1rem;
+    background-color: #90ff20;
+}
 .training-report-header,
 .learner-detail-header {
     margin-bottom: 1rem;
