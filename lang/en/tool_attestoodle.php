@@ -253,3 +253,12 @@ $string['milestonenews'] = 'List of training courses that have received new acti
 $string['nbnewactivity'] = 'Number of new activity';
 $string['btn_deletemilestonerr'] = 'Remove milestones in error';
 $string['btn_deletenotification'] = 'Delete the notification';
+
+// Url help (if they not exist no help icon was display).
+$string['UrlHlpTo_training_management'] = 'https://github.com/grp-attestoodle/moodle-tool_attestoodle/wiki/training_parameters';
+$string['UrlHlpTo_sitecertificate'] = 'https://github.com/grp-attestoodle/moodle-tool_attestoodle/wiki/template';
+$string['UrlHlpTo_listtemplate'] = 'https://github.com/grp-attestoodle/moodle-tool_attestoodle/wiki/templates_list';
+$string['UrlHlpTo_trainings_list'] = 'https://github.com/grp-attestoodle/moodle-tool_attestoodle/wiki/trainings_list';
+$string['UrlHlpTo_detailled_report'] = 'https://github.com/grp-attestoodle/moodle-tool_attestoodle/wiki/detailled_report';
+$string['UrlHlpTo_global_report'] = 'https://github.com/grp-attestoodle/moodle-tool_attestoodle/wiki/global_report';
+$string['UrlHlpTo_manage_milestones'] = 'https://github.com/grp-attestoodle/moodle-tool_attestoodle/wiki/manage_milestones';
