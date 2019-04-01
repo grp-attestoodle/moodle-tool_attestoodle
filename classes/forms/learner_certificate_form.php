@@ -89,7 +89,9 @@ class learner_certificate_form extends \moodleform {
         }
 
         $mform->addGroup($group, 'activities', get_string('template_certificate', 'tool_attestoodle'), ' ', false);
-
+        $mform->addElement("advcheckbox", 'displaydate', get_string('showcompletiondate', 'tool_attestoodle'), ' ');
+        $mform->disabledIf('displaydate', 'custom', 'eq', 0);
+        $mform->disabledIf('displaydate', 'disablecertif', 'eq', 1);
         // Level of grouping.
         $level1s = array(
                     'coursename' => get_string('grp_course', 'tool_attestoodle'),
@@ -104,6 +106,7 @@ class learner_certificate_form extends \moodleform {
         $mform->addElement('select', 'group2', get_string('grp_level2', 'tool_attestoodle'), $level2s, null);
         $mform->disabledIf('group2', 'custom', 'eq', 0);
         $mform->disabledIf('group2', 'disablecertif', 'eq', 1);
+        $mform->disabledIf('group2', 'displaydate', 'eq', 1);
 
         $mform->setExpanded('templatesection', false);
         $this->add_action_buttons(false);
@@ -121,7 +124,7 @@ class learner_certificate_form extends \moodleform {
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);
 
-        if ($data['group2'] == $data['group1']) {
+        if (array_key_exists('group1', $data) && $data['group2'] == $data['group1']) {
             $errors['group2'] = get_string('error_same_criteria', 'tool_attestoodle');
         }
         return $errors;
