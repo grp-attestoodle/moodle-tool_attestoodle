@@ -86,7 +86,7 @@ class courses_factory extends singleton {
         }
         if ($trainingid != 0) {
             $dbcourses = db_accessor::get_instance()->get_courses_of_training($trainingid);
-            
+
             foreach ($dbcourses as $course) {
                 if (!isset($courses[$course->id])) {
                     $courses[$course->id] = $this->create($course, $withlearner, $trainingid);
