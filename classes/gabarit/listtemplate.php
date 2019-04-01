@@ -75,6 +75,11 @@ if ($delete) {
 
 // Data preparation.
 echo $OUTPUT->header();
+if (get_string_manager()->string_exists('UrlHlpTo_listtemplate', 'tool_attestoodle')) {
+    $urlhlp = get_string('UrlHlpTo_listtemplate', 'tool_attestoodle');
+    echo "<a href='" . $urlhlp . "' target='aide' title='" . get_string('help') .
+         "'><i class='fa fa-question-circle-o' aria-hidden='true'></i></a>";
+}
 
 $table = new flexible_table('admin_tool_lst');
 $tablecolumns = array('idnom', 'idactions');

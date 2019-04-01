@@ -68,7 +68,7 @@ class renderer extends \plugin_renderer_base {
             foreach ($datas as $ligne) {
                 $table->add_data(array($ligne->name, $ligne->hierarchy, $ligne->description, $ligne->link));
             }
-            $output .= $table->print_html();
+            $output = $table->print_html();
         } else {
             $output .= $obj->get_no_training_message();
         }
