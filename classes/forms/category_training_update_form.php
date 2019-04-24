@@ -73,6 +73,12 @@ class category_training_update_form extends \moodleform {
             $training = trainings_factory::get_instance()->retrieve_training($category->get_id());
             $mform->setDefault('name', $training->get_name());
             $mform->disabledIf('name', 'edition', 'eq', 0);
+            $mform->addElement('date_selector', 'startdate', get_string('starttraining', 'tool_attestoodle'));
+            $mform->disabledIf('startdate', 'edition', 'eq', 0);
+            $mform->addElement('date_selector', 'enddate', get_string('endtraining', 'tool_attestoodle'));
+            $mform->disabledIf('enddate', 'edition', 'eq', 0);
+            $mform->addElement('text', 'duration', get_string('durationtraining', 'tool_attestoodle') , array("size" => 3));
+            $mform->disabledIf('duration', 'edition', 'eq', 0);
         }
 
         if ($idtemplate > -1) {

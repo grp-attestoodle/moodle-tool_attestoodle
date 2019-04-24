@@ -149,7 +149,7 @@ class certificate {
         $datebeg = $this->begindate->format($datformat);
         $dateend = $this->enddate->format($datformat);
 
-        $period = get_string('fromdate', 'tool_attestoodle', $datebeg) .
+        $period = get_string('fromdate', 'tool_attestoodle', $datebeg) . " " .
             get_string('todate', 'tool_attestoodle', $dateend);
 
         $certificateinfos = new \stdClass();

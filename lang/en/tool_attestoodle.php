@@ -287,3 +287,6 @@ $string['privacy:metadata:tool_attestoodle_value_log:creditedtime'] = 'Time cred
 $string['error_unknown_item'] = 'Unknown (the item has been deleted)';
 $string['totaltimetraining'] = 'Total time of training :';
 $string['nomilestone'] = 'No milestone sets';
+$string['starttraining'] = 'Start date of the training';
+$string['endtraining'] = 'End date of the training';
+$string['durationtraining'] = 'Theoretical duration of the training';

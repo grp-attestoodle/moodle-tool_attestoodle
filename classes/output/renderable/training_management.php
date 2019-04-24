@@ -50,6 +50,8 @@ class training_management implements \renderable {
     /** @var category the actual category we want to manage */
     private $category = null;
 
+    /** @var integer Id of the training. */
+    private $trainingid = null;
     /**
      * Constructor method that instanciates the form.
      * @param integer $categoryid Id of the category associate with training (nav bar)
@@ -68,6 +70,7 @@ class training_management implements \renderable {
             $idtraining = -1;
             $grp1 = null;
             $grp2 = null;
+            $training = null;
             if ($this->category->is_training()) {
                 $idtemplate = 0;
                 $idtraining = $DB->get_field('tool_attestoodle_training', 'id', ['categoryid' => $this->categoryid]);
@@ -83,6 +86,8 @@ class training_management implements \renderable {
                         $grp2 = '';
                     }
                 }
+                $training = trainings_factory::get_instance()->retrieve_training($this->categoryid);
+                $this->trainingid = $training->get_id();
             }
             $context = \context_coursecat::instance($this->categoryid);
             $editmode = has_capability('tool/attestoodle:managetraining', $context);
@@ -91,6 +96,10 @@ class training_management implements \renderable {
                         array('typepage' => 'trainingmanagement', 'categoryid' => $this->categoryid)),
                         array('data' => $this->category, 'idtemplate' => $idtemplate,
                         'idtraining' => $idtraining, 'editmode' => $editmode), 'get' );
+            if ($training) {
+                $this->form->set_data(array ('startdate' => $training->get_start(),
+                    'enddate' => $training->get_end(), 'duration' => $training->get_duration()));
+            }
             if ($idtemplate > -1) {
                 $this->form->set_data(array ('template' => $idtemplate, 'group1' => $grp1, 'group2' => $grp2));
             }
@@ -193,7 +202,8 @@ class training_management implements \renderable {
             } else {
                 $training = trainings_factory::get_instance()->retrieve_training($this->category->get_id());
                 if (!empty($training)) {
-                    $training->changename($datafromform->name);
+                    $training->change($datafromform->name, $datafromform->startdate,
+                        $datafromform->enddate, $datafromform->duration);
                     $nvxtemplate = $datafromform->template;
                     $idtraining = $DB->get_field('tool_attestoodle_training', 'id', ['categoryid' => $this->categoryid]);
                     $record = $DB->get_record('tool_attestoodle_train_style', ['trainingid' => $idtraining]);
@@ -287,7 +297,8 @@ class training_management implements \renderable {
             // Link to the milestones management of the training.
             $parametersmilestones = array(
                 'typepage' => 'managemilestones',
-                'categoryid' => $this->category->get_id()
+                'categoryid' => $this->category->get_id(),
+                'trainingid' => $this->trainingid
                 );
             $urlmilestones = new \moodle_url('/admin/tool/attestoodle/index.php', $parametersmilestones);
             $labelmilestones = get_string('training_management_manage_training_link', 'tool_attestoodle');
@@ -320,7 +331,8 @@ class training_management implements \renderable {
                     // Link to the learners list of the training.
                     $parameters = array(
                         'typepage' => 'learners',
-                        'categoryid' => $this->category->get_id()
+                        'categoryid' => $this->category->get_id(),
+                        'trainingid' => $this->trainingid
                     );
                     $url = new \moodle_url('/admin/tool/attestoodle/index.php', $parameters);
                     $label = get_string('training_management_training_details_link', 'tool_attestoodle');
@@ -363,7 +375,8 @@ class training_management implements \renderable {
                             array(
                                     'typepage' => 'trainingmanagement',
                                     'action' => 'deleteErrMilestone',
-                                    'categoryid' => $this->categoryid
+                                    'categoryid' => $this->categoryid,
+                                    'trainingid' => $this->trainingid
                             )
                     ),
                     get_string('btn_deletemilestonerr', 'tool_attestoodle'),
@@ -399,7 +412,8 @@ class training_management implements \renderable {
                             array(
                                     'typepage' => 'trainingmanagement',
                                     'action' => 'deleteNotification',
-                                    'categoryid' => $this->categoryid
+                                    'categoryid' => $this->categoryid,
+                                    'trainingid' => $this->trainingid
                             )
                     ),
                     get_string('btn_deletenotification', 'tool_attestoodle'),

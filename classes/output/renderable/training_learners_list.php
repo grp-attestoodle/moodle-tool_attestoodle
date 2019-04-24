@@ -95,7 +95,8 @@ class training_learners_list implements renderable {
 
         $this->form = new period_form(
                     new \moodle_url('/admin/tool/attestoodle/index.php',
-                        array('typepage' => 'learners', 'categoryid' => $training->get_categoryid())),
+                        array('typepage' => 'learners', 'categoryid' => $training->get_categoryid(),
+                            'trainingid' => $training->get_id())),
                         array(), 'post' );
 
         $stime = \DateTime::createFromFormat("Y-m-d", $this->thebegindate);
@@ -131,7 +132,9 @@ class training_learners_list implements renderable {
             $output .= \html_writer::link(
                     new \moodle_url(
                             '/admin/tool/attestoodle/index.php',
-                            array('typepage' => 'trainingmanagement', 'categoryid' => $this->training->get_categoryid())
+                            array('typepage' => 'trainingmanagement',
+                                'categoryid' => $this->training->get_categoryid(),
+                                'trainingid' => $this->training->get_id())
                     ),
                     get_string('backto_training_detail_btn_text', 'tool_attestoodle'),
                     array('class' => 'btn btn-default attestoodle-button'));
@@ -155,7 +158,8 @@ class training_learners_list implements renderable {
                                     'action' => 'downloadzip',
                                     'categoryid' => $this->training->get_categoryid(),
                                     'begindate' => $this->thebegindate,
-                                    'enddate' => $this->theenddate
+                                    'enddate' => $this->theenddate,
+                                    'trainingid' => $this->training->get_id()
                             )
                     ),
                     get_string('training_learners_list_download_zip_link', 'tool_attestoodle'),
@@ -219,7 +223,8 @@ class training_learners_list implements renderable {
                 'learner' => $o->get_id(),
                 'begindate' => $this->thebegindate,
                 'enddate' => $this->theenddate,
-                'categorylnk' => $this->training->get_categoryid());
+                'categorylnk' => $this->training->get_categoryid(),
+                'trainingid' => $this->training->get_id());
             $url = new \moodle_url('/admin/tool/attestoodle/index.php', $parameters);
             $label = get_string('training_learners_list_table_link_details', 'tool_attestoodle');
             $attributes = array('class' => 'attestoodle-button');

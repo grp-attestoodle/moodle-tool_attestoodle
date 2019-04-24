@@ -278,3 +278,6 @@ $string['privacy:metadata:tool_attestoodle_value_log:creditedtime'] = 'Temps cr�
 $string['error_unknown_item'] = 'Inconnu (l\'élément a été supprimé)';
 $string['totaltimetraining'] = 'Temps total de la formation :';
 $string['nomilestone'] = 'Aucun jalon définit';
+$string['starttraining'] = 'Date de début de la formation';
+$string['endtraining'] = 'Date de fin de la formation';
+$string['durationtraining'] = 'Durée théorique de la formation';

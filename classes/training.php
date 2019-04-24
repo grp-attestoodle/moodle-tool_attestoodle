@@ -44,6 +44,14 @@ class training {
     /** @var string The name of the training. */
     private $name;
 
+    /** @var int Start date of the training. */
+    private $dtstart;
+
+    /** @var int End date of the training. */
+    private $dtend;
+
+    /** @var int Theoretical duration of the training.*/
+    private $duration;
     /**
      * Constructor of the training class.
      *
@@ -73,6 +81,33 @@ class training {
     }
 
     /**
+     * Getter for the $start property.
+     *
+     * @return integer date start of the training.
+     */
+    public function get_start() {
+        return $this->dtstart;
+    }
+
+    /**
+     * Getter for the $end property.
+     *
+     * @return integer date end of the training.
+     */
+    public function get_end() {
+        return $this->dtend;
+    }
+
+    /**
+     * Getter for the $duration property.
+     *
+     * @return integer duration of the training.
+     */
+    public function get_duration() {
+        return $this->duration;
+    }
+
+    /**
      * Shortcut getter for the category $id property.
      *
      * @return integer Id of the training
@@ -96,13 +131,32 @@ class training {
     /**
      * Setter for property name, and save in bdd the value.
      * @param string $prop the new name of the training.
+     * @param int $dtstart the new start date of the training.
+     * @param int $dtend the new end date of the training.
+     * @param int $dtduration the new duration of the training.
      */
-    public function changename($prop) {
+    public function change($prop, $dtstart, $dtend, $dtduration) {
         if (empty($prop)) {
             return;
         }
+        $update = false;
         if ($this->name != $prop) {
             $this->name = $prop;
+            $update = true;
+        }
+        if ($this->dtstart != $dtstart) {
+            $this->dtstart = $dtstart;
+            $update = true;
+        }
+        if ($this->dtend != $dtend) {
+            $this->dtend = $dtend;
+            $update = true;
+        }
+        if ($this->duration != $dtduration) {
+            $this->duration = $dtduration;
+            $update = true;
+        }
+        if ($update) {
             db_accessor::get_instance()->updatetraining($this);
         }
     }
@@ -155,6 +209,33 @@ class training {
      */
     public function get_id() {
         return $this->id;
+    }
+
+    /**
+     * Setter for $start property.
+     *
+     * @param int $prop start to set for the training
+     */
+    public function set_start($prop) {
+        $this->dtstart = $prop;
+    }
+
+    /**
+     * Setter for $end property.
+     *
+     * @param int $prop end to set for the training
+     */
+    public function set_end($prop) {
+        $this->dtend = $prop;
+    }
+
+    /**
+     * Setter for $duration property.
+     *
+     * @param int $prop duration to set for the training
+     */
+    public function set_duration($prop) {
+        $this->duration = $prop;
     }
 
     /**

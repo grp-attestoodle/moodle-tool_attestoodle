@@ -46,10 +46,14 @@ $navlevel1 = get_string('navlevel1', 'tool_attestoodle');
 $PAGE->navbar->add($navlevel1, new moodle_url('/admin/tool/attestoodle/index.php', array()));
 $navlevel2 = get_string('navlevel2', 'tool_attestoodle');
 $PAGE->navbar->add($navlevel2, new moodle_url('/admin/tool/attestoodle/index.php',
-                            array('typepage' => 'trainingmanagement', 'categoryid' => $categoryid)));
+                            array('typepage' => 'trainingmanagement',
+                                'categoryid' => $categoryid,
+                                'trainingid' => $trainingid)));
 $navlevel3a = get_string('navlevel3a', 'tool_attestoodle');
 $PAGE->navbar->add($navlevel3a, new moodle_url('/admin/tool/attestoodle/index.php',
-                            array('typepage' => 'learners', 'categoryid' => $categoryid)));
+                            array('typepage' => 'learners',
+                                'categoryid' => $categoryid,
+                                'trainingid' => $trainingid)));
 
 $PAGE->set_url(new moodle_url(dirname(__FILE__) . '/preparedinf.php', [] ));
 $PAGE->set_title(get_string('certificategenerate', 'tool_attestoodle'));
@@ -134,7 +138,8 @@ $linkno = \html_writer::link(
                             array('typepage' => 'learners',
                             'categoryid' => $categoryid,
                             'begindate' => $begindate,
-                            'enddate' => $enddate)
+                            'enddate' => $enddate,
+                            'trainingid' => $trainingid)
                     ),
                     get_string('back'),
                     array('class' => 'btn btn-default attestoodle-button'));

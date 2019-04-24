@@ -120,6 +120,10 @@ class db_accessor extends singleton {
         $dataobject = new \stdClass();
         $dataobject->id = $training->get_id();
         $dataobject->name = $training->get_name();
+        $dataobject->startdate = $training->get_start();
+        $dataobject->enddate = $training->get_end();
+        $dataobject->duration = $training->get_duration();
+
         $dataobject->categoryid = $training->get_categoryid();
         self::$db->update_record('tool_attestoodle_training', $dataobject);
     }
@@ -239,7 +243,17 @@ class db_accessor extends singleton {
      * @return \stdClass Standard Moodle DB object
      */
     public function get_training_by_category($categoryid) {
-        return self::$db->get_record('tool_attestoodle_training', array('categoryid' => $categoryid));
+        return self::$db->get_records('tool_attestoodle_training', array('categoryid' => $categoryid));
+    }
+
+    /**
+     * Retrieves the attestoodle trainings in moodle DB, by his id.
+     *
+     * @param int $id the identifier of the training.
+     * @return \stdClass Standard Moodle DB object
+     */
+    public function get_training_by_id($id) {
+        return self::$db->get_record('tool_attestoodle_training', array('id' => $id));
     }
 
     /**

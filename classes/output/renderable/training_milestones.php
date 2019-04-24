@@ -44,7 +44,8 @@ class training_milestones implements \renderable {
     private $training;
     /** @var training_milestones_update_form The form used to manage milestones */
     private $form;
-
+    /** @var trainingid Actual identifier of training displayed */
+    private $trainingid;
     /**
      * Constructor method that computes training ID to an actual training.
      *
@@ -69,9 +70,12 @@ class training_milestones implements \renderable {
                 if (has_capability('tool/attestoodle:managemilestones', $context)) {
                     $modifallow = true;
                 }
+                $this->trainingid = required_param('trainingid', PARAM_INT);
                 $url = new \moodle_url(
                             '/admin/tool/attestoodle/index.php',
-                            ['typepage' => 'managemilestones', 'categoryid' => $this->training->get_categoryid()]);
+                            ['typepage' => 'managemilestones',
+                            'categoryid' => $this->training->get_categoryid(),
+                            'trainingid' => $this->trainingid]);
                 $this->form = new training_milestones_update_form($url,
                                     array(
                                             'data' => $this->training->get_courses(),
@@ -118,7 +122,9 @@ class training_milestones implements \renderable {
     private function goback($message) {
         $redirecturl = new \moodle_url(
                 '/admin/tool/attestoodle/index.php',
-                array('typepage' => 'trainingmanagement', 'categoryid' => $this->training->get_categoryid())
+                array('typepage' => 'trainingmanagement',
+                    'categoryid' => $this->training->get_categoryid(),
+                    'trainingid' => $this->trainingid)
         );
         redirect($redirecturl, $message, null, \core\output\notification::NOTIFY_INFO);
     }
@@ -144,7 +150,8 @@ class training_milestones implements \renderable {
                 'type' => $datafromform->typemod,
                 'namemod' => $datafromform->namemod,
                 'visibmod' => $datafromform->visibmod,
-                'restrictmod' => $datafromform->restrictmod
+                'restrictmod' => $datafromform->restrictmod,
+                'trainingid' => $this->trainingid
                 ]);
                 redirect($url);
                 return;
@@ -232,7 +239,9 @@ class training_milestones implements \renderable {
             $this->form = new training_milestones_update_form(
                     new \moodle_url(
                             '/admin/tool/attestoodle/index.php',
-                            ['typepage' => 'managemilestones', 'categoryid' => $this->training->get_categoryid()]
+                            ['typepage' => 'managemilestones',
+                            'categoryid' => $this->training->get_categoryid(),
+                            'trainingid' => $this->trainingid]
                     ),
                     array(
                         'data' => $this->training->get_courses(),
