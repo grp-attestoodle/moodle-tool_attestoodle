@@ -49,11 +49,13 @@ class training_milestones implements \renderable {
     /**
      * Constructor method that computes training ID to an actual training.
      *
-     * @param integer $categoryid The training ID requested
+     * @param integer $categoryid The category ID requested.
+     * @param integer $trainingid The training ID requested.
      */
-    public function __construct($categoryid) {
+    public function __construct($categoryid, $trainingid) {
         $this->categoryid = $categoryid;
-        $this->training = trainings_factory::get_instance()->retrieve_training($categoryid);
+        $this->training = trainings_factory::get_instance()->retrieve_training_by_id($trainingid);
+
         $type = optional_param('type', null, PARAM_ALPHANUMEXT);
         $namemod = optional_param('namemod', null, PARAM_ALPHANUMEXT);
         $visibmod = optional_param('visibmod', 0, PARAM_INT);

@@ -33,6 +33,7 @@ require_once($CFG->libdir.'/tablelib.php');
 use tool_attestoodle\factories\categories_factory;
 use tool_attestoodle\factories\trainings_factory;
 use tool_attestoodle\forms\category_training_update_form;
+use tool_attestoodle\forms\add_course_form;
 use tool_attestoodle\utils\db_accessor;
 /**
  * Display information of a single training in Attestoodle.
@@ -43,6 +44,8 @@ use tool_attestoodle\utils\db_accessor;
 class training_management implements \renderable {
     /** @var category_training_update_form The form used to manage trainings */
     private $form;
+    /** @var ... form use to add course.*/
+    private $form2;
 
     /** @var integer The category ID that we want to manage */
     private $categoryid = null;
@@ -104,6 +107,12 @@ class training_management implements \renderable {
                 $this->form->set_data(array ('template' => $idtemplate, 'group1' => $grp1, 'group2' => $grp2));
             }
             $this->handle_form();
+            if ($editmode) {
+                $this->form2 = new add_course_form(
+                    new \moodle_url('/admin/tool/attestoodle/classes/training/course_outof_categ.php',
+                        array('categoryid' => $this->categoryid, 'trainingid' => $idtraining)),
+                        array('data' => $this->category), 'get');
+            }
         } else {
             $PAGE->set_heading(get_string('training_management_main_title_no_category', 'tool_attestoodle'));
         }
@@ -328,6 +337,7 @@ class training_management implements \renderable {
                     // Link to the milestones management of the training.
                     $output .= \html_writer::link($urlmilestones, $labelmilestones, $attributesmilestones);
                     $output .= "<br /> ";
+                    $output .= $this->form2->render();
                     // Link to the learners list of the training.
                     $parameters = array(
                         'typepage' => 'learners',
@@ -342,6 +352,7 @@ class training_management implements \renderable {
                     $output .= "<br /> " . get_string('nomilestone', 'tool_attestoodle') . "&nbsp;";
                     $output .= \html_writer::link($urlmilestones, $labelmilestones, $attributesmilestones);
                     $output .= "<br /> ";
+                    $output .= $this->form2->render();
                 }
             }
         }

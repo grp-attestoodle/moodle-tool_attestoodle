@@ -48,7 +48,7 @@ class courses_factory extends singleton {
      * @param int $trainingid The training ID whose course is being searched
      * @return course The course newly created
      */
-    private function create($dbcourse, $withlearner, $trainingid) {
+    public function create($dbcourse, $withlearner, $trainingid) {
         $id = $dbcourse->id;
         $name = $dbcourse->fullname;
 

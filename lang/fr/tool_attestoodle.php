@@ -281,3 +281,7 @@ $string['nomilestone'] = 'Aucun jalon définit';
 $string['starttraining'] = 'Date de début de la formation';
 $string['endtraining'] = 'Date de fin de la formation';
 $string['durationtraining'] = 'Durée théorique de la formation';
+$string['onecoursemilestonetitle'] = 'Jalon du cours {$a}';
+$string['errmorecours'] = ' cours avec un nom abrégé composé de "{$a}"';
+$string['errnoactivity'] = 'Aucune activité avec suivi d\'achèvement présente dans le cours  {$a}';
+$string['errnothingtosearch'] = 'Vous devez saisir un nom abrégé de cours';

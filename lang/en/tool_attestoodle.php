@@ -290,3 +290,7 @@ $string['nomilestone'] = 'No milestone sets';
 $string['starttraining'] = 'Start date of the training';
 $string['endtraining'] = 'End date of the training';
 $string['durationtraining'] = 'Theoretical duration of the training';
+$string['onecoursemilestonetitle'] = 'milestone of the "{$a}" course';
+$string['errmorecours'] = ' courses with a short name including "{$a}"';
+$string['errnoactivity'] = 'No activities with completion present in the course {$a}';
+$string['errnothingtosearch'] = 'You must enter a short course name';

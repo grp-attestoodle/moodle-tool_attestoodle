@@ -129,7 +129,7 @@ switch($page) {
                                                 array('typepage' => $page,
                                                     'categoryid' => $categoryid,
                                                     'trainingid' => $trainingid)));
-        $renderable = new renderable\training_milestones($categoryid);
+        $renderable = new renderable\training_milestones($categoryid, $trainingid);
         $PAGE->set_heading($renderable->get_heading());
 
         break;

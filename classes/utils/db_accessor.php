@@ -576,4 +576,15 @@ class db_accessor extends singleton {
         return self::$db->get_record('tool_attestoodle_user_style',
                 array('userid' => $userid, 'trainingid' => $trainingid));
     }
+
+    /**
+     * Lists the courses whose names like "%$name%".
+     *
+     * @param string $name element search in the shortname of course.
+     * @return The list of courses whose shortname like %$name%.
+     */
+    public function find_course($name) {
+        $req = "select * from {course} where shortname like '%" . $name . "%'";
+        return self::$db->get_records_sql($req, array());
+    }
 }
