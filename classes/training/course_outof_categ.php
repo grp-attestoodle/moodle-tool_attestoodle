@@ -113,7 +113,7 @@ function handle_form($categoryid, $trainingid, $form, $course) {
     $datafromform = $form->get_submitted_data();
 
     foreach ($datafromform as $key => $value) {
-        $resulthandling = handle_form_activity($key, $value, $training, $course);
+        handle_form_activity($key, $value, $training, $course);
     }
 }
 

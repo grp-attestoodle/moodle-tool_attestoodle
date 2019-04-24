@@ -280,7 +280,7 @@ class training_management implements \renderable {
             $output .= get_string('training_management_unknow_category_id', 'tool_attestoodle');
         } else { // Add a new training ?
             if ($this->trainingid == -1) {
-                $trainingid = trainings_factory::get_instance()->find_training($this->categoryid);
+                trainings_factory::get_instance()->find_training($this->categoryid);
                 trainings_factory::get_instance()->create_trainings_4_categ($this->categoryid);
                 $nbtotal = trainings_factory::get_instance()->get_count_training_by_categ($this->categoryid);
                 $tabtraining = trainings_factory::get_instance()->get_trainings();
@@ -343,7 +343,7 @@ class training_management implements \renderable {
 
                     $output .= "<br/><legend class='ftogger'><a class='fheader' href='#'>" .
                         get_string('learners', 'tool_attestoodle') . "</a></legend>";
-                
+
                     $parameters = array(
                         'categoryid' => $this->category->get_id(),
                         'trainingid' => $this->trainingid
@@ -352,7 +352,6 @@ class training_management implements \renderable {
                     $label = get_string('selectlearner', 'tool_attestoodle');
                     $attributes = array('class' => 'btn btn-default attestoodle-button');
                     $output .= \html_writer::link($url, $label, $attributes);
-
 
                     // Link to the learners list of the training.
                     $parameters = array(

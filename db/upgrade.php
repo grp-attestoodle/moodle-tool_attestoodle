@@ -183,15 +183,18 @@ function xmldb_tool_attestoodle_upgrade($oldversion) {
     // Create table learner - template.
     if ($oldversion < 2019030825) {
         create_table_learner_template($dbman);
+        upgrade_plugin_savepoint(true, 2019030825, 'tool', 'attestoodle');
     }
 
     // Update table tool_attestoodle_training.
     if ($oldversion < 2019040606) {
         update_table_training();
+        upgrade_plugin_savepoint(true, 2019040606, 'tool', 'attestoodle');
     }
 
     if ($oldversion < 2019041602) {
         create_table_learner($dbman);
+        upgrade_plugin_savepoint(true, 2019041602, 'tool', 'attestoodle');
     }
     return true;
 }
@@ -225,8 +228,6 @@ function create_table_learner($dbman) {
     if (!$dbman->field_exists($table, $field)) {
         $dbman->add_field($table, $field);
     }
-
-    upgrade_plugin_savepoint(true, 2019041602, 'tool', 'attestoodle');
 }
 
 /**
@@ -252,7 +253,6 @@ function create_table_learner_template($dbman) {
         $dbman->drop_table($table);
     }
     $dbman->create_table($table);
-    upgrade_plugin_savepoint(true, 2019030825, 'tool', 'attestoodle');
 }
 
 /**
@@ -292,5 +292,4 @@ function update_table_training() {
         $item->nextlaunch = 0;
         $DB->update_record("tool_attestoodle_training", $item);
     }
-    upgrade_plugin_savepoint(true, 2019040606, 'tool', 'attestoodle');
 }
