@@ -243,52 +243,6 @@ class training_learners_list implements renderable {
     }
 
     /**
-     * Method that throws a notification to user to let him know the results of
-     * the certificate files generation (number of new files, overwritten ones and
-     * the ones in error).
-     *
-     * @param integer $newfiles The number of new file generated
-     * @param integer $filesoverwritten The number of new file that overwritten an identical old one
-     * @param integer $errors The number of file creation in error
-     */
-    private function notify_results($newfiles, $filesoverwritten, $errors) {
-        $notificationmessage = "";
-
-        if ($newfiles > 0 || $filesoverwritten > 0) {
-            if ($errors > 0) {
-                // Generated with errors !
-                $notificationmessage .= \get_string('training_learners_list_notification_message_with_error_one',
-                    'tool_attestoodle') . "<br />";
-                $notificationmessage .= \get_string('training_learners_list_notification_message_with_error_two',
-                    'tool_attestoodle', $newfiles) . "<br />";
-                $notificationmessage .= \get_string('training_learners_list_notification_message_with_error_three',
-                    'tool_attestoodle', $filesoverwritten) . "<br />";
-                $notificationmessage .= \get_string('training_learners_list_notification_message_with_error_viva_algerie',
-                    'tool_attestoodle', $errors);
-                \core\notification::warning($notificationmessage);
-            } else { // Generated with success.
-                $notificationmessage .= \get_string('training_learners_list_notification_message_success_one',
-                    'tool_attestoodle') . "<br />";
-                $notificationmessage .= \get_string('training_learners_list_notification_message_success_two',
-                    'tool_attestoodle', $newfiles) . "<br />";
-                $notificationmessage .= \get_string('training_learners_list_notification_message_success_three',
-                    'tool_attestoodle', $filesoverwritten);
-                \core\notification::success($notificationmessage);
-            }
-        } else if ($errors > 0) { // All files in error !
-            $notificationmessage .= \get_string('training_learners_list_notification_message_error_one',
-                'tool_attestoodle') . "<br />";
-            $notificationmessage .= \get_string('training_learners_list_notification_message_error_two',
-                'tool_attestoodle', $errors);
-            \core\notification::error($notificationmessage);
-        } else { // No file generated !
-            $notificationmessage .= \get_string('training_learners_list_notification_message_no_file',
-                'tool_attestoodle');
-            \core\notification::warning($notificationmessage);
-        }
-    }
-
-    /**
      * The method retrieves all the certificate files on the server filtered by
      * the current training and period requested, then stores them in a new
      * ZIP file, then sends the archive to the client.

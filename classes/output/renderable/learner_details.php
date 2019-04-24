@@ -147,8 +147,7 @@ class learner_details implements \renderable {
         $this->form2 = new learner_certificate_form(
                     new \moodle_url('/admin/tool/attestoodle/index.php',
                         array('typepage' => 'learnerdetails', 'categorylnk' => $this->categorylnk, 'learner' => $this->learnerid)),
-                        array('userid' => $this->learnerid,
-                        'categoryid' => $categorylnk,
+                        array('categoryid' => $categorylnk,
                         'idtraining' => $trainingid,
                         'idtemplate' => $idtemplate), 'get' );
 

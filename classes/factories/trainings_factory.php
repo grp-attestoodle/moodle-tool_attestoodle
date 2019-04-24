@@ -121,7 +121,6 @@ class trainings_factory extends singleton {
         $trainingtoadd->set_name($name);
 
         $this->trainings[] = $trainingtoadd;
-        $categoryid = $trainingtoadd->get_categoryid();
         $courses = courses_factory::get_instance()->retrieve_courses_of_training($id);
 
         // Add courses to the training.

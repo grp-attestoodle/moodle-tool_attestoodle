@@ -274,13 +274,14 @@ class db_accessor extends singleton {
         self::$db->delete_records('tool_attestoodle_milestone', array('trainingid' => $training->id));
 
         // Delete generate files.
-        $sql = "SELECT distinct(filename) as filename
+        $sql = "SELECT distinct filename, learnerid
                   FROM {tool_attestoodle_certif_log}
                  where trainingid = :trainingid";
         $result = self::$db->get_records_sql($sql, ['trainingid' => $training->id]);
+        $fs = get_file_storage();
         foreach ($result as $record) {
             $fileinfo = array(
-                'contextid' => $usercontext->id,
+                'contextid' => $record->learnerid,
                 'component' => 'tool_attestoodle',
                 'filearea' => 'certificates',
                 'filepath' => '/',
