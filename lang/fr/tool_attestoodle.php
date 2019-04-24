@@ -80,7 +80,7 @@ $string['training_management_warning_no_submitted_data'] = 'Aucune donnée envoy
 $string['training_management_warning_invalid_form'] = "Le formulaire n'est pas valide";
 $string['training_management_info_form_canceled'] = 'Le formulaire a été annulé';
 $string['training_management_submit_added'] = 'La catégorie a été ajoutée à la liste des formations Attestoodle';
-$string['training_management_submit_removed'] = 'La catégorie a été retirée de la liste des formations Attestoodle';
+$string['training_management_submit_removed'] = 'La formation a été supprimée de la liste des formations Attestoodle';
 $string['training_management_submit_unchanged'] = 'Aucune modification sur la catégorie';
 $string['training_management_submit_error'] = "Une erreur est survenue pendant l'enregistrement en BDD. Veuillez réessayer plus tard.";
 
@@ -285,3 +285,5 @@ $string['onecoursemilestonetitle'] = 'Jalon du cours {$a}';
 $string['errmorecours'] = ' cours avec un nom abrégé composé de "{$a}"';
 $string['errnoactivity'] = 'Aucune activité avec suivi d\'achèvement présente dans le cours  {$a}';
 $string['errnothingtosearch'] = 'Vous devez saisir un nom abrégé de cours';
+$string['notifytotaltraining'] = 'Il existe déjà {$a} formations pour cette catégorie dont :';
+$string['linktotraininglst'] = 'Accéder à la liste des formations';

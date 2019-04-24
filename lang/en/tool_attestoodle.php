@@ -294,3 +294,5 @@ $string['onecoursemilestonetitle'] = 'milestone of the "{$a}" course';
 $string['errmorecours'] = ' courses with a short name including "{$a}"';
 $string['errnoactivity'] = 'No activities with completion present in the course {$a}';
 $string['errnothingtosearch'] = 'You must enter a short course name';
+$string['notifytotaltraining'] = 'There are already {$a} training courses for this category including : ';
+$string['linktotraininglst'] = 'Access the list of training courses';

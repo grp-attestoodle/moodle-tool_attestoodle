@@ -42,6 +42,7 @@ class trainings_factory extends singleton {
 
     /** @var training[] Array containing all the trainings */
     private $trainings;
+
     /** @var number training per page.*/
     private $perpage = 10;
 
@@ -60,8 +61,45 @@ class trainings_factory extends singleton {
      * @param int $numpage the page number searched.
      */
     public function create_trainings($numpage = 0) {
+        $this->trainings = array();
         // Must call categories_factory before find trainings.
-        $dbtrainings = db_accessor::get_instance()->get_page_trainings($numpage, $this->perpage);
+        $dbtrainings = db_accessor::get_instance()->get_page_trainings($numpage * 10, 10);
+
+        foreach ($dbtrainings as $dbtr) {
+            $catid = $dbtr->categoryid;
+            $cat = categories_factory::get_instance()->get_category($catid);
+            if (!empty($cat)) {
+                $trainingtoadd = new training($cat);
+                $trainingtoadd->set_id($dbtr->id);
+                $trainingtoadd->set_name($dbtr->name);
+                $trainingtoadd->set_start($dbtr->startdate);
+                $trainingtoadd->set_end($dbtr->enddate);
+                $trainingtoadd->set_duration($dbtr->duration);
+                $this->trainings[] = $trainingtoadd;
+            }
+        }
+    }
+
+    /**
+     * Provides the number of training in a category.
+     *
+     * @param int $categoryid the identifier of the category where we compute the number of training.
+     * return total training in the categorie.
+     */
+    public function get_count_training_by_categ($categoryid) {
+        return db_accessor::get_instance()->get_count_training_by_categ($categoryid);
+    }
+
+    /**
+     * List the first page of the category's training.
+     * All the training are place in array. You must use get_trainings to get the list.
+     *
+     * @param int $categoryid the identifier of the category where we search training.
+     */
+    public function create_trainings_4_categ($categoryid) {
+        $this->trainings = array();
+        // Must call categories_factory before find trainings.
+        $dbtrainings = db_accessor::get_instance()->get_page_trainings_categ(0, 10, $categoryid);
 
         foreach ($dbtrainings as $dbtr) {
             $catid = $dbtr->categoryid;
@@ -99,11 +137,11 @@ class trainings_factory extends singleton {
      * @param int $trainingid the identifier of the training.
      */
     public function create_training_by_category($categoryid, $trainingid) {
-        if ($trainingid != -1) {
+        if ($trainingid > 0) {
             $dbtr = db_accessor::get_instance()->get_training_by_id($trainingid);
             $cat = categories_factory::get_instance()->get_category($dbtr->categoryid);
             if (!empty($cat)) {
-                $this->create4learner($cat, $dbtr->id, $dbtr->name, $dbtr);
+                return $this->create4learner($cat, $dbtr->id, $dbtr->name, $dbtr);
             }
         } else {
             $dbtr = db_accessor::get_instance()->get_training_by_category($categoryid);
@@ -111,7 +149,7 @@ class trainings_factory extends singleton {
                 $catid = $dbtr->categoryid;
                 $cat = categories_factory::get_instance()->get_category($catid);
                 if (!empty($cat)) {
-                    $this->create4learner($cat, $dbtr->id, $dbtr->name, $trainingid);
+                    return $this->create4learner($cat, $dbtr->id, $dbtr->name, $trainingid);
                 }
             }
         }
@@ -164,7 +202,9 @@ class trainings_factory extends singleton {
         $nb = 0;
         $lastid = -1;
         foreach ($dbtr as $record) {
-            $lastid = $record->id;
+            if (isset($record->id)) {
+                $lastid = $record->id;
+            }
             $nb++;
         }
         if ($nb == 1) {
@@ -219,6 +259,7 @@ class trainings_factory extends singleton {
         $trainingtoadd = new training($category);
         $trainingtoadd->set_id($id);
         $trainingtoadd->set_name($name);
+        $trainingtoadd->set_start(\time());
 
         $this->trainings[] = $trainingtoadd;
         $categoryid = $trainingtoadd->get_categoryid();
@@ -360,7 +401,16 @@ class trainings_factory extends singleton {
         } else {
             return false;
         }
+    }
 
+    /**
+     * Remove a training in DB by ID.
+     *
+     * @param int $trainingid The category ID corresponding to the training to remove
+     */
+    public function remove_training_by_id($trainingid) {
+        // Call delete in DB.
+        db_accessor::get_instance()->delete_training_by_id($trainingid);
     }
 
     /**
@@ -373,9 +423,10 @@ class trainings_factory extends singleton {
         $lastid = db_accessor::get_instance()->insert_training($category->get_id());
 
         // If OK, call $this->create with the category object.
-        $this->create($category, $lastid, "");
-
-        return true;
+        $lib = $category->get_name() . "_" . strval(\time());
+        $training = $this->create($category, $lastid, $lib);
+        db_accessor::get_instance()->updatetraining($training);
+        return $lastid;
     }
 }
 

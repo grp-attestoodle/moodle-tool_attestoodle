@@ -55,16 +55,16 @@ class category_training_update_form extends \moodleform {
         $label = get_string('training_management_checkbox_label', 'tool_attestoodle');
 
         $idtemplate = $this->_customdata['idtemplate'];
-        $idtraining = $this->_customdata['idtraining'];
+        $trainingid = $this->_customdata['trainingid'];
         $category = $this->_customdata['data'];
         $istraining = $category->is_training();
 
-        if (!$istraining && $editmode == 0) {
-            $mform->addElement("static", null, null, get_string('nottraining', 'tool_attestoodle'));
-        } else {
-            $mform->addElement("advcheckbox", $name, $label);
-            $mform->setDefault($name, $istraining);
-            $mform->disabledIf($name, 'edition', 'eq', 0);
+        if ($idtemplate == -1 && $editmode == 1) {
+            $mform->addElement("static", null, null, 'Voulez vous créer une nouvelle formation ?');
+            $group = array();
+            $group[] =& $mform->createElement('submit', 'create_yes', get_string('yes'), array('class' => 'send-button'));
+            $group[] =& $mform->createElement('submit', 'create_no', get_string('no'), array('class' => 'send-button'));
+            $mform->addGroup($group, 'buttongroup', '', ' ', false);
         }
 
         if ($istraining) {
@@ -96,7 +96,7 @@ class category_training_update_form extends \moodleform {
             if (has_capability('tool/attestoodle:viewtemplate', $context)) {
                 $previewlink = '<a target="preview" href="' . $CFG->wwwroot .
                     '/admin/tool/attestoodle/classes/gabarit/view_export.php?templateid=' . $idtemplate .
-                    '&trainingid=' . $idtraining . '" class= "btn-create">'.
+                    '&trainingid=' . $trainingid . '" class= "btn-create">'.
                     get_string('preview', 'tool_attestoodle').'</a>';
                 $group[] =& $mform->createElement("static", null, null, $previewlink);
             }
@@ -124,8 +124,15 @@ class category_training_update_form extends \moodleform {
             $mform->disabledIf('group2', 'edition', 'eq', 0);
             $mform->setExpanded('templatesection', false);
         }
-        if ($editmode == 1) {
-            $this->add_action_buttons(false);
+        if ($editmode == 1 && $idtemplate != -1) {
+            $mform->addElement('header', 'actionsection', get_string('actions'));
+            $actionbuttongroup = array();
+            $actionbuttongroup[] =& $mform->createElement('submit', 'save', get_string('savechanges'),
+                array('class' => 'send-button'));
+            $actionbuttongroup[] =& $mform->createElement('submit', 'delete', get_string('delete'),
+                array('class' => 'cancel-button'));
+            $mform->addGroup($actionbuttongroup, 'actionbuttongroup', '', ' ', false);
+            $mform->setExpanded('actionsection', true);
         }
     }
 

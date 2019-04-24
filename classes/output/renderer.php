@@ -53,6 +53,7 @@ class renderer extends \plugin_renderer_base {
             $table = new \flexible_table('training_lst');
             $table->define_columns(array('idnom', 'idhiearchie', 'iddescription', 'idactions'));
             $table->define_headers($obj->get_table_head());
+            $page = optional_param('page', 0, PARAM_INT);
             $parameters = array('typepage' => 'trainingslist');
             $url = new \moodle_url('/admin/tool/attestoodle/index.php', $parameters);
 

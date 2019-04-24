@@ -66,10 +66,6 @@ switch($page) {
         $iconhelp = 'UrlHlpTo_training_management';
         $categoryid = required_param('categoryid', PARAM_INT);
         $trainingid = optional_param('trainingid', -1, PARAM_INT);
-        if ($trainingid == -1) {
-            $trainingid = trainings_factory::get_instance()->find_training($categoryid);
-            // If -2 multi training, -1 new training.
-        }
 
         trainings_factory::get_instance()->create_training_by_category($categoryid, $trainingid);
 
@@ -101,7 +97,7 @@ switch($page) {
             db_accessor::get_instance()->update_milestones($trainingid);
         }
 
-        $renderable = new renderable\training_management($categoryid);
+        $renderable = new renderable\training_management($categoryid, $trainingid);
         break;
     case 'managemilestones':
         $iconhelp = 'UrlHlpTo_manage_milestones';
@@ -277,14 +273,14 @@ switch($page) {
     case 'trainingslist':
     default:
         $iconhelp = 'UrlHlpTo_trainings_list';
-        $page = optional_param('page', 0, PARAM_INT);
-        trainings_factory::get_instance()->create_trainings($page);
+        $thepage = optional_param('page', 0, PARAM_INT);
+
         $PAGE->set_url(new moodle_url($toolpath . '/index.php'));
         $PAGE->set_title(get_string('trainings_list_page_title', 'tool_attestoodle'));
         $PAGE->set_heading(get_string('trainings_list_main_title', 'tool_attestoodle'));
 
         require_capability('tool/attestoodle:displaytrainings', $context);
-
+        trainings_factory::get_instance()->create_trainings($thepage);
         $renderable = new renderable\trainings_list(trainings_factory::get_instance()->get_trainings());
 
         break;

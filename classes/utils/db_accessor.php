@@ -269,6 +269,29 @@ class db_accessor extends singleton {
     }
 
     /**
+     * List the trainings of one category.
+     *
+     * @param int $numpage the page number searched.
+     * @param int $perpage the number of records per page.
+     * @param int $categoryid The category ID that we want to list the trainings.
+     * @return \stdClass Standard Moodle DB object of tool_attestoodle_training table.
+     */
+    public function get_page_trainings_categ($numpage, $perpage, $categoryid) {
+        $req = 'select * from {tool_attestoodle_training} where categoryid = ? order by id desc';
+        return self::$db->get_recordset_sql($req, array($categoryid), $numpage, $perpage);
+    }
+
+    /**
+     * Retrieve count training existing in a category.
+     *
+     * @param int $categoryid The category ID that we want to count the trainings.
+     * @return the number of training for the category.
+     */
+    public function get_count_training_by_categ($categoryid) {
+        return self::$db->count_records_sql("SELECT COUNT(id) from {tool_attestoodle_training} where categoryid = ". $categoryid);
+    }
+
+    /**
      * Retrieve count training.
      */
     public function get_training_matchcount() {
@@ -278,20 +301,19 @@ class db_accessor extends singleton {
     /**
      * Delete a training in training table based on the category ID.
      *
-     * @param int $categoryid The category ID that we want to delete
+     * @param int $trainingid The training ID that we want to delete
      */
-    public function delete_training($categoryid) {
-        $training = self::$db->get_record('tool_attestoodle_training', array('categoryid' => $categoryid));
-        self::$db->delete_records('tool_attestoodle_training', array('categoryid' => $categoryid));
-        self::$db->delete_records('tool_attestoodle_train_style', array('trainingid' => $training->id));
-        self::$db->delete_records('tool_attestoodle_user_style', array('trainingid' => $training->id));
-        self::$db->delete_records('tool_attestoodle_milestone', array('trainingid' => $training->id));
+    public function delete_training_by_id($trainingid) {
+        self::$db->delete_records('tool_attestoodle_training', array('id' => $trainingid));
+        self::$db->delete_records('tool_attestoodle_train_style', array('trainingid' => $trainingid));
+        self::$db->delete_records('tool_attestoodle_user_style', array('trainingid' => $trainingid));
+        self::$db->delete_records('tool_attestoodle_milestone', array('trainingid' => $trainingid));
 
         // Delete generate files.
         $sql = "SELECT distinct filename, learnerid
                   FROM {tool_attestoodle_certif_log}
                  where trainingid = :trainingid";
-        $result = self::$db->get_records_sql($sql, ['trainingid' => $training->id]);
+        $result = self::$db->get_records_sql($sql, ['trainingid' => $trainingid]);
         $fs = get_file_storage();
         foreach ($result as $record) {
             $fileinfo = array(
@@ -314,15 +336,26 @@ class db_accessor extends singleton {
                  WHERE id IN (SELECT launchid
                                 FROM {tool_attestoodle_certif_log}
                                WHERE trainingid = :trainingid)";
-        self::$db->execute($sql, ['trainingid' => $training->id]);
+        self::$db->execute($sql, ['trainingid' => $trainingid]);
 
         $sql = "DELETE from {tool_attestoodle_value_log}
                  WHERE certificateid IN (SELECT id
                                 FROM {tool_attestoodle_certif_log}
                                WHERE trainingid = :trainingid)";
-        self::$db->execute($sql, ['trainingid' => $training->id]);
+        self::$db->execute($sql, ['trainingid' => $trainingid]);
 
-        self::$db->delete_records('tool_attestoodle_certif_log', array('trainingid' => $training->id));
+        self::$db->delete_records('tool_attestoodle_certif_log', array('trainingid' => $trainingid));
+    }
+
+    /**
+     * Delete a training in training table based on the category ID.
+     *
+     * @param int $categoryid The category ID that we want to delete
+     */
+    public function delete_training($categoryid) {
+        $training = self::$db->get_record('tool_attestoodle_training', array('categoryid' => $categoryid));
+        self::delete_training_by_id($training->id);
+        self::$db->delete_records('tool_attestoodle_training', array('categoryid' => $categoryid));
     }
 
     /**
@@ -340,7 +373,8 @@ class db_accessor extends singleton {
         $record->trainingid = $idtraining;
         $record->templateid = $template->id;
         $record->grpcriteria1 = 'coursename';
-        return self::$db->insert_record('tool_attestoodle_train_style', $record);
+        self::$db->insert_record('tool_attestoodle_train_style', $record);
+        return $idtraining;
     }
 
     /**
