@@ -170,12 +170,13 @@ class trainings_factory extends singleton {
         $trainingtoadd = new training($category);
         $trainingtoadd->set_id($id);
         $trainingtoadd->set_name($name);
-        if ($dbtr != -1) {
+        if ($dbtr instanceof \stdClass) {
             $trainingtoadd->set_start($dbtr->startdate);
             $trainingtoadd->set_end($dbtr->enddate);
             $trainingtoadd->set_duration($dbtr->duration);
         }
         $this->trainings[] = $trainingtoadd;
+
         $courses = courses_factory::get_instance()->retrieve_courses_of_training($id);
 
         // Add courses to the training.

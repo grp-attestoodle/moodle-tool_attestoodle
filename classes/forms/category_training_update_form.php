@@ -78,6 +78,7 @@ class category_training_update_form extends \moodleform {
             $mform->addElement('date_selector', 'enddate', get_string('endtraining', 'tool_attestoodle'));
             $mform->disabledIf('enddate', 'edition', 'eq', 0);
             $mform->addElement('text', 'duration', get_string('durationtraining', 'tool_attestoodle') , array("size" => 3));
+            $mform->setType('duration', PARAM_INT);
             $mform->disabledIf('duration', 'edition', 'eq', 0);
         }
 

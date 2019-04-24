@@ -315,7 +315,8 @@ class training_management implements \renderable {
             $attributesmilestones = array('class' => 'attestoodle-button');
 
             if ($this->category->is_training()) {
-                $output .= "<br/>";
+                $output .= "<br/><legend class='ftogger'><a class='fheader' href='#'>" .
+                    get_string('milestones', 'tool_attestoodle') . "</a></legend>";
 
                 $training = trainings_factory::get_instance()->retrieve_training($this->category->get_id());
                 $tempstotal = db_accessor::get_instance()->is_milestone_set($training->get_id());
@@ -339,6 +340,20 @@ class training_management implements \renderable {
                     $output .= \html_writer::link($urlmilestones, $labelmilestones, $attributesmilestones);
                     $output .= "<br /> ";
                     $output .= $this->form2->render();
+
+                    $output .= "<br/><legend class='ftogger'><a class='fheader' href='#'>" .
+                        get_string('learners', 'tool_attestoodle') . "</a></legend>";
+                
+                    $parameters = array(
+                        'categoryid' => $this->category->get_id(),
+                        'trainingid' => $this->trainingid
+                    );
+                    $url = new \moodle_url('/admin/tool/attestoodle/classes/training/select_learners.php', $parameters);
+                    $label = get_string('selectlearner', 'tool_attestoodle');
+                    $attributes = array('class' => 'btn btn-default attestoodle-button');
+                    $output .= \html_writer::link($url, $label, $attributes);
+
+
                     // Link to the learners list of the training.
                     $parameters = array(
                         'typepage' => 'learners',

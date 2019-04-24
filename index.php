@@ -190,7 +190,7 @@ switch($page) {
         if (count($renderable->training->get_learners()) == 0) {
             $redirecturl = new \moodle_url(
                 '/admin/tool/attestoodle/index.php',
-                array('typepage' => 'trainingmanagement', 'categoryid' => $categoryid));
+                array('typepage' => 'trainingmanagement', 'categoryid' => $categoryid, 'trainingid' => $trainingid));
             $message = get_string('infonostudent', 'tool_attestoodle');
             redirect($redirecturl, $message, null, \core\output\notification::NOTIFY_INFO);
             return;

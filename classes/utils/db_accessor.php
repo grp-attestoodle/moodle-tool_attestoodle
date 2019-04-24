@@ -195,6 +195,125 @@ class db_accessor extends singleton {
     }
 
     /**
+     * Test if a learner is enrol in the training.
+     *
+     * @param int $trainingid Id of the training.
+     */
+    public function nolearner($trainingid) {
+        return ! self::$db->record_exists('tool_attestoodle_learner', array('trainingid' => $trainingid));
+    }
+
+    /**
+     * Determines the learners in the training from the learners enrolled in at least one course with milestones.
+     *
+     * @param int $trainingid Id of the training where enrol learner.
+     * @param int $categoryid Id of the category of the training.
+     */
+    public function insert_learner($trainingid, $categoryid) {
+        $req = "select distinct course
+                  from {tool_attestoodle_milestone}
+                 where trainingid = ?";
+        $result = self::$db->get_records_sql($req, array($trainingid));
+        $insertab = array();
+        foreach ($result as $record) {
+            $learnertab = self::get_learners_by_course($record->course);
+            foreach ($learnertab as $learner) {
+                $insertab[$learner->id] = $learner->id;
+            }
+        }
+
+        $dataobject = new \stdClass();
+        $dataobject->trainingid = $trainingid;
+        $dataobject->categoryid = $categoryid;
+        $dataobject->selected = $categoryid;
+        $dataobject->resultcriteria = 'new';
+        foreach ($insertab as $learner) {
+            if (! self::$db->record_exists('tool_attestoodle_learner', array('trainingid' => $trainingid, 'userid' => $learner))) {
+                $dataobject->userid = $learner;
+                self::$db->insert_record('tool_attestoodle_learner', $dataobject);
+            }
+        }
+    }
+
+    /**
+     * Load a learner page from the training.
+     *
+     * @param int $numpage number of the line to be loaded.
+     * = $number page x number line per page.
+     * @param int $perpage number of record per page.
+     * @param int $trainingid Id of the training containing the learners to load.
+     * @param string $orderby sql order.
+     */
+    public function get_page_learner($numpage, $perpage, $trainingid, $orderby) {
+        $req = 'select u.id, u.username as username, u.lastname as lastname, u.firstname as firstname,
+                        u.email as email, l.selected as selected, l.resultcriteria as resultcriteria
+                  from {tool_attestoodle_learner} l
+                  join {user} u on u.id = l.userid
+                 where trainingid = ? ' . $orderby;
+        return self::$db->get_recordset_sql($req, array($trainingid), $numpage, $perpage);
+    }
+
+    /**
+     * Compute the total number of learner in the training.
+     *
+     * @param int $trainingid Id of the training containing the learners.
+     */
+    public function get_count_learner($trainingid) {
+        $req = 'select count(u.id)
+                  from {tool_attestoodle_learner} l
+                  join {user} u on u.id = l.userid
+                 where trainingid = ';
+        return self::$db->count_records_sql($req . $trainingid);
+    }
+
+    /**
+     * Select one learner.
+     *
+     * @param int $userid Id of the user to select.
+     * @param int $trainingid Id of the training where we select learner.
+     */
+    public function check_learner($userid, $trainingid) {
+        $request = " UPDATE {tool_attestoodle_learner}
+                        SET selected = 1, resultcriteria= ''
+                      WHERE userid = ? and trainingid = ?";
+
+        self::$db->execute($request, array($userid, $trainingid));
+    }
+
+    /**
+     * Unselect one learner.
+     *
+     * @param int $userid Id of the user to unselect.
+     * @param int $trainingid Id of the training where we unselect learner.
+     */
+    public function uncheck_learner($userid, $trainingid) {
+        $request = " UPDATE {tool_attestoodle_learner}
+                        SET selected = 0, resultcriteria= ''
+                      WHERE userid = ? and trainingid = ?";
+
+        self::$db->execute($request, array($userid, $trainingid));
+    }
+
+    /**
+     * Delete selected learners.
+     *
+     * @param int $trainingid Id of the training where we want to delete selected learners.
+     */
+    public function select_off_learner($trainingid) {
+        self::$db->delete_records('tool_attestoodle_learner', array('trainingid' => $trainingid, 'selected' => 1));
+    }
+
+    /**
+     * Delete unselected learners.
+     *
+     * @param int $trainingid Id of the training where we want to delete unselected learners.
+     */
+    public function select_on_learner($trainingid) {
+        $req = "delete from {tool_attestoodle_learner} where trainingid=:trainingid and selected != 1";
+        self::$db->execute($req, ['trainingid' => $trainingid]);
+    }
+
+    /**
      * Retrieves the activities IDs validated by a specific learner.
      *
      * @param learner $learner The learner to search activities for
