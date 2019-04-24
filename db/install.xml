@@ -11,6 +11,7 @@
         <FIELD NAME="categoryid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the course category corresponding to the training"/>
         <FIELD NAME="startdate" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="start date of the training"/>
         <FIELD NAME="enddate" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="end date of the training"/>
+        <FIELD NAME="checklearner" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="last date where learner was check"/>
         <FIELD NAME="duration" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="duration of training in minutes"/>
         <FIELD NAME="nbautolaunch" TYPE="int" LENGTH="4" NOTNULL="false" SEQUENCE="false" COMMENT="desired auto-launch number"/>
         <FIELD NAME="nextlaunch" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="date of the next automatic launch"/>
@@ -135,6 +136,20 @@
         <FIELD NAME="grpcriteria2" TYPE="char" LENGTH="35" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="enablecertificate" TYPE="int" LENGTH="1" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="withdateformat" TYPE="char" LENGTH="127" NOTNULL="false" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="tool_attestoodle_learner" COMMENT="relation between training and learner">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="trainingid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="categoryid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="selected" TYPE="int" LENGTH="1" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="predelete" TYPE="int" LENGTH="1" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="resultcriteria" TYPE="char" LENGTH="127" NOTNULL="false" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>

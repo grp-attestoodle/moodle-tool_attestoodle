@@ -190,7 +190,43 @@ function xmldb_tool_attestoodle_upgrade($oldversion) {
         update_table_training();
     }
 
+    if ($oldversion < 2019041602) {
+        create_table_learner($dbman);
+    }
     return true;
+}
+
+/**
+ * Create table tool_attestoodle_learner, since version 2019041601.
+ *
+ * @param dbmanager $dbman database manager.
+ */
+function create_table_learner($dbman) {
+    $table = new xmldb_table('tool_attestoodle_learner');
+    // Adding fields to table.
+    $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+    $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+    $table->add_field('trainingid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+    $table->add_field('categoryid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+    $table->add_field('selected', XMLDB_TYPE_INTEGER, '1', null, null, null, null);
+    $table->add_field('predelete', XMLDB_TYPE_INTEGER, '1', null, null, null, null);
+    $table->add_field('resultcriteria', XMLDB_TYPE_CHAR, '127', null, null, null, null);
+    // Adding keys to table.
+    $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+    // Create table.
+    if ($dbman->table_exists($table)) {
+        $dbman->drop_table($table);
+    }
+    $dbman->create_table($table);
+
+    // Add checklearner to training.
+    $table = new xmldb_table('tool_attestoodle_training');
+    $field = new xmldb_field('checklearner', XMLDB_TYPE_INTEGER, '10', null, null, null, null, null, null);
+    if (!$dbman->field_exists($table, $field)) {
+        $dbman->add_field($table, $field);
+    }
+
+    upgrade_plugin_savepoint(true, 2019041602, 'tool', 'attestoodle');
 }
 
 /**
