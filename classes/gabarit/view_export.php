@@ -70,7 +70,7 @@ if (isset($idtraining)) {
     if ($training != null) {
         $certificateinfos->trainingname = $training->get_name();
     }
-    $exp->set_categoryid($idcategory);
+    $exp->set_trainingid($idtraining);
 }
 
 $exp->set_infos($certificateinfos);

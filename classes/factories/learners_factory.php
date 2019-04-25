@@ -134,31 +134,10 @@ class learners_factory extends singleton {
                 $learners[] = $this->retrieve_learner($learner->id);
             } else {
                 $newlearner = $this->create($learner);
-                retrieve_validated_activities($newlearner);
+                $this->retrieve_validated_activities($newlearner);
                 $learners[] = $newlearner;
             }
         }
         $training->set_learners($learners);
-    }
-
-    /**
-     * Method that retrieves the learners registered to a specific course.
-     *
-     * @param integer $id Id of the course to retrieve learners for
-     * @return learners The learners retrieved for the course
-     */
-    public function retrieve_learners_by_course($id) {
-        $learners = array();
-
-        $dblearners = db_accessor::get_instance()->get_learners_by_course($id);
-        foreach ($dblearners as $learner) {
-            if ($this->has_learner($learner->id)) {
-                $learners[] = $this->retrieve_learner($learner->id);
-            } else {
-                $learners[] = $this->create($learner);
-            }
-        }
-
-        return $learners;
     }
 }

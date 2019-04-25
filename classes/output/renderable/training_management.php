@@ -283,19 +283,21 @@ class training_management implements \renderable {
                 trainings_factory::get_instance()->find_training($this->categoryid);
                 trainings_factory::get_instance()->create_trainings_4_categ($this->categoryid);
                 $nbtotal = trainings_factory::get_instance()->get_count_training_by_categ($this->categoryid);
-                $tabtraining = trainings_factory::get_instance()->get_trainings();
-                $output .= get_string('notifytotaltraining', 'tool_attestoodle', $nbtotal) . " <ul>";
+                if ($nbtotal > 0) {
+                    $tabtraining = trainings_factory::get_instance()->get_trainings();
+                    $output .= get_string('notifytotaltraining', 'tool_attestoodle', $nbtotal) . " <ul>";
 
-                foreach ($tabtraining as $train) {
-                    $parameters = array(
-                        'typepage' => 'trainingmanagement',
-                        'categoryid' => $this->categoryid,
-                        'trainingid' => $train->get_id()
-                    );
-                    $url = new \moodle_url('/admin/tool/attestoodle/index.php', $parameters);
-                    $output .= " <li>" . \html_writer::link($url, $train->get_name() . "</li>", $parameters);
+                    foreach ($tabtraining as $train) {
+                        $parameters = array(
+                            'typepage' => 'trainingmanagement',
+                            'categoryid' => $this->categoryid,
+                            'trainingid' => $train->get_id()
+                        );
+                        $url = new \moodle_url('/admin/tool/attestoodle/index.php', $parameters);
+                        $output .= " <li>" . \html_writer::link($url, $train->get_name() . "</li>", $parameters);
+                    }
+                    $output .= "</ul>";
                 }
-                $output .= "</ul>";
                 if ($nbtotal > 10) {
                     $parameters = array('typepage' => 'trainingslist');
                     $url = new \moodle_url('/admin/tool/attestoodle/index.php', $parameters);

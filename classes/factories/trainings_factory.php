@@ -182,9 +182,6 @@ class trainings_factory extends singleton {
         // Add courses to the training.
         foreach ($courses as $course) {
             $trainingtoadd->add_course($course);
-            foreach ($course->get_learners() as $learner) {
-                learners_factory::get_instance()->retrieve_validated_activities($learner);
-            }
         }
 
         return $trainingtoadd;
@@ -216,6 +213,7 @@ class trainings_factory extends singleton {
         }
         return -1;
     }
+
     /**
      * Method that instanciates the training associate with a category.
      *
@@ -228,7 +226,7 @@ class trainings_factory extends singleton {
             $catid = $dbtr->categoryid;
             $cat = categories_factory::get_instance()->get_category($catid);
             if (!empty($cat)) {
-                $this->create($cat, $dbtr->id, $dbtr->name, false);
+                $this->create($cat, $dbtr->id, $dbtr->name);
                 $trainingtoadd = new training($cat);
                 $trainingtoadd->set_id($dbtr->id);
                 $trainingtoadd->set_name($dbtr->name);
@@ -253,10 +251,9 @@ class trainings_factory extends singleton {
      * @param category $category The category that the training comes from
      * @param integer $id of the training.
      * @param string $name of the training.
-     * @param boolean $withlearner indicate to load learner or not.
      * @return training The newly created training
      */
-    private function create($category, $id, $name = '', $withlearner = true) {
+    private function create($category, $id, $name = '') {
         $trainingtoadd = new training($category);
         $trainingtoadd->set_id($id);
         $trainingtoadd->set_name($name);
@@ -264,16 +261,11 @@ class trainings_factory extends singleton {
 
         $this->trainings[] = $trainingtoadd;
         $categoryid = $trainingtoadd->get_categoryid();
-        $courses = courses_factory::get_instance()->retrieve_courses_childof_category($categoryid, $withlearner, $id);
+        $courses = courses_factory::get_instance()->retrieve_courses_childof_category($categoryid, $id);
 
         // Add courses to the training.
         foreach ($courses as $course) {
             $trainingtoadd->add_course($course);
-            if ($withlearner) {
-                foreach ($course->get_learners() as $learner) {
-                    learners_factory::get_instance()->retrieve_validated_activities($learner);
-                }
-            }
         }
 
         return $trainingtoadd;

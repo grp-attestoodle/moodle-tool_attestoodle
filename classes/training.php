@@ -86,7 +86,7 @@ class training {
      * @return true if the treaning has some learner, false in other case.
      */
     public function has_learners() {
-        return ! db_accessor::nolearner($this->id);
+        return ! db_accessor::get_instance()->nolearner($this->id);
     }
 
     /**
@@ -300,15 +300,6 @@ class training {
      */
     public function set_learners($prop) {
         $this->learners = $prop;
-    }
-
-    /**
-     * Add a learner to the course learners list.
-     *
-     * @param learner $learner Learner to add to the training
-     */
-    public function add_learner($learner) {
-        $this->learners[] = $learner;
     }
 
     /**

@@ -187,7 +187,7 @@ switch($page) {
         }
 
         $renderable = new renderable\training_learners_list($training, $begindate, $enddate);
-        if (count($renderable->training->get_learners()) == 0) {
+        if (!$training->has_learners()) {
             $redirecturl = new \moodle_url(
                 '/admin/tool/attestoodle/index.php',
                 array('typepage' => 'trainingmanagement', 'categoryid' => $categoryid, 'trainingid' => $trainingid));
