@@ -195,9 +195,24 @@ class db_accessor extends singleton {
     }
 
     /**
+     * Select the training's learner.
+     * @param int $trainingid Id of the training.
+     * @return \stdClass Standard Moodle DB object
+     */
+    public function get_learners_by_training($trainingid) {
+        $request = "SELECT DISTINCT u.id, u.firstname, u.lastname
+                      FROM {tool_attestoodle_learner} l
+                      JOIN {user} u ON u.id = l.userid
+                      where trainingid = ?
+                      order by u.lastname, u.firstname";
+        return self::$db->get_records_sql($request, array($trainingid));
+    }
+
+    /**
      * Test if a learner is enrol in the training.
      *
      * @param int $trainingid Id of the training.
+     * @return false if some learner are enrol in the training, true in other case.
      */
     public function nolearner($trainingid) {
         return ! self::$db->record_exists('tool_attestoodle_learner', array('trainingid' => $trainingid));

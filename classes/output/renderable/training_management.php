@@ -307,18 +307,20 @@ class training_management implements \renderable {
             // Link to the milestones management of the training.
             $parametersmilestones = array(
                 'typepage' => 'managemilestones',
-                'categoryid' => $this->category->get_id(),
+                'categoryid' => $this->categoryid,
                 'trainingid' => $this->trainingid
                 );
             $urlmilestones = new \moodle_url('/admin/tool/attestoodle/index.php', $parametersmilestones);
             $labelmilestones = get_string('training_management_manage_training_link', 'tool_attestoodle');
             $attributesmilestones = array('class' => 'attestoodle-button');
 
-            if ($this->category->is_training()) {
+            if ($this->trainingid > -1) {
                 $output .= "<br/><legend class='ftogger'><a class='fheader' href='#'>" .
                     get_string('milestones', 'tool_attestoodle') . "</a></legend>";
 
-                $training = trainings_factory::get_instance()->retrieve_training($this->category->get_id());
+                trainings_factory::get_instance()->create_training_by_category($this->categoryid, $this->trainingid);
+                $training = trainings_factory::get_instance()->retrieve_training_by_id($this->trainingid);
+
                 $tempstotal = db_accessor::get_instance()->is_milestone_set($training->get_id());
                 if (isset($tempstotal)) {
                     $output .= "<br/> ". get_string('totaltimetraining', 'tool_attestoodle') .
@@ -326,8 +328,8 @@ class training_management implements \renderable {
 
                     $context = \context_coursecat::instance($this->categoryid);
                     if (has_capability('tool/attestoodle:managetraining', $context)) {
-                        $jalonssuppr = db_accessor::get_instance()->get_milestone_off($training->get_id());
-                        $newsact = db_accessor::get_instance()->get_new_activities($training->get_id());
+                        $jalonssuppr = db_accessor::get_instance()->get_milestone_off($this->trainingid);
+                        $newsact = db_accessor::get_instance()->get_new_activities($this->trainingid);
                         if (count($jalonssuppr) > 0) {
                             $output .= "<br/>" . $this->display_deleted_milestone($jalonssuppr);
                         }
@@ -345,7 +347,7 @@ class training_management implements \renderable {
                         get_string('learners', 'tool_attestoodle') . "</a></legend>";
 
                     $parameters = array(
-                        'categoryid' => $this->category->get_id(),
+                        'categoryid' => $this->categoryid,
                         'trainingid' => $this->trainingid
                     );
                     $url = new \moodle_url('/admin/tool/attestoodle/classes/training/select_learners.php', $parameters);
@@ -356,13 +358,15 @@ class training_management implements \renderable {
                     // Link to the learners list of the training.
                     $parameters = array(
                         'typepage' => 'learners',
-                        'categoryid' => $this->category->get_id(),
+                        'categoryid' => $this->categoryid,
                         'trainingid' => $this->trainingid
                     );
-                    $url = new \moodle_url('/admin/tool/attestoodle/index.php', $parameters);
-                    $label = get_string('training_management_training_details_link', 'tool_attestoodle');
-                    $attributes = array('class' => 'attestoodle-button');
-                    $output .= \html_writer::link($url, $label, $attributes);
+                    if ($training->has_learners()) {
+                        $url = new \moodle_url('/admin/tool/attestoodle/index.php', $parameters);
+                        $label = get_string('training_management_training_details_link', 'tool_attestoodle');
+                        $attributes = array('class' => 'btn btn-default attestoodle-button');
+                        $output .= "&nbsp;&nbsp;" . \html_writer::link($url, $label, $attributes);
+                    }
                 } else {
                     $output .= "<br /> " . get_string('nomilestone', 'tool_attestoodle') . "&nbsp;";
                     $output .= \html_writer::link($urlmilestones, $labelmilestones, $attributesmilestones);

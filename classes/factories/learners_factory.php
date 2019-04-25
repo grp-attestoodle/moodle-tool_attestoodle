@@ -120,6 +120,28 @@ class learners_factory extends singleton {
     }
 
     /**
+     * Search learner of a training and add them in the training's instance.
+     *
+     * @param Training $training where we search learner.
+     */
+    public function retrieve_learners_by_training($training) {
+        $learners = array();
+
+        $dblearners = db_accessor::get_instance()->get_learners_by_training($training->get_id());
+
+        foreach ($dblearners as $learner) {
+            if ($this->has_learner($learner->id)) {
+                $learners[] = $this->retrieve_learner($learner->id);
+            } else {
+                $newlearner = $this->create($learner);
+                retrieve_validated_activities($newlearner);
+                $learners[] = $newlearner;
+            }
+        }
+        $training->set_learners($learners);
+    }
+
+    /**
      * Method that retrieves the learners registered to a specific course.
      *
      * @param integer $id Id of the course to retrieve learners for

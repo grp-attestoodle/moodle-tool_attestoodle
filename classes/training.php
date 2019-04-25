@@ -23,6 +23,8 @@
  */
 
 namespace tool_attestoodle;
+
+use tool_attestoodle\factories\learners_factory;
 use tool_attestoodle\utils\db_accessor;
 defined('MOODLE_INTERNAL') || die;
 /**
@@ -37,6 +39,9 @@ class training {
 
     /** @var course[] Courses of the training */
     private $courses;
+
+    /** @var learner[] Learners registered in the training */
+    private $learners;
 
     /** @var integer Id of the training. */
     private $id;
@@ -60,6 +65,7 @@ class training {
     public function __construct($category) {
         $this->category = $category;
         $this->courses = array();
+        $this->learners = array();
     }
 
     /**
@@ -68,16 +74,19 @@ class training {
      * @return learner[] The array containing the learners of the training
      */
     public function get_learners() {
-        $learners = array();
-        foreach ($this->courses as $course) {
-            $courselearners = $course->get_learners();
-            foreach ($courselearners as $courselearner) {
-                if (!in_array($courselearner, $learners, true)) {
-                    $learners[] = $courselearner;
-                }
-            }
+        if (empty($this->learners)) {
+            learners_factory::get_instance()->retrieve_learners_by_training($this);
         }
-        return $learners;
+        return $this->learners;
+    }
+
+    /**
+     * Test if the training has learner.
+     *
+     * @return true if the treaning has some learner, false in other case.
+     */
+    public function has_learners() {
+        return ! db_accessor::nolearner($this->id);
     }
 
     /**
@@ -282,6 +291,24 @@ class training {
     public function add_course($course) {
         $course->set_training($this);
         $this->courses[] = $course;
+    }
+
+    /**
+     * Setter for $learners property.
+     *
+     * @param learner[] $prop Learners to set for the training
+     */
+    public function set_learners($prop) {
+        $this->learners = $prop;
+    }
+
+    /**
+     * Add a learner to the course learners list.
+     *
+     * @param learner $learner Learner to add to the training
+     */
+    public function add_learner($learner) {
+        $this->learners[] = $learner;
     }
 
     /**
