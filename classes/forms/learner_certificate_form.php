@@ -42,7 +42,6 @@ class learner_certificate_form extends \moodleform {
         global $CFG, $DB;
         $mform = $this->_form;
 
-        $userid = $this->_customdata['userid'];
         $categoryid = $this->_customdata['categoryid'];
         $idtraining = $this->_customdata['idtraining'];
         $idtemplate = $this->_customdata['idtemplate'];
@@ -89,9 +88,6 @@ class learner_certificate_form extends \moodleform {
         }
 
         $mform->addGroup($group, 'activities', get_string('template_certificate', 'tool_attestoodle'), ' ', false);
-        $mform->addElement("advcheckbox", 'displaydate', get_string('showcompletiondate', 'tool_attestoodle'), ' ');
-        $mform->disabledIf('displaydate', 'custom', 'eq', 0);
-        $mform->disabledIf('displaydate', 'disablecertif', 'eq', 1);
         // Level of grouping.
         $level1s = array(
                     'coursename' => get_string('grp_course', 'tool_attestoodle'),
@@ -106,7 +102,6 @@ class learner_certificate_form extends \moodleform {
         $mform->addElement('select', 'group2', get_string('grp_level2', 'tool_attestoodle'), $level2s, null);
         $mform->disabledIf('group2', 'custom', 'eq', 0);
         $mform->disabledIf('group2', 'disablecertif', 'eq', 1);
-        $mform->disabledIf('group2', 'displaydate', 'eq', 1);
 
         $mform->setExpanded('templatesection', false);
         $this->add_action_buttons(false);

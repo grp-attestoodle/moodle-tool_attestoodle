@@ -120,6 +120,10 @@ class db_accessor extends singleton {
         $dataobject = new \stdClass();
         $dataobject->id = $training->get_id();
         $dataobject->name = $training->get_name();
+        $dataobject->startdate = $training->get_start();
+        $dataobject->enddate = $training->get_end();
+        $dataobject->duration = $training->get_duration();
+
         $dataobject->categoryid = $training->get_categoryid();
         self::$db->update_record('tool_attestoodle_training', $dataobject);
     }
@@ -191,6 +195,140 @@ class db_accessor extends singleton {
     }
 
     /**
+     * Select the training's learner.
+     * @param int $trainingid Id of the training.
+     * @return \stdClass Standard Moodle DB object
+     */
+    public function get_learners_by_training($trainingid) {
+        $request = "SELECT DISTINCT u.id, u.firstname, u.lastname
+                      FROM {tool_attestoodle_learner} l
+                      JOIN {user} u ON u.id = l.userid
+                      where trainingid = ?
+                      order by u.lastname, u.firstname";
+        return self::$db->get_records_sql($request, array($trainingid));
+    }
+
+    /**
+     * Test if a learner is enrol in the training.
+     *
+     * @param int $trainingid Id of the training.
+     * @return false if some learner are enrol in the training, true in other case.
+     */
+    public function nolearner($trainingid) {
+        return ! self::$db->record_exists('tool_attestoodle_learner', array('trainingid' => $trainingid));
+    }
+
+    /**
+     * Determines the learners in the training from the learners enrolled in at least one course with milestones.
+     *
+     * @param int $trainingid Id of the training where enrol learner.
+     * @param int $categoryid Id of the category of the training.
+     */
+    public function insert_learner($trainingid, $categoryid) {
+        $req = "select distinct course
+                  from {tool_attestoodle_milestone}
+                 where trainingid = ?";
+        $result = self::$db->get_records_sql($req, array($trainingid));
+        $insertab = array();
+        foreach ($result as $record) {
+            $learnertab = self::get_learners_by_course($record->course);
+            foreach ($learnertab as $learner) {
+                $insertab[$learner->id] = $learner->id;
+            }
+        }
+
+        $dataobject = new \stdClass();
+        $dataobject->trainingid = $trainingid;
+        $dataobject->categoryid = $categoryid;
+        $dataobject->selected = $categoryid;
+        $dataobject->resultcriteria = 'new';
+        foreach ($insertab as $learner) {
+            if (! self::$db->record_exists('tool_attestoodle_learner', array('trainingid' => $trainingid, 'userid' => $learner))) {
+                $dataobject->userid = $learner;
+                self::$db->insert_record('tool_attestoodle_learner', $dataobject);
+            }
+        }
+    }
+
+    /**
+     * Load a learner page from the training.
+     *
+     * @param int $numpage number of the line to be loaded.
+     * = $number page x number line per page.
+     * @param int $perpage number of record per page.
+     * @param int $trainingid Id of the training containing the learners to load.
+     * @param string $orderby sql order.
+     */
+    public function get_page_learner($numpage, $perpage, $trainingid, $orderby) {
+        $req = 'select u.id, u.username as username, u.lastname as lastname, u.firstname as firstname,
+                        u.email as email, l.selected as selected, l.resultcriteria as resultcriteria
+                  from {tool_attestoodle_learner} l
+                  join {user} u on u.id = l.userid
+                 where trainingid = ? ' . $orderby;
+        return self::$db->get_recordset_sql($req, array($trainingid), $numpage, $perpage);
+    }
+
+    /**
+     * Compute the total number of learner in the training.
+     *
+     * @param int $trainingid Id of the training containing the learners.
+     */
+    public function get_count_learner($trainingid) {
+        $req = 'select count(u.id)
+                  from {tool_attestoodle_learner} l
+                  join {user} u on u.id = l.userid
+                 where trainingid = ';
+        return self::$db->count_records_sql($req . $trainingid);
+    }
+
+    /**
+     * Select one learner.
+     *
+     * @param int $userid Id of the user to select.
+     * @param int $trainingid Id of the training where we select learner.
+     */
+    public function check_learner($userid, $trainingid) {
+        $request = " UPDATE {tool_attestoodle_learner}
+                        SET selected = 1, resultcriteria= ''
+                      WHERE userid = ? and trainingid = ?";
+
+        self::$db->execute($request, array($userid, $trainingid));
+    }
+
+    /**
+     * Unselect one learner.
+     *
+     * @param int $userid Id of the user to unselect.
+     * @param int $trainingid Id of the training where we unselect learner.
+     */
+    public function uncheck_learner($userid, $trainingid) {
+        $request = " UPDATE {tool_attestoodle_learner}
+                        SET selected = 0, resultcriteria= ''
+                      WHERE userid = ? and trainingid = ?";
+
+        self::$db->execute($request, array($userid, $trainingid));
+    }
+
+    /**
+     * Delete selected learners.
+     *
+     * @param int $trainingid Id of the training where we want to delete selected learners.
+     */
+    public function select_off_learner($trainingid) {
+        self::$db->delete_records('tool_attestoodle_learner', array('trainingid' => $trainingid, 'selected' => 1));
+    }
+
+    /**
+     * Delete unselected learners.
+     *
+     * @param int $trainingid Id of the training where we want to delete unselected learners.
+     */
+    public function select_on_learner($trainingid) {
+        $req = "delete from {tool_attestoodle_learner} where trainingid=:trainingid and selected != 1";
+        self::$db->execute($req, ['trainingid' => $trainingid]);
+    }
+
+    /**
      * Retrieves the activities IDs validated by a specific learner.
      *
      * @param learner $learner The learner to search activities for
@@ -239,7 +377,17 @@ class db_accessor extends singleton {
      * @return \stdClass Standard Moodle DB object
      */
     public function get_training_by_category($categoryid) {
-        return self::$db->get_record('tool_attestoodle_training', array('categoryid' => $categoryid));
+        return self::$db->get_records('tool_attestoodle_training', array('categoryid' => $categoryid));
+    }
+
+    /**
+     * Retrieves the attestoodle trainings in moodle DB, by his id.
+     *
+     * @param int $id the identifier of the training.
+     * @return \stdClass Standard Moodle DB object
+     */
+    public function get_training_by_id($id) {
+        return self::$db->get_record('tool_attestoodle_training', array('id' => $id));
     }
 
     /**
@@ -255,6 +403,29 @@ class db_accessor extends singleton {
     }
 
     /**
+     * List the trainings of one category.
+     *
+     * @param int $numpage the page number searched.
+     * @param int $perpage the number of records per page.
+     * @param int $categoryid The category ID that we want to list the trainings.
+     * @return \stdClass Standard Moodle DB object of tool_attestoodle_training table.
+     */
+    public function get_page_trainings_categ($numpage, $perpage, $categoryid) {
+        $req = 'select * from {tool_attestoodle_training} where categoryid = ? order by id desc';
+        return self::$db->get_recordset_sql($req, array($categoryid), $numpage, $perpage);
+    }
+
+    /**
+     * Retrieve count training existing in a category.
+     *
+     * @param int $categoryid The category ID that we want to count the trainings.
+     * @return the number of training for the category.
+     */
+    public function get_count_training_by_categ($categoryid) {
+        return self::$db->count_records_sql("SELECT COUNT(id) from {tool_attestoodle_training} where categoryid = ". $categoryid);
+    }
+
+    /**
      * Retrieve count training.
      */
     public function get_training_matchcount() {
@@ -264,23 +435,23 @@ class db_accessor extends singleton {
     /**
      * Delete a training in training table based on the category ID.
      *
-     * @param int $categoryid The category ID that we want to delete
+     * @param int $trainingid The training ID that we want to delete
      */
-    public function delete_training($categoryid) {
-        $training = self::$db->get_record('tool_attestoodle_training', array('categoryid' => $categoryid));
-        self::$db->delete_records('tool_attestoodle_training', array('categoryid' => $categoryid));
-        self::$db->delete_records('tool_attestoodle_train_style', array('trainingid' => $training->id));
-        self::$db->delete_records('tool_attestoodle_user_style', array('trainingid' => $training->id));
-        self::$db->delete_records('tool_attestoodle_milestone', array('trainingid' => $training->id));
+    public function delete_training_by_id($trainingid) {
+        self::$db->delete_records('tool_attestoodle_training', array('id' => $trainingid));
+        self::$db->delete_records('tool_attestoodle_train_style', array('trainingid' => $trainingid));
+        self::$db->delete_records('tool_attestoodle_user_style', array('trainingid' => $trainingid));
+        self::$db->delete_records('tool_attestoodle_milestone', array('trainingid' => $trainingid));
 
         // Delete generate files.
-        $sql = "SELECT distinct(filename) as filename
+        $sql = "SELECT distinct filename, learnerid
                   FROM {tool_attestoodle_certif_log}
                  where trainingid = :trainingid";
-        $result = self::$db->get_records_sql($sql, ['trainingid' => $training->id]);
+        $result = self::$db->get_records_sql($sql, ['trainingid' => $trainingid]);
+        $fs = get_file_storage();
         foreach ($result as $record) {
             $fileinfo = array(
-                'contextid' => $usercontext->id,
+                'contextid' => $record->learnerid,
                 'component' => 'tool_attestoodle',
                 'filearea' => 'certificates',
                 'filepath' => '/',
@@ -299,15 +470,26 @@ class db_accessor extends singleton {
                  WHERE id IN (SELECT launchid
                                 FROM {tool_attestoodle_certif_log}
                                WHERE trainingid = :trainingid)";
-        self::$db->execute($sql, ['trainingid' => $training->id]);
+        self::$db->execute($sql, ['trainingid' => $trainingid]);
 
         $sql = "DELETE from {tool_attestoodle_value_log}
                  WHERE certificateid IN (SELECT id
                                 FROM {tool_attestoodle_certif_log}
                                WHERE trainingid = :trainingid)";
-        self::$db->execute($sql, ['trainingid' => $training->id]);
+        self::$db->execute($sql, ['trainingid' => $trainingid]);
 
-        self::$db->delete_records('tool_attestoodle_certif_log', array('trainingid' => $training->id));
+        self::$db->delete_records('tool_attestoodle_certif_log', array('trainingid' => $trainingid));
+    }
+
+    /**
+     * Delete a training in training table based on the category ID.
+     *
+     * @param int $categoryid The category ID that we want to delete
+     */
+    public function delete_training($categoryid) {
+        $training = self::$db->get_record('tool_attestoodle_training', array('categoryid' => $categoryid));
+        self::delete_training_by_id($training->id);
+        self::$db->delete_records('tool_attestoodle_training', array('categoryid' => $categoryid));
     }
 
     /**
@@ -325,7 +507,8 @@ class db_accessor extends singleton {
         $record->trainingid = $idtraining;
         $record->templateid = $template->id;
         $record->grpcriteria1 = 'coursename';
-        return self::$db->insert_record('tool_attestoodle_train_style', $record);
+        self::$db->insert_record('tool_attestoodle_train_style', $record);
+        return $idtraining;
     }
 
     /**
@@ -560,5 +743,16 @@ class db_accessor extends singleton {
     public function get_user_template($userid, $trainingid) {
         return self::$db->get_record('tool_attestoodle_user_style',
                 array('userid' => $userid, 'trainingid' => $trainingid));
+    }
+
+    /**
+     * Lists the courses whose names like "%$name%".
+     *
+     * @param string $name element search in the shortname of course.
+     * @return The list of courses whose shortname like %$name%.
+     */
+    public function find_course($name) {
+        $req = "select * from {course} where shortname like '%" . $name . "%'";
+        return self::$db->get_records_sql($req, array());
     }
 }

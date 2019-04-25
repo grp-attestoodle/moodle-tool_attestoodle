@@ -86,13 +86,12 @@ class attestation_pdf {
     }
 
     /**
-     * Enter the identifier of the category to find the corresponding attestation template.
-     * @param integer $categoryid identifier of the category associated with the training.
+     * Enter the identifier of the training to find the corresponding attestation template.
+     * @param int $trainingid identifier of the training.
      */
-    public function set_categoryid($categoryid) {
+    public function set_trainingid($trainingid) {
         global $DB;
-        $idtraining = $DB->get_field('tool_attestoodle_training', 'id', ['categoryid' => $categoryid]);
-        $associate = $DB->get_record('tool_attestoodle_train_style', array('trainingid' => $idtraining));
+        $associate = $DB->get_record('tool_attestoodle_train_style', array('trainingid' => $trainingid));
 
         $this->set_idtemplate($associate->templateid);
         $this->set_grpcriteria1($associate->grpcriteria1);

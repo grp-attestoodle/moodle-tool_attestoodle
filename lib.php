@@ -145,10 +145,10 @@ function tool_attestoodle_pluginfile($course, $cm, $context, $filearea, $args, $
  * @return bool
  */
 function tool_attestoodle_myprofile_navigation(\core_user\output\myprofile\tree $tree, $user, $iscurrentuser, $course) {
-    global $CFG, $PAGE, $USER, $SITE;
+    global $CFG, $USER;
 
     $context = context_user::instance($user->id);
-    $courseid = empty($course) ? 0 : $course->id;
+
     $viewlinkattestoodle = has_capability('tool/attestoodle:managetraining', $context);
     $viewlinkattestoodle = $viewlinkattestoodle || has_capability('tool/attestoodle:displaytrainings', $context);
     $viewlinkattestoodle = $viewlinkattestoodle || has_capability('tool/attestoodle:viewtemplate', $context);

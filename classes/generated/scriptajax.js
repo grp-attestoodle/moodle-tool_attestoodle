@@ -1,6 +1,9 @@
 /**
- * call server script ajaxsrvmethod and handle
+ * Call server script ajaxsrvmethod and handle
  * the return.
+ *
+ * @param @e javascript event or null.
+ * @param @args array parameters contents launchid, trainingid and categoryid.
  */
 function ajax_certif_generate(e, args) {
     var launchid = -1;
@@ -16,15 +19,15 @@ function ajax_certif_generate(e, args) {
 
     var ioconfig = {
         method: 'POST',
-        data: {'sesskey' : M.cfg.sesskey, 'launchid' : launchid.toString(),
-            'trainingid' : trainingid.toString(),
-            'categoryid' : categoryid.toString()},
+        data: {'sesskey': M.cfg.sesskey, 'launchid': launchid.toString(),
+            'trainingid': trainingid.toString(),
+            'categoryid': categoryid.toString()},
         on: {
-            success: function (o, response) {
+            success: function(o, response) {
                 var data = Y.JSON.parse(response.responseText);
                 displayBar(data.nb);
             },
-            failure: function (o, response) {
+            failure: function(o, response) {
                 alert(response.toSource());
             }
         }

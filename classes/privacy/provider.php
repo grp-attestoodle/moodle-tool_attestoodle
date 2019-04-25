@@ -201,7 +201,7 @@ class provider implements
         $params = ['userid' => $userid, ];
         $result1 = $DB->get_records_sql($sqlrq1, $params);
         $certificate = [];
-        $datformat = get_string('dateformat', 'tool_attestoodle');
+
         foreach ($result1 as $rowcertif) {
             $training = $DB->get_record('tool_attestoodle_training', array('id' => $rowcertif->trainingid));
             $certif = new \stdClass();

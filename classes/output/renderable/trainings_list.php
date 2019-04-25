@@ -94,7 +94,7 @@ class trainings_list implements renderable {
 
             // Links.
             $parameters = array(
-                'typepage' => 'learners',
+                'typepage' => 'learners', 'trainingid' => $training->get_id(),
                 'categoryid' => $training->get_categoryid());
             $url = new \moodle_url('/admin/tool/attestoodle/index.php', $parameters);
             $label = "<img src=" . $OUTPUT->image_url ( 'i/group', 'moodle' ). " title='"
@@ -102,14 +102,16 @@ class trainings_list implements renderable {
 
             $studentlink = \html_writer::link($url, $label);
 
-            $parameters = array('typepage' => 'trainingmanagement', 'categoryid' => $training->get_categoryid());
+            $parameters = array('typepage' => 'trainingmanagement',
+                'categoryid' => $training->get_categoryid(), 'trainingid' => $training->get_id());
             $url = new \moodle_url('/admin/tool/attestoodle/index.php', $parameters);
             $label = "<img src=" . $OUTPUT->image_url ( 'i/settings', 'moodle' ). " title='"
                 . get_string('training_setting_link', 'tool_attestoodle') ."' />";
 
             $settinglink = \html_writer::link($url, $label);
 
-            $parameters = array('typepage' => 'managemilestones', 'categoryid' => $training->get_categoryid());
+            $parameters = array('typepage' => 'managemilestones',
+                'categoryid' => $training->get_categoryid(), 'trainingid' => $training->get_id());
             $url = new \moodle_url('/admin/tool/attestoodle/index.php', $parameters);
             $label = "<img src=" . $OUTPUT->image_url ( 'navigation', 'tool_attestoodle' ). " title='"
                 . get_string('milestone_manage_link', 'tool_attestoodle') ."' />";

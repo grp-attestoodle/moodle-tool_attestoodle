@@ -81,7 +81,7 @@ foreach ($rs as $result) {
                 array('userid' => $pdfinfo->learnerid, 'trainingid' => $trainingid));
     $pdf = new attestation_pdf();
     if (!isset($template->id)) {
-        $pdf->set_categoryid($categoryid);
+        $pdf->set_trainingid($trainingid);
     } else {
         $pdf->set_idtemplate($template->templateid);
         $pdf->set_grpcriteria1($template->grpcriteria1);
