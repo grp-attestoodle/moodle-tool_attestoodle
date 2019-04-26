@@ -60,7 +60,7 @@ class category_training_update_form extends \moodleform {
         $istraining = $category->is_training();
 
         if ($idtemplate == -1 && $editmode == 1) {
-            $mform->addElement("static", null, null, 'Voulez vous créer une nouvelle formation ?');
+            $mform->addElement("static", null, null, get_string('confirmtraincreate', 'tool_attestoodle'));
             $group = array();
             $group[] =& $mform->createElement('submit', 'create_yes', get_string('yes'), array('class' => 'send-button'));
             $group[] =& $mform->createElement('submit', 'create_no', get_string('no'), array('class' => 'send-button'));

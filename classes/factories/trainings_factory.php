@@ -234,7 +234,7 @@ class trainings_factory extends singleton {
                 $trainingtoadd->set_end($dbtr->enddate);
                 $trainingtoadd->set_duration($dbtr->duration);
                 $this->trainings[] = $trainingtoadd;
-                $courses = courses_factory::get_instance()->retrieve_courses_childof_category($categoryid, false, $dbtr->id);
+                $courses = courses_factory::get_instance()->retrieve_courses_childof_category($categoryid, $dbtr->id);
                 // Add courses to the training.
                 foreach ($courses as $course) {
                     $trainingtoadd->add_course($course);
