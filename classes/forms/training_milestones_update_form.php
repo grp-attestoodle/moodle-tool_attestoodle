@@ -27,7 +27,6 @@ use tool_attestoodle\utils\db_accessor;
 
 defined('MOODLE_INTERNAL') || die;
 
-// Class \moodleform is defined in formslib.php.
 require_once("$CFG->libdir/formslib.php");
 /**
  * This is the class that handles the modification of milestones values through moodleform.

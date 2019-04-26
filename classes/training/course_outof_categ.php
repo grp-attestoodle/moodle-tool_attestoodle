@@ -187,7 +187,7 @@ function search_course($coursename, $categoryid, $trainingid) {
     }
 
     if (isset($course->id)) {
-        $coursetoadd = courses_factory::get_instance()->create($course, false, $trainingid);
+        $coursetoadd = courses_factory::get_instance()->create($course, $trainingid);
         $lstactivities = $coursetoadd->get_activities();
     }
 
