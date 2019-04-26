@@ -279,7 +279,9 @@ class training_learners_list implements renderable {
         if ($zipper->archive_to_pathname($certificates, $temppath)) {
             send_temp_file($temppath, $filename);
         } else {
-            print_error("An error occured: impossible to send ZIP file.");
+            // I m not ok with this => print_error("An error occured: impossible to send ZIP file.") !
+            // print_error must receive an error code in parameter !
+            \core\notification::error(get_string('errsendzip', 'tool_attestoodle'));
         }
     }
 }
