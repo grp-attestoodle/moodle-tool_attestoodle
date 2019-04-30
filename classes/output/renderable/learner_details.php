@@ -67,6 +67,8 @@ class learner_details implements \renderable {
     public $enddateerror;
     /** @var string the category id for navigation bar. */
     public $categorylnk;
+    /** @var int the identifier of the training. */
+    private $trainingid;
 
     /**
      * Constructor of the renderable object.
@@ -75,10 +77,16 @@ class learner_details implements \renderable {
      * @param string $begindate Begin date formatted as YYYY-MM-DD (url param)
      * @param string $enddate End date formatted as YYYY-MM-DD (url param)
      * @param integer $categorylnk Id of the category associate with learners (nav bar)
+     * @param integer $trainingid Identifier of the training.
      */
-    public function __construct($learnerid, $begindate, $enddate, $categorylnk) {
+    public function __construct($learnerid, $begindate, $enddate, $categorylnk, $trainingid) {
         global $DB;
+        $training = trainings_factory::get_instance()->retrieve_training_by_id($trainingid);
+        $training->get_learners();
+
+        $this->trainingid = $trainingid;
         $this->learnerid = $learnerid;
+
         $this->learner = learners_factory::get_instance()->retrieve_learner($learnerid);
         $this->categorylnk = $categorylnk;
         // Default dates are January 1st and December 31st of current year.
@@ -103,7 +111,8 @@ class learner_details implements \renderable {
 
         $this->form = new period_form(
                     new \moodle_url('/admin/tool/attestoodle/index.php',
-                        array('typepage' => 'learnerdetails', 'categorylnk' => $this->categorylnk, 'learner' => $this->learnerid)),
+                        array('typepage' => 'learnerdetails', 'categorylnk' => $this->categorylnk,
+                            'learner' => $this->learnerid, 'trainingid' => $trainingid)),
                         array(), 'get' );
 
         $stime = \DateTime::createFromFormat("Y-m-d", $this->begindate);
@@ -111,8 +120,6 @@ class learner_details implements \renderable {
         $this->form->set_data(array ('input_begin_date' => $stime->getTimestamp(),
                     'input_end_date' => $etime->getTimestamp()));
 
-        $training = trainings_factory::get_instance()->retrieve_training($this->categorylnk);
-        $trainingid = $training->get_id();
         $idtemplate = 0;
         if ($DB->record_exists('tool_attestoodle_train_style', ['trainingid' => $trainingid ])) {
             $associate = $DB->get_record('tool_attestoodle_train_style', array('trainingid' => $trainingid));
@@ -146,9 +153,9 @@ class learner_details implements \renderable {
 
         $this->form2 = new learner_certificate_form(
                     new \moodle_url('/admin/tool/attestoodle/index.php',
-                        array('typepage' => 'learnerdetails', 'categorylnk' => $this->categorylnk, 'learner' => $this->learnerid)),
-                        array('userid' => $this->learnerid,
-                        'categoryid' => $categorylnk,
+                        array('typepage' => 'learnerdetails', 'categorylnk' => $this->categorylnk,
+                            'learner' => $this->learnerid, 'trainingid' => $trainingid)),
+                        array('categoryid' => $categorylnk,
                         'idtraining' => $trainingid,
                         'idtemplate' => $idtemplate), 'get' );
 
@@ -350,7 +357,8 @@ class learner_details implements \renderable {
                                 'categoryid' => $training->get_categoryid(),
                                 'begindate' => $this->begindate,
                                 'enddate' => $this->enddate,
-                                'categorylnk' => $this->categorylnk
+                                'categorylnk' => $this->categorylnk,
+                                'trainingid' => $this->trainingid
                         )
                 ),
                 \get_string('backto_training_learners_list_btn_text', 'tool_attestoodle'),
@@ -461,7 +469,8 @@ class learner_details implements \renderable {
                 'action' => 'generatecertificate',
                 'categoryid' => $training->get_categoryid(),
                 'learner' => $this->learnerid,
-                'categorylnk' => $this->categorylnk
+                'categorylnk' => $this->categorylnk,
+                'trainingid' => $this->trainingid
             );
             if ($this->actualbegindate) {
                 $dlcertifoptions['begindate'] = $this->actualbegindate->format('Y-m-d');

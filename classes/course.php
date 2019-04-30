@@ -41,9 +41,6 @@ class course {
     /** @var activity[] Activities of the course */
     private $activities;
 
-    /** @var learner[] Learners registered in the course */
-    private $learners;
-
     /**
      * @var training Training corresponding to the course.
      * @todo Replace by the ID of the training to avoid bijective relation
@@ -60,7 +57,6 @@ class course {
         $this->id = $id;
         $this->name = $name;
         $this->activities = array();
-        $this->learners = array();
         $this->training = null;
     }
 
@@ -89,15 +85,6 @@ class course {
      */
     public function get_activities() {
         return $this->activities;
-    }
-
-    /**
-     * Getter for $learners property.
-     *
-     * @return learner[] Learners of the course
-     */
-    public function get_learners() {
-        return $this->learners;
     }
 
     /**
@@ -151,24 +138,6 @@ class course {
     public function add_activity($activity) {
         $activity->set_course($this);
         $this->activities[] = $activity;
-    }
-
-    /**
-     * Setter for $learners property.
-     *
-     * @param learner[] $prop Learners to set for the course
-     */
-    public function set_learners($prop) {
-        $this->learners = $prop;
-    }
-
-    /**
-     * Add a learner to the course learners list.
-     *
-     * @param learner $learner Learner to add to the course
-     */
-    public function add_learner($learner) {
-        $this->learners[] = $learner;
     }
 
     /**

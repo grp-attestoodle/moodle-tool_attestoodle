@@ -33,6 +33,7 @@ require_once($CFG->libdir.'/tablelib.php');
 use tool_attestoodle\factories\categories_factory;
 use tool_attestoodle\factories\trainings_factory;
 use tool_attestoodle\forms\category_training_update_form;
+use tool_attestoodle\forms\add_course_form;
 use tool_attestoodle\utils\db_accessor;
 /**
  * Display information of a single training in Attestoodle.
@@ -43,6 +44,8 @@ use tool_attestoodle\utils\db_accessor;
 class training_management implements \renderable {
     /** @var category_training_update_form The form used to manage trainings */
     private $form;
+    /** @var ... form use to add course.*/
+    private $form2;
 
     /** @var integer The category ID that we want to manage */
     private $categoryid = null;
@@ -50,29 +53,33 @@ class training_management implements \renderable {
     /** @var category the actual category we want to manage */
     private $category = null;
 
+    /** @var integer Id of the training. */
+    private $trainingid = null;
     /**
      * Constructor method that instanciates the form.
+     *
      * @param integer $categoryid Id of the category associate with training (nav bar)
+     * @param integer $trainingid Id of the training managed.
      */
-    public function __construct($categoryid) {
+    public function __construct($categoryid, $trainingid) {
         global $PAGE, $DB;
 
         $this->categoryid = $categoryid;
         $this->category = categories_factory::get_instance()->get_category($categoryid);
+        $this->trainingid = $trainingid;
 
         // Handling form is useful only if the category exists.
         if (isset($this->category)) {
             $PAGE->set_heading(get_string('training_management_main_title', 'tool_attestoodle', $this->category->get_name()));
 
             $idtemplate = -1;
-            $idtraining = -1;
             $grp1 = null;
             $grp2 = null;
-            if ($this->category->is_training()) {
+            $training = null;
+            if ($trainingid > 0) {
                 $idtemplate = 0;
-                $idtraining = $DB->get_field('tool_attestoodle_training', 'id', ['categoryid' => $this->categoryid]);
-                if ($DB->record_exists('tool_attestoodle_train_style', ['trainingid' => $idtraining])) {
-                    $associate = $DB->get_record('tool_attestoodle_train_style', array('trainingid' => $idtraining));
+                if ($DB->record_exists('tool_attestoodle_train_style', ['trainingid' => $trainingid])) {
+                    $associate = $DB->get_record('tool_attestoodle_train_style', array('trainingid' => $trainingid));
                     $idtemplate = $associate->templateid;
                     $grp1 = $associate->grpcriteria1;
                     if (empty($grp1)) {
@@ -83,18 +90,31 @@ class training_management implements \renderable {
                         $grp2 = '';
                     }
                 }
+                $training = trainings_factory::get_instance()->create_training_by_category($categoryid, $trainingid);
             }
             $context = \context_coursecat::instance($this->categoryid);
             $editmode = has_capability('tool/attestoodle:managetraining', $context);
             $this->form = new category_training_update_form(
                     new \moodle_url('/admin/tool/attestoodle/index.php',
-                        array('typepage' => 'trainingmanagement', 'categoryid' => $this->categoryid)),
+                        array('typepage' => 'trainingmanagement',
+                        'categoryid' => $this->categoryid,
+                        'trainingid' => $trainingid)),
                         array('data' => $this->category, 'idtemplate' => $idtemplate,
-                        'idtraining' => $idtraining, 'editmode' => $editmode), 'get' );
+                        'trainingid' => $trainingid, 'editmode' => $editmode), 'get' );
+            if ($training) {
+                $this->form->set_data(array ('startdate' => $training->get_start(),
+                    'enddate' => $training->get_end(), 'duration' => $training->get_duration()));
+            }
             if ($idtemplate > -1) {
                 $this->form->set_data(array ('template' => $idtemplate, 'group1' => $grp1, 'group2' => $grp2));
             }
             $this->handle_form();
+            if ($editmode) {
+                $this->form2 = new add_course_form(
+                    new \moodle_url('/admin/tool/attestoodle/classes/training/course_outof_categ.php',
+                        array('categoryid' => $this->categoryid, 'trainingid' => $trainingid)),
+                        array('data' => $this->category), 'get');
+            }
         } else {
             $PAGE->set_heading(get_string('training_management_main_title_no_category', 'tool_attestoodle'));
         }
@@ -161,42 +181,30 @@ class training_management implements \renderable {
     private function handle_form_has_submitted_data() {
         global $DB;
         $context = \context_coursecat::instance($this->categoryid);
+
         if (has_capability('tool/attestoodle:managetraining', $context)) {
             $datafromform = $this->form->get_submitted_data();
-            // Instanciate global variables to output to the user.
-            $error = false;
-            $updated = false;
 
-            $value = $datafromform->checkbox_is_training;
+            if (isset($datafromform->delete)) {
+                trainings_factory::get_instance()->remove_training_by_id($this->trainingid);
+                \core\notification::info(get_string('training_management_submit_removed', 'tool_attestoodle'));
+                $redirecturl = new \moodle_url('/admin/tool/attestoodle/index.php',
+                        array (
+                            'typepage' => 'trainingslist',
+                            'categoryid' => $this->categoryid));
+                redirect($redirecturl);
+                return;
+            }
 
-            $oldistrainingvalue = $this->category->is_training();
-            $boolvalue = boolval($value);
-
-            if ($this->category->set_istraining($boolvalue)) {
-                $updated = true;
-                try {
-                    // Try to persist training in DB.
-                    $this->category->persist_training();
-                } catch (\Exception $ex) {
-                    // If record in DB failed, re-set the old value.
-                    $this->category->set_istraining($oldistrainingvalue);
-                    $error = true;
-                }
-                // Notify the user of the submission result.
-                $this->notify_result($error, $updated, $boolvalue);
-                if (!$error) {
-                    $redirecturl = new \moodle_url('/admin/tool/attestoodle/index.php',
-                        array ('typepage' => 'trainingmanagement', 'categoryid' => $this->categoryid));
-                    redirect($redirecturl);
-                    return;
-                }
-            } else {
-                $training = trainings_factory::get_instance()->retrieve_training($this->category->get_id());
+            if ($this->trainingid > 0) {
+                trainings_factory::get_instance()->create_training_by_category($this->categoryid, $this->trainingid);
+                $training = trainings_factory::get_instance()->retrieve_training_by_id($this->trainingid);
                 if (!empty($training)) {
-                    $training->changename($datafromform->name);
+                    $training->change($datafromform->name, $datafromform->startdate,
+                        $datafromform->enddate, $datafromform->duration);
                     $nvxtemplate = $datafromform->template;
-                    $idtraining = $DB->get_field('tool_attestoodle_training', 'id', ['categoryid' => $this->categoryid]);
-                    $record = $DB->get_record('tool_attestoodle_train_style', ['trainingid' => $idtraining]);
+
+                    $record = $DB->get_record('tool_attestoodle_train_style', ['trainingid' => $this->trainingid]);
                     $record->templateid = $nvxtemplate;
                     $record->grpcriteria1 = $datafromform->group1;
                     $record->grpcriteria2 = $datafromform->group2;
@@ -206,36 +214,25 @@ class training_management implements \renderable {
                     \core\notification::info(get_string('updatetraintemplate', 'tool_attestoodle'));
                     $DB->update_record('tool_attestoodle_train_style', $record);
                 }
-            }
-        }
-    }
-
-    /**
-     * Method that throws a notification to user to let him know the result of
-     * the form submission.
-     *
-     * @param boolean $error If there was an error
-     * @param boolean $updated If the training has been updated
-     * @param boolean $boolvalue True if the training has been added, false if
-     * it has been removed
-     */
-    private function notify_result($error, $updated, $boolvalue) {
-        $message = "";
-        if (!$error) {
-            if ($updated) {
-                if ($boolvalue) {
-                    $message .= get_string('training_management_submit_added', 'tool_attestoodle');
-                } else {
-                    $message .= get_string('training_management_submit_removed', 'tool_attestoodle');
-                }
-                \core\notification::success($message);
             } else {
-                $message .= get_string('training_management_submit_unchanged', 'tool_attestoodle');
-                \core\notification::info($message);
+                if (!isset($this->category)) {
+                    $this->category = categories_factory::get_instance()->get_category($this->categoryid);
+                }
+                if (isset($datafromform->create_no)) {
+                    $redirecturl = new \moodle_url("/course/index.php", array("categoryid" => $this->categoryid));
+                    redirect($redirecturl);
+                    return;
+                }
+                // Create new training.
+                $newid = trainings_factory::get_instance()->add_training($this->category);
+                \core\notification::info(get_string('training_management_submit_added', 'tool_attestoodle'));
+                $redirecturl = new \moodle_url('/admin/tool/attestoodle/index.php',
+                        array (
+                            'typepage' => 'trainingmanagement',
+                            'categoryid' => $this->categoryid,
+                            'trainingid' => $newid));
+                redirect($redirecturl);
             }
-        } else {
-            $message .= get_string('training_management_submit_error', 'tool_attestoodle');
-            \core\notification::warning($message);
         }
     }
 
@@ -281,22 +278,51 @@ class training_management implements \renderable {
             $output .= get_string('training_management_no_category_id', 'tool_attestoodle');
         } else if (!isset($this->category)) {
             $output .= get_string('training_management_unknow_category_id', 'tool_attestoodle');
-        } else {
+        } else { // Add a new training ?
+            if ($this->trainingid == -1) {
+                trainings_factory::get_instance()->find_training($this->categoryid);
+                trainings_factory::get_instance()->create_trainings_4_categ($this->categoryid);
+                $nbtotal = trainings_factory::get_instance()->get_count_training_by_categ($this->categoryid);
+                if ($nbtotal > 0) {
+                    $tabtraining = trainings_factory::get_instance()->get_trainings();
+                    $output .= get_string('notifytotaltraining', 'tool_attestoodle', $nbtotal) . " <ul>";
+
+                    foreach ($tabtraining as $train) {
+                        $parameters = array(
+                            'typepage' => 'trainingmanagement',
+                            'categoryid' => $this->categoryid,
+                            'trainingid' => $train->get_id()
+                        );
+                        $url = new \moodle_url('/admin/tool/attestoodle/index.php', $parameters);
+                        $output .= " <li>" . \html_writer::link($url, $train->get_name() . "</li>", $parameters);
+                    }
+                    $output .= "</ul>";
+                }
+                if ($nbtotal > 10) {
+                    $parameters = array('typepage' => 'trainingslist');
+                    $url = new \moodle_url('/admin/tool/attestoodle/index.php', $parameters);
+                    $output .= \html_writer::link($url, get_string('linktotraininglst', 'tool_attestoodle'), $parameters);
+                }
+            }
             $output .= $this->form->render();
 
             // Link to the milestones management of the training.
             $parametersmilestones = array(
                 'typepage' => 'managemilestones',
-                'categoryid' => $this->category->get_id()
+                'categoryid' => $this->categoryid,
+                'trainingid' => $this->trainingid
                 );
             $urlmilestones = new \moodle_url('/admin/tool/attestoodle/index.php', $parametersmilestones);
             $labelmilestones = get_string('training_management_manage_training_link', 'tool_attestoodle');
             $attributesmilestones = array('class' => 'attestoodle-button');
 
-            if ($this->category->is_training()) {
-                $output .= "<br/>";
+            if ($this->trainingid > -1) {
+                $output .= "<br/><legend class='ftogger'><a class='fheader' href='#'>" .
+                    get_string('milestones', 'tool_attestoodle') . "</a></legend>";
 
-                $training = trainings_factory::get_instance()->retrieve_training($this->category->get_id());
+                trainings_factory::get_instance()->create_training_by_category($this->categoryid, $this->trainingid);
+                $training = trainings_factory::get_instance()->retrieve_training_by_id($this->trainingid);
+
                 $tempstotal = db_accessor::get_instance()->is_milestone_set($training->get_id());
                 if (isset($tempstotal)) {
                     $output .= "<br/> ". get_string('totaltimetraining', 'tool_attestoodle') .
@@ -304,8 +330,8 @@ class training_management implements \renderable {
 
                     $context = \context_coursecat::instance($this->categoryid);
                     if (has_capability('tool/attestoodle:managetraining', $context)) {
-                        $jalonssuppr = db_accessor::get_instance()->get_milestone_off($training->get_id());
-                        $newsact = db_accessor::get_instance()->get_new_activities($training->get_id());
+                        $jalonssuppr = db_accessor::get_instance()->get_milestone_off($this->trainingid);
+                        $newsact = db_accessor::get_instance()->get_new_activities($this->trainingid);
                         if (count($jalonssuppr) > 0) {
                             $output .= "<br/>" . $this->display_deleted_milestone($jalonssuppr);
                         }
@@ -317,19 +343,37 @@ class training_management implements \renderable {
                     // Link to the milestones management of the training.
                     $output .= \html_writer::link($urlmilestones, $labelmilestones, $attributesmilestones);
                     $output .= "<br /> ";
+                    $output .= $this->form2->render();
+
+                    $output .= "<br/><legend class='ftogger'><a class='fheader' href='#'>" .
+                        get_string('learners', 'tool_attestoodle') . "</a></legend>";
+
+                    $parameters = array(
+                        'categoryid' => $this->categoryid,
+                        'trainingid' => $this->trainingid
+                    );
+                    $url = new \moodle_url('/admin/tool/attestoodle/classes/training/select_learners.php', $parameters);
+                    $label = get_string('selectlearner', 'tool_attestoodle');
+                    $attributes = array('class' => 'btn btn-default attestoodle-button');
+                    $output .= \html_writer::link($url, $label, $attributes);
+
                     // Link to the learners list of the training.
                     $parameters = array(
                         'typepage' => 'learners',
-                        'categoryid' => $this->category->get_id()
+                        'categoryid' => $this->categoryid,
+                        'trainingid' => $this->trainingid
                     );
-                    $url = new \moodle_url('/admin/tool/attestoodle/index.php', $parameters);
-                    $label = get_string('training_management_training_details_link', 'tool_attestoodle');
-                    $attributes = array('class' => 'attestoodle-button');
-                    $output .= \html_writer::link($url, $label, $attributes);
+                    if ($training->has_learners()) {
+                        $url = new \moodle_url('/admin/tool/attestoodle/index.php', $parameters);
+                        $label = get_string('training_management_training_details_link', 'tool_attestoodle');
+                        $attributes = array('class' => 'btn btn-default attestoodle-button');
+                        $output .= "&nbsp;&nbsp;" . \html_writer::link($url, $label, $attributes);
+                    }
                 } else {
                     $output .= "<br /> " . get_string('nomilestone', 'tool_attestoodle') . "&nbsp;";
                     $output .= \html_writer::link($urlmilestones, $labelmilestones, $attributesmilestones);
                     $output .= "<br /> ";
+                    $output .= $this->form2->render();
                 }
             }
         }
@@ -363,7 +407,8 @@ class training_management implements \renderable {
                             array(
                                     'typepage' => 'trainingmanagement',
                                     'action' => 'deleteErrMilestone',
-                                    'categoryid' => $this->categoryid
+                                    'categoryid' => $this->categoryid,
+                                    'trainingid' => $this->trainingid
                             )
                     ),
                     get_string('btn_deletemilestonerr', 'tool_attestoodle'),
@@ -399,7 +444,8 @@ class training_management implements \renderable {
                             array(
                                     'typepage' => 'trainingmanagement',
                                     'action' => 'deleteNotification',
-                                    'categoryid' => $this->categoryid
+                                    'categoryid' => $this->categoryid,
+                                    'trainingid' => $this->trainingid
                             )
                     ),
                     get_string('btn_deletenotification', 'tool_attestoodle'),

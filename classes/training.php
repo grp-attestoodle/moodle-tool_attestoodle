@@ -23,6 +23,8 @@
  */
 
 namespace tool_attestoodle;
+
+use tool_attestoodle\factories\learners_factory;
 use tool_attestoodle\utils\db_accessor;
 defined('MOODLE_INTERNAL') || die;
 /**
@@ -38,12 +40,23 @@ class training {
     /** @var course[] Courses of the training */
     private $courses;
 
+    /** @var learner[] Learners registered in the training */
+    private $learners;
+
     /** @var integer Id of the training. */
     private $id;
 
     /** @var string The name of the training. */
     private $name;
 
+    /** @var int Start date of the training. */
+    private $dtstart;
+
+    /** @var int End date of the training. */
+    private $dtend;
+
+    /** @var int Theoretical duration of the training.*/
+    private $duration;
     /**
      * Constructor of the training class.
      *
@@ -52,6 +65,7 @@ class training {
     public function __construct($category) {
         $this->category = $category;
         $this->courses = array();
+        $this->learners = array();
     }
 
     /**
@@ -60,16 +74,46 @@ class training {
      * @return learner[] The array containing the learners of the training
      */
     public function get_learners() {
-        $learners = array();
-        foreach ($this->courses as $course) {
-            $courselearners = $course->get_learners();
-            foreach ($courselearners as $courselearner) {
-                if (!in_array($courselearner, $learners, true)) {
-                    $learners[] = $courselearner;
-                }
-            }
+        if (empty($this->learners)) {
+            learners_factory::get_instance()->retrieve_learners_by_training($this);
         }
-        return $learners;
+        return $this->learners;
+    }
+
+    /**
+     * Test if the training has learner.
+     *
+     * @return true if the treaning has some learner, false in other case.
+     */
+    public function has_learners() {
+        return ! db_accessor::get_instance()->nolearner($this->id);
+    }
+
+    /**
+     * Getter for the $start property.
+     *
+     * @return integer date start of the training.
+     */
+    public function get_start() {
+        return $this->dtstart;
+    }
+
+    /**
+     * Getter for the $end property.
+     *
+     * @return integer date end of the training.
+     */
+    public function get_end() {
+        return $this->dtend;
+    }
+
+    /**
+     * Getter for the $duration property.
+     *
+     * @return integer duration of the training.
+     */
+    public function get_duration() {
+        return $this->duration;
     }
 
     /**
@@ -96,13 +140,32 @@ class training {
     /**
      * Setter for property name, and save in bdd the value.
      * @param string $prop the new name of the training.
+     * @param int $dtstart the new start date of the training.
+     * @param int $dtend the new end date of the training.
+     * @param int $dtduration the new duration of the training.
      */
-    public function changename($prop) {
+    public function change($prop, $dtstart, $dtend, $dtduration) {
         if (empty($prop)) {
             return;
         }
+        $update = false;
         if ($this->name != $prop) {
             $this->name = $prop;
+            $update = true;
+        }
+        if ($this->dtstart != $dtstart) {
+            $this->dtstart = $dtstart;
+            $update = true;
+        }
+        if ($this->dtend != $dtend) {
+            $this->dtend = $dtend;
+            $update = true;
+        }
+        if ($this->duration != $dtduration) {
+            $this->duration = $dtduration;
+            $update = true;
+        }
+        if ($update) {
             db_accessor::get_instance()->updatetraining($this);
         }
     }
@@ -158,6 +221,33 @@ class training {
     }
 
     /**
+     * Setter for $start property.
+     *
+     * @param int $prop start to set for the training
+     */
+    public function set_start($prop) {
+        $this->dtstart = $prop;
+    }
+
+    /**
+     * Setter for $end property.
+     *
+     * @param int $prop end to set for the training
+     */
+    public function set_end($prop) {
+        $this->dtend = $prop;
+    }
+
+    /**
+     * Setter for $duration property.
+     *
+     * @param int $prop duration to set for the training
+     */
+    public function set_duration($prop) {
+        $this->duration = $prop;
+    }
+
+    /**
      * Shortcut setter for the training $id property.
      *
      * @param string $prop Id to set for the training
@@ -201,6 +291,15 @@ class training {
     public function add_course($course) {
         $course->set_training($this);
         $this->courses[] = $course;
+    }
+
+    /**
+     * Setter for $learners property.
+     *
+     * @param learner[] $prop Learners to set for the training
+     */
+    public function set_learners($prop) {
+        $this->learners = $prop;
     }
 
     /**

@@ -149,7 +149,7 @@ class certificate {
         $datebeg = $this->begindate->format($datformat);
         $dateend = $this->enddate->format($datformat);
 
-        $period = get_string('fromdate', 'tool_attestoodle', $datebeg) .
+        $period = get_string('fromdate', 'tool_attestoodle', $datebeg) . " " .
             get_string('todate', 'tool_attestoodle', $dateend);
 
         $certificateinfos = new \stdClass();
@@ -265,7 +265,7 @@ class certificate {
 
             $doc = new attestation_pdf();
             if (!isset($template->id)) {
-                $doc->set_categoryid($this->training->get_categoryid());
+                $doc->set_trainingid($this->training->get_id());
             } else {
                 $doc->set_idtemplate($template->templateid);
                 $doc->set_grpcriteria1($template->grpcriteria1);

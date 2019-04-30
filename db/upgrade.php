@@ -182,25 +182,114 @@ function xmldb_tool_attestoodle_upgrade($oldversion) {
 
     // Create table learner - template.
     if ($oldversion < 2019030825) {
-        $table = new xmldb_table('tool_attestoodle_user_style');
-        // Adding fields to table.
-        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
-        $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
-        $table->add_field('trainingid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
-        $table->add_field('templateid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
-        $table->add_field('grpcriteria1', XMLDB_TYPE_CHAR, '35', null, null, null, null);
-        $table->add_field('grpcriteria2', XMLDB_TYPE_CHAR, '35', null, null, null, null);
-        $table->add_field('enablecertificate', XMLDB_TYPE_INTEGER, '1', null, null, null, null);
-        $table->add_field('withdateformat', XMLDB_TYPE_CHAR, '127', null, null, null, null);
-        // Adding keys to table.
-        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
-        // Create table.
-        if ($dbman->table_exists($table)) {
-            $dbman->drop_table($table);
-        }
-        $dbman->create_table($table);
+        create_table_learner_template($dbman);
         upgrade_plugin_savepoint(true, 2019030825, 'tool', 'attestoodle');
     }
 
+    // Update table tool_attestoodle_training.
+    if ($oldversion < 2019040606) {
+        update_table_training();
+        upgrade_plugin_savepoint(true, 2019040606, 'tool', 'attestoodle');
+    }
+
+    if ($oldversion < 2019041602) {
+        create_table_learner($dbman);
+        upgrade_plugin_savepoint(true, 2019041602, 'tool', 'attestoodle');
+    }
     return true;
+}
+
+/**
+ * Create table tool_attestoodle_learner, since version 2019041601.
+ *
+ * @param dbmanager $dbman database manager.
+ */
+function create_table_learner($dbman) {
+    $table = new xmldb_table('tool_attestoodle_learner');
+    // Adding fields to table.
+    $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+    $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+    $table->add_field('trainingid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+    $table->add_field('categoryid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+    $table->add_field('selected', XMLDB_TYPE_INTEGER, '1', null, null, null, null);
+    $table->add_field('predelete', XMLDB_TYPE_INTEGER, '1', null, null, null, null);
+    $table->add_field('resultcriteria', XMLDB_TYPE_CHAR, '127', null, null, null, null);
+    // Adding keys to table.
+    $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+    // Create table.
+    if ($dbman->table_exists($table)) {
+        $dbman->drop_table($table);
+    }
+    $dbman->create_table($table);
+
+    // Add checklearner to training.
+    $table = new xmldb_table('tool_attestoodle_training');
+    $field = new xmldb_field('checklearner', XMLDB_TYPE_INTEGER, '10', null, null, null, null, null, null);
+    if (!$dbman->field_exists($table, $field)) {
+        $dbman->add_field($table, $field);
+    }
+}
+
+/**
+ * Create table tool_attestoodle_user_style, since version 2019030825.
+ *
+ * @param dbmanager $dbman database manager.
+ */
+function create_table_learner_template($dbman) {
+    $table = new xmldb_table('tool_attestoodle_user_style');
+    // Adding fields to table.
+    $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+    $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+    $table->add_field('trainingid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+    $table->add_field('templateid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+    $table->add_field('grpcriteria1', XMLDB_TYPE_CHAR, '35', null, null, null, null);
+    $table->add_field('grpcriteria2', XMLDB_TYPE_CHAR, '35', null, null, null, null);
+    $table->add_field('enablecertificate', XMLDB_TYPE_INTEGER, '1', null, null, null, null);
+    $table->add_field('withdateformat', XMLDB_TYPE_CHAR, '127', null, null, null, null);
+    // Adding keys to table.
+    $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+    // Create table.
+    if ($dbman->table_exists($table)) {
+        $dbman->drop_table($table);
+    }
+    $dbman->create_table($table);
+}
+
+/**
+ * Add 5 field to tool_attestoodle_training, , since version 2019040606.
+ * startdate, enddate, duration, nbautolaunch.
+ *
+ */
+function update_table_training() {
+    global $DB;
+    $dbman = $DB->get_manager();
+    $table = new xmldb_table('tool_attestoodle_training');
+    $field = new xmldb_field('startdate', XMLDB_TYPE_INTEGER, '10', null, null, null, null, null, null);
+    if (!$dbman->field_exists($table, $field)) {
+        $dbman->add_field($table, $field);
+    }
+    $field = new xmldb_field('enddate', XMLDB_TYPE_INTEGER, '10', null, null, null, null, null, null);
+    if (!$dbman->field_exists($table, $field)) {
+        $dbman->add_field($table, $field);
+    }
+    $field = new xmldb_field('duration', XMLDB_TYPE_INTEGER, '10', null, null, null, null, null, null);
+    if (!$dbman->field_exists($table, $field)) {
+        $dbman->add_field($table, $field);
+    }
+    $field = new xmldb_field('nbautolaunch', XMLDB_TYPE_INTEGER, '4', null, null, null, null, null, null);
+    if (!$dbman->field_exists($table, $field)) {
+        $dbman->add_field($table, $field);
+    }
+    $field = new xmldb_field('nextlaunch', XMLDB_TYPE_INTEGER, '10', null, null, null, null, null, null);
+    if (!$dbman->field_exists($table, $field)) {
+        $dbman->add_field($table, $field);
+    }
+
+    $items = $DB->get_records('tool_attestoodle_training');
+    foreach ($items as $item) {
+        $item->startdate = \time();
+        $item->nbautolaunch = 0;
+        $item->nextlaunch = 0;
+        $DB->update_record("tool_attestoodle_training", $item);
+    }
 }
