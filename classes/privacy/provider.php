@@ -172,6 +172,7 @@ class provider implements
         $result = $DB->execute($sql, array());
 
         $DB->delete_records('tool_attestoodle_user_style', ['userid' => $userid]);
+        $DB->delete_records('tool_attestoodle_learner', ['userid' => $userid]);
     }
 
     /**

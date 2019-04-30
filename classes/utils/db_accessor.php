@@ -442,6 +442,7 @@ class db_accessor extends singleton {
         self::$db->delete_records('tool_attestoodle_train_style', array('trainingid' => $trainingid));
         self::$db->delete_records('tool_attestoodle_user_style', array('trainingid' => $trainingid));
         self::$db->delete_records('tool_attestoodle_milestone', array('trainingid' => $trainingid));
+        self::$db->delete_records('tool_attestoodle_learner', array('trainingid' => $trainingid));
 
         // Delete generate files.
         $sql = "SELECT distinct filename, learnerid
