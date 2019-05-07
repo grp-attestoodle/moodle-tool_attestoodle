@@ -502,6 +502,8 @@ class db_accessor extends singleton {
         $dataobject = new \stdClass();
         $dataobject->name = "";
         $dataobject->categoryid = $categoryid;
+        $dataobject->startdate = \time();
+
         $idtraining = self::$db->insert_record('tool_attestoodle_training', $dataobject);
         $template = self::$db->get_record('tool_attestoodle_template', array('name' => 'Site'));
         $record = new \stdClass();
