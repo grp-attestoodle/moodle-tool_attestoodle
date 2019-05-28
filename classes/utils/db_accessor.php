@@ -240,7 +240,7 @@ class db_accessor extends singleton {
         $dataobject = new \stdClass();
         $dataobject->trainingid = $trainingid;
         $dataobject->categoryid = $categoryid;
-        $dataobject->selected = $categoryid;
+        $dataobject->selected = 0;
         $dataobject->resultcriteria = 'new';
         foreach ($insertab as $learner) {
             if (! self::$db->record_exists('tool_attestoodle_learner', array('trainingid' => $trainingid, 'userid' => $learner))) {
