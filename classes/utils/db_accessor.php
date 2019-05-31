@@ -240,7 +240,7 @@ class db_accessor extends singleton {
         $dataobject = new \stdClass();
         $dataobject->trainingid = $trainingid;
         $dataobject->categoryid = $categoryid;
-        $dataobject->selected = $categoryid;
+        $dataobject->selected = 0;
         $dataobject->resultcriteria = 'new';
         foreach ($insertab as $learner) {
             if (! self::$db->record_exists('tool_attestoodle_learner', array('trainingid' => $trainingid, 'userid' => $learner))) {
@@ -502,6 +502,8 @@ class db_accessor extends singleton {
         $dataobject = new \stdClass();
         $dataobject->name = "";
         $dataobject->categoryid = $categoryid;
+        $dataobject->startdate = \time();
+
         $idtraining = self::$db->insert_record('tool_attestoodle_training', $dataobject);
         $template = self::$db->get_record('tool_attestoodle_template', array('name' => 'Site'));
         $record = new \stdClass();
