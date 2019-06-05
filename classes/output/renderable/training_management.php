@@ -35,6 +35,7 @@ use tool_attestoodle\factories\trainings_factory;
 use tool_attestoodle\forms\category_training_update_form;
 use tool_attestoodle\forms\add_course_form;
 use tool_attestoodle\utils\db_accessor;
+use tool_attestoodle\utils\plugins_accessor;
 /**
  * Display information of a single training in Attestoodle.
  *
@@ -377,6 +378,7 @@ class training_management implements \renderable {
                 }
             }
         }
+        $output .= " &nbsp;" . plugins_accessor::get_instance()->get_save_btn($this->trainingid);
         return $output;
     }
 
