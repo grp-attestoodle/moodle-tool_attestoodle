@@ -24,6 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die;
 
+use tool_attestoodle\utils\plugins_accessor;
 /**
  * Parse a number of minutes into a readable hours string.
  *
@@ -176,6 +177,14 @@ function tool_attestoodle_myprofile_navigation(\core_user\output\myprofile\tree 
             $content = \html_writer::link($urllisttemplate, get_string('template_certificate', 'tool_attestoodle'), array());
             $localnode = new core_user\output\myprofile\node('attestoodle', 'lsttemplate', null, null, null, $content);
             $tree->add_node($localnode);
+        }
+
+        if (has_capability('tool/attestoodle:managetraining', $context)) {
+            $lnk = plugins_accessor::get_instance()->get_restore_link();
+            if (!empty($lnk)) {
+                $localnode = new core_user\output\myprofile\node('attestoodle', 'restoretemplate', null, null, null, $lnk);
+                $tree->add_node($localnode);
+            }
         }
     }
 }

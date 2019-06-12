@@ -108,6 +108,7 @@ $linkyes = \html_writer::link(
 $linkno = \html_writer::link(
                 new moodle_url('/admin/tool/attestoodle/index.php',
                             array('typepage' => 'learners',
+                            'trainingid' => $trainingid,
                             'categoryid' => $categoryid,
                             'begindate' => $begindate,
                             'enddate' => $enddate)
