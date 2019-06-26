@@ -27,7 +27,7 @@ require_once($CFG->libdir.'/tablelib.php');
 
 use tool_attestoodle\utils\db_accessor;
 
-define('DEFAULT_PAGE_SIZE', 5);
+define('DEFAULT_PAGE_SIZE', 10);
 
 $context = context_system::instance();
 $PAGE->set_context($context);
@@ -39,6 +39,24 @@ $perpage = optional_param('perpage', DEFAULT_PAGE_SIZE, PARAM_INT);
 $trainingid = required_param('trainingid', PARAM_INT);
 $categoryid = required_param('categoryid', PARAM_INT);
 $order    = optional_param('tsort', 0, PARAM_INT);
+$action    = optional_param('action', '', PARAM_ALPHA);
+
+if ($action == "validate") {
+    db_accessor::get_instance()->validate_learner($trainingid);
+    $redirecturl = new \moodle_url(
+                '/admin/tool/attestoodle/index.php',
+                array('typepage' => 'trainingmanagement', 'categoryid' => $categoryid, 'trainingid' => $trainingid));
+    redirect($redirecturl);
+}
+
+if ($action == "cancel") {
+    db_accessor::get_instance()->cancel_learner($trainingid);
+    $redirecturl = new \moodle_url(
+                '/admin/tool/attestoodle/index.php',
+                array('typepage' => 'trainingmanagement', 'categoryid' => $categoryid, 'trainingid' => $trainingid));
+    redirect($redirecturl);
+}
+
 
 handle_actions($trainingid, $categoryid);
 
@@ -102,7 +120,9 @@ $order = " order by " . $table->get_sql_sort();
 $rs = db_accessor::get_instance()->get_page_learner($table->get_page_start(), $table->get_page_size(), $trainingid, $order);
 
 $rows = array();
-$enableaction = false;
+
+$hasselect = false;
+
 foreach ($rs as $result) {
     if ($result->selected != 1) {
         $select = new moodle_url('/admin/tool/attestoodle/classes/training/select_learners.php',
@@ -112,8 +132,8 @@ foreach ($rs as $result) {
                           'page' => $page,
                           'perpage' => $perpage]);
         $sellink = "<a href=" . $select . "><i class='fa fa-square-o'></i></a>&nbsp;&nbsp;";
+        $hasselect = false;
     } else {
-        $enableaction = true;
         $select = new moodle_url('/admin/tool/attestoodle/classes/training/select_learners.php',
                           ['uncheck' => $result->id,
                           'categoryid' => $categoryid,
@@ -121,6 +141,18 @@ foreach ($rs as $result) {
                           'page' => $page,
                           'perpage' => $perpage]);
         $sellink = "<a href=" . $select . "><i class='fa fa-check-square-o'></i></a>&nbsp;&nbsp;";
+        // Up.
+        if (!$hasselect && ($page > 0 || count($rows) > 0)) {
+            $selectup = new moodle_url('/admin/tool/attestoodle/classes/training/select_learners.php',
+                          ['upcheck' => $result->id,
+                          'categoryid' => $categoryid,
+                          'trainingid' => $trainingid,
+                          'page' => $page,
+                          'perpage' => $perpage,
+                          'order' => $table->get_sql_sort()]);
+            $sellink = $sellink . "&nbsp; <a href=" . $selectup . "><i class='fa fa-level-up'></i>";
+        }
+        $hasselect = true;
     }
     $rows[] = array('username' => $result->username,
             'lastname' => $result->lastname,
@@ -151,15 +183,18 @@ $parameters = array(
                     );
 
 $attributes = array('class' => 'btn btn-default attestoodle-button');
-if ($enableaction) {
+$nbselect = db_accessor::get_instance()->countselected($trainingid);
+
+if ($nbselect > 0) {
     $parameters['page'] = 0;
     $url = new \moodle_url('/admin/tool/attestoodle/classes/training/select_learners.php', $parameters);
-    $label = get_string('keepselect', 'tool_attestoodle');
+    $label = get_string('keepselect', 'tool_attestoodle') . " (" . $nbselect . ")";
     $btn = \html_writer::link($url, $label, $attributes);
 
+    $noselect = $matchcount - $nbselect;
     $parameters['action'] = 'selectoff';
     $url = new \moodle_url('/admin/tool/attestoodle/classes/training/select_learners.php', $parameters);
-    $label = get_string('excludeselect', 'tool_attestoodle');
+    $label = get_string('excludeselect', 'tool_attestoodle') . "(" . $noselect . ")";
     $btn .= "&nbsp;&nbsp;" . \html_writer::link($url, $label, $attributes);
 
     echo $btn;
@@ -172,6 +207,33 @@ $label = get_string('findlearner', 'tool_attestoodle');
 $btn = "&nbsp;&nbsp;" . \html_writer::link($url, $label, $attributes);
 echo $btn;
 
+$parameters['action'] = 'enrol';
+$url = new \moodle_url('/admin/tool/attestoodle/classes/training/select_learners.php', $parameters);
+$label = get_string('enrolcriteria', 'tool_attestoodle');
+$btntest = \html_writer::link($url, $label, $attributes);
+echo "  " . $btntest;
+
+
+$parameters['action'] = 'training';
+$url = new \moodle_url('/admin/tool/attestoodle/classes/training/select_learners.php', $parameters);
+$label = get_string('trainingcriteria', 'tool_attestoodle');
+$btntest = \html_writer::link($url, $label, $attributes);
+echo "  " . $btntest;
+
+// Button valid.
+$parameters['action'] = 'validate';
+$url = new \moodle_url('/admin/tool/attestoodle/classes/training/select_learners.php', $parameters);
+$label = get_string('validate', 'tool_attestoodle');
+$btnok = \html_writer::link($url, $label, $attributes);
+// Button cancel.
+$parameters['action'] = 'cancel';
+$url = new \moodle_url('/admin/tool/attestoodle/classes/training/select_learners.php', $parameters);
+$label = get_string('cancel');
+$btncancel = \html_writer::link($url, $label, $attributes);
+
+echo "<br/><br/>" . $btnok . "&nbsp;&nbsp;" . $btncancel;
+
+
 echo $OUTPUT->footer();
 
 /**
@@ -183,7 +245,9 @@ echo $OUTPUT->footer();
 function handle_actions($trainingid, $categoryid) {
     $check = optional_param('check', -1, PARAM_INT);
     $uncheck = optional_param('uncheck', -1, PARAM_INT);
+    $upcheck = optional_param('upcheck', -1, PARAM_INT);
     $action = optional_param('action', '', PARAM_ALPHA);
+    $order = optional_param('order', '', PARAM_RAW);
 
     if ($check != -1) {
         db_accessor::get_instance()->check_learner($check, $trainingid);
@@ -203,5 +267,15 @@ function handle_actions($trainingid, $categoryid) {
 
     if ($action == "reinit") {
         db_accessor::get_instance()->insert_learner($trainingid, $categoryid);
+    }
+    if ($upcheck != -1) {
+        db_accessor::get_instance()->checkup_learner($trainingid, $upcheck, $order);
+    }
+
+    if ($action == "enrol") {
+        db_accessor::get_instance()->fillnbcoursecriteria($trainingid);
+    }
+    if ($action == "training") {
+        db_accessor::get_instance()->fillnbtrainingcriteria($trainingid);
     }
 }
