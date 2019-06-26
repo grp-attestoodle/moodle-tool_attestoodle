@@ -282,6 +282,20 @@ class db_accessor extends singleton {
     }
 
     /**
+     * Compute the total number of learner selected in the training.
+     *
+     * @param int $trainingid Id of the training containing the learners.
+     */
+    public function countselected($trainingid) {
+        $req = 'select count(u.id)
+                  from {tool_attestoodle_learner} l
+                  join {user} u on u.id = l.userid
+                 where selected = 1
+                   and trainingid = ';
+        return self::$db->count_records_sql($req . $trainingid);
+    }
+
+    /**
      * Select one learner.
      *
      * @param int $userid Id of the user to select.
@@ -289,10 +303,68 @@ class db_accessor extends singleton {
      */
     public function check_learner($userid, $trainingid) {
         $request = " UPDATE {tool_attestoodle_learner}
-                        SET selected = 1, resultcriteria= ''
+                        SET selected = 1
                       WHERE userid = ? and trainingid = ?";
 
         self::$db->execute($request, array($userid, $trainingid));
+    }
+
+    /**
+     * Marks all learners preceding the one received.
+     *
+     * @param int $trainingid Id of the training where we select learner.
+     * @param int $upcheck Id of the learner selected.
+     * @param string $order order of display of learners.
+     */
+    public function checkup_learner($trainingid, $upcheck, $order) {
+        $orderby = ' order by ' . $order;
+        $req = 'select u.id, u.username as username, u.lastname as lastname, u.firstname as firstname,
+                        u.email as email, l.selected as selected, l.resultcriteria as resultcriteria
+                  from {tool_attestoodle_learner} l
+                  join {user} u on u.id = l.userid
+                 where trainingid = ? ' . $orderby;
+        $rs = self::$db->get_recordset_sql($req, array($trainingid));
+        $ids = array();
+        foreach ($rs as $result) {
+            if ($result->id == $upcheck) {
+                break;
+            }
+            if ($result->selected > 0) {
+                $ids = array();
+            } else {
+                $ids[] = $result->id;
+            }
+        }
+
+        $request = " UPDATE {tool_attestoodle_learner}
+                        SET selected = 1
+                      WHERE userid = ? and trainingid = ?";
+        foreach ($ids as $id) {
+            self::$db->execute($request, array($id, $trainingid));
+        }
+    }
+
+    /**
+     * Validates the list of learners of the training.
+     *
+     * @param int $trainingid Id of the training where we select learner.
+     */
+    public function validate_learner($trainingid) {
+        $request = " UPDATE {tool_attestoodle_learner}
+                        SET selected = 0, resultcriteria= '', predelete = 1
+                      WHERE trainingid = ?";
+        self::$db->execute($request, array($trainingid));
+    }
+
+    /**
+     * Removes learners who are not validated in the training.
+     *
+     * @param int $trainingid Id of the training.
+     */
+    public function cancel_learner($trainingid) {
+        $req = "delete from {tool_attestoodle_learner} where trainingid=:trainingid and predelete is null";
+        self::$db->execute($req, ['trainingid' => $trainingid]);
+        self::validate_learner($trainingid);
     }
 
     /**
@@ -303,10 +375,75 @@ class db_accessor extends singleton {
      */
     public function uncheck_learner($userid, $trainingid) {
         $request = " UPDATE {tool_attestoodle_learner}
-                        SET selected = 0, resultcriteria= ''
+                        SET selected = 0
                       WHERE userid = ? and trainingid = ?";
 
         self::$db->execute($request, array($userid, $trainingid));
+    }
+
+    /**
+     * Fill in the criterion of the number of registrations for a training course.
+     *
+     * @param int $trainingid Id of the training.
+     */
+    public function fillnbcoursecriteria($trainingid) {
+        $tabuser = array();
+        $req = 'select l.userid
+                  from {tool_attestoodle_learner} l
+                 where l.trainingid = ? ';
+        $rs = self::$db->get_recordset_sql($req, array($trainingid));
+        foreach ($rs as $result) {
+            $tabuser[$result->userid] = 0;
+        }
+
+        $listcourse = self::get_courses_of_training($trainingid);
+        $enrolled = "SELECT ra.userid
+                       FROM {role_assignments} ra
+                       JOIN {context} cx ON ra.contextid = cx.id
+                       JOIN {course} c ON cx.instanceid = c.id AND cx.contextlevel = 50
+                      WHERE c.id = ?";
+        $nbcourse = 0;
+        foreach ($listcourse as $course) {
+            $rs = self::$db->get_recordset_sql($enrolled, array($course->id));
+            foreach ($rs as $result) {
+                if (isset($tabuser[$result->userid])) {
+                    $tabuser[$result->userid] = $tabuser[$result->userid] + 1;
+                }
+            }
+            $nbcourse = $nbcourse + 1;
+        }
+
+        $req = " UPDATE {tool_attestoodle_learner}
+                        SET resultcriteria= ?
+                      WHERE userid = ? and trainingid = ?";
+
+        foreach ($tabuser as $id => $value) {
+            $crit = $value . "/" . $nbcourse;
+            self::$db->execute($req, array($crit, $id, $trainingid));
+        }
+    }
+
+    /**
+     * Fill in the criterion of the number of training courses followed by the learners.
+     *
+     * @param int $trainingid Id of the training.
+     */
+    public function fillnbtrainingcriteria($trainingid) {
+        $req = "select count(trainingid) as training, userid
+                  from {tool_attestoodle_learner}
+                 where userid in (SELECT userid FROM {tool_attestoodle_learner} where trainingid = ?)
+                 group by userid";
+        $rs = self::$db->get_recordset_sql($req, array($trainingid));
+        $upd = " UPDATE {tool_attestoodle_learner}
+                        SET resultcriteria= ?
+                      WHERE userid = ? and trainingid = ?";
+        foreach ($rs as $result) {
+            $val = $result->training - 1;
+            if ($val < 10) {
+                $val = "0" . $val;
+            }
+            self::$db->execute($upd, array($val, $result->userid, $trainingid));
+        }
     }
 
     /**

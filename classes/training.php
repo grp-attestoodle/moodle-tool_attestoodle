@@ -90,6 +90,13 @@ class training {
     }
 
     /**
+     * Return the count of learners.
+     */
+    public function count_learners() {
+        return db_accessor::get_instance()->get_count_learner($this->id);
+    }
+
+    /**
      * Getter for the $start property.
      *
      * @return integer date start of the training.

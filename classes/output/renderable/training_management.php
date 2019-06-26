@@ -346,8 +346,10 @@ class training_management implements \renderable {
                     $output .= "<br /> ";
                     $output .= $this->form2->render();
 
+                    $countlearner = $training->count_learners();
+                    $textlearner = get_string('learners', 'tool_attestoodle') . " (". $countlearner. ")";
                     $output .= "<br/><legend class='ftogger'><a class='fheader' href='#'>" .
-                        get_string('learners', 'tool_attestoodle') . "</a></legend>";
+                        $textlearner . "</a></legend>";
 
                     $parameters = array(
                         'categoryid' => $this->categoryid,
@@ -364,7 +366,7 @@ class training_management implements \renderable {
                         'categoryid' => $this->categoryid,
                         'trainingid' => $this->trainingid
                     );
-                    if ($training->has_learners()) {
+                    if ($countlearner > 0) {
                         $url = new \moodle_url('/admin/tool/attestoodle/index.php', $parameters);
                         $label = get_string('training_management_training_details_link', 'tool_attestoodle');
                         $attributes = array('class' => 'btn btn-default attestoodle-button');
