@@ -300,3 +300,6 @@ $string['learners'] = 'Apprenants';
 $string['fortraining'] = ' pour la formation : {$a}';
 $string['confirmtraincreate'] = 'Voulez-vous créer une nouvelle formation ?';
 $string['errsendzip'] = 'Erreur : téléchargement du fichier zip impossible !!';
+$string['validate'] = 'Valider';
+$string['trainingcriteria'] = 'Critère formation';
+$string['enrolcriteria'] = 'Critère inscription';

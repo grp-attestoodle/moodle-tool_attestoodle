@@ -309,3 +309,6 @@ $string['learners'] = 'Learners';
 $string['fortraining'] = ' for training : {$a}';
 $string['confirmtraincreate'] = 'Do you want to create a new formation ?';
 $string['errsendzip'] = 'An error occured: impossible to send ZIP file.';
+$string['validate'] = 'Validate';
+$string['trainingcriteria'] = 'Training criteria';
+$string['enrolcriteria'] = 'Enrol criteria';
