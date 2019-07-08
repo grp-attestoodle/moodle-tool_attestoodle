@@ -89,6 +89,11 @@ if (db_accessor::get_instance()->nolearner($trainingid, $categoryid)) {
 
 echo $OUTPUT->header();
 // Add help here.
+if (get_string_manager()->string_exists('UrlHlpTo_selectlearners', 'tool_attestoodle')) {
+    $urlhlp = get_string('UrlHlpTo_selectlearners', 'tool_attestoodle');
+    echo "<a href='" . $urlhlp . "' target='aide' title='" . get_string('help') .
+         "'><i class='fa fa-question-circle-o' aria-hidden='true'></i></a>";
+}
 
 // Table.
 $baseurl = new moodle_url('/admin/tool/attestoodle/classes/training/select_learners.php', array(

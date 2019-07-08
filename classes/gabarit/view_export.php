@@ -83,8 +83,9 @@ function create_debordement_test() {
     $certificateinfos = new \stdClass();
     $certificateinfos->trainingname = "UN TITRE DE FORMATION EXTREMEMENT LONG POUR DECLENCHER UN CHANGEMENT " .
         "DE LIGNE VOIR PLUSIEURS RETOURS A LA LIGNE EN ESPERANT QUE CELA SUFFISE";
-    $certificateinfos->learnername = "MyFisrtname MyLastname";
+    $certificateinfos->learnername = "MyFirstname MyLastname";
     $certificateinfos->totalminutes = 550;
+    $certificateinfos->cumulminutes = 950;
     $certificateinfos->period = "Du 01/07/2018 au 31/07/2018";
     $activitiesstructured = array();
     $activitiesstructured[15] = array(
