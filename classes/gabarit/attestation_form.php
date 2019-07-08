@@ -70,6 +70,9 @@ class attestation_form extends moodleform {
         $totminutegroup = $this->create_line('totminute');
         $mform->addGroup($totminutegroup, 'totalminute', get_string('totalminute', 'tool_attestoodle'), ' ', false);
 
+        $cumulminutesgroup = $this->create_line('cumulminutes');
+        $mform->addGroup($cumulminutesgroup, 'cumulminutes', get_string('cumulminutes', 'tool_attestoodle'), ' ', false);
+
         $activitiesgroup = $this->create_line('activities');
         $mform->addGroup($activitiesgroup, 'activities', get_string('tabactivities', 'tool_attestoodle'), ' ', false);
 

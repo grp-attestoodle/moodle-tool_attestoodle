@@ -163,6 +163,7 @@ $string['learner'] = 'Nom de l\'apprenant';
 $string['training'] = 'Désignation de la formation';
 $string['period'] = 'Période';
 $string['totalminute'] = 'Temps total validé sur la période';
+$string['cumulminutes'] = 'Temps total validé';
 $string['tabactivities'] = 'Tableau des activités';
 $string['font'] = 'Fonte :';
 $string['emphasis'] = 'Emphase :';
