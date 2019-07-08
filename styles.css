@@ -21,41 +21,6 @@
 * @copyright  2018 Pole de Ressource Numerique de l'Université du Mans
 * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 */
-
-/* Not displaying the milestone time (default) */
-span.tps_jalon {
-    display: none;
-}
-
-/* Displaying milestone time while editing activity description inside Moodle */
-div.editor_atto_content > span.tps_jalon {
-    display: block;
-    color: red;
-    border: 1px solid red;
-    background: yellow;
-    text-align: center;
-    text-overflow: '...';
-    overflow: hidden;
-    white-space: nowrap;
-    margin-right: auto;
-    margin-top: 0.5em;
-    margin-left: auto;
-    margin-bottom: 1.5em;
-    padding: 0.5em;
-    width: 30em;
-    font-weight: bold;
-}
-div.editor_atto_content > span.tps_jalon::before {
-    content: "\023f0\0020 Jalon, valeur : ";
-    visibility: visible;
-    font-weight: normal;
-}
-div.editor_atto_content > span.tps_jalon::after {
-    content: " min. (\26a0\0020Ne pas supprimer cet encadré !)";
-    visibility: visible;
-    font-weight: normal;
-}
-
 .attestoodle-button {
     display: inline-block;
 }

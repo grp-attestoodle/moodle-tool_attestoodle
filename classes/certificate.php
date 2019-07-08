@@ -155,6 +155,11 @@ class certificate {
         $certificateinfos = new \stdClass();
         $certificateinfos->learnername = $this->learner->get_fullname();
         $certificateinfos->learnerid = $this->learner->get_id();
+        // Add cumul of validate time since begin !!
+        $certificateinfos->cumulminutes = $this->learner->get_total_milestones(
+                                                            $this->training->get_categoryid(),
+                                                            null,
+                                                            $this->enddate);
         $certificateinfos->trainingname = $trainingname;
         $certificateinfos->totalminutes = $totalminutes;
         $certificateinfos->period = $period;

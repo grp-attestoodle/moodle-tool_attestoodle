@@ -660,6 +660,11 @@ class attestation_pdf {
                     $text = parse_minutes_to_hours($this->certificateinfos->totalminutes);
                 }
                 break;
+            case "cumulminutes" :
+                if (isset($this->certificateinfos->cumulminutes)) {
+                    $text = parse_minutes_to_hours($this->certificateinfos->cumulminutes);
+                }
+                break;
         }
         return $text;
     }

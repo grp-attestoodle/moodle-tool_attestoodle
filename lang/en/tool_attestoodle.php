@@ -163,6 +163,7 @@ $string['learner'] = 'Learner\'s fullname';
 $string['training'] = 'Designation of the formation';
 $string['period'] = 'Period';
 $string['totalminute'] = 'Total time validated over the period';
+$string['cumulminutes'] = 'Total time validated';
 $string['tabactivities'] = 'Table of activities';
 $string['font'] = 'Font :';
 $string['emphasis'] = 'Emphasis :';
@@ -267,6 +268,7 @@ $string['UrlHlpTo_trainings_list'] = 'https://github.com/grp-attestoodle/moodle-
 $string['UrlHlpTo_detailled_report'] = 'https://github.com/grp-attestoodle/moodle-tool_attestoodle/wiki/detailled_report';
 $string['UrlHlpTo_global_report'] = 'https://github.com/grp-attestoodle/moodle-tool_attestoodle/wiki/global_report';
 $string['UrlHlpTo_manage_milestones'] = 'https://github.com/grp-attestoodle/moodle-tool_attestoodle/wiki/manage_milestones';
+$string['UrlHlpTo_selectlearners'] = 'https://github.com/grp-attestoodle/moodle-tool_attestoodle/wiki/manage_learners';
 // Privacy.
 $string['privacy:metadata:core_files'] = 'Attestoodle stores generated attestation files, per learner-training-interval of time';
 $string['privacy:metadata:tool_attestoodle_launch_log'] = 'Log of certificate generation launches';

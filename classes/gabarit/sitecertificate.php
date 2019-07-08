@@ -159,6 +159,13 @@ if ($fromform = $mform->get_data()) {
                 $datas->totminutelib);
     }
 
+    if (trim($datas->cumulminutesPosx) != '') {
+        $nvxtuples[] = data_to_structure($idtemplate, "cumulminutes", $datas->cumulminutesFontFamily,
+                $datas->cumulminutesEmphasis, $datas->cumulminutesFontSize,
+                $datas->cumulminutesPosx, $datas->cumulminutesPosy, $datas->cumulminutesAlign,
+                $datas->cumulminuteslib);
+    }
+
     if (trim($datas->activitiesPosx) != '') {
         $nvxtuples[] = data_to_structure($idtemplate, "activities", $datas->activitiesFontFamily, $datas->activitiesEmphasis,
                 $datas->activitiesFontSize, $datas->activitiesPosx, $datas->activitiesPosy, $datas->activitiesAlign,
@@ -245,6 +252,9 @@ foreach ($rs as $result) {
             break;
         case "totalminutes" :
             add_values_from_json($valdefault, "totminute", $obj);
+            break;
+        case "cumulminutes" :
+            add_values_from_json($valdefault, "cumulminutes", $obj);
             break;
         case "activities" :
             add_values_from_json($valdefault, "activities", $obj);
