@@ -57,7 +57,7 @@ class training_milestones implements \renderable {
         $this->training = trainings_factory::get_instance()->retrieve_training_by_id($trainingid);
 
         $type = optional_param('type', null, PARAM_ALPHANUMEXT);
-        $namemod = optional_param('namemod', null, PARAM_ALPHANUMEXT);
+        $namemod = optional_param('namemod', null, PARAM_TEXT);
         $visibmod = optional_param('visibmod', 0, PARAM_INT);
         $restrictmod = optional_param('restrictmod', 0, PARAM_INT);
 
