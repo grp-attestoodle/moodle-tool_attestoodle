@@ -139,7 +139,8 @@ class certificate {
             $activitiesstructured[$nomind]["moduleid"] = $activity->get_idmodule();
             $activitiesstructured[$nomind]["name"] = $activity->get_name();
             $activitiesstructured[$nomind]["description"] = $activity->get_description();
-            $activitiesstructured[$nomind]["type"] = $activity->get_type();
+            $trad = get_string ('modulename', $activity->get_type());
+            $activitiesstructured[$nomind]["type"] = $trad;
             $activitiesstructured[$nomind]["cmid"] = $cmid;
             $activitiesstructured[$nomind]["courseid"] = $courseid;
             $index++;
