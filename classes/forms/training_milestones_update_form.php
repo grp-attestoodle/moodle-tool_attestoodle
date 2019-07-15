@@ -119,6 +119,7 @@ class training_milestones_update_form extends \moodleform {
         $filtergroup[] =& $mform->createElement('static', null, null, get_string('filtermodulename', 'tool_attestoodle'));
         $filtergroup[] =& $mform->createElement('text', 'namemod', '', array("size" => 10));
         $mform->setType('namemod', PARAM_TEXT );
+
         if (!empty($this->_customdata['namemod'])) {
             $mform->setDefault('namemod', $this->_customdata['namemod']);
         }

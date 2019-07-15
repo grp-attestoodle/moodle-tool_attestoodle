@@ -42,7 +42,6 @@ $PAGE->navbar->add($navlevel1, new moodle_url('/admin/tool/attestoodle/classes/g
 
 require_login();
 
-$PAGE->set_url(new moodle_url(dirname(__FILE__) . '/listtemplate.php', [] ));
 $PAGE->set_title(get_string('listtemplate_title', 'tool_attestoodle'));
 $title = get_string('pluginname', 'tool_attestoodle') . " - " .
             get_string('listtemplate_title', 'tool_attestoodle');
@@ -51,6 +50,7 @@ $PAGE->set_heading($title);
 $baseurl = new moodle_url('/admin/tool/attestoodle/classes/gabarit/listtemplate.php', array(
         'page' => $page,
         'perpage' => $perpage));
+$PAGE->set_url($baseurl);
 
 if ($delete) {
     if ($confirm != md5($delete)) { // Must be confirm.

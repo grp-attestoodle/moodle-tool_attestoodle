@@ -46,6 +46,9 @@ class plugins_accessor extends singleton {
     public static function get_restore_link() {
         $pluginman = \core_plugin_manager::instance();
         $pluginfo = $pluginman->get_plugin_info("tool_save_attestoodle");
+        if (!isset($pluginfo)) {
+            return "";
+        }
         $sourcephp = $pluginfo->rootdir .'/lib.php';
 
         if (file_exists ($sourcephp)) {

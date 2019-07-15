@@ -60,7 +60,7 @@ $PAGE->navbar->ignore_active();
 $navlevel1 = get_string('navlevel1', 'tool_attestoodle');
 $PAGE->navbar->add($navlevel1, new moodle_url('/admin/tool/attestoodle/index.php', array()));
 $iconhelp = '';
-
+$baseurl = "$CFG->wwwroot/$CFG->admin/tool/attestoodle";
 switch($page) {
     case 'trainingmanagement':
         $iconhelp = 'UrlHlpTo_training_management';
@@ -69,7 +69,8 @@ switch($page) {
 
         trainings_factory::get_instance()->create_training_by_category($categoryid, $trainingid);
 
-        $urlact = new moodle_url($toolpath . '/index.php', ['typepage' => $page, 'categoryid' => $categoryid]);
+        $urlact = new moodle_url($baseurl . '/index.php', ['typepage' => $page,
+                    'categoryid' => $categoryid, 'trainingid' => $trainingid]);
         $PAGE->set_url($urlact);
 
         $PAGE->set_title(get_string('training_management_page_title', 'tool_attestoodle'));
@@ -106,8 +107,8 @@ switch($page) {
 
         trainings_factory::get_instance()->create_training_for_managemilestone($categoryid, $trainingid);
 
-        $PAGE->set_url(new moodle_url($toolpath . '/index.php',
-                ['typepage' => $page, 'categoryid' => $categoryid]));
+        $PAGE->set_url(new moodle_url($baseurl . '/index.php',
+                ['typepage' => $page, 'categoryid' => $categoryid, 'trainingid' => $trainingid]));
         $PAGE->set_title(get_string('training_milestones_page_title', 'tool_attestoodle'));
         $context = context_coursecat::instance($categoryid);
         $PAGE->set_context($context);
@@ -151,13 +152,11 @@ switch($page) {
             $enddate = "" . $end['year'] . "-" . $end['month'] . "-" . $end['day'];
         }
 
-        $PAGE->set_url(new moodle_url($toolpath . '/index.php',
+        $PAGE->set_url(new moodle_url($baseurl . '/index.php',
                 array(
                         'typepage' => $page,
                         'action' => $action,
                         'categoryid' => $categoryid,
-                        'begindate' => $begindate,
-                        'enddate' => $enddate,
                         'trainingid' => $trainingid
                 )
         ));
@@ -223,7 +222,7 @@ switch($page) {
             $enddate = "" . $end['year'] . "-" . $end['month'] . "-" . $end['day'];
         }
 
-        $PAGE->set_url(new moodle_url($toolpath . '/index.php',
+        $PAGE->set_url(new moodle_url($baseurl . '/index.php',
                 array(
                         'typepage' => $page,
                         'action' => $action,
@@ -275,7 +274,7 @@ switch($page) {
         $iconhelp = 'UrlHlpTo_trainings_list';
         $thepage = optional_param('page', 0, PARAM_INT);
 
-        $PAGE->set_url(new moodle_url($toolpath . '/index.php'));
+        $PAGE->set_url(new moodle_url($baseurl . '/index.php'));
         $PAGE->set_title(get_string('trainings_list_page_title', 'tool_attestoodle'));
         $PAGE->set_heading(get_string('trainings_list_main_title', 'tool_attestoodle'));
 
