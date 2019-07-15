@@ -69,12 +69,12 @@ $PAGE->navbar->ignore_active();
 $navlevel1 = get_string('navlevel1b', 'tool_attestoodle');
 $PAGE->navbar->add($navlevel1, new moodle_url('/admin/tool/attestoodle/classes/gabarit/listtemplate.php', array()));
 $navlevel2 = get_string('navlevel2b', 'tool_attestoodle');
-$PAGE->navbar->add($navlevel2 . $template->name,
-                new moodle_url('/admin/tool/attestoodle/classes/gabarit/sitecertificate.php',
-                    array('templateid' => $lnkidtemplate)));
+$baseurl = new moodle_url('/admin/tool/attestoodle/classes/gabarit/sitecertificate.php',
+                    array('templateid' => $lnkidtemplate));
+$PAGE->navbar->add($navlevel2 . $template->name, $baseurl);
 require_login();
 
-$PAGE->set_url(new moodle_url(dirname(__FILE__) . '/sitecertificate.php', [] ));
+$PAGE->set_url(new moodle_url($baseurl));
 $PAGE->set_title(get_string('template_certificate', 'tool_attestoodle'));
 $title = get_string('pluginname', 'tool_attestoodle') . " - " .
     get_string('template_certificate', 'tool_attestoodle') . " - " . $template->name;

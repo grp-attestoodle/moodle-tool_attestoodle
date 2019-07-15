@@ -13,17 +13,10 @@ In the administration, training managers have to set a time for each milestone w
 
 When certificates are generated, times of completed milestones are aggregated for each student, for the selected period, and printed on their certificate.
 
-Project leaders : Universities of Le Mans and Caen
+Project leaders : University of Caen and University of Mans
 
-Compatibility : Moodle 3.3, 3.6, 3.7
+Compatibility : Moodle 3.3, 3.4
 
 Plugin type : admin tool
 
-Site :  
-  [Attestoodle](https://attestoodle.univ-lemans.fr/)  
-  [sciencesconf](https://attestoodle.sciencesconf.org/)  
-  
-Others plugins :  
-  [Save and Restore Attestoodle](https://github.com/grp-attestoodle/moodle-tool_save_attestoodle)  
-  [Web service Attestoodle](https://github.com/grp-attestoodle/moodle-local_wsattestoodle)  
-  
+Site : [sciencesconf](https://attestoodle.sciencesconf.org/)

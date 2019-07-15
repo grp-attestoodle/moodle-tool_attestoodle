@@ -74,8 +74,7 @@ $PAGE->navbar->add($navlevel2, new moodle_url('/admin/tool/attestoodle/index.php
 
 $param = array('categoryid' => $categoryid, 'trainingid' => $trainingid);
 $PAGE->navbar->add($titlepage, new moodle_url('/admin/tool/attestoodle/classes/training/select_learners.php', $param));
-
-$PAGE->set_url(new moodle_url(dirname(__FILE__) . '/select_learners.php', $param));
+$PAGE->set_url(new moodle_url('/admin/tool/attestoodle/classes/training/select_learners.php', $param));
 $PAGE->set_title($titlepage);
 $trainingname = db_accessor::get_instance()->get_training_by_id($trainingid)->name;
 
