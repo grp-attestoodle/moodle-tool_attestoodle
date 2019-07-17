@@ -446,6 +446,13 @@ class learner_details implements \renderable {
     public function get_footer($training) {
         $output = "";
 
+        $totalmarkerperiod = $this->learner->get_total_milestones(
+                    $training->get_categoryid(),
+                    $this->actualbegindate, $this->searchenddate);
+        $totalmarkers = parse_minutes_to_hours($totalmarkerperiod);
+        $libtotal = get_string('totalminute', 'tool_attestoodle');
+        $output .= $libtotal . ' : ' . $totalmarkers;
+
         $linktext = get_string('learner_details_generate_certificate_link', 'tool_attestoodle');
         $certificate = new certificate($this->learner, $training, $this->actualbegindate, $this->actualenddate);
 
