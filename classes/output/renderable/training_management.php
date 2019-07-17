@@ -187,11 +187,9 @@ class training_management implements \renderable {
             $datafromform = $this->form->get_submitted_data();
 
             if (isset($datafromform->delete)) {
-                trainings_factory::get_instance()->remove_training_by_id($this->trainingid);
-                \core\notification::info(get_string('training_management_submit_removed', 'tool_attestoodle'));
-                $redirecturl = new \moodle_url('/admin/tool/attestoodle/index.php',
+                $redirecturl = new \moodle_url('/admin/tool/attestoodle/classes/training/delete_training.php',
                         array (
-                            'typepage' => 'trainingslist',
+                            'trainingid' => $this->trainingid,
                             'categoryid' => $this->categoryid));
                 redirect($redirecturl);
                 return;
