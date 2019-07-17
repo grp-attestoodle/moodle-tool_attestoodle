@@ -80,7 +80,7 @@ $string['training_management_warning_no_submitted_data'] = 'No submitted data';
 $string['training_management_warning_invalid_form'] = 'The form is not valid';
 $string['training_management_info_form_canceled'] = 'The form has been canceled';
 $string['training_management_submit_added'] = 'Category added to the Attestoodle trainings list';
-$string['training_management_submit_removed'] = 'Category removed from the Attestoodle trainings list';
+$string['training_management_submit_removed'] = 'Training removed from the Attestoodle trainings list';
 $string['training_management_submit_unchanged'] = 'No modification.';
 $string['training_management_submit_error'] = 'An error occured while saving in DB. Try again later';
 
@@ -314,3 +314,5 @@ $string['errsendzip'] = 'An error occured: impossible to send ZIP file.';
 $string['validate'] = 'Validate';
 $string['trainingcriteria'] = 'Training criteria';
 $string['enrolcriteria'] = 'Enrol criteria';
+$string['deletetraining'] = 'Delete a training';
+$string['deletemodel'] = 'Delete a template';
