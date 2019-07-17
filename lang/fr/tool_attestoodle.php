@@ -304,3 +304,5 @@ $string['errsendzip'] = 'Erreur : téléchargement du fichier zip impossible !!'
 $string['validate'] = 'Valider';
 $string['trainingcriteria'] = 'Critère formation';
 $string['enrolcriteria'] = 'Critère inscription';
+$string['deletetraining'] = 'Supprimer une formation';
+$string['deletemodel'] = 'Supprimer un modèle';
