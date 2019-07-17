@@ -55,7 +55,7 @@ $PAGE->set_url($baseurl);
 if ($delete) {
     if ($confirm != md5($delete)) { // Must be confirm.
         echo $OUTPUT->header();
-        echo $OUTPUT->heading('Supprimer modele');
+        echo $OUTPUT->heading(get_string('deletemodel', 'tool_attestoodle'));
         $optionsyes = array('delete' => $delete, 'confirm' => md5($delete), 'sesskey' => sesskey());
         $returnurl = new moodle_url('/admin/tool/attestoodle/classes/gabarit/listtemplate.php', array());
         $deleteurl = new moodle_url($returnurl, $optionsyes);
