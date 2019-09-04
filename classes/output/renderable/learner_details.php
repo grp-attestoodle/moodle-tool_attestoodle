@@ -69,6 +69,8 @@ class learner_details implements \renderable {
     public $categorylnk;
     /** @var int the identifier of the training. */
     private $trainingid;
+    /** @var Training in which the learner is enrolled.*/
+    private $training;
 
     /**
      * Constructor of the renderable object.
@@ -83,7 +85,7 @@ class learner_details implements \renderable {
         global $DB;
         $training = trainings_factory::get_instance()->retrieve_training_by_id($trainingid);
         $training->get_learners();
-
+        $this->training = $training;
         $this->trainingid = $trainingid;
         $this->learnerid = $learnerid;
 
@@ -237,15 +239,12 @@ class learner_details implements \renderable {
      * Methods that instanciate a certificate object then ask it to create
      * the certificate file on the server. A notification is then send to the
      * user depending on the result of the file creation (error, overwritten, new file).
-     *
-     * @param integer $trainingid The training ID of the certificate requested
      */
-    public function generate_certificate_file($trainingid) {
+    public function generate_certificate_file() {
         // Log the generation launch.
         $launchid = logger::log_launch($this->begindate, $this->enddate);
 
-        $training = trainings_factory::get_instance()->retrieve_training($trainingid);
-        $certificate = new certificate($this->learner, $training, $this->actualbegindate, $this->actualenddate);
+        $certificate = new certificate($this->learner, $this->training, $this->actualbegindate, $this->actualenddate);
         $status = $certificate->create_file_on_server();
 
         // Log the certificate informations.
@@ -474,7 +473,6 @@ class learner_details implements \renderable {
             $dlcertifoptions = array(
                 'typepage' => 'learnerdetails',
                 'action' => 'generatecertificate',
-                'categoryid' => $training->get_categoryid(),
                 'learner' => $this->learnerid,
                 'categorylnk' => $this->categorylnk,
                 'trainingid' => $this->trainingid

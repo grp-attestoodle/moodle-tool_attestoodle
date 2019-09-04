@@ -263,8 +263,7 @@ switch($page) {
 
         $renderable = new renderable\learner_details($learnerid, $begindate, $enddate, $categorylnk, $trainingid);
         if ($action == 'generatecertificate') {
-            $categoryid = required_param('categoryid', PARAM_INT);
-            $renderable->generate_certificate_file($categoryid);
+            $renderable->generate_certificate_file();
         }
         $PAGE->set_heading($renderable->get_heading());
 

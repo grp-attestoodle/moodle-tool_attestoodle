@@ -26,6 +26,9 @@ env:
  matrix:
   - DB=pgsql
   - DB=mysqli
+  
+services:
+  - mysql
 
 before_install:
   - phpenv config-rm xdebug.ini
