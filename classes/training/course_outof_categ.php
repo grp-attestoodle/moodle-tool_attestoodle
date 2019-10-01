@@ -43,7 +43,7 @@ $type = optional_param('type', null, PARAM_ALPHANUMEXT);
 $namemod = optional_param('namemod', null, PARAM_ALPHANUMEXT);
 $visibmod = optional_param('visibmod', 0, PARAM_INT);
 $restrictmod = optional_param('restrictmod', 0, PARAM_INT);
-$coursename = optional_param('coursename', '', PARAM_ALPHA);
+$coursename = optional_param('coursename', '', PARAM_NOTAGS);
 
 $coursetoadd = search_course($coursename, $categoryid, $trainingid);
 $url = new \moodle_url('/admin/tool/attestoodle/classes/training/course_outof_categ.php',
