@@ -55,6 +55,7 @@ class training_milestones implements \renderable {
     public function __construct($categoryid, $trainingid) {
         $this->categoryid = $categoryid;
         $this->training = trainings_factory::get_instance()->retrieve_training_by_id($trainingid);
+        $this->trainingid = required_param('trainingid', PARAM_INT);
 
         $type = optional_param('type', null, PARAM_ALPHANUMEXT);
         $namemod = optional_param('namemod', null, PARAM_TEXT);
@@ -72,7 +73,6 @@ class training_milestones implements \renderable {
                 if (has_capability('tool/attestoodle:managemilestones', $context)) {
                     $modifallow = true;
                 }
-                $this->trainingid = required_param('trainingid', PARAM_INT);
                 $url = new \moodle_url(
                             '/admin/tool/attestoodle/index.php',
                             ['typepage' => 'managemilestones',
