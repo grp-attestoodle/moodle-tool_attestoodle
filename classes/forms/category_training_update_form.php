@@ -161,6 +161,9 @@ class category_training_update_form extends \moodleform {
             }
         }
 
+        if (isset($data['enddate']) && $data['startdate'] > $data['enddate']) {
+            $errors['enddate'] = get_string('errdateend', 'tool_attestoodle');
+        }
         if (array_key_exists('group1', $data) && $data['group2'] == $data['group1']) {
             $errors['group2'] = get_string('error_same_criteria', 'tool_attestoodle');
         }
