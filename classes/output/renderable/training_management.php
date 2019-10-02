@@ -378,7 +378,10 @@ class training_management implements \renderable {
                 }
             }
         }
-        $output .= " &nbsp;" . plugins_accessor::get_instance()->get_save_btn($this->trainingid);
+
+        if ($this->trainingid != -1) {
+            $output .= " &nbsp;" . plugins_accessor::get_instance()->get_save_btn($this->trainingid);
+        }
         return $output;
     }
 
