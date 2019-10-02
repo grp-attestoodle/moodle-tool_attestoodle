@@ -45,7 +45,7 @@ use tool_attestoodle\utils\plugins_accessor;
 class training_management implements \renderable {
     /** @var category_training_update_form The form used to manage trainings */
     private $form;
-    /** @var ... form use to add course.*/
+    /** @var add_course_form The form use to add course.*/
     private $form2;
 
     /** @var integer The category ID that we want to manage */
