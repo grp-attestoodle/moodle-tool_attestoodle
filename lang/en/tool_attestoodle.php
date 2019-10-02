@@ -316,3 +316,5 @@ $string['trainingcriteria'] = 'Training criteria';
 $string['enrolcriteria'] = 'Enrol criteria';
 $string['deletetraining'] = 'Delete a training';
 $string['deletemodel'] = 'Delete a template';
+$string['errdateend'] = 'The end date must be greater than the start date';
+
