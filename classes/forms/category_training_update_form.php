@@ -35,6 +35,9 @@ require_once("$CFG->libdir/formslib.php");
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class category_training_update_form extends \moodleform {
+    /** @var string name of trainning. */
+    private $oldname = null;
+
     /**
      * Method automagically called when the form is instanciated. It defines
      * all the elements (inputs, titles, buttons, ...) in the form.
@@ -72,6 +75,7 @@ class category_training_update_form extends \moodleform {
             $mform->setType('name', PARAM_NOTAGS);
             $training = trainings_factory::get_instance()->retrieve_training($category->get_id());
             $mform->setDefault('name', $training->get_name());
+            $this->oldname = $training->get_name();
             $mform->disabledIf('name', 'edition', 'eq', 0);
             $mform->addElement('date_selector', 'startdate', get_string('starttraining', 'tool_attestoodle'));
             $mform->disabledIf('startdate', 'edition', 'eq', 0);
@@ -147,7 +151,15 @@ class category_training_update_form extends \moodleform {
      * @return array of error.
      */
     public function validation($data, $files) {
+        global $DB;
         $errors = parent::validation($data, $files);
+        if ($this->oldname != $data['name']) {
+            // Name Already exist ?
+            $sql = 'select * from {tool_attestoodle_training} where name = ?';
+            if ($DB->record_exists_sql($sql, array($data['name']))) {
+                $errors['name'] = get_string('errduplicatename', 'tool_attestoodle');
+            }
+        }
 
         if (array_key_exists('group1', $data) && $data['group2'] == $data['group1']) {
             $errors['group2'] = get_string('error_same_criteria', 'tool_attestoodle');
