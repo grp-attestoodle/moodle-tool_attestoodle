@@ -306,3 +306,4 @@ $string['trainingcriteria'] = 'Critère formation';
 $string['enrolcriteria'] = 'Critère inscription';
 $string['deletetraining'] = 'Supprimer une formation';
 $string['deletemodel'] = 'Supprimer un modèle';
+$string['errdateend'] = 'La date de fin doit être supérieure à la date du début !';
