@@ -818,8 +818,14 @@ class db_accessor extends singleton {
                      where b.id = a.course and a.trainingid = ?
                        and a.moduleid not in (select id
                                                 from {course_modules}
-                                                where deletioninprogress = 0)";
-            return self::$db->get_records_sql($req, array ($trainingid));
+                                                where deletioninprogress = 0)
+                    union
+                    select a.id, a.creditedtime,a.name, ''
+                      from {tool_attestoodle_milestone} a
+                     where a.trainingid = ?
+                       and a.course not in (select id
+                                              from {course})";
+            return self::$db->get_records_sql($req, array ($trainingid, $trainingid));
         }
         return array();
     }
