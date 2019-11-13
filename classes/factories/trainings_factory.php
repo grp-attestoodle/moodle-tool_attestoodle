@@ -104,18 +104,18 @@ class trainings_factory extends singleton {
         // Must call categories_factory before find trainings.
         $dbtrainings = db_accessor::get_instance()->get_page_trainings_categ(0, 10, $categoryid);
 
-        foreach ($dbtrainings as $dbtr) {
-            $catid = $dbtr->categoryid;
+        foreach ($dbtrainings as $record) {
+            $catid = $record->categoryid;
             $cat = categories_factory::get_instance()->get_category($catid);
             if (!empty($cat)) {
                 $trainingtoadd = new training($cat);
-                $trainingtoadd->set_id($dbtr->id);
-                $trainingtoadd->set_name($dbtr->name);
-                $trainingtoadd->set_start($dbtr->startdate);
-                $trainingtoadd->set_end($dbtr->enddate);
-                $trainingtoadd->set_duration($dbtr->duration);
-                $trainingtoadd->set_nextlaunch($dbtr->nextlaunch);
-                $trainingtoadd->set_nbautolaunch($dbtr->nbautolaunch);
+                $trainingtoadd->set_id($record->id);
+                $trainingtoadd->set_name($record->name);
+                $trainingtoadd->set_start($record->startdate);
+                $trainingtoadd->set_end($record->enddate);
+                $trainingtoadd->set_duration($record->duration);
+                $trainingtoadd->set_nextlaunch($record->nextlaunch);
+                $trainingtoadd->set_nbautolaunch($record->nbautolaunch);
                 $this->trainings[] = $trainingtoadd;
             }
         }
