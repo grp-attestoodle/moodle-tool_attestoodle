@@ -57,6 +57,13 @@ class training {
 
     /** @var int Theoretical duration of the training.*/
     private $duration;
+
+    /** @var int Deadline for the next generation of certification. */
+    private $nextlaunch;
+
+    /** @var int Number of attestations planned for this training. */
+    private $nbautolaunch;
+
     /**
      * Constructor of the training class.
      *
@@ -270,6 +277,42 @@ class training {
      */
     public function set_name($prop) {
         $this->name = $prop;
+    }
+
+    /**
+     * Setter for $nextlaunch property.
+     *
+     * @param int $prop nextlaunch to set for the training
+     */
+    public function set_nextlaunch($prop) {
+        $this->nextlaunch = $prop;
+    }
+
+    /**
+     * Setter for $nbautolaunch property.
+     *
+     * @param int $prop nbautolaunch to set for the training
+     */
+    public function set_nbautolaunch($prop) {
+        $this->nbautolaunch = $prop;
+    }
+
+    /**
+     * Getter for $nbautolaunch property.
+     *
+     * @return int nbautolaunch of the training
+     */
+    public function get_nbautolaunch() {
+        return $this->nbautolaunch;
+    }
+
+    /**
+     * Getter for $nextlaunch property.
+     *
+     * @return int nextlaunch of the training
+     */
+    public function get_nextlaunch() {
+        return $this->nextlaunch;
     }
 
     /**

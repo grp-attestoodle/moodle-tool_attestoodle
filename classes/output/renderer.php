@@ -28,6 +28,7 @@ require_once($CFG->libdir.'/tablelib.php');
 
 use tool_attestoodle\output\renderable;
 use tool_attestoodle\factories\trainings_factory;
+use tool_attestoodle\utils\plugins_accessor;
 /**
  * This class is the main renderer of the Attestoodle plug-in.
  *
@@ -49,9 +50,15 @@ class renderer extends \plugin_renderer_base {
 
         $output .= $obj->get_header();
 
+        $hastaskmanager = plugins_accessor::get_instance()->get_task_plugin_info() != null;
         if (count($obj->get_trainings()) > 0) {
             $table = new \flexible_table('training_lst');
-            $table->define_columns(array('idnom', 'idhiearchie', 'iddescription', 'idactions'));
+
+            if ($hastaskmanager) {
+                $table->define_columns(array('idnom', 'idhiearchie', 'iddescription', 'iddeadline', 'idactions'));
+            } else {
+                $table->define_columns(array('idnom', 'idhiearchie', 'iddescription', 'idactions'));
+            }
             $table->define_headers($obj->get_table_head());
 
             $parameters = array('typepage' => 'trainingslist');
@@ -67,7 +74,11 @@ class renderer extends \plugin_renderer_base {
 
             $datas = $obj->get_table_content();
             foreach ($datas as $ligne) {
-                $table->add_data(array($ligne->name, $ligne->hierarchy, $ligne->description, $ligne->link));
+                if ($hastaskmanager) {
+                    $table->add_data(array($ligne->name, $ligne->hierarchy, $ligne->description, $ligne->task, $ligne->link));
+                } else {
+                    $table->add_data(array($ligne->name, $ligne->hierarchy, $ligne->description, $ligne->link));
+                }
             }
             $output = $table->print_html();
         } else {

@@ -153,11 +153,13 @@ class category_training_update_form extends \moodleform {
     public function validation($data, $files) {
         global $DB;
         $errors = parent::validation($data, $files);
-        if ($this->oldname != $data['name']) {
-            // Name Already exist ?
-            $sql = 'select * from {tool_attestoodle_training} where name = ?';
-            if ($DB->record_exists_sql($sql, array($data['name']))) {
-                $errors['name'] = get_string('errduplicatename', 'tool_attestoodle');
+        if (isset($data['name'])) {
+            if ($this->oldname != $data['name']) {
+                // Name Already exist ?
+                $sql = 'select * from {tool_attestoodle_training} where name = ?';
+                if ($DB->record_exists_sql($sql, array($data['name']))) {
+                    $errors['name'] = get_string('errduplicatename', 'tool_attestoodle');
+                }
             }
         }
 

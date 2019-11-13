@@ -75,6 +75,9 @@ class trainings_factory extends singleton {
                 $trainingtoadd->set_start($dbtr->startdate);
                 $trainingtoadd->set_end($dbtr->enddate);
                 $trainingtoadd->set_duration($dbtr->duration);
+
+                $trainingtoadd->set_nextlaunch($dbtr->nextlaunch);
+                $trainingtoadd->set_nbautolaunch($dbtr->nbautolaunch);
                 $this->trainings[] = $trainingtoadd;
             }
         }
@@ -111,6 +114,8 @@ class trainings_factory extends singleton {
                 $trainingtoadd->set_start($dbtr->startdate);
                 $trainingtoadd->set_end($dbtr->enddate);
                 $trainingtoadd->set_duration($dbtr->duration);
+                $trainingtoadd->set_nextlaunch($dbtr->nextlaunch);
+                $trainingtoadd->set_nbautolaunch($dbtr->nbautolaunch);
                 $this->trainings[] = $trainingtoadd;
             }
         }
@@ -174,6 +179,8 @@ class trainings_factory extends singleton {
             $trainingtoadd->set_start($dbtr->startdate);
             $trainingtoadd->set_end($dbtr->enddate);
             $trainingtoadd->set_duration($dbtr->duration);
+            $trainingtoadd->set_nextlaunch($dbtr->nextlaunch);
+            $trainingtoadd->set_nbautolaunch($dbtr->nbautolaunch);
         }
         $this->trainings[] = $trainingtoadd;
 

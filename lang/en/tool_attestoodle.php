@@ -317,4 +317,5 @@ $string['enrolcriteria'] = 'Enrol criteria';
 $string['deletetraining'] = 'Delete a training';
 $string['deletemodel'] = 'Delete a template';
 $string['errdateend'] = 'The end date must be greater than the start date';
-
+$string['deadline'] = 'Deadline';
+$string['toplan'] = 'To plan';

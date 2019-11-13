@@ -26,6 +26,7 @@ namespace tool_attestoodle\utils;
 
 defined('MOODLE_INTERNAL') || die;
 
+use tool_attestoodle\utils\plugins_accessor;
 /**
  * This is the singleton class that allows other classes to access the database.
  *
@@ -123,6 +124,8 @@ class db_accessor extends singleton {
         $dataobject->startdate = $training->get_start();
         $dataobject->enddate = $training->get_end();
         $dataobject->duration = $training->get_duration();
+        $dataobject->nextlaunch = $training->get_nextlaunch();
+        $dataobject->nbautolaunch = $training->get_nbautolaunch();
 
         $dataobject->categoryid = $training->get_categoryid();
         self::$db->update_record('tool_attestoodle_training', $dataobject);
@@ -617,6 +620,9 @@ class db_accessor extends singleton {
         self::$db->execute($sql, ['trainingid' => $trainingid]);
 
         self::$db->delete_records('tool_attestoodle_certif_log', array('trainingid' => $trainingid));
+
+        // Delete in Sub plugin.
+        plugins_accessor::get_instance()->delete_training($trainingid);
     }
 
     /**

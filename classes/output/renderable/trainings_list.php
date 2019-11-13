@@ -30,6 +30,7 @@ namespace tool_attestoodle\output\renderable;
 defined('MOODLE_INTERNAL') || die;
 
 use \renderable;
+use tool_attestoodle\utils\plugins_accessor;
 /**
  * Display the list of all the trainings declared in Attestoodle.
  *
@@ -66,12 +67,21 @@ class trainings_list implements renderable {
      * @return string[] The tables columns header
      */
     public function get_table_head() {
-        return array(
+        $ret = array(
                 get_string('trainings_list_table_header_column_name', 'tool_attestoodle'),
                 get_string('trainings_list_table_header_column_hierarchy', 'tool_attestoodle'),
                 get_string('trainings_list_table_header_column_description', 'tool_attestoodle'),
                 ''
         );
+        if (plugins_accessor::get_instance()->get_task_plugin_info() != null) {
+            $ret = array(
+                get_string('trainings_list_table_header_column_name', 'tool_attestoodle'),
+                get_string('trainings_list_table_header_column_hierarchy', 'tool_attestoodle'),
+                get_string('trainings_list_table_header_column_description', 'tool_attestoodle'),
+                get_string('deadline', 'tool_attestoodle'),
+                '');
+        }
+        return $ret;
     }
 
     /**
@@ -117,9 +127,20 @@ class trainings_list implements renderable {
                 . get_string('milestone_manage_link', 'tool_attestoodle') ."' />";
 
             $milestonelink = \html_writer::link($url, $label);
-
             $stdclass->link = $settinglink . " &nbsp; " .  $milestonelink . " &nbsp; " . $studentlink;
 
+            $urltask = plugins_accessor::get_instance()->get_task_link($training->get_id());
+            if (!empty($urltask)) {
+                $label = $training->get_nextlaunch();
+                if (!isset($label)) {
+                    $label = get_string('toplan', 'tool_attestoodle');
+                } else {
+                    $next = new \DateTime();
+                    $next->setTimestamp($label);
+                    $label = $next->format(get_string('dateformat', 'tool_attestoodle'));
+                }
+                $stdclass->task = \html_writer::link($urltask, $label);
+            }
             return $stdclass;
         }, $this->trainings);
     }
