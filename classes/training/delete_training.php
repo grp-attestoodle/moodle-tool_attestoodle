@@ -37,6 +37,10 @@ $trainingid = required_param('trainingid', PARAM_INT);
 $delete = optional_param('delete', 15, PARAM_INT);
 $confirm = optional_param('confirm', '', PARAM_ALPHANUM);
 
+$url = new moodle_url('/admin/tool/attestoodle/classes/training/delete_training.php',
+            array('delete' => $delete, 'categoryid' => $categoryid, 'trainingid' => $trainingid));
+$PAGE->set_url($url);
+
 if ($confirm != md5($delete)) { // Must be confirm.
     echo $OUTPUT->header();
     echo $OUTPUT->heading(get_string('deletetraining', 'tool_attestoodle'));

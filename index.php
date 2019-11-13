@@ -45,6 +45,7 @@ require_once($toolpath . "/classes/certificate.php");
 use tool_attestoodle\factories\trainings_factory;
 use tool_attestoodle\output\renderable;
 use tool_attestoodle\utils\db_accessor;
+use tool_attestoodle\utils\plugins_accessor;
 
 $page = optional_param('typepage', '', PARAM_ALPHA);
 $action = optional_param('action', '', PARAM_ALPHA);
@@ -151,6 +152,14 @@ switch($page) {
         if (isset($end)) {
             $enddate = "" . $end['year'] . "-" . $end['month'] . "-" . $end['day'];
         }
+        if (!isset($begindate)) {
+            $dates = plugins_accessor::get_instance()->get_interval($trainingid);
+            $onedate = new \DateTime();
+            $onedate->setTimestamp($dates->d_start);
+            $begindate = $onedate->format("Y-m-d");
+            $onedate->setTimestamp($dates->d_end);
+            $enddate = $onedate->format("Y-m-d");
+        }
 
         $PAGE->set_url(new moodle_url($baseurl . '/index.php',
                 array(
@@ -220,6 +229,14 @@ switch($page) {
         }
         if (isset($end)) {
             $enddate = "" . $end['year'] . "-" . $end['month'] . "-" . $end['day'];
+        }
+        if (!isset($start)) {
+            $dates = plugins_accessor::get_instance()->get_interval($trainingid);
+            $onedate = new \DateTime();
+            $onedate->setTimestamp($dates->d_start);
+            $begindate = $onedate->format("Y-m-d");
+            $onedate->setTimestamp($dates->d_end);
+            $enddate = $onedate->format("Y-m-d");
         }
 
         $PAGE->set_url(new moodle_url($baseurl . '/index.php',
