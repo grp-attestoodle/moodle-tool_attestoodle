@@ -132,7 +132,7 @@ class trainings_list implements renderable {
             $urltask = plugins_accessor::get_instance()->get_task_link($training->get_id());
             if (!empty($urltask)) {
                 $label = $training->get_nextlaunch();
-                if (!isset($label)) {
+                if (!isset($label) || $label == 0) {
                     $label = get_string('toplan', 'tool_attestoodle');
                 } else {
                     $next = new \DateTime();
