@@ -230,7 +230,7 @@ switch($page) {
         if (isset($end)) {
             $enddate = "" . $end['year'] . "-" . $end['month'] . "-" . $end['day'];
         }
-        if (!isset($start)) {
+        if (!isset($begindate)) {
             $dates = plugins_accessor::get_instance()->get_interval($trainingid);
             $onedate = new \DateTime();
             $onedate->setTimestamp($dates->d_start);
