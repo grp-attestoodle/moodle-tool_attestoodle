@@ -153,11 +153,11 @@ switch($page) {
             $enddate = "" . $end['year'] . "-" . $end['month'] . "-" . $end['day'];
         }
         if (!isset($begindate)) {
-            $dates = plugins_accessor::get_instance()->get_interval($trainingid);
+            $dateinterval = plugins_accessor::get_instance()->get_interval($trainingid);
             $onedate = new \DateTime();
-            $onedate->setTimestamp($dates->d_start);
+            $onedate->setTimestamp($dateinterval->d_start);
             $begindate = $onedate->format("Y-m-d");
-            $onedate->setTimestamp($dates->d_end);
+            $onedate->setTimestamp($dateinterval->d_end);
             $enddate = $onedate->format("Y-m-d");
         }
 
