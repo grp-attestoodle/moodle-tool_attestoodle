@@ -308,4 +308,5 @@ $string['deletetraining'] = 'Supprimer une formation';
 $string['deletemodel'] = 'Supprimer un modèle';
 $string['errdateend'] = 'La date de fin doit être supérieure à la date du début !';
 $string['deadline'] = 'Echéance';
+$string['finished'] = 'Terminée';
 $string['toplan'] = 'à planifier';
