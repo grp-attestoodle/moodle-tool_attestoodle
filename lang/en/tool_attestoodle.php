@@ -318,4 +318,5 @@ $string['deletetraining'] = 'Delete a training';
 $string['deletemodel'] = 'Delete a template';
 $string['errdateend'] = 'The end date must be greater than the start date';
 $string['deadline'] = 'Deadline';
+$string['finished'] = 'Finished';
 $string['toplan'] = 'To plan';
