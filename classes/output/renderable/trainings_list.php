@@ -133,7 +133,13 @@ class trainings_list implements renderable {
             if (!empty($urltask)) {
                 $label = $training->get_nextlaunch();
                 if (!isset($label) || $label == 0) {
-                    $label = get_string('toplan', 'tool_attestoodle');
+                    $now = new \DateTime();
+                    $trainingend = $training->get_end();
+                    if ($trainingend != null && $now->getTimestamp() > $trainingend) {
+                        $label = get_string('finished', 'tool_attestoodle');
+                    } else {
+                        $label = get_string('toplan', 'tool_attestoodle');
+                    }
                 } else {
                     $next = new \DateTime();
                     $next->setTimestamp($label);
