@@ -27,3 +27,4 @@ Others plugins :
   [Save and Restore Attestoodle](https://github.com/grp-attestoodle/moodle-tool_save_attestoodle)  
   [Web service Attestoodle](https://github.com/grp-attestoodle/moodle-local_wsattestoodle)  
   [Views of training at course level](https://github.com/grp-attestoodle/moodle-block_attestoodle)  
+  [Planning of Attestoodle certificates](https://github.com/grp-attestoodle/moodle-tool_taskattestoodle)
