@@ -157,10 +157,12 @@ class certificate {
         $certificateinfos->learnername = $this->learner->get_fullname();
         $certificateinfos->learnerid = $this->learner->get_id();
         // Add cumul of validate time since begin !!
+        $searchenddate = clone $this->enddate;
+        $searchenddate->modify('+1 day');
         $certificateinfos->cumulminutes = $this->learner->get_total_milestones(
                                                             $this->training->get_categoryid(),
                                                             null,
-                                                            $this->enddate);
+                                                            $searchenddate);
         $certificateinfos->trainingname = $trainingname;
         $certificateinfos->totalminutes = $totalminutes;
         $certificateinfos->period = $period;
