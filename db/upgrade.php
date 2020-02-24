@@ -110,9 +110,9 @@ function xmldb_tool_attestoodle_upgrade($oldversion) {
         $table = new xmldb_table('tool_attestoodle_tmp');
         // Adding fields to table.
         $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
-        $table->add_field('trainingid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
-        $table->add_field('fileinfo', XMLDB_TYPE_TEXT, 'medium', null, null, null, null);
-        $table->add_field('pdfinfo', XMLDB_TYPE_TEXT, 'medium', null, null, null, null);
+        $table->add_field('trainingid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('fileinfo', XMLDB_TYPE_TEXT, 'medium', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('pdfinfo', XMLDB_TYPE_TEXT, 'medium', null, XMLDB_NOTNULL, null, null);
         $table->add_field('learnerid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
         // Adding keys to table.
         $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
@@ -208,9 +208,9 @@ function create_table_learner($dbman) {
     $table = new xmldb_table('tool_attestoodle_learner');
     // Adding fields to table.
     $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
-    $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
-    $table->add_field('trainingid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
-    $table->add_field('categoryid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+    $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+    $table->add_field('trainingid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+    $table->add_field('categoryid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
     $table->add_field('selected', XMLDB_TYPE_INTEGER, '1', null, null, null, null);
     $table->add_field('predelete', XMLDB_TYPE_INTEGER, '1', null, null, null, null);
     $table->add_field('resultcriteria', XMLDB_TYPE_CHAR, '127', null, null, null, null);
@@ -239,9 +239,9 @@ function create_table_learner_template($dbman) {
     $table = new xmldb_table('tool_attestoodle_user_style');
     // Adding fields to table.
     $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
-    $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
-    $table->add_field('trainingid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
-    $table->add_field('templateid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+    $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+    $table->add_field('trainingid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+    $table->add_field('templateid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
     $table->add_field('grpcriteria1', XMLDB_TYPE_CHAR, '35', null, null, null, null);
     $table->add_field('grpcriteria2', XMLDB_TYPE_CHAR, '35', null, null, null, null);
     $table->add_field('enablecertificate', XMLDB_TYPE_INTEGER, '1', null, null, null, null);
@@ -264,7 +264,7 @@ function update_table_training() {
     global $DB;
     $dbman = $DB->get_manager();
     $table = new xmldb_table('tool_attestoodle_training');
-    $field = new xmldb_field('startdate', XMLDB_TYPE_INTEGER, '10', null, null, null, null, null, null);
+    $field = new xmldb_field('startdate', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null, null, null);
     if (!$dbman->field_exists($table, $field)) {
         $dbman->add_field($table, $field);
     }

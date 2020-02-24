@@ -18,7 +18,7 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-        <KEY NAME="fk_category_id" TYPE="foreign" FIELDS="categoryid" REFTABLE="mdl_course_categories" REFFIELDS="id"/>
+        <KEY NAME="fk_category_id" TYPE="foreign" FIELDS="categoryid" REFTABLE="course_categories" REFFIELDS="id"/>
       </KEYS>
     </TABLE>
     <TABLE NAME="tool_attestoodle_milestone" COMMENT="Table that stores the milestone values in Attestoodle">
@@ -33,7 +33,7 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-        <KEY NAME="fk_module_id" TYPE="foreign" FIELDS="moduleid" REFTABLE="mdl_course_modules" REFFIELDS="id"/>
+        <KEY NAME="fk_module_id" TYPE="foreign" FIELDS="moduleid" REFTABLE="course_modules" REFFIELDS="id"/>
       </KEYS>
     </TABLE>
     <TABLE NAME="tool_attestoodle_launch_log" COMMENT="Table that logs the launch of a generation by an operator">
@@ -47,7 +47,7 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-        <KEY NAME="fk_user_id" TYPE="foreign" FIELDS="operatorid" REFTABLE="mdl_user" REFFIELDS="id"/>
+        <KEY NAME="fk_user_id" TYPE="foreign" FIELDS="operatorid" REFTABLE="user" REFFIELDS="id"/>
       </KEYS>
     </TABLE>
     <TABLE NAME="tool_attestoodle_certif_log" COMMENT="Table that logs the information of a uniq certificate when generated">
@@ -61,8 +61,8 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-        <KEY NAME="fk_category_id" TYPE="foreign" FIELDS="trainingid" REFTABLE="mdl_course_categories" REFFIELDS="id"/>
-        <KEY NAME="fk_user_id" TYPE="foreign" FIELDS="learnerid" REFTABLE="mdl_user" REFFIELDS="id"/>
+        <KEY NAME="fk_category_id" TYPE="foreign" FIELDS="trainingid" REFTABLE="course_categories" REFFIELDS="id"/>
+        <KEY NAME="fk_user_id" TYPE="foreign" FIELDS="learnerid" REFTABLE="user" REFFIELDS="id"/>
         <KEY NAME="fk_launch_id" TYPE="foreign" FIELDS="launchid" REFTABLE="tool_attestoodle_launch_log" REFFIELDS="id"/>
       </KEYS>
     </TABLE>
@@ -76,7 +76,7 @@
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
         <KEY NAME="fk_certificate_id" TYPE="foreign" FIELDS="certificateid" REFTABLE="tool_attestoodle_certif_log" REFFIELDS="id"/>
-        <KEY NAME="fk_module_id" TYPE="foreign" FIELDS="moduleid" REFTABLE="mdl_course_modules" REFFIELDS="id"/>
+        <KEY NAME="fk_module_id" TYPE="foreign" FIELDS="moduleid" REFTABLE="course_modules" REFFIELDS="id"/>
       </KEYS>
     </TABLE>
     <TABLE NAME="tool_attestoodle_train_style" COMMENT="relation between model and training">
