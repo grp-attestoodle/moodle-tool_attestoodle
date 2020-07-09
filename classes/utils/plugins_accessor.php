@@ -185,7 +185,7 @@ class plugins_accessor extends singleton {
         }
 
         // Test if there is already a certificate for this training.
-        $req = "select l.begindate, l.enddate
+        $req = "select c.id, l.begindate, l.enddate
                   from {tool_attestoodle_certif_log} c
                   join {tool_attestoodle_launch_log} l on c.launchid = l.id
                  where trainingid = ?
