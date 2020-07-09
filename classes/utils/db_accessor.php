@@ -857,7 +857,7 @@ class db_accessor extends singleton {
                    and m.course in (select course
                                       from {tool_attestoodle_milestone}
                                      where trainingid = ?)
-                   group by shortname";
+                   group by fullname";
         return self::$db->get_records_sql($req, array ($lastupdate, $trainingid));
     }
 
