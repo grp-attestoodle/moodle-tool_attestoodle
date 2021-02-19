@@ -233,6 +233,7 @@ $string['filtermodulename'] = ' Nom  :';
 $string['filtermoduletype'] = ' Type :';
 $string['filtermodulevisible'] = ' Visible :';
 $string['filtermodulerestrict'] = ' Avec restriction :';
+$string['filtermodulemilestoneonly'] = ' Jalon :';
 $string['filtermodulebtn'] = 'Filtrer';
 $string['period_form'] = 'Règle sur les dates';
 $string['period_form_help'] = 'Indiquer la période à prendre en compte

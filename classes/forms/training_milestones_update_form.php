@@ -116,6 +116,23 @@ class training_milestones_update_form extends \moodleform {
         foreach ($modules as $mod) {
             $lstmod[$mod->name] = get_string('modulename', $mod->name);
         }
+
+        $selectyesno = array();
+        $selectyesno[] = " ";
+        $selectyesno[] = get_string('yes');
+        $selectyesno[] = get_string('no');
+
+        $filtergroup[] =& $mform->createElement('static', null, null, get_string('filtermodulemilestoneonly', 'tool_attestoodle'));
+        $filtergroup[] =& $mform->createElement('select', 'milestonemod', '', $selectyesno, null);
+        if (isset($this->_customdata['milestonemod'])) {
+            $mform->setDefault('milestonemod', $this->_customdata['milestonemod']);
+        }
+        // if milestone modification is disabled, disable milestonemod filter :
+        $mform->disabledIf('milestonemod', 'edition', 'eq', 0); //disabled
+        if (isset($this->_customdata['modifallow']) && ($this->_customdata['modifallow'] == false)) {
+             $mform->setDefault('milestonemod', 1); // set to Yes
+        }
+
         $filtergroup[] =& $mform->createElement('static', null, null, get_string('filtermodulename', 'tool_attestoodle'));
         $filtergroup[] =& $mform->createElement('text', 'namemod', '', array("size" => 10));
         $mform->setType('namemod', PARAM_TEXT );
@@ -129,11 +146,6 @@ class training_milestones_update_form extends \moodleform {
         if (!empty($this->_customdata['type'])) {
             $mform->setDefault('typemod', $this->_customdata['type']);
         }
-
-        $selectyesno = array();
-        $selectyesno[] = " ";
-        $selectyesno[] = get_string('yes');
-        $selectyesno[] = get_string('no');
 
         $filtergroup[] =& $mform->createElement('static', null, null, get_string('filtermodulevisible', 'tool_attestoodle'));
         $filtergroup[] =& $mform->createElement('select', 'visibmod', '', $selectyesno, null);
@@ -173,6 +185,14 @@ class training_milestones_update_form extends \moodleform {
             if (!$this->_customdata['modifallow'] && $activity->milestone == 0) {
                 $pass = false;
             }
+            if (isset($this->_customdata['milestonemod'])) {
+                if ($pass && $this->_customdata['milestonemod'] == 1) { //yes
+                    $pass = $activity->milestone;
+                }
+                if ($pass && $this->_customdata['milestonemod'] == 2) { //no
+                    $pass = !$activity->milestone;
+                }
+            }
             if (isset($this->_customdata['visibmod'])) {
                 if ($pass && $this->_customdata['visibmod'] == 1) {
                     $pass = $activity->visible;
@@ -182,6 +202,7 @@ class training_milestones_update_form extends \moodleform {
                 }
             }
             $pass = $this->filterrestrict($activity, $pass);
+
             // The filter on the name has priority.
             $pass = $this->filtername($activity, $pass);
 

@@ -233,6 +233,7 @@ $string['filtermodulename'] = ' Name  :';
 $string['filtermoduletype'] = ' Type :';
 $string['filtermodulevisible'] = ' Visible :';
 $string['filtermodulerestrict'] = ' With availability :';
+$string['filtermodulemilestoneonly'] = ' Milestone :';
 $string['filtermodulebtn'] = 'Filter';
 $string['period_form'] = 'Rule on dates';
 $string['period_form_help'] = 'Indicate the period

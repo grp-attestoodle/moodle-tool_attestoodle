@@ -61,6 +61,7 @@ class training_milestones implements \renderable {
         $namemod = optional_param('namemod', null, PARAM_TEXT);
         $visibmod = optional_param('visibmod', 0, PARAM_INT);
         $restrictmod = optional_param('restrictmod', 0, PARAM_INT);
+        $milestonemod = optional_param('milestonemod', 0, PARAM_INT);
 
         if ($this->training_exists()) {
             $courses = $this->training->get_courses();
@@ -84,6 +85,7 @@ class training_milestones implements \renderable {
                                             'input_name_prefix' => "attestoodle_activity_id_",
                                             'type' => $type, 'namemod' => $namemod,
                                             'visibmod' => $visibmod, 'restrictmod' => $restrictmod,
+                                            'milestonemod' => $milestonemod,
                                             'modifallow' => $modifallow
                                           ) );
                 $this->handle_form();
@@ -153,6 +155,7 @@ class training_milestones implements \renderable {
                 'namemod' => $datafromform->namemod,
                 'visibmod' => $datafromform->visibmod,
                 'restrictmod' => $datafromform->restrictmod,
+                'milestonemod' => $datafromform->milestonemod,
                 'trainingid' => $this->trainingid
                 ]);
                 redirect($url);
