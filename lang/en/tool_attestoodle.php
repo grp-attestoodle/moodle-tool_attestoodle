@@ -227,14 +227,19 @@ $string['navlevel3b'] = 'Milestones';
 $string['navlevel1b'] = 'List templates';
 $string['navlevel2b'] = 'Template ';
 $string['trainingname'] = 'Training name';
+$string['filtergrouplabel'] = 'Filter modules based on :';
 $string['filtermodulealltype'] = 'All type';
 $string['filtermoduleactivitytype'] = 'Only Activity';
 $string['filtermodulename'] = ' Name  :';
 $string['filtermoduletype'] = ' Type :';
 $string['filtermodulevisible'] = ' Visible :';
-$string['filtermodulerestrict'] = ' With availability :';
+$string['filtermodulerestrict'] = ' With access restrictions :';
 $string['filtermodulemilestoneonly'] = ' Milestone :';
 $string['filtermodulebtn'] = 'Filter';
+$string['modulefiltergroup'] = 'Modules filtering';
+$string['modulefiltergroup_help'] = '<p>This filter define which modules will be displayed in the following list, 
+ depending on a serie of criterias.</p>
+<p>Note : the name criteria has priority over all others.</p>';
 $string['period_form'] = 'Rule on dates';
 $string['period_form_help'] = 'Indicate the period
  from the included start date

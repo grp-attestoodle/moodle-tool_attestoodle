@@ -110,20 +110,12 @@ class training_milestones_update_form extends \moodleform {
         $mform = $this->_form;
         $filtergroup = array();
         $modules = db_accessor::get_instance()->get_allmodules();
-        $lstmod = array();
-        $lstmod[] = get_string('filtermodulealltype', 'tool_attestoodle');
-        $lstmod[] = get_string('filtermoduleactivitytype', 'tool_attestoodle');
-        foreach ($modules as $mod) {
-            $lstmod[$mod->name] = get_string('modulename', $mod->name);
-        }
 
-        $selectyesno = array();
-        $selectyesno[] = " ";
-        $selectyesno[] = get_string('yes');
-        $selectyesno[] = get_string('no');
-
-        $filtergroup[] =& $mform->createElement('static', null, null, get_string('filtermodulemilestoneonly', 'tool_attestoodle'));
-        $filtergroup[] =& $mform->createElement('select', 'milestonemod', '', $selectyesno, null);
+        $milestonefilterchoice = array();
+        $milestonefilterchoice[] = get_string('filtermodulemilestoneonly', 'tool_attestoodle');
+        $milestonefilterchoice[] = get_string('yes');
+        $milestonefilterchoice[] = get_string('no');
+        $filtergroup[] =& $mform->createElement('select', 'milestonemod', '', $milestonefilterchoice, null);
         if (isset($this->_customdata['milestonemod'])) {
             $mform->setDefault('milestonemod', $this->_customdata['milestonemod']);
         }
@@ -133,35 +125,46 @@ class training_milestones_update_form extends \moodleform {
              $mform->setDefault('milestonemod', 1); // set to Yes
         }
 
-        $filtergroup[] =& $mform->createElement('static', null, null, get_string('filtermodulename', 'tool_attestoodle'));
-        $filtergroup[] =& $mform->createElement('text', 'namemod', '', array("size" => 10));
-        $mform->setType('namemod', PARAM_TEXT );
-
-        if (!empty($this->_customdata['namemod'])) {
-            $mform->setDefault('namemod', $this->_customdata['namemod']);
+        $lstmod = array();
+        $lstmod[] = get_string('filtermodulealltype', 'tool_attestoodle');
+        $lstmod[] = get_string('filtermoduleactivitytype', 'tool_attestoodle');
+        foreach ($modules as $mod) {
+            $lstmod[$mod->name] = get_string('modulename', $mod->name);
         }
-
-        $filtergroup[] =& $mform->createElement('static', null, null, get_string('filtermoduletype', 'tool_attestoodle'));
         $filtergroup[] =& $mform->createElement('select', 'typemod', '', $lstmod, null);
         if (!empty($this->_customdata['type'])) {
             $mform->setDefault('typemod', $this->_customdata['type']);
         }
 
-        $filtergroup[] =& $mform->createElement('static', null, null, get_string('filtermodulevisible', 'tool_attestoodle'));
-        $filtergroup[] =& $mform->createElement('select', 'visibmod', '', $selectyesno, null);
+        $visiblefilterchoice = array();
+        $visiblefilterchoice[] = get_string('filtermodulevisible', 'tool_attestoodle');
+        $visiblefilterchoice[] = get_string('yes');
+        $visiblefilterchoice[] = get_string('no');
+        $filtergroup[] =& $mform->createElement('select', 'visibmod', '', $visiblefilterchoice, null);
         if (isset($this->_customdata['visibmod'])) {
             $mform->setDefault('visibmod', $this->_customdata['visibmod']);
         }
 
-        $filtergroup[] =& $mform->createElement('static', null, null, get_string('filtermodulerestrict', 'tool_attestoodle'));
-        $filtergroup[] =& $mform->createElement('select', 'restrictmod', '', $selectyesno, null);
+        $restrictfilterchoice = array();
+        $restrictfilterchoice[] = get_string('filtermodulerestrict', 'tool_attestoodle');
+        $restrictfilterchoice[] = get_string('yes');
+        $restrictfilterchoice[] = get_string('no');
+        $filtergroup[] =& $mform->createElement('select', 'restrictmod', '', $restrictfilterchoice, null);
         if (isset($this->_customdata['restrictmod'])) {
             $mform->setDefault('restrictmod', $this->_customdata['restrictmod']);
         }
 
+        $filtergroup[] =& $mform->createElement('static', null, null, '&nbsp;&nbsp;'.get_string('filtermodulename', 'tool_attestoodle'));
+        $filtergroup[] =& $mform->createElement('text', 'namemod', '', array("size" => 10));
+        $mform->setType('namemod', PARAM_TEXT );
+        if (!empty($this->_customdata['namemod'])) {
+            $mform->setDefault('namemod', $this->_customdata['namemod']);
+        }
+
         $filtergroup[] =& $mform->createElement('submit', 'filter',
             get_string('filtermodulebtn', 'tool_attestoodle'), array('class' => 'send-button'));
-        $mform->addGroup($filtergroup, '', '', ' ', false);
+        $mform->addGroup($filtergroup, 'filtergroup', get_string('filtergrouplabel', 'tool_attestoodle'), ' ', false);
+        $mform->addHelpButton('filtergroup', 'modulefiltergroup', 'tool_attestoodle');
     }
     /**
      * Filter the modules according to the chosen filters.

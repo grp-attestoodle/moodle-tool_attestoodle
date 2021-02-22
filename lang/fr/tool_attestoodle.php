@@ -227,14 +227,19 @@ $string['navlevel3b'] = 'Jalons';
 $string['navlevel1b'] = 'Liste modèles';
 $string['navlevel2b'] = 'Modèle ';
 $string['trainingname'] = 'Nom de la Formation';
+$string['filtergrouplabel'] = 'Filtrer les modules selon :';
 $string['filtermodulealltype'] = 'Tous les types';
 $string['filtermoduleactivitytype'] = 'Uniquement les activités';
 $string['filtermodulename'] = ' Nom  :';
 $string['filtermoduletype'] = ' Type :';
 $string['filtermodulevisible'] = ' Visible :';
-$string['filtermodulerestrict'] = ' Avec restriction :';
+$string['filtermodulerestrict'] = ' Avec restriction d\'accès :';
 $string['filtermodulemilestoneonly'] = ' Jalon :';
 $string['filtermodulebtn'] = 'Filtrer';
+$string['modulefiltergroup'] = 'Filtrage des modules';
+$string['modulefiltergroup_help'] = '<p>Ce filtre permet de choisir quels modules vont être affichés dans la liste, 
+en fonction d\'une série de critères.</p>
+<p>Note : Le critère de nom a priorité sur tous les autres</p>';
 $string['period_form'] = 'Règle sur les dates';
 $string['period_form_help'] = 'Indiquer la période à prendre en compte
 <br>A partir de la date de début incluse jusqu\'à la date de fin incluse.
