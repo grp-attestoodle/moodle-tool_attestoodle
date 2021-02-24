@@ -239,11 +239,25 @@ $string['filtermodulerestrictyes'] = 'with access restriction';
 $string['filtermodulerestrictno'] = 'without access restriction';
 $string['filtermodulemilestone'] = 'milestones or not';
 $string['filtermodulemilestoneyes'] = 'milestones';
-$string['filtermodulemilestoneno'] = 'not milestones';$string['filtermodulebtn'] = 'Filter';
+$string['filtermodulemilestoneno'] = 'not milestones';
+$string['filtermodulebtn'] = 'Filter';
 $string['modulefiltergroup'] = 'Modules filtering';
 $string['modulefiltergroup_help'] = '<p>This filter define which modules will be displayed in the following list, 
  depending on a serie of criterias.</p>
 <p>Note : the name criteria has priority over all others.</p>';
+$string['orderbylabel'] = 'Categorized by :';
+$string['orderbycourse'] = 'Course';
+$string['orderbymonth'] = 'Expected completion month';
+$string['orderbygroup'] = 'Modules categorization';
+$string['orderbygroup_help'] = '<p>This define the way modules will be categorized on the display below.</p>
+<p>Will they be grouped </p>
+<ul>
+<li>by course</li>
+<li>by expected completion date (this allow a time related representation)</li>
+</ul>';
+$string['orderbybtn'] = 'Reorder';
+$string['module_expected_date_label'] = 'Completion expected on';
+$string['module_expected_date_no'] = 'Without expected completion date';
 $string['period_form'] = 'Rule on dates';
 $string['period_form_help'] = 'Indicate the period
  from the included start date

@@ -77,6 +77,7 @@ class activities_factory extends singleton {
         $ret->set_visible($coursemodule->visible);
         $ret->set_availability($coursemodule->availability);
         $ret->set_completion($coursemodule->completion);
+        $ret->set_expected_completion_date($coursemodule->completionexpected);
         return $ret;
     }
 

@@ -62,6 +62,8 @@ class training_milestones implements \renderable {
         $visibmod = optional_param('visibmod', 0, PARAM_INT);
         $restrictmod = optional_param('restrictmod', 0, PARAM_INT);
         $milestonemod = optional_param('milestonemod', 0, PARAM_INT);
+        $orderbyselection = optional_param('orderbyselection', 0, PARAM_INT);
+
 
         if ($this->training_exists()) {
             $courses = $this->training->get_courses();
@@ -86,6 +88,7 @@ class training_milestones implements \renderable {
                                             'type' => $type, 'namemod' => $namemod,
                                             'visibmod' => $visibmod, 'restrictmod' => $restrictmod,
                                             'milestonemod' => $milestonemod,
+                                            'orderbyselection' => $orderbyselection,
                                             'modifallow' => $modifallow
                                           ) );
                 $this->handle_form();
@@ -146,7 +149,7 @@ class training_milestones implements \renderable {
             // If data are valid, process persistance.
             // Try to retrieve the submitted data.
             $datafromform = $this->form->get_submitted_data();
-            if (isset($datafromform->filter)) {
+            if (isset($datafromform->filterbtn) || isset($datafromform->orderbybtn)) {
                 $url = new \moodle_url('/admin/tool/attestoodle/index.php',
                 [
                 'typepage' => 'managemilestones',
@@ -156,6 +159,7 @@ class training_milestones implements \renderable {
                 'visibmod' => $datafromform->visibmod,
                 'restrictmod' => $datafromform->restrictmod,
                 'milestonemod' => $datafromform->milestonemod,
+                'orderbyselection' => $datafromform->orderbyselection,
                 'trainingid' => $this->trainingid
                 ]);
                 redirect($url);
