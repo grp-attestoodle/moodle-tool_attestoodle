@@ -112,9 +112,9 @@ class training_milestones_update_form extends \moodleform {
         $modules = db_accessor::get_instance()->get_allmodules();
 
         $milestonefilterchoice = array();
-        $milestonefilterchoice[] = get_string('filtermodulemilestoneonly', 'tool_attestoodle');
-        $milestonefilterchoice[] = get_string('yes');
-        $milestonefilterchoice[] = get_string('no');
+        $milestonefilterchoice[] = get_string('filtermodulemilestone', 'tool_attestoodle');
+        $milestonefilterchoice[] = get_string('filtermodulemilestoneyes', 'tool_attestoodle');
+        $milestonefilterchoice[] = get_string('filtermodulemilestoneno', 'tool_attestoodle');
         $filtergroup[] =& $mform->createElement('select', 'milestonemod', '', $milestonefilterchoice, null);
         if (isset($this->_customdata['milestonemod'])) {
             $mform->setDefault('milestonemod', $this->_customdata['milestonemod']);
@@ -138,8 +138,8 @@ class training_milestones_update_form extends \moodleform {
 
         $visiblefilterchoice = array();
         $visiblefilterchoice[] = get_string('filtermodulevisible', 'tool_attestoodle');
-        $visiblefilterchoice[] = get_string('yes');
-        $visiblefilterchoice[] = get_string('no');
+        $visiblefilterchoice[] = get_string('filtermodulevisibleyes', 'tool_attestoodle');
+        $visiblefilterchoice[] = get_string('filtermodulevisibleno', 'tool_attestoodle');
         $filtergroup[] =& $mform->createElement('select', 'visibmod', '', $visiblefilterchoice, null);
         if (isset($this->_customdata['visibmod'])) {
             $mform->setDefault('visibmod', $this->_customdata['visibmod']);
@@ -147,8 +147,8 @@ class training_milestones_update_form extends \moodleform {
 
         $restrictfilterchoice = array();
         $restrictfilterchoice[] = get_string('filtermodulerestrict', 'tool_attestoodle');
-        $restrictfilterchoice[] = get_string('yes');
-        $restrictfilterchoice[] = get_string('no');
+        $restrictfilterchoice[] = get_string('filtermodulerestrictyes', 'tool_attestoodle');
+        $restrictfilterchoice[] = get_string('filtermodulerestrictno', 'tool_attestoodle');
         $filtergroup[] =& $mform->createElement('select', 'restrictmod', '', $restrictfilterchoice, null);
         if (isset($this->_customdata['restrictmod'])) {
             $mform->setDefault('restrictmod', $this->_customdata['restrictmod']);
