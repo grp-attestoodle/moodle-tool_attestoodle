@@ -255,9 +255,11 @@ les modules dans l\'affichage ci-dessous.</p>
 <li>par espaces cours</li>
 <li>par date d\'achèvement attendu (ce qui permet une représentation dans le temps)</li>
 </ul>';
+$string['monthfrom'] = 'Depuis';
 $string['orderbybtn'] = 'Réorganiser';
 $string['module_expected_date_label'] = 'Achèvement attendu le';
 $string['module_expected_date_no'] = 'Sans date d\'achèvement attendu';
+$string['module_expected_date_outside'] = 'Avec des date d\'achèvement au delà';
 $string['period_form'] = 'Règle sur les dates';
 $string['period_form_help'] = 'Indiquer la période à prendre en compte
 <br>A partir de la date de début incluse jusqu\'à la date de fin incluse.

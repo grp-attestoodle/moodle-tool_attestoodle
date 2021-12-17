@@ -63,6 +63,17 @@ class training_milestones implements \renderable {
         $restrictmod = optional_param('restrictmod', 0, PARAM_INT);
         $milestonemod = optional_param('milestonemod', 0, PARAM_INT);
         $orderbyselection = optional_param('orderbyselection', 0, PARAM_INT);
+        // orderbyfrom fields group may appears as an array of 3 values (day, month and year) when in POST form's data
+        // but sometime also as a unique timestamp value when in GET form's data, and both POST and GET are currently used
+        if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+            $orderbyfrom = optional_param('orderbyfrom', 0, PARAM_INT);
+            $orderbyfrom = array(
+                "day" => date("d", $orderbyfrom),
+                "month" => date("m", $orderbyfrom),
+                "year" => date("Y", $orderbyfrom));
+        } else {
+            $orderbyfrom = optional_param_array('orderbyfrom', 0, PARAM_INT);
+        }
 
 
         if ($this->training_exists()) {
@@ -89,6 +100,7 @@ class training_milestones implements \renderable {
                                             'visibmod' => $visibmod, 'restrictmod' => $restrictmod,
                                             'milestonemod' => $milestonemod,
                                             'orderbyselection' => $orderbyselection,
+                                            'orderbyfrom' => $orderbyfrom,
                                             'modifallow' => $modifallow
                                           ) );
                 $this->handle_form();
@@ -160,6 +172,7 @@ class training_milestones implements \renderable {
                 'restrictmod' => $datafromform->restrictmod,
                 'milestonemod' => $datafromform->milestonemod,
                 'orderbyselection' => $datafromform->orderbyselection,
+                'orderbyfrom' => $datafromform->orderbyfrom,
                 'trainingid' => $this->trainingid
                 ]);
                 redirect($url);

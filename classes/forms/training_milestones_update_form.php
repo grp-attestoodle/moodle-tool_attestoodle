@@ -115,25 +115,26 @@ class training_milestones_update_form extends \moodleform {
      * @return array a grouped modules list
      */
     private function get_moduleslist_by_month($courses){
-        $class_date_from = 1598918400;
+        $class_date_from = $this->_customdata['orderbyfrom'];
         $class_date_interval = 'M';
         $class_date_count = 12;
 
         $grouping = array();
         $nodatestring = get_string("module_expected_date_no", "tool_attestoodle");
+        $outsidedatestring = get_string("module_expected_date_outside", "tool_attestoodle");
 
         //create date classes :
-        $d0 = new \DateTime('2020-09-01');
+        $d0 = new \DateTime($class_date_from['year'].'-'.$class_date_from['month'].'-01'); // day is ignored
         $grp = new \stdClass();
         $grouping[$nodatestring] = $grp;
         for($i=0; $i<$class_date_count; $i++){
             $grp = new \stdClass();
-            $d0->add(new \DateInterval('P1'.$class_date_interval));
             $grp->id = $this->get_month_identifier($d0);
             $grp->name = $this->get_month_identifier($d0);
             $grp->activities = array();
             $grp->filteredactivities = array();
             $grouping[$grp->name] = $grp;
+            $d0->add(new \DateInterval('P1'.$class_date_interval));
         }
 
         // populate classes with activities :
@@ -143,7 +144,12 @@ class training_milestones_update_form extends \moodleform {
                     $dateclass = $nodatestring;
                 } else {
                     $d0->setTimestamp($activity->expecteddate);
-                    $dateclass = $this->get_month_identifier($d0);
+
+                    if (array_key_exists($this->get_month_identifier($d0), $grouping)){
+                        $dateclass = $this->get_month_identifier($d0);
+                    } else {
+                        $dateclass = $outsidedatestring;
+                    }
                 }
                 $grouping[$dateclass]->activities[] = $activity;
                 if ($this->retained_by_filter($activity)) {
@@ -254,6 +260,11 @@ class training_milestones_update_form extends \moodleform {
         } else {
             $mform->setDefault('orderbyselection', 0); //default is 1st choice
         }
+
+        //'order by' start date
+        $orderbygroup[] =& $mform->createElement('date_selector', 'orderbyfrom', get_string('monthfrom', 'tool_attestoodle'));
+        $mform->setDefault('orderbyfrom', $this->_customdata['orderbyfrom']);
+        $mform->hideIf('orderbyfrom', 'orderbyselection', 'neq', 1); //only display when ordering on expected completion month
 
         //'reorder' button :
         $orderbygroup[]=& $mform->createElement('submit', 'orderbybtn',

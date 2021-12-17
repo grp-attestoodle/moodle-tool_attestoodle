@@ -255,9 +255,11 @@ $string['orderbygroup_help'] = '<p>This define the way modules will be categoriz
 <li>by course</li>
 <li>by expected completion date (this allow a time related representation)</li>
 </ul>';
+$string['monthfrom'] = 'From';
 $string['orderbybtn'] = 'Reorder';
 $string['module_expected_date_label'] = 'Completion expected on';
 $string['module_expected_date_no'] = 'Without expected completion date';
+$string['module_expected_date_outside'] = 'Outside expected completion date';
 $string['period_form'] = 'Rule on dates';
 $string['period_form_help'] = 'Indicate the period
  from the included start date
