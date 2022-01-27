@@ -163,14 +163,17 @@ class training_milestones_update_form extends \moodleform {
             $grp->id = $key;
             $grp->name = $key;
             $time = 0;
-            foreach($grp->filteredactivities as $activity){
-                if (!is_null($activity->milestone)){
-                    $time += $activity->milestone;
+            $grp->modulecount = 0;
+            if (isset($grp->filteredactivities)) {
+                foreach ($grp->filteredactivities as $activity) {
+                    if (!is_null($activity->milestone)) {
+                        $time += $activity->milestone;
+                    }
                 }
+                $grp->modulecount = count($grp->filteredactivities);
             }
-            $grp->time = parse_minutes_to_hours($time);
-            $grp->modulecount = count($grp->filteredactivities);
             $grp->moduletot = count($grp->activities);
+            $grp->time = parse_minutes_to_hours($time);
         }
 
         return $grouping;
@@ -198,46 +201,48 @@ class training_milestones_update_form extends \moodleform {
             $mform->setExpanded($grp->id, false);
 
             // For each activity in this course we add a form input element.
-            foreach ($grp->filteredactivities as $activity) {
-                $groupname = "group_" . $activity->name;
-                // The group contains the input, the label and a fixed span (required to have more complex form lines).
-                $group = array();
+            if (isset($grp->filteredactivities)) {
+                foreach ($grp->filteredactivities as $activity) {
+                    $groupname = "group_" . $activity->name;
+                    // The group contains the input, the label and a fixed span (required to have more complex form lines).
+                    $group = array();
 
-                // for time input :
-                $group[] =& $mform->createElement("text", $activity->name, '', array("size" => 5)); // Max 5 char.
-                $mform->setType($activity->name, PARAM_ALPHANUM); // Parsing the value in INT after submit.
-                $mform->setDefault($activity->name, $activity->milestone); // Set default value to the current milestone value.
-                $mform->disabledIf($activity->name, 'edition', 'eq', 0);
+                    // for time input :
+                    $group[] =& $mform->createElement("text", $activity->name, '', array("size" => 5)); // Max 5 char.
+                    $mform->setType($activity->name, PARAM_ALPHANUM); // Parsing the value in INT after submit.
+                    $mform->setDefault($activity->name, $activity->milestone); // Set default value to the current milestone value.
+                    $mform->disabledIf($activity->name, 'edition', 'eq', 0);
 
-                // unit :
-                $group[] =& $mform->createElement("static", null, null, "<span>$suffix</span>");
+                    // unit :
+                    $group[] =& $mform->createElement("static", null, null, "<span>$suffix</span>");
 
-                // expected completion date :
-                if ($activity->expecteddate != "0"){
-                    $date = date("d M Y", $activity->expecteddate);
-                    $group[] =& $mform->createElement("static", $activity->id.'_date', '',
-                        get_string("module_expected_date_label", "tool_attestoodle")
-                        .'&nbsp;<strong>'.$date.'</strong>');
-               }
+                    // expected completion date :
+                    if ($activity->expecteddate != "0") {
+                        $date = date("d M Y", $activity->expecteddate);
+                        $group[] =& $mform->createElement("static", $activity->id . '_date', '',
+                            get_string("module_expected_date_label", "tool_attestoodle")
+                            . '&nbsp;<strong>' . $date . '</strong>');
+                    }
 
-                // group label :
-                $libelactivity = "<a href='{$CFG->wwwroot}/course/modedit.php?update={$activity->id}'>"
-                    . "{$activity->label} ({$activity->type})</a>&nbsp;";
-                if (!empty($activity->availability)) {
-                    $libelactivity .= "<span class=\"fa fa-key\" aria-hidden=\"true\"></span> ";
+                    // group label :
+                    $libelactivity = "<a href='{$CFG->wwwroot}/course/modedit.php?update={$activity->id}'>"
+                        . "{$activity->label} ({$activity->type})</a>&nbsp;";
+                    if (!empty($activity->availability)) {
+                        $libelactivity .= "<span class=\"fa fa-key\" aria-hidden=\"true\"></span> ";
+                    }
+                    if ($activity->visible == 0) {
+                        $libelactivity .= "<span class=\"fa fa-eye-slash\" aria-hidden=\"true\"></span> ";
+                    }
+                    if ($activity->completion == 0) {
+                        $libelactivity .= "<span class=\"fa fa-exclamation-triangle\" aria-hidden=\"true\"></span> ";
+                    }
+                    $mform->addGroup($group, $groupname, $libelactivity, '&nbsp;', false);
+                    $mform->addGroupRule($groupname, array(
+                        $activity->name => array(
+                            array(null, 'numeric', null, 'client')
+                        )
+                    ));
                 }
-                if ($activity->visible == 0) {
-                    $libelactivity .= "<span class=\"fa fa-eye-slash\" aria-hidden=\"true\"></span> ";
-                }
-                if ($activity->completion == 0) {
-                    $libelactivity .= "<span class=\"fa fa-exclamation-triangle\" aria-hidden=\"true\"></span> ";
-                }
-                $mform->addGroup($group, $groupname, $libelactivity, '&nbsp;', false);
-                       $mform->addGroupRule($groupname, array(
-                    $activity->name => array(
-                        array(null, 'numeric', null, 'client')
-                    )
-                ));
             }
         }
     }
