@@ -24,7 +24,6 @@
 
 namespace tool_attestoodle;
 
-defined('MOODLE_INTERNAL') || die;
 
 use tool_attestoodle\utils\db_accessor;
 use tool_attestoodle\gabarit\attestation_pdf;

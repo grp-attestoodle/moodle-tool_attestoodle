@@ -29,7 +29,6 @@ use tool_attestoodle\utils\db_accessor;
 use tool_attestoodle\learner;
 use tool_attestoodle\validated_activity;
 
-defined('MOODLE_INTERNAL') || die;
 /**
  * Implements the pattern Factory to create the learners used by Attestoodle.
  *

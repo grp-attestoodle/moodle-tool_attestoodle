@@ -24,7 +24,6 @@
 
 namespace tool_attestoodle\utils;
 
-defined('MOODLE_INTERNAL') || die;
 
 use tool_attestoodle\utils\plugins_accessor;
 /**

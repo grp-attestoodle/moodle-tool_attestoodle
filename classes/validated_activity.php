@@ -26,7 +26,6 @@
 
 namespace tool_attestoodle;
 
-defined('MOODLE_INTERNAL') || die;
 /**
  * This is the class describing an activity validated by a learner in Attestoodle.
  *

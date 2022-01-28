@@ -28,7 +28,6 @@ use tool_attestoodle\utils\singleton;
 use tool_attestoodle\utils\db_accessor;
 use tool_attestoodle\activity;
 
-defined('MOODLE_INTERNAL') || die;
 /**
  * Implements the pattern Factory to create the activities used by Attestoodle.
  *
