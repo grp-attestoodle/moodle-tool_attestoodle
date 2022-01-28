@@ -62,8 +62,8 @@ class training_milestones implements \renderable {
         $restrictmod = optional_param('restrictmod', 0, PARAM_INT);
         $milestonemod = optional_param('milestonemod', 0, PARAM_INT);
         $orderbyselection = optional_param('orderbyselection', 0, PARAM_INT);
-        // orderbyfrom fields group may appears as an array of 3 values (day, month and year) when in POST form's data
-        // but sometime also as a unique timestamp value when in GET form's data, and both POST and GET are currently used
+        // The orderbyfrom fields group may appears as an array of 3 values (day, month and year) when in POST form's data,
+        // But sometime also as a unique timestamp value when in GET form's data, and both POST and GET are currently used.
         if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             $orderbyfrom = optional_param('orderbyfrom', 0, PARAM_INT);
             $orderbyfrom = array(
@@ -73,7 +73,6 @@ class training_milestones implements \renderable {
         } else {
             $orderbyfrom = optional_param_array('orderbyfrom', 0, PARAM_INT);
         }
-
 
         if ($this->training_exists()) {
             $courses = $this->training->get_courses();

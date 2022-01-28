@@ -242,7 +242,7 @@ $string['filtermodulemilestoneyes'] = 'milestones';
 $string['filtermodulemilestoneno'] = 'not milestones';
 $string['filtermodulebtn'] = 'Filter';
 $string['modulefiltergroup'] = 'Modules filtering';
-$string['modulefiltergroup_help'] = '<p>This filter define which modules will be displayed in the following list, 
+$string['modulefiltergroup_help'] = '<p>This filter define which modules will be displayed in the following list,
  depending on a serie of criterias.</p>
 <p>Note : the name criteria has priority over all others.</p>';
 $string['orderbylabel'] = 'Categorized by :';

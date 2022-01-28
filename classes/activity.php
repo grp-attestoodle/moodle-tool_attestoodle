@@ -74,16 +74,14 @@ class activity {
     /**
      * @return timestamp
      */
-    public function get_expected_completion_date()
-    {
+    public function get_expected_completion_date() {
         return $this->expectedcompletiondate;
     }
 
     /**
      * @param timestamp $expectedcompletiondate
      */
-    public function set_expected_completion_date($date)
-    {
+    public function set_expected_completion_date($date) {
         $this->expectedcompletiondate = $date;
     }
 

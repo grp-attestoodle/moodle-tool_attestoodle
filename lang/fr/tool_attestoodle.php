@@ -242,7 +242,7 @@ $string['filtermodulemilestoneyes'] = 'jalons';
 $string['filtermodulemilestoneno'] = 'non jalons';
 $string['filtermodulebtn'] = 'Filtrer';
 $string['modulefiltergroup'] = 'Filtrage des modules';
-$string['modulefiltergroup_help'] = '<p>Ce filtre permet de choisir quels modules vont être affichés dans la liste, 
+$string['modulefiltergroup_help'] = '<p>Ce filtre permet de choisir quels modules vont être affichés dans la liste,
 en fonction d\'une série de critères.</p>
 <p>Note : Le critère de nom a priorité sur tous les autres</p>';
 $string['orderbylabel'] = 'Classer par :';
