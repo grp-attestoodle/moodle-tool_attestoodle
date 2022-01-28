@@ -60,6 +60,19 @@ class training_milestones implements \renderable {
         $namemod = optional_param('namemod', null, PARAM_TEXT);
         $visibmod = optional_param('visibmod', 0, PARAM_INT);
         $restrictmod = optional_param('restrictmod', 0, PARAM_INT);
+        $milestonemod = optional_param('milestonemod', 0, PARAM_INT);
+        $orderbyselection = optional_param('orderbyselection', 0, PARAM_INT);
+        // The orderbyfrom fields group may appears as an array of 3 values (day, month and year) when in POST form's data,
+        // But sometime also as a unique timestamp value when in GET form's data, and both POST and GET are currently used.
+        if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+            $orderbyfrom = optional_param('orderbyfrom', 0, PARAM_INT);
+            $orderbyfrom = array(
+                "day" => date("d", $orderbyfrom),
+                "month" => date("m", $orderbyfrom),
+                "year" => date("Y", $orderbyfrom));
+        } else {
+            $orderbyfrom = optional_param_array('orderbyfrom', 0, PARAM_INT);
+        }
 
         if ($this->training_exists()) {
             $courses = $this->training->get_courses();
@@ -83,6 +96,9 @@ class training_milestones implements \renderable {
                                             'input_name_prefix' => "attestoodle_activity_id_",
                                             'type' => $type, 'namemod' => $namemod,
                                             'visibmod' => $visibmod, 'restrictmod' => $restrictmod,
+                                            'milestonemod' => $milestonemod,
+                                            'orderbyselection' => $orderbyselection,
+                                            'orderbyfrom' => $orderbyfrom,
                                             'modifallow' => $modifallow
                                           ) );
                 $this->handle_form();
@@ -143,7 +159,7 @@ class training_milestones implements \renderable {
             // If data are valid, process persistance.
             // Try to retrieve the submitted data.
             $datafromform = $this->form->get_submitted_data();
-            if (isset($datafromform->filter)) {
+            if (isset($datafromform->filterbtn) || isset($datafromform->orderbybtn)) {
                 $url = new \moodle_url('/admin/tool/attestoodle/index.php',
                 [
                 'typepage' => 'managemilestones',
@@ -152,6 +168,9 @@ class training_milestones implements \renderable {
                 'namemod' => $datafromform->namemod,
                 'visibmod' => $datafromform->visibmod,
                 'restrictmod' => $datafromform->restrictmod,
+                'milestonemod' => $datafromform->milestonemod,
+                'orderbyselection' => $datafromform->orderbyselection,
+                'orderbyfrom' => $datafromform->orderbyfrom,
                 'trainingid' => $this->trainingid
                 ]);
                 redirect($url);

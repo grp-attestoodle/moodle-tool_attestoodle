@@ -227,13 +227,39 @@ $string['navlevel3b'] = 'Jalons';
 $string['navlevel1b'] = 'Liste modèles';
 $string['navlevel2b'] = 'Modèle ';
 $string['trainingname'] = 'Nom de la Formation';
-$string['filtermodulealltype'] = 'Tous les types';
+$string['filtergrouplabel'] = 'Filtrer les modules :';
+$string['filtermodulealltype'] = 'de tous types';
 $string['filtermoduleactivitytype'] = 'Uniquement les activités';
-$string['filtermodulename'] = ' Nom  :';
-$string['filtermoduletype'] = ' Type :';
-$string['filtermodulevisible'] = ' Visible :';
-$string['filtermodulerestrict'] = ' Avec restriction :';
+$string['filtermodulename'] = 'selon leur nom :';
+$string['filtermodulevisible'] = 'visibles ou non';
+$string['filtermodulevisibleyes'] = 'visibles';
+$string['filtermodulevisibleno'] = 'cachés';
+$string['filtermodulerestrict'] = 'avec restriction d\'accès ou non';
+$string['filtermodulerestrictyes'] = 'avec restriction d\'accès';
+$string['filtermodulerestrictno'] = 'sans restriction d\'accès';
+$string['filtermodulemilestone'] = 'jalons ou non';
+$string['filtermodulemilestoneyes'] = 'jalons';
+$string['filtermodulemilestoneno'] = 'non jalons';
 $string['filtermodulebtn'] = 'Filtrer';
+$string['modulefiltergroup'] = 'Filtrage des modules';
+$string['modulefiltergroup_help'] = '<p>Ce filtre permet de choisir quels modules vont être affichés dans la liste,
+en fonction d\'une série de critères.</p>
+<p>Note : Le critère de nom a priorité sur tous les autres</p>';
+$string['orderbylabel'] = 'Classer par :';
+$string['orderbycourse'] = 'Espace cours';
+$string['orderbymonth'] = 'Mois d\'achèvement attendu';
+$string['orderbygroup'] = 'Catégorisation des modules';
+$string['orderbygroup_help'] = '<p>Ce réglage détermine comment vont être regroupés
+les modules dans l\'affichage ci-dessous.</p>
+<ul>
+<li>par espaces cours</li>
+<li>par date d\'achèvement attendu (ce qui permet une représentation dans le temps)</li>
+</ul>';
+$string['monthfrom'] = 'Depuis';
+$string['orderbybtn'] = 'Réorganiser';
+$string['module_expected_date_label'] = 'Achèvement attendu le';
+$string['module_expected_date_no'] = 'Sans date d\'achèvement attendu';
+$string['module_expected_date_outside'] = 'Avec des date d\'achèvement au delà';
 $string['period_form'] = 'Règle sur les dates';
 $string['period_form_help'] = 'Indiquer la période à prendre en compte
 <br>A partir de la date de début incluse jusqu\'à la date de fin incluse.

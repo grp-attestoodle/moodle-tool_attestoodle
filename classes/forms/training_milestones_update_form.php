@@ -40,12 +40,13 @@ class training_milestones_update_form extends \moodleform {
      * all the elements (inputs, titles, buttons, ...) in the form.
      */
     public function definition() {
-        global $CFG;
         $inputnameprefix = $this->_customdata['input_name_prefix'];
-        $elements = $this->get_elements($this->_customdata['data'], $inputnameprefix);
+        $courses = $this->get_elements($this->_customdata['data'], $inputnameprefix);
 
         $mform = $this->_form;
-        $this->add_filter();
+        $this->add_filter(); // Add filter part of the form.
+
+        $this->add_orderby(); // Add orderby part of the form.
 
         $editmode = optional_param('edition', 0, PARAM_INT);
         if ($editmode != 0) {
@@ -59,48 +60,228 @@ class training_milestones_update_form extends \moodleform {
             $mform->setDefault('edition', $editmode);
         }
 
-        $suffix = get_string("training_milestones_form_input_suffix", "tool_attestoodle");
-        foreach ($elements as $course) {
-            $totact = count($course->activities);
-            $lstactivities = $this->filter($course->activities);
-            $totfilter = count($lstactivities);
-            $mform->addElement('header', $course->id,
-                    "{$course->name} : {$course->totalmilestones} ({$totfilter} / {$totact})");
-            $mform->setExpanded($course->id, false);
-            // For each activity in this course we add a form input element.
-            foreach ($lstactivities as $activity) {
-                $groupname = "group_" . $activity->name;
-                // The group contains the input, the label and a fixed span (required to have more complex form lines).
-                $group = array();
-                $group[] =& $mform->createElement("text", $activity->name, null, array("size" => 5)); // Max 5 char.
-                $mform->setType($activity->name, PARAM_ALPHANUM); // Parsing the value in INT after submit.
-                $mform->setDefault($activity->name, $activity->milestone); // Set default value to the current milestone value.
-                $mform->disabledIf($activity->name, 'edition', 'eq', 0);
-
-                $group[] =& $mform->createElement("static", null, null, "<span>{$suffix}</span>");
-                $libelactivity = "<a href='{$CFG->wwwroot}/course/modedit.php?update={$activity->id}'>"
-                    . "{$activity->label} ({$activity->type})</a>";
-                if (!empty($activity->availability)) {
-                    $libelactivity = "<i class=\"fa fa-key\" aria-hidden=\"true\"></i> " . $libelactivity;
-                }
-                if ($activity->visible == 0) {
-                    $libelactivity = "<i class=\"fa fa-eye-slash\" aria-hidden=\"true\"></i> " . $libelactivity;
-                }
-                if ($activity->completion == 0) {
-                    $libelactivity = "<i class=\"fa fa-exclamation-triangle\" aria-hidden=\"true\"></i> " . $libelactivity;
-                }
-
-                $mform->addGroup($group, $groupname, $libelactivity, array(' '), false);
-                $mform->addGroupRule($groupname, array(
-                        $activity->name => array(
-                                array(null, 'numeric', null, 'client')
-                        )
-                    ));
-            }
+        // Modules grouping.
+        switch ($this->_customdata['orderbyselection']){
+            case 0: // Choice orderbycourse.
+                $modulelist = $this->get_moduleslist_by_course($courses);
+                break;
+            case 1: // Choice orderbymonth.
+                $modulelist = $this->get_moduleslist_by_month($courses);
+                break;
         }
+
+        $this->generate_form_list($mform, $modulelist);
+
         if ($this->_customdata['modifallow']) {
             $this->add_action_buttons();
         }
+    }
+
+    /**
+     * Explore the modules set to create a list, grouped by course.
+     * In other words, the purpose is to have a set of course and in each a subset of modules
+     * that belongs to that course.
+     * @param array $courses integrated inside the training, including their own modules
+     * @return array a grouped modules list
+     */
+    private function get_moduleslist_by_course($courses) {
+        $grouping = array();
+        foreach ($courses as $course) {
+            $filteredactivities = array();
+            foreach ($course->activities as $activity) {
+                if ($this->retained_by_filter($activity)) {
+                    $filteredactivities[] = $activity;
+                }
+            }
+
+            $grp = new \stdClass();
+            $grp->id = $course->id;
+            $grp->name = $course->name;
+            $grp->time = $course->totalmilestones;
+            $grp->modulecount = count($filteredactivities);
+            $grp->moduletot = count($course->activities);
+            $grp->filteredactivities = $filteredactivities;
+
+            $grouping[] = $grp;
+        }
+        return $grouping;
+    }
+
+    /**
+     * Explore the modules set to create a list, grouped by expected completion date, classified by month.
+     * In other words, the purpose is to have a set of month and in each a subset of modules
+     * which has an expected completion date in this month.
+     * @param array $courses integrated inside the training, including their own modules
+     * @return array a grouped modules list
+     */
+    private function get_moduleslist_by_month($courses) {
+        $classdatefrom = $this->_customdata['orderbyfrom'];
+        $classdateinterval = 'M';
+        $classdatecount = 12;
+
+        $grouping = array();
+        $nodatestring = get_string("module_expected_date_no", "tool_attestoodle");
+        $outsidedatestring = get_string("module_expected_date_outside", "tool_attestoodle");
+
+        // Create date classes.
+        $d0 = new \DateTime($classdatefrom['year'].'-'.$classdatefrom['month'].'-01'); // Day is ignored.
+        $grp = new \stdClass();
+        $grouping[$nodatestring] = $grp;
+        for ($i = 0; $i < $classdatecount; $i++) {
+            $grp = new \stdClass();
+            $grp->id = $this->get_month_identifier($d0);
+            $grp->name = $this->get_month_identifier($d0);
+            $grp->activities = array();
+            $grp->filteredactivities = array();
+            $grouping[$grp->name] = $grp;
+            $d0->add(new \DateInterval('P1'.$classdateinterval));
+        }
+
+        // Populate classes with activities.
+        foreach ($courses as $course) {
+            foreach ($course->activities as $activity) {
+                if ($activity->expecteddate == '0') {
+                    $dateclass = $nodatestring;
+                } else {
+                    $d0->setTimestamp($activity->expecteddate);
+
+                    if (array_key_exists($this->get_month_identifier($d0), $grouping)) {
+                        $dateclass = $this->get_month_identifier($d0);
+                    } else {
+                        $dateclass = $outsidedatestring;
+                    }
+                }
+                $grouping[$dateclass]->activities[] = $activity;
+                if ($this->retained_by_filter($activity)) {
+                    $grouping[$dateclass]->filteredactivities[] = $activity;
+                }
+            }
+        }
+
+        // Add informations to classes.
+        foreach ($grouping as $key => $grp) {
+            $grp->id = $key;
+            $grp->name = $key;
+            $time = 0;
+            $grp->modulecount = 0;
+            if (isset($grp->filteredactivities)) {
+                foreach ($grp->filteredactivities as $activity) {
+                    if (!is_null($activity->milestone)) {
+                        $time += $activity->milestone;
+                    }
+                }
+                $grp->modulecount = count($grp->filteredactivities);
+            }
+            $grp->moduletot = count($grp->activities);
+            $grp->time = parse_minutes_to_hours($time);
+        }
+
+        return $grouping;
+    }
+
+    /**
+     * A function to build a month class identifier
+     *
+     * @param datetime $date a date to be classified as month
+     * @return a string that identify a class of date (a month)
+     */
+    private function get_month_identifier($date) {
+        return $date->format("m Y");
+    }
+
+    /**
+     * From a grouped modules list generate the display as an organized list of course modules on the page
+     *
+     * @param moodleform $mform the form to place the list in
+     * @param array $grouping an imbricated array of groups containing, each, a set of modules to be displayed
+     */
+    private function generate_form_list($mform, $grouping) {
+        global $CFG;
+        $suffix = get_string("training_milestones_form_input_suffix", "tool_attestoodle");
+        foreach ($grouping as $grp) {
+            $mform->addElement('header', $grp->id,
+                "<strong>{$grp->name}</strong> : {$grp->time} ({$grp->modulecount} / {$grp->moduletot})");
+            $mform->setExpanded($grp->id, false);
+
+            // For each activity in this course we add a form input element.
+            if (isset($grp->filteredactivities)) {
+                foreach ($grp->filteredactivities as $activity) {
+                    $groupname = "group_" . $activity->name;
+                    // The group contains the input, the label and a fixed span (required to have more complex form lines).
+                    $group = array();
+
+                    // For time input.
+                    $group[] =& $mform->createElement("text", $activity->name, '', array("size" => 5)); // Max 5 char.
+                    $mform->setType($activity->name, PARAM_ALPHANUM); // Parsing the value in INT after submit.
+                    $mform->setDefault($activity->name, $activity->milestone); // Set default value to the current milestone value.
+                    $mform->disabledIf($activity->name, 'edition', 'eq', 0);
+
+                    // Unit.
+                    $group[] =& $mform->createElement("static", null, null, "<span>$suffix</span>");
+
+                    // Expected completion date.
+                    if ($activity->expecteddate != "0") {
+                        $date = date("d M Y", $activity->expecteddate);
+                        $group[] =& $mform->createElement("static", $activity->id . '_date', '',
+                            get_string("module_expected_date_label", "tool_attestoodle")
+                            . '&nbsp;<strong>' . $date . '</strong>');
+                    }
+
+                    // Group label.
+                    $libelactivity = "<a href='{$CFG->wwwroot}/course/modedit.php?update={$activity->id}'>"
+                        . "{$activity->label} ({$activity->type})</a>&nbsp;";
+                    if (!empty($activity->availability)) {
+                        $libelactivity .= "<span class=\"fa fa-key\" aria-hidden=\"true\"></span> ";
+                    }
+                    if ($activity->visible == 0) {
+                        $libelactivity .= "<span class=\"fa fa-eye-slash\" aria-hidden=\"true\"></span> ";
+                    }
+                    if ($activity->completion == 0) {
+                        $libelactivity .= "<span class=\"fa fa-exclamation-triangle\" aria-hidden=\"true\"></span> ";
+                    }
+                    $mform->addGroup($group, $groupname, $libelactivity, '&nbsp;', false);
+                    $mform->addGroupRule($groupname, array(
+                        $activity->name => array(
+                            array(null, 'numeric', null, 'client')
+                        )
+                    ));
+                }
+            }
+        }
+    }
+
+    /**
+     * add an order by selector to select the way activities are grouped on display
+     */
+    private function add_orderby() {
+        $mform = $this->_form;
+
+        $orderbygroup = array();
+
+        // The 'order by' selector.
+        $orderbychoices = array();
+        $orderbychoices[] = get_string('orderbycourse', 'tool_attestoodle');
+        $orderbychoices[] = get_string('orderbymonth', 'tool_attestoodle');
+        $orderbygroup[] =& $mform->createElement('select', 'orderbyselection',
+            get_string('orderbylabel', 'tool_attestoodle'), $orderbychoices);
+        if (isset($this->_customdata['orderbyselection']) && $this->_customdata['orderbyselection'] > 0) {
+            $mform->setDefault('orderbyselection', $this->_customdata['orderbyselection']);
+        } else {
+            $mform->setDefault('orderbyselection', 0); // Default is 1st choice.
+        }
+
+        // The 'order by' start date.
+        $orderbygroup[] =& $mform->createElement('date_selector', 'orderbyfrom', get_string('monthfrom', 'tool_attestoodle'));
+        $mform->setDefault('orderbyfrom', $this->_customdata['orderbyfrom']);
+        $mform->hideIf('orderbyfrom', 'orderbyselection', 'neq', 1); // Only display when ordering on expected completion month.
+
+        // The 'reorder' button.
+        $orderbygroup[]=& $mform->createElement('submit', 'orderbybtn',
+            get_string('orderbybtn', 'tool_attestoodle'), array('class' => 'send-button'));
+
+        $mform->addGroup($orderbygroup, 'orderbygroup', get_string('orderbylabel', 'tool_attestoodle'), ' ', false);
+        $mform->addHelpButton('orderbygroup', 'orderbygroup', 'tool_attestoodle');
+
     }
 
     /**
@@ -110,54 +291,72 @@ class training_milestones_update_form extends \moodleform {
         $mform = $this->_form;
         $filtergroup = array();
         $modules = db_accessor::get_instance()->get_allmodules();
+
+        $milestonefilterchoice = array();
+        $milestonefilterchoice[] = get_string('filtermodulemilestone', 'tool_attestoodle');
+        $milestonefilterchoice[] = get_string('filtermodulemilestoneyes', 'tool_attestoodle');
+        $milestonefilterchoice[] = get_string('filtermodulemilestoneno', 'tool_attestoodle');
+        $filtergroup[] =& $mform->createElement('select', 'milestonemod', '', $milestonefilterchoice, null);
+        if (isset($this->_customdata['milestonemod'])) {
+            $mform->setDefault('milestonemod', $this->_customdata['milestonemod']);
+        }
+        // If milestone modification is disabled, disable milestonemod filter.
+        $mform->disabledIf('milestonemod', 'edition', 'eq', 0); // Disabled.
+        if (isset($this->_customdata['modifallow']) && ($this->_customdata['modifallow'] == false)) {
+             $mform->setDefault('milestonemod', 1); // Set to Yes.
+        }
+
         $lstmod = array();
         $lstmod[] = get_string('filtermodulealltype', 'tool_attestoodle');
         $lstmod[] = get_string('filtermoduleactivitytype', 'tool_attestoodle');
         foreach ($modules as $mod) {
             $lstmod[$mod->name] = get_string('modulename', $mod->name);
         }
-        $filtergroup[] =& $mform->createElement('static', null, null, get_string('filtermodulename', 'tool_attestoodle'));
-        $filtergroup[] =& $mform->createElement('text', 'namemod', '', array("size" => 10));
-        $mform->setType('namemod', PARAM_TEXT );
-
-        if (!empty($this->_customdata['namemod'])) {
-            $mform->setDefault('namemod', $this->_customdata['namemod']);
-        }
-
-        $filtergroup[] =& $mform->createElement('static', null, null, get_string('filtermoduletype', 'tool_attestoodle'));
         $filtergroup[] =& $mform->createElement('select', 'typemod', '', $lstmod, null);
         if (!empty($this->_customdata['type'])) {
             $mform->setDefault('typemod', $this->_customdata['type']);
         }
 
-        $selectyesno = array();
-        $selectyesno[] = " ";
-        $selectyesno[] = get_string('yes');
-        $selectyesno[] = get_string('no');
-
-        $filtergroup[] =& $mform->createElement('static', null, null, get_string('filtermodulevisible', 'tool_attestoodle'));
-        $filtergroup[] =& $mform->createElement('select', 'visibmod', '', $selectyesno, null);
+        $visiblefilterchoice = array();
+        $visiblefilterchoice[] = get_string('filtermodulevisible', 'tool_attestoodle');
+        $visiblefilterchoice[] = get_string('filtermodulevisibleyes', 'tool_attestoodle');
+        $visiblefilterchoice[] = get_string('filtermodulevisibleno', 'tool_attestoodle');
+        $filtergroup[] =& $mform->createElement('select', 'visibmod', '', $visiblefilterchoice, null);
         if (isset($this->_customdata['visibmod'])) {
             $mform->setDefault('visibmod', $this->_customdata['visibmod']);
         }
 
-        $filtergroup[] =& $mform->createElement('static', null, null, get_string('filtermodulerestrict', 'tool_attestoodle'));
-        $filtergroup[] =& $mform->createElement('select', 'restrictmod', '', $selectyesno, null);
+        $restrictfilterchoice = array();
+        $restrictfilterchoice[] = get_string('filtermodulerestrict', 'tool_attestoodle');
+        $restrictfilterchoice[] = get_string('filtermodulerestrictyes', 'tool_attestoodle');
+        $restrictfilterchoice[] = get_string('filtermodulerestrictno', 'tool_attestoodle');
+        $filtergroup[] =& $mform->createElement('select', 'restrictmod', '', $restrictfilterchoice, null);
         if (isset($this->_customdata['restrictmod'])) {
             $mform->setDefault('restrictmod', $this->_customdata['restrictmod']);
         }
 
-        $filtergroup[] =& $mform->createElement('submit', 'filter',
+        $filtergroup[] =& $mform->createElement('static', null, null,
+            '&nbsp;&nbsp;'.get_string('filtermodulename', 'tool_attestoodle'));
+        $filtergroup[] =& $mform->createElement('text', 'namemod', '', array("size" => 10));
+        $mform->setType('namemod', PARAM_TEXT );
+        if (!empty($this->_customdata['namemod'])) {
+            $mform->setDefault('namemod', $this->_customdata['namemod']);
+        }
+
+        $filtergroup[] =& $mform->createElement('submit', 'filterbtn',
             get_string('filtermodulebtn', 'tool_attestoodle'), array('class' => 'send-button'));
-        $mform->addGroup($filtergroup, '', '', ' ', false);
+        $mform->addGroup($filtergroup, 'filtergroup', get_string('filtergrouplabel', 'tool_attestoodle'), ' ', false);
+        $mform->addHelpButton('filtergroup', 'modulefiltergroup', 'tool_attestoodle');
     }
+
     /**
-     * Filter the modules according to the chosen filters.
-     * @param array $activities to filter.
-     * @return array of modules that passes the filter.
+     * Filter the specified module/activity.
+     * @param array $module the module to test against filters.
+     * @return bool true if the specified module passes the filter.
      */
-    private function filter($activities) {
-        $ret = array();
+    private function retained_by_filter($module) {
+        // Test against filters
+        // Module type filter.
         $lib = "";
         if (!empty($this->_customdata['type'])) {
             $filtertype = $this->_customdata['type'];
@@ -167,29 +366,39 @@ class training_milestones_update_form extends \moodleform {
         } else {
             $filtertype = 0;
         }
+        $pass = $this->filtertype($module, $filtertype, $lib);
 
-        foreach ($activities as $activity) {
-            $pass = $this->filtertype($activity, $filtertype, $lib);
-            if (!$this->_customdata['modifallow'] && $activity->milestone == 0) {
-                $pass = false;
+        // Is milestone filter.
+        if (!$this->_customdata['modifallow'] && $module->milestone == 0) { // If the form is read only,
+            // then only milestone are displayed.
+            $pass = false;
+        }
+        if (isset($this->_customdata['milestonemod'])) {// Otherwise.
+            if ($pass && $this->_customdata['milestonemod'] == 1) { // Yes.
+                $pass = $module->milestone;
             }
-            if (isset($this->_customdata['visibmod'])) {
-                if ($pass && $this->_customdata['visibmod'] == 1) {
-                    $pass = $activity->visible;
-                }
-                if ($pass && $this->_customdata['visibmod'] == 2) {
-                    $pass = !$activity->visible;
-                }
-            }
-            $pass = $this->filterrestrict($activity, $pass);
-            // The filter on the name has priority.
-            $pass = $this->filtername($activity, $pass);
-
-            if ($pass) {
-                $ret[] = $activity;
+            if ($pass && $this->_customdata['milestonemod'] == 2) { // No.
+                $pass = !$module->milestone;
             }
         }
-        return $ret;
+
+        // Is visible filter.
+        if (isset($this->_customdata['visibmod'])) {
+            if ($pass && $this->_customdata['visibmod'] == 1) {
+                $pass = $module->visible;
+            }
+            if ($pass && $this->_customdata['visibmod'] == 2) {
+                $pass = !$module->visible;
+            }
+        }
+
+        // Is access restricted filter.
+        $pass = $this->filterrestrict($module, $pass);
+
+        // Module name filter (that has priority).
+        $pass = $this->filtername($module, $pass);
+
+        return $pass;
     }
 
     /**
@@ -289,6 +498,7 @@ class training_milestones_update_form extends \moodleform {
                 } else {
                     $dataactivity->ressource = 1;
                 }
+                $dataactivity->expecteddate = $activity->get_expected_completion_date();
             }
 
             $reste = array();

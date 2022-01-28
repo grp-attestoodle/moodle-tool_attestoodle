@@ -68,6 +68,27 @@ class activity {
     /** @var bool The completion enable of the activity.*/
     private $completion;
 
+    /** @var timestamp the expected completion date */
+    private $expectedcompletiondate;
+
+    /**
+     * Getter for expectedcompletiondate
+     *
+     * @return timestamp
+     */
+    public function get_expected_completion_date() {
+        return $this->expectedcompletiondate;
+    }
+
+    /**
+     * Setter for expectedcompletiondate
+     *
+     * @param timestamp $date the expected completion date
+     */
+    public function set_expected_completion_date($date) {
+        $this->expectedcompletiondate = $date;
+    }
+
     /**
      * Constructor of the activity class.
      *
