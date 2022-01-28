@@ -24,7 +24,6 @@
 
 namespace tool_attestoodle\utils;
 
-defined('MOODLE_INTERNAL') || die;
 
 /**
  * This is the singleton class that manage the logs into the Attestoodle tables

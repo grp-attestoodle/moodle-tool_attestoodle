@@ -27,7 +27,6 @@
 
 namespace tool_attestoodle\output\renderable;
 
-defined('MOODLE_INTERNAL') || die;
 
 use tool_attestoodle\factories\learners_factory;
 use tool_attestoodle\factories\trainings_factory;

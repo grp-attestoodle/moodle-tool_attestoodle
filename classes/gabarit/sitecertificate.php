@@ -296,7 +296,7 @@ if (!isset($create)) {
 } else {
     $valdefault['templateid'] = -1;
 }
-// Set default data (if any)!
+// Set default data, if any !
 $formdata = $valdefault;
 $mform->set_data($formdata);
 $mform->set_data(array ('namelock' => $namelock));

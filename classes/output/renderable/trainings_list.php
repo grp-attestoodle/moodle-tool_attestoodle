@@ -27,7 +27,6 @@
 
 namespace tool_attestoodle\output\renderable;
 
-defined('MOODLE_INTERNAL') || die;
 
 use \renderable;
 use tool_attestoodle\utils\plugins_accessor;
