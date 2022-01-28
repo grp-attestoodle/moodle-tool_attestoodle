@@ -72,6 +72,8 @@ class activity {
     private $expectedcompletiondate;
 
     /**
+     * Getter for expectedcompletiondate
+     *
      * @return timestamp
      */
     public function get_expected_completion_date() {
@@ -79,7 +81,9 @@ class activity {
     }
 
     /**
-     * @param timestamp $expectedcompletiondate
+     * Setter for expectedcompletiondate
+     *
+     * @param timestamp $date the expected completion date
      */
     public function set_expected_completion_date($date) {
         $this->expectedcompletiondate = $date;

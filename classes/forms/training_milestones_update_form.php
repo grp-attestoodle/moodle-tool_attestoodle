@@ -180,6 +180,8 @@ class training_milestones_update_form extends \moodleform {
     }
 
     /**
+     * A function to build a month class identifier
+     *
      * @param datetime $date a date to be classified as month
      * @return a string that identify a class of date (a month)
      */
@@ -189,7 +191,8 @@ class training_milestones_update_form extends \moodleform {
 
     /**
      * From a grouped modules list generate the display as an organized list of course modules on the page
-     * @param $mform the form in which place the list
+     *
+     * @param moodleform $mform the form to place the list in
      * @param array $grouping an imbricated array of groups containing, each, a set of modules to be displayed
      */
     private function generate_form_list($mform, $grouping) {
