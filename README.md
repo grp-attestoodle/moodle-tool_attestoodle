@@ -15,7 +15,7 @@ When certificates are generated, times of completed milestones are aggregated fo
 
 Project leaders : Universities of Le Mans and Caen
 
-Compatibility : Moodle 3.8, 3.9
+Compatibility : Moodle 3.8, 3.9, 3.11
 
 Plugin type : admin tool
 
@@ -27,4 +27,5 @@ Others plugins :
   [Save and Restore Attestoodle](https://github.com/grp-attestoodle/moodle-tool_save_attestoodle)  
   [Web service Attestoodle](https://github.com/grp-attestoodle/moodle-local_wsattestoodle)  
   [Views of training at course level](https://github.com/grp-attestoodle/moodle-block_attestoodle)  
-  [Planning of Attestoodle certificates](https://github.com/grp-attestoodle/moodle-tool_taskattestoodle)
+  [Planning of Attestoodle certificates](https://github.com/grp-attestoodle/moodle-tool_taskattestoodle)  
+  [Attestoodle history management](https://github.com/grp-attestoodle/moodle-tool_history_attestoodle)

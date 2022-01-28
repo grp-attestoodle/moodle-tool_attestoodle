@@ -26,7 +26,6 @@ namespace tool_attestoodle;
 
 use tool_attestoodle\factories\learners_factory;
 use tool_attestoodle\utils\db_accessor;
-defined('MOODLE_INTERNAL') || die;
 /**
  * This is the class describing a training in Attestoodle.
  *

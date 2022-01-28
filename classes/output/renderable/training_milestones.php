@@ -24,7 +24,6 @@
 
 namespace tool_attestoodle\output\renderable;
 
-defined('MOODLE_INTERNAL') || die;
 
 use tool_attestoodle\factories\trainings_factory;
 use tool_attestoodle\forms\training_milestones_update_form;

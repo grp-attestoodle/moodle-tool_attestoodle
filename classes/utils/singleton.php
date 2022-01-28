@@ -24,7 +24,6 @@
 
 namespace tool_attestoodle\utils;
 
-defined('MOODLE_INTERNAL') || die;
 
 /**
  * This is the abstract class to help factories creating their own objects.

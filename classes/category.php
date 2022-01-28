@@ -27,7 +27,6 @@ namespace tool_attestoodle;
 use tool_attestoodle\factories\trainings_factory;
 use tool_attestoodle\factories\categories_factory;
 
-defined('MOODLE_INTERNAL') || die;
 /**
  * Category Moodle with the ability of training.
  *

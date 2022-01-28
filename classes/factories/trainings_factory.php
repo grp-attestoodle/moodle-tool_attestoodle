@@ -29,7 +29,6 @@ use tool_attestoodle\utils\db_accessor;
 use tool_attestoodle\factories\categories_factory;
 use tool_attestoodle\training;
 
-defined('MOODLE_INTERNAL') || die;
 /**
  * Implements the pattern Factory to create the trainings used by Attestoodle.
  *

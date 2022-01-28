@@ -84,7 +84,7 @@ $PAGE->navbar->add($navlevel2, $urltrainingmgm);
 $navlevel3a = get_string('onecoursemilestonetitle', 'tool_attestoodle', $coursetoadd->get_name());
 $PAGE->navbar->add($navlevel3a, $url);
 
-$PAGE->set_url(new moodle_url(dirname(__FILE__) . '/course_outof_categ.php', [] ));
+$PAGE->set_url(new moodle_url('/admin/tool/attestoodle/classes/training/course_outof_categ.php', [] ));
 $PAGE->set_title($navlevel3a);
 $PAGE->set_heading($navlevel3a);
 

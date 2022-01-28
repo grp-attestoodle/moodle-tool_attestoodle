@@ -55,7 +55,7 @@ $PAGE->navbar->add($navlevel3a, new moodle_url('/admin/tool/attestoodle/index.ph
                                 'categoryid' => $categoryid,
                                 'trainingid' => $trainingid)));
 
-$PAGE->set_url(new moodle_url(dirname(__FILE__) . '/preparedinf.php', [] ));
+$PAGE->set_url(new moodle_url('/admin/tool/attestoodle/classes/generated/preparedinf.php', [] ));
 $PAGE->set_title(get_string('certificategenerate', 'tool_attestoodle'));
 $title = get_string('pluginname', 'tool_attestoodle') . " - " .
     get_string('certificategenerate', 'tool_attestoodle');

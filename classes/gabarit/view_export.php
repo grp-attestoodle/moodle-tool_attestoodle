@@ -46,7 +46,7 @@ if (!isset($idtemplate)) {
 }
 
 // Print the page header.
-$PAGE->set_url(new moodle_url(dirname(__FILE__) . '/view_export.php', [] ));
+$PAGE->set_url(new moodle_url('/admin/tool/attestoodle/classes/gabarit/view_export.php', [] ));
 $PAGE->set_title('preview');
 $PAGE->set_heading(get_string('template_certificate', 'tool_attestoodle'));
 

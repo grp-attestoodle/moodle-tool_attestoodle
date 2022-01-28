@@ -24,7 +24,6 @@
 
 namespace tool_attestoodle;
 
-defined('MOODLE_INTERNAL') || die;
 /**
  * This is the class describing a course in Attestoodle.
  *
