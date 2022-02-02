@@ -452,9 +452,7 @@ class training_milestones_update_form extends \moodleform {
     private function filtername($activity, $pass) {
         $ret = $pass;
         if (!empty($this->_customdata['namemod'])) {
-            if (stristr($activity->label, $this->_customdata['namemod']) != null) {
-                $ret = true;
-            } else {
+            if ($ret && (!stristr($activity->label, $this->_customdata['namemod']))) {
                 $ret = false;
             }
         }
