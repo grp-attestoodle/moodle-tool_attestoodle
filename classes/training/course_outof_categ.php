@@ -38,12 +38,13 @@ global $CFG;
 
 $categoryid = required_param('categoryid', PARAM_INT);
 $trainingid = required_param('trainingid', PARAM_INT);
-// Form args activity s filter.
-$type = optional_param('type', null, PARAM_ALPHANUMEXT);
-$namemod = optional_param('namemod', null, PARAM_ALPHANUMEXT);
-$visibmod = optional_param('visibmod', 0, PARAM_INT);
-$restrictmod = optional_param('restrictmod', 0, PARAM_INT);
 $coursename = optional_param('coursename', '', PARAM_NOTAGS);
+
+$context = \context_coursecat::instance($categoryid);
+$modifallow = false;
+if (has_capability('tool/attestoodle:managemilestones', $context)) {
+    $modifallow = true;
+}
 
 $coursetoadd = search_course($coursename, $categoryid, $trainingid);
 $url = new \moodle_url('/admin/tool/attestoodle/classes/training/course_outof_categ.php',
@@ -56,9 +57,7 @@ $form = new training_milestones_update_form($url,
                                 array(
                                     'data' => array($coursetoadd),
                                     'input_name_prefix' => "attestoodle_activity_id_",
-                                    'type' => $type, 'namemod' => $namemod,
-                                    'visibmod' => $visibmod, 'restrictmod' => $restrictmod,
-                                    'modifallow' => true));
+                                    'modifallow' => $modifallow)); // No need to prefill the milestone form.
 
 $urltrainingmgm = new moodle_url('/admin/tool/attestoodle/index.php',
                             array(

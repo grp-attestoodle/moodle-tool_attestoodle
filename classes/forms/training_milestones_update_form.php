@@ -54,11 +54,15 @@ class training_milestones_update_form extends \moodleform {
     public function definition() {
         $inputnameprefix = $this->_customdata['input_name_prefix'];
         $courses = $this->get_elements($this->_customdata['data'], $inputnameprefix);
-        if (!is_array($this->_customdata['orderbyfrom'])) { // If orderbyfrom has been converted to timestamp, convert it back to array.
-            $this->_customdata['orderbyfrom'] = array(
-                "day" => date("d", $this->_customdata['orderbyfrom']),
-                "month" => date("m", $this->_customdata['orderbyfrom']),
-                "year" => date("Y", $this->_customdata['orderbyfrom']));
+        if (isset($this->_customdata['orderbyfrom'])) {
+            if (!is_array($this->_customdata['orderbyfrom'])) { // If orderbyfrom has been converted to timestamp, convert it back to array.
+                $this->_customdata['orderbyfrom'] = array(
+                    "day" => date("d", $this->_customdata['orderbyfrom']),
+                    "month" => date("m", $this->_customdata['orderbyfrom']),
+                    "year" => date("Y", $this->_customdata['orderbyfrom']));
+            }
+        } else { // Default value.
+            $this->_customdata['orderbyfrom'] = array("day" => 01, "month" => 01, "year" => 2020);
         }
 
         $mform = $this->_form;
@@ -79,7 +83,10 @@ class training_milestones_update_form extends \moodleform {
         }
 
         // Modules grouping.
-        switch ($this->_customdata['orderbyselection']){
+        if (!isset($this->_customdata['orderbyselection'])) {
+            $this->_customdata['orderbyselection'] = 0; // Default value.
+        }
+        switch ($this->_customdata['orderbyselection']) {
             case 0: // Choice orderbycourse.
                 $modulelist = $this->get_moduleslist_by_course($courses);
                 break;
