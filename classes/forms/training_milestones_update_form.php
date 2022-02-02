@@ -38,10 +38,28 @@ class training_milestones_update_form extends \moodleform {
     /**
      * Method automagically called when the form is instanciated. It defines
      * all the elements (inputs, titles, buttons, ...) in the form.
+     * It needs to receive an array during instanciation (usable here as $this->_customdata),
+     * with the following elements :
+     * 'data' => a collection of trainings's courses
+     * 'input_name_prefix' => module temporary name prefix (for internal use) : "attestoodle_activity_id_"
+     * 'type' => module type to filter with
+     * 'namemod' => module name to filter with
+     * 'visibmod' => filter only visible modules or not
+     * 'restrictmod' => filter or not only modules with access restrictions
+     * 'milestonemod' => filter only modules declared as milestone or not
+     * 'orderbyselection' => type of module grouping (0 by course, 1 by expected completion month)
+     * 'orderbyfrom' => array (year, month, day) to define starting month (only used when orderbyselection > 0)
+     * 'modifallow' => true if milestones modification is allowed in this context
      */
     public function definition() {
         $inputnameprefix = $this->_customdata['input_name_prefix'];
         $courses = $this->get_elements($this->_customdata['data'], $inputnameprefix);
+        if (!is_array($this->_customdata['orderbyfrom'])) { // If orderbyfrom has been converted to timestamp, convert it back to array.
+            $this->_customdata['orderbyfrom'] = array(
+                "day" => date("d", $this->_customdata['orderbyfrom']),
+                "month" => date("m", $this->_customdata['orderbyfrom']),
+                "year" => date("Y", $this->_customdata['orderbyfrom']));
+        }
 
         $mform = $this->_form;
         $this->add_filter(); // Add filter part of the form.
