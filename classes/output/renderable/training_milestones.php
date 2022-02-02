@@ -66,10 +66,6 @@ class training_milestones implements \renderable {
         // But sometime also as a unique timestamp value when in GET form's data, and both POST and GET are currently used.
         if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             $orderbyfrom = optional_param('orderbyfrom', 0, PARAM_INT);
-            $orderbyfrom = array(
-                "day" => date("d", $orderbyfrom),
-                "month" => date("m", $orderbyfrom),
-                "year" => date("Y", $orderbyfrom));
         } else {
             $orderbyfrom = optional_param_array('orderbyfrom', 0, PARAM_INT);
         }
@@ -94,8 +90,10 @@ class training_milestones implements \renderable {
                                     array(
                                             'data' => $this->training->get_courses(),
                                             'input_name_prefix' => "attestoodle_activity_id_",
-                                            'type' => $type, 'namemod' => $namemod,
-                                            'visibmod' => $visibmod, 'restrictmod' => $restrictmod,
+                                            'type' => $type,
+                                            'namemod' => $namemod,
+                                            'visibmod' => $visibmod,
+                                            'restrictmod' => $restrictmod,
                                             'milestonemod' => $milestonemod,
                                             'orderbyselection' => $orderbyselection,
                                             'orderbyfrom' => $orderbyfrom,
@@ -265,7 +263,15 @@ class training_milestones implements \renderable {
                     ),
                     array(
                         'data' => $this->training->get_courses(),
-                        'input_name_prefix' => "attestoodle_activity_id_"
+                        'input_name_prefix' => "attestoodle_activity_id_",
+                        'type' => $datafromform->typemod,
+                        'namemod' => $datafromform->namemod,
+                        'visibmod' => $datafromform->visibmod,
+                        'restrictmod' => $datafromform->restrictmod,
+                        'milestonemod' => $datafromform->milestonemod,
+                        'orderbyselection' => $datafromform->orderbyselection,
+                        'orderbyfrom' => $datafromform->orderbyfrom,
+                        'modifallow' => $datafromform->edition
                     )
             );
         } else {
