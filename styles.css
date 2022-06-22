@@ -158,11 +158,6 @@ p.no-validated-activity {
     border-bottom-color: #fff;
 }
 
-a.btn:link,
-a.btn:visited {
-    color: #555;
-}
-
 a.btn-create:link,
 a.btn-create:visited {
     color: white;
