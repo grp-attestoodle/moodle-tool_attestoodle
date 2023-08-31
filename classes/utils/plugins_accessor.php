@@ -48,9 +48,9 @@ class plugins_accessor extends singleton {
         if (!isset($pluginfo)) {
             return "";
         }
-        $sourcephp = $pluginfo->rootdir .'/lib.php';
+        $sourcephp = $pluginfo->rootdir . '/lib.php';
 
-        if (file_exists ($sourcephp)) {
+        if (file_exists($sourcephp)) {
             require_once($sourcephp);
             return lnk_load();
         }
@@ -70,9 +70,9 @@ class plugins_accessor extends singleton {
             return "";
         }
 
-        $sourcephp = $pluginfo->rootdir .'/lib.php';
+        $sourcephp = $pluginfo->rootdir . '/lib.php';
 
-        if (file_exists ($sourcephp)) {
+        if (file_exists($sourcephp)) {
             require_once($sourcephp);
             return btn_save($trainingid);
         }
@@ -105,8 +105,8 @@ class plugins_accessor extends singleton {
         if (!isset($pluginfo)) {
             return null;
         }
-        $sourcephp = $pluginfo->rootdir .'/lib.php';
-        if (file_exists ($sourcephp)) {
+        $sourcephp = $pluginfo->rootdir . '/lib.php';
+        if (file_exists($sourcephp)) {
             require_once($sourcephp);
             return task_link($trainingid);
         }
@@ -128,8 +128,8 @@ class plugins_accessor extends singleton {
         if (count($lst) > 0) {
             foreach ($lst as $cur) {
                 $pluginfo = $pluginman->get_plugin_info($cur);
-                $sourcephp = $pluginfo->rootdir .'/lib.php';
-                if (file_exists ($sourcephp)) {
+                $sourcephp = $pluginfo->rootdir . '/lib.php';
+                if (file_exists($sourcephp)) {
                     require_once($sourcephp);
                     $meth = $cur . "_deletetraining";
                     if (function_exists($meth)) {
@@ -158,8 +158,8 @@ class plugins_accessor extends singleton {
         $pluginman = \core_plugin_manager::instance();
         $pluginfo = self::get_task_plugin_info();
         if (isset($pluginfo)) {
-            $sourcephp = $pluginfo->rootdir .'/lib.php';
-            if (file_exists ($sourcephp)) {
+            $sourcephp = $pluginfo->rootdir . '/lib.php';
+            if (file_exists($sourcephp)) {
                 require_once($sourcephp);
                 $ret = tool_taskattestoodle_get_interval($trainingid);
             }
@@ -203,7 +203,11 @@ class plugins_accessor extends singleton {
             }
             $diff = $end - $beg;
             $ndiff = $now->getTimestamp() - $end;
-            $pcdiff = $ndiff / $diff;
+            if ($diff != 0) {
+                $pcdiff = $ndiff / $diff;
+            } else {
+                $pcdiff = 1;
+            }
             // If the current date is close to the last interval, the last interval is kept.
             if ($pcdiff < .5) {
                 $ret->d_start = $beg;
