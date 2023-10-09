@@ -26,8 +26,8 @@
 require_once(dirname(__FILE__) . '/../../../../../config.php');
 
 // Libraries imports.
-require_once($CFG->libdir.'/pdflib.php');
-require_once(dirname(__FILE__) .'/../../lib.php');
+require_once($CFG->libdir . '/pdflib.php');
+require_once(dirname(__FILE__) . '/../../lib.php');
 require_once('attestation_form.php');
 
 use tool_attestoodle\factories\trainings_factory;
@@ -69,8 +69,10 @@ $PAGE->navbar->ignore_active();
 $navlevel1 = get_string('navlevel1b', 'tool_attestoodle');
 $PAGE->navbar->add($navlevel1, new moodle_url('/admin/tool/attestoodle/classes/gabarit/listtemplate.php', array()));
 $navlevel2 = get_string('navlevel2b', 'tool_attestoodle');
-$baseurl = new moodle_url('/admin/tool/attestoodle/classes/gabarit/sitecertificate.php',
-                    array('templateid' => $lnkidtemplate));
+$baseurl = new moodle_url(
+    '/admin/tool/attestoodle/classes/gabarit/sitecertificate.php',
+    array('templateid' => $lnkidtemplate)
+);
 $PAGE->navbar->add($navlevel2 . $template->name, $baseurl);
 require_login();
 
@@ -116,12 +118,23 @@ if ($fromform = $mform->get_data()) {
 
     $backgroundexist = false;
     if ($datas->fichier) {
-        file_save_draft_area_files($datas->fichier, $context->id, 'tool_attestoodle', 'fichier', $idtemplate,
-            array('subdirs' => 0, 'maxbytes' => 10485760, 'maxfiles' => 1));
+        file_save_draft_area_files(
+            $datas->fichier,
+            $context->id,
+            'tool_attestoodle',
+            'fichier',
+            $idtemplate,
+            array('subdirs' => 0, 'maxbytes' => 10485760, 'maxfiles' => 1)
+        );
         // Get and save file name.
         $fs = get_file_storage();
-        $arrayfile = $fs->get_directory_files($context->id, 'tool_attestoodle', 'fichier',
-                      $idtemplate, '/');
+        $arrayfile = $fs->get_directory_files(
+            $context->id,
+            'tool_attestoodle',
+            'fichier',
+            $idtemplate,
+            '/'
+        );
         $thefile = reset($arrayfile);
         if ($thefile !== false) {
             $templatedetail = new stdClass();
@@ -136,65 +149,158 @@ if ($fromform = $mform->get_data()) {
     }
 
     if (trim($datas->learnerPosx) != '') {
-        $nvxtuples[] = data_to_structure($idtemplate, "learnername", $datas->learnerFontFamily, $datas->learnerEmphasis,
-                $datas->learnerFontSize, $datas->learnerPosx, $datas->learnerPosy, $datas->learnerAlign,
-                $datas->learnerlib);
+        $nvxtuples[] = data_to_structure(
+            $idtemplate,
+            "learnername",
+            $datas->learnerFontFamily,
+            $datas->learnerEmphasis,
+            $datas->learnerFontSize,
+            $datas->learnerPosx,
+            $datas->learnerPosy,
+            $datas->learnerAlign,
+            $datas->learnerlib
+        );
     }
 
     if (trim($datas->trainingPosx) != '') {
-        $nvxtuples[] = data_to_structure($idtemplate, "trainingname", $datas->trainingFontFamily, $datas->trainingEmphasis,
-                $datas->trainingFontSize, $datas->trainingPosx, $datas->trainingPosy, $datas->trainingAlign,
-                $datas->traininglib);
+        $nvxtuples[] = data_to_structure(
+            $idtemplate,
+            "trainingname",
+            $datas->trainingFontFamily,
+            $datas->trainingEmphasis,
+            $datas->trainingFontSize,
+            $datas->trainingPosx,
+            $datas->trainingPosy,
+            $datas->trainingAlign,
+            $datas->traininglib
+        );
     }
 
     if (trim($datas->periodPosx) != '') {
-        $nvxtuples[] = data_to_structure($idtemplate, "period", $datas->periodFontFamily, $datas->periodEmphasis,
-                $datas->periodFontSize, $datas->periodPosx, $datas->periodPosy, $datas->periodAlign,
-                $datas->periodlib);
+        $nvxtuples[] = data_to_structure(
+            $idtemplate,
+            "period",
+            $datas->periodFontFamily,
+            $datas->periodEmphasis,
+            $datas->periodFontSize,
+            $datas->periodPosx,
+            $datas->periodPosy,
+            $datas->periodAlign,
+            $datas->periodlib
+        );
     }
 
     if (trim($datas->totminutePosx) != '') {
-        $nvxtuples[] = data_to_structure($idtemplate, "totalminutes", $datas->totminuteFontFamily, $datas->totminuteEmphasis,
-                $datas->totminuteFontSize, $datas->totminutePosx, $datas->totminutePosy, $datas->totminuteAlign,
-                $datas->totminutelib);
+        $nvxtuples[] = data_to_structure(
+            $idtemplate,
+            "totalminutes",
+            $datas->totminuteFontFamily,
+            $datas->totminuteEmphasis,
+            $datas->totminuteFontSize,
+            $datas->totminutePosx,
+            $datas->totminutePosy,
+            $datas->totminuteAlign,
+            $datas->totminutelib
+        );
     }
 
     if (trim($datas->cumulminutesPosx) != '') {
-        $nvxtuples[] = data_to_structure($idtemplate, "cumulminutes", $datas->cumulminutesFontFamily,
-                $datas->cumulminutesEmphasis, $datas->cumulminutesFontSize,
-                $datas->cumulminutesPosx, $datas->cumulminutesPosy, $datas->cumulminutesAlign,
-                $datas->cumulminuteslib);
+        $nvxtuples[] = data_to_structure(
+            $idtemplate,
+            "cumulminutes",
+            $datas->cumulminutesFontFamily,
+            $datas->cumulminutesEmphasis,
+            $datas->cumulminutesFontSize,
+            $datas->cumulminutesPosx,
+            $datas->cumulminutesPosy,
+            $datas->cumulminutesAlign,
+            $datas->cumulminuteslib
+        );
     }
 
     if (trim($datas->activitiesPosx) != '') {
-        $nvxtuples[] = data_to_structure($idtemplate, "activities", $datas->activitiesFontFamily, $datas->activitiesEmphasis,
-                $datas->activitiesFontSize, $datas->activitiesPosx, $datas->activitiesPosy, $datas->activitiesAlign,
-                null, $datas->activitiessize);
+        $nvxtuples[] = data_to_structure(
+            $idtemplate,
+            "activities",
+            $datas->activitiesFontFamily,
+            $datas->activitiesEmphasis,
+            $datas->activitiesFontSize,
+            $datas->activitiesPosx,
+            $datas->activitiesPosy,
+            $datas->activitiesAlign,
+            null,
+            $datas->activitiessize
+        );
     }
 
     if (trim($datas->text1lib) != '') {
-        $nvxtuples[] = data_to_structure($idtemplate, "text", $datas->text1FontFamily, $datas->text1Emphasis,
-                $datas->text1FontSize, $datas->text1Posx, $datas->text1Posy, $datas->text1Align, $datas->text1lib);
+        $nvxtuples[] = data_to_structure(
+            $idtemplate,
+            "text",
+            $datas->text1FontFamily,
+            $datas->text1Emphasis,
+            $datas->text1FontSize,
+            $datas->text1Posx,
+            $datas->text1Posy,
+            $datas->text1Align,
+            $datas->text1lib
+        );
     }
 
     if (trim($datas->text2lib) != '') {
-        $nvxtuples[] = data_to_structure($idtemplate, "text", $datas->text2FontFamily, $datas->text2Emphasis,
-                $datas->text2FontSize, $datas->text2Posx, $datas->text2Posy, $datas->text2Align, $datas->text2lib);
+        $nvxtuples[] = data_to_structure(
+            $idtemplate,
+            "text",
+            $datas->text2FontFamily,
+            $datas->text2Emphasis,
+            $datas->text2FontSize,
+            $datas->text2Posx,
+            $datas->text2Posy,
+            $datas->text2Align,
+            $datas->text2lib
+        );
     }
 
     if (trim($datas->text3lib) != '') {
-        $nvxtuples[] = data_to_structure($idtemplate, "text", $datas->text3FontFamily, $datas->text3Emphasis,
-                $datas->text3FontSize, $datas->text3Posx, $datas->text3Posy, $datas->text3Align, $datas->text3lib);
+        $nvxtuples[] = data_to_structure(
+            $idtemplate,
+            "text",
+            $datas->text3FontFamily,
+            $datas->text3Emphasis,
+            $datas->text3FontSize,
+            $datas->text3Posx,
+            $datas->text3Posy,
+            $datas->text3Align,
+            $datas->text3lib
+        );
     }
 
     if (trim($datas->text4lib) != '') {
-        $nvxtuples[] = data_to_structure($idtemplate, "text", $datas->text4FontFamily, $datas->text4Emphasis,
-                $datas->text4FontSize, $datas->text4Posx, $datas->text4Posy, $datas->text4Align, $datas->text4lib);
+        $nvxtuples[] = data_to_structure(
+            $idtemplate,
+            "text",
+            $datas->text4FontFamily,
+            $datas->text4Emphasis,
+            $datas->text4FontSize,
+            $datas->text4Posx,
+            $datas->text4Posy,
+            $datas->text4Align,
+            $datas->text4lib
+        );
     }
 
     if (trim($datas->text5lib) != '') {
-        $nvxtuples[] = data_to_structure($idtemplate, "text", $datas->text5FontFamily, $datas->text5Emphasis,
-                $datas->text5FontSize, $datas->text5Posx, $datas->text5Posy, $datas->text5Align, $datas->text5lib);
+        $nvxtuples[] = data_to_structure(
+            $idtemplate,
+            "text",
+            $datas->text5FontFamily,
+            $datas->text5Emphasis,
+            $datas->text5FontSize,
+            $datas->text5Posx,
+            $datas->text5Posy,
+            $datas->text5Align,
+            $datas->text5lib
+        );
     }
 
     // Type pagebreak.
@@ -202,16 +308,32 @@ if ($fromform = $mform->get_data()) {
     if (isset($datas->repeatbackground)) {
         $repeatimg = true;
     }
-    $nvxtuples[] = pagebreak_to_structure($idtemplate, $datas->viewpagenumber, $repeatimg,
-                $datas->repeatpreactivities, $datas->repeatpostactivities, $backgroundexist);
+    $nvxtuples[] = pagebreak_to_structure(
+        $idtemplate,
+        $datas->viewpagenumber,
+        $repeatimg,
+        $datas->repeatpreactivities,
+        $datas->repeatpostactivities,
+        $backgroundexist
+    );
     // Type numpage.
     if ($datas->viewpagenumber > 0) {
-        $nvxtuples[] = data_to_structure($idtemplate, "pagenumber", $datas->pagenumberFontFamily, $datas->pagenumberEmphasis,
-                $datas->pagenumberFontSize, $datas->pagenumberPosx, $datas->pagenumberPosy, $datas->pagenumberAlign,
-                $datas->pagenumberlib, null, $datas->pagenumber_total);
+        $nvxtuples[] = data_to_structure(
+            $idtemplate,
+            "pagenumber",
+            $datas->pagenumberFontFamily,
+            $datas->pagenumberEmphasis,
+            $datas->pagenumberFontSize,
+            $datas->pagenumberPosx,
+            $datas->pagenumberPosy,
+            $datas->pagenumberAlign,
+            $datas->pagenumberlib,
+            null,
+            $datas->pagenumber_total
+        );
     }
 
-    $DB->delete_records('tool_attestoodle_tpl_detail', array ('templateid' => $idtemplate));
+    $DB->delete_records('tool_attestoodle_tpl_detail', array('templateid' => $idtemplate));
     if (count($nvxtuples) > 0) {
         foreach ($nvxtuples as $record) {
             $DB->insert_record('tool_attestoodle_tpl_detail', $record);
@@ -220,8 +342,10 @@ if ($fromform = $mform->get_data()) {
     \core\notification::success(get_string('enregok', 'tool_attestoodle'));
     if (isset($created)) {
         // We can't modified values of the form so we reload page.
-        $redirecturl = new \moodle_url('/admin/tool/attestoodle/classes/gabarit/sitecertificate.php',
-                array("templateid" => $idtemplate));
+        $redirecturl = new \moodle_url(
+            '/admin/tool/attestoodle/classes/gabarit/sitecertificate.php',
+            array("templateid" => $idtemplate)
+        );
         redirect($redirecturl);
         return;
     }
@@ -230,43 +354,43 @@ echo $OUTPUT->header();
 if (get_string_manager()->string_exists('UrlHlpTo_sitecertificate', 'tool_attestoodle')) {
     $urlhlp = get_string('UrlHlpTo_sitecertificate', 'tool_attestoodle');
     echo "<a href='" . $urlhlp . "' target='aide' title='" . get_string('help') .
-         "'><i class='fa fa-question-circle-o' aria-hidden='true'></i></a>";
+        "'><i class='fa fa-question-circle-o' aria-hidden='true'></i></a>";
 }
 
 $sql = "select type,data from {tool_attestoodle_tpl_detail} where templateid = " . $idtemplate;
-$rs = $DB->get_recordset_sql ( $sql, array () );
+$rs = $DB->get_recordset_sql($sql, array());
 $valdefault = array();
 $nbtxt = 0;
 foreach ($rs as $result) {
     $obj = json_decode($result->data);
 
-    switch($result->type) {
-        case "learnername" :
+    switch ($result->type) {
+        case "learnername":
             add_values_from_json($valdefault, "learner", $obj);
             break;
-        case "trainingname" :
+        case "trainingname":
             add_values_from_json($valdefault, "training", $obj);
             break;
-        case "period" :
+        case "period":
             add_values_from_json($valdefault, "period", $obj);
             break;
-        case "totalminutes" :
+        case "totalminutes":
             add_values_from_json($valdefault, "totminute", $obj);
             break;
-        case "cumulminutes" :
+        case "cumulminutes":
             add_values_from_json($valdefault, "cumulminutes", $obj);
             break;
-        case "activities" :
+        case "activities":
             add_values_from_json($valdefault, "activities", $obj);
             break;
-        case "text" :
-            $nbtxt ++;
+        case "text":
+            $nbtxt++;
             add_values_from_json($valdefault, $result->type . $nbtxt, $obj);
             break;
-        case "pagenumber" :
+        case "pagenumber":
             add_values_pagenumber($valdefault, $obj);
             break;
-        case "pagebreak" :
+        case "pagebreak":
             $numpage = 0;
             if ($obj->numpage == 'any') {
                 $numpage = 1;
@@ -289,8 +413,14 @@ if (!isset($create)) {
         $entry->id = null;
     }
     $draftitemid = file_get_submitted_draft_itemid('fichier');
-    file_prepare_draft_area($draftitemid, $context->id, 'tool_attestoodle', 'fichier', $idtemplate,
-        array('subdirs' => 0, 'maxbytes' => 10485760, 'maxfiles' => 1));
+    file_prepare_draft_area(
+        $draftitemid,
+        $context->id,
+        'tool_attestoodle',
+        'fichier',
+        $idtemplate,
+        array('subdirs' => 0, 'maxbytes' => 10485760, 'maxfiles' => 1)
+    );
     $entry->fichier = $draftitemid;
     $mform->set_data($entry);
 } else {
@@ -299,14 +429,14 @@ if (!isset($create)) {
 // Set default data, if any !
 $formdata = $valdefault;
 $mform->set_data($formdata);
-$mform->set_data(array ('namelock' => $namelock));
-$mform->set_data(array ('name' => $template->name));
+$mform->set_data(array('namelock' => $namelock));
+$mform->set_data(array('name' => $template->name));
 // Displays the form !
 $mform->display();
 if ($previewok) {
     $previewlink = '<a target="preview" href="' . $CFG->wwwroot .
         '/admin/tool/attestoodle/classes/gabarit/view_export.php?templateid=' . $idtemplate .
-        '" class= "btn-create pull-right">'.get_string('preview', 'tool_attestoodle').'</a>';
+        '" class= "btn-create pull-right">' . get_string('preview', 'tool_attestoodle') . '</a>';
     echo $previewlink;
 }
 
@@ -321,8 +451,10 @@ echo $OUTPUT->footer();
 function add_values_from_json(&$arrayvalues, $prefixe, $objson) {
     $emphases = array('', 'B', 'I');
     $alignments = array('L', 'R', 'C', 'J');
-    $sizes = array('6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '18', '20', '22', '24', '26', '28', '32',
-        '36', '40', '44', '48', '54', '60', '66', '72');
+    $sizes = array(
+        '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '18', '20', '22', '24', '26', '28', '32',
+        '36', '40', '44', '48', '54', '60', '66', '72'
+    );
     $familles = array('courier', 'helvetica', 'times');
 
     $arrayvalues[$prefixe . 'Posx'] = $objson->location->x;
@@ -359,8 +491,14 @@ function add_values_pagenumber(&$arrayvalues, $objson) {
  * @param integer $backgroundexist indicates if background image exist.
  * @return stdClass a 'pagebreak' element for save in bdd.
  */
-function pagebreak_to_structure($dtotemplateid, $dtoviewpagenum, $dtorepeatbackgr, $dtorepeatstart,
- $dtorepeatend, $backgroundexist) {
+function pagebreak_to_structure(
+    $dtotemplateid,
+    $dtoviewpagenum,
+    $dtorepeatbackgr,
+    $dtorepeatstart,
+    $dtorepeatend,
+    $backgroundexist
+) {
     $templatedetail = new stdClass();
     $templatedetail->templateid = $dtotemplateid;
     $templatedetail->type = 'pagebreak';
@@ -407,12 +545,25 @@ function pagebreak_to_structure($dtotemplateid, $dtoviewpagenum, $dtorepeatbackg
  * @param integer $dtoontotal indicate if number page on total (only for type pagenumber).
  * @return stdClass an element for save in bdd.
  */
-function data_to_structure($dtotemplateid, $dtotype, $dtofontfamily, $dtoemphasis, $dtofontsize, $dtoposx,
-    $dtoposy, $dtoalign, $dtolib = null, $dtosize = null, $dtoontotal = null) {
+function data_to_structure(
+    $dtotemplateid,
+    $dtotype,
+    $dtofontfamily,
+    $dtoemphasis,
+    $dtofontsize,
+    $dtoposx,
+    $dtoposy,
+    $dtoalign,
+    $dtolib = null,
+    $dtosize = null,
+    $dtoontotal = null
+) {
     $emphases = array('', 'B', 'I');
     $alignments = array('L', 'R', 'C', 'J');
-    $sizes = array('6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '18', '20', '22', '24', '26', '28', '32',
-        '36', '40', '44', '48', '54', '60', '66', '72');
+    $sizes = array(
+        '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '18', '20', '22', '24', '26', '28', '32',
+        '36', '40', '44', '48', '54', '60', '66', '72'
+    );
     $familles = array('courier', 'helvetica', 'times');
 
     $templatedetail = new stdClass();
@@ -421,9 +572,9 @@ function data_to_structure($dtotemplateid, $dtotype, $dtofontfamily, $dtoemphasi
 
     $valeurs = new stdClass();
     $font = new stdClass();
-    $font->family = $familles [$dtofontfamily];
-    $font->emphasis = $emphases [$dtoemphasis];
-    $font->size = $sizes [$dtofontsize];
+    $font->family = $familles[$dtofontfamily];
+    $font->emphasis = $emphases[$dtoemphasis];
+    $font->size = $sizes[$dtofontsize];
     $valeurs->font = $font;
     $location = new stdClass();
     $location->x = $dtoposx;
