@@ -1,5 +1,9 @@
 # Release notes
 
+## v1.10.3
+
+- Moodle 4.3 compatibility declaration
+
 ## v1.10.2
 
 - few bug fixes

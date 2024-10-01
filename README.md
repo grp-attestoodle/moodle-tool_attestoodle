@@ -14,7 +14,7 @@ When certificates are generated, times of completed milestones are aggregated fo
 
 Project leaders : Universities of Le Mans and Caen
 
-Compatibility : Moodle 3.8, 3.9, 3.11, 4.1
+Compatibility : Moodle 3.8, 3.9, 3.11, 4.1, 4.3
 
 Plugin type : admin tool
 
