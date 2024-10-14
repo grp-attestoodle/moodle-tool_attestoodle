@@ -49,6 +49,9 @@ class db_accessor extends singleton {
         global $DB;
         parent::__construct();
         self::$db = $DB;
+
+        global $CFG;
+        require_once("{$CFG->libdir}/completionlib.php");
     }
 
     /**
@@ -474,12 +477,10 @@ class db_accessor extends singleton {
      * @return \stdClass Standard Moodle DB object
      */
     public function get_activities_validated_by_learner($learner) {
-        $result = self::$db->get_records(
-                'course_modules_completion',
-                array(
-                    'userid' => $learner->get_id(),
-                    'completionstate' => 1
-                ));
+        $result = self::$db->get_records_select(
+            'course_modules_completion',
+            'userid = ' . $learner->get_id() . ' AND (completionstate = ? OR completionstate = ?)',
+            [COMPLETION_COMPLETE, COMPLETION_COMPLETE_PASS]);
         return $result;
     }
 
