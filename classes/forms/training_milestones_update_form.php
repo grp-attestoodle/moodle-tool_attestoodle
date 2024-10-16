@@ -268,8 +268,8 @@ class training_milestones_update_form extends \moodleform {
                     $mform->addGroup($group, $groupname, $libelactivity, '&nbsp;', false);
                     $mform->addGroupRule($groupname, array(
                         $activity->name => array(
-                            array(null, 'numeric', null, 'client')
-                        )
+                            array(null, 'numeric', null, 'client'),
+                        ),
                     ));
                 }
             }

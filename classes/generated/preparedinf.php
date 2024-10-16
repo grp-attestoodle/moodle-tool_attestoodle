@@ -99,7 +99,7 @@ $linkyes = \html_writer::link(
                                 'categoryid' => $categoryid,
                                 'begindate' => $begindate,
                                 'enddate' => $enddate,
-                                'nbmax' => $nb
+                                'nbmax' => $nb,
                             )
                     ),
                     get_string('yes'),

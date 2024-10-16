@@ -119,7 +119,7 @@ class category_training_update_form extends \moodleform {
             $level1s = array(
                     'coursename' => get_string('grp_course', 'tool_attestoodle'),
                     'name' => get_string('grp_activity', 'tool_attestoodle'),
-                    'type' => get_string('grp_type', 'tool_attestoodle')
+                    'type' => get_string('grp_type', 'tool_attestoodle'),
                     );
             $level2s = array_merge(array('' => ''), $level1s);
             $mform->addElement('select', 'group1', get_string('grp_level1', 'tool_attestoodle'), $level1s, null);

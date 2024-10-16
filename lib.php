@@ -66,7 +66,7 @@ function tool_attestoodle_extend_navigation_category_settings(navigation_node $p
                 array(
                         "typepage" => "trainingmanagement",
                         "categoryid" => $categoryid,
-                        "call" => "categ"
+                        "call" => "categ",
                 ));
         $node = navigation_node::create(
                 "Attestoodle",

@@ -163,7 +163,7 @@ foreach ($rs as $result) {
             'firstname' => $result->firstname,
             'email' => $result->email,
             'selected' => $sellink,
-            'resultcriteria' => $result->resultcriteria
+            'resultcriteria' => $result->resultcriteria,
             );
 }
 
@@ -183,7 +183,7 @@ $parameters = array(
                     'categoryid' => $categoryid,
                     'trainingid' => $trainingid,
                     'perpage' => $perpage,
-                    'action' => 'selecton'
+                    'action' => 'selecton',
                     );
 
 $attributes = array('class' => 'btn btn-default attestoodle-button');

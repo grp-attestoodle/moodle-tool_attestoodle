@@ -73,7 +73,7 @@ class certificate {
                 'filearea' => 'certificates',
                 'filepath' => '/',
                 'itemid' => 0,
-                'filename' => $this->get_file_name()
+                'filename' => $this->get_file_name(),
         );
 
         return $fileinfos;

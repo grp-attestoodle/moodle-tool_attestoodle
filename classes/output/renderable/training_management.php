@@ -48,13 +48,13 @@ class training_management implements \renderable {
     /** @var add_course_form The form use to add course.*/
     private $form2;
 
-    /** @var integer The category ID that we want to manage */
+    /** @var int The category ID that we want to manage */
     private $categoryid = null;
 
     /** @var category the actual category we want to manage */
     private $category = null;
 
-    /** @var integer Id of the training. */
+    /** @var int Id of the training. */
     private $trainingid = null;
     /**
      * Constructor method that instanciates the form.
@@ -290,7 +290,7 @@ class training_management implements \renderable {
                         $parameters = array(
                             'typepage' => 'trainingmanagement',
                             'categoryid' => $this->categoryid,
-                            'trainingid' => $train->get_id()
+                            'trainingid' => $train->get_id(),
                         );
                         $url = new \moodle_url('/admin/tool/attestoodle/index.php', $parameters);
                         $output .= " <li>" . \html_writer::link($url, $train->get_name() . "</li>", $parameters);
@@ -309,7 +309,7 @@ class training_management implements \renderable {
             $parametersmilestones = array(
                 'typepage' => 'managemilestones',
                 'categoryid' => $this->categoryid,
-                'trainingid' => $this->trainingid
+                'trainingid' => $this->trainingid,
                 );
             $urlmilestones = new \moodle_url('/admin/tool/attestoodle/index.php', $parametersmilestones);
             $labelmilestones = get_string('training_management_manage_training_link', 'tool_attestoodle');
@@ -351,7 +351,7 @@ class training_management implements \renderable {
 
                     $parameters = array(
                         'categoryid' => $this->categoryid,
-                        'trainingid' => $this->trainingid
+                        'trainingid' => $this->trainingid,
                     );
                     $url = new \moodle_url('/admin/tool/attestoodle/classes/training/select_learners.php', $parameters);
                     $label = get_string('selectlearner', 'tool_attestoodle');
@@ -362,7 +362,7 @@ class training_management implements \renderable {
                     $parameters = array(
                         'typepage' => 'learners',
                         'categoryid' => $this->categoryid,
-                        'trainingid' => $this->trainingid
+                        'trainingid' => $this->trainingid,
                     );
                     if ($countlearner > 0) {
                         $url = new \moodle_url('/admin/tool/attestoodle/index.php', $parameters);
@@ -413,7 +413,7 @@ class training_management implements \renderable {
                                     'typepage' => 'trainingmanagement',
                                     'action' => 'deleteErrMilestone',
                                     'categoryid' => $this->categoryid,
-                                    'trainingid' => $this->trainingid
+                                    'trainingid' => $this->trainingid,
                             )
                     ),
                     get_string('btn_deletemilestonerr', 'tool_attestoodle'),
@@ -450,7 +450,7 @@ class training_management implements \renderable {
                                     'typepage' => 'trainingmanagement',
                                     'action' => 'deleteNotification',
                                     'categoryid' => $this->categoryid,
-                                    'trainingid' => $this->trainingid
+                                    'trainingid' => $this->trainingid,
                             )
                     ),
                     get_string('btn_deletenotification', 'tool_attestoodle'),

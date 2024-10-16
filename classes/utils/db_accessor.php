@@ -597,7 +597,7 @@ class db_accessor extends singleton {
                 'filearea' => 'certificates',
                 'filepath' => '/',
                 'itemid' => 0,
-                'filename' => $record->filename
+                'filename' => $record->filename,
             );
             $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
                 $fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);

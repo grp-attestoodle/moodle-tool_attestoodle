@@ -51,7 +51,7 @@ class provider implements
       * @param collection $collection Collection of items to add metadata to.
       * @return collection Collection with our added items.
       */
-    public static function get_metadata(collection $collection) : collection {
+    public static function get_metadata(collection $collection): collection {
         // Filesystem Certificate pdf generated.
         $collection->add_subsystem_link('core_files', [], 'privacy:metadata:core_files');
 
@@ -101,7 +101,7 @@ class provider implements
      * @param   int           $userid       The user to search.
      * @return  contextlist   $contextlist  The list of contexts used in this plugin.
      */
-    public static function get_contexts_for_userid(int $userid) : contextlist {
+    public static function get_contexts_for_userid(int $userid): contextlist {
         $contextlist = new contextlist();
 
         $sqlfile = "SELECT distinct f.contextid
@@ -138,7 +138,7 @@ class provider implements
         $sql = "SELECT distinct filename as filename
                   FROM {tool_attestoodle_certif_log}
                  WHERE learnerid = :userid";
-        $params = ['userid' => $userid, ];
+        $params = ['userid' => $userid];
         $result = $DB->get_records_sql($sql, $params);
 
         foreach ($result as $record) {
@@ -148,7 +148,7 @@ class provider implements
                 'filearea' => 'certificates',
                 'filepath' => '/',
                 'itemid' => 0,
-                'filename' => $record->filename
+                'filename' => $record->filename,
             );
             $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
                 $fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
@@ -198,7 +198,7 @@ class provider implements
         $sqlrq1 = "select id,trainingid,launchid
                     from {tool_attestoodle_certif_log}
                    where learnerid = :userid";
-        $params = ['userid' => $userid, ];
+        $params = ['userid' => $userid];
         $result1 = $DB->get_records_sql($sqlrq1, $params);
         $certificate = [];
 

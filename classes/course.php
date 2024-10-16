@@ -31,7 +31,7 @@ namespace tool_attestoodle;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class course {
-    /** @var integer Id of the course */
+    /** @var int Id of the course */
     private $id;
 
     /** @var string Name of the course */

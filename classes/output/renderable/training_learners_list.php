@@ -28,7 +28,7 @@
 namespace tool_attestoodle\output\renderable;
 
 
-use \renderable;
+use renderable;
 use tool_attestoodle\certificate;
 use tool_attestoodle\utils\logger;
 use tool_attestoodle\forms\period_form;
@@ -49,7 +49,7 @@ class training_learners_list implements renderable {
     public $thebegindate;
     /** @var \DateTime Begin date object */
     public $theactualbegindate;
-    /** @var boolean True if the $begindate property is not parsable by the \DateTime constructor */
+    /** @var bool True if the $begindate property is not parsable by the \DateTime constructor */
     public $begindateisinerror;
     /** @var string End date formatted as YYYY-MM-DD */
     public $theenddate;
@@ -57,7 +57,7 @@ class training_learners_list implements renderable {
     public $theactualenddate;
     /** @var \DateTime End date object + 1 day (to simplify comparison) */
     public $searchingenddate;
-    /** @var boolean True if the $enddate property is not parsable by the \DateTime constructor */
+    /** @var bool True if the $enddate property is not parsable by the \DateTime constructor */
     public $enddateisinerror;
 
     /**
@@ -158,7 +158,7 @@ class training_learners_list implements renderable {
                                     'categoryid' => $this->training->get_categoryid(),
                                     'begindate' => $this->thebegindate,
                                     'enddate' => $this->theenddate,
-                                    'trainingid' => $this->training->get_id()
+                                    'trainingid' => $this->training->get_id(),
                             )
                     ),
                     get_string('training_learners_list_download_zip_link', 'tool_attestoodle'),
@@ -171,7 +171,7 @@ class training_learners_list implements renderable {
                                 'trainingid' => $this->training->get_id(),
                                 'categoryid' => $this->training->get_categoryid(),
                                 'begindate' => $this->thebegindate,
-                                'enddate' => $this->theenddate
+                                'enddate' => $this->theenddate,
                             )
                     ),
                     get_string('training_learners_list_generate_certificates_link', 'tool_attestoodle'),
@@ -194,7 +194,7 @@ class training_learners_list implements renderable {
                 get_string('training_learners_list_table_header_column_lastname', 'tool_attestoodle'),
                 get_string('training_learners_list_table_header_column_firstname', 'tool_attestoodle'),
                 get_string('training_learners_list_table_header_column_total_milestones', 'tool_attestoodle'),
-                ''
+                '',
         );
     }
 

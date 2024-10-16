@@ -166,7 +166,7 @@ switch($page) {
                         'typepage' => $page,
                         'action' => $action,
                         'categoryid' => $categoryid,
-                        'trainingid' => $trainingid
+                        'trainingid' => $trainingid,
                 )
         ));
         $PAGE->set_title(get_string('training_learners_list_page_title', 'tool_attestoodle'));
@@ -247,7 +247,7 @@ switch($page) {
                         'begindate' => $begindate,
                         'enddate' => $enddate,
                         'categorylnk' => $categorylnk,
-                        'trainingid' => $trainingid
+                        'trainingid' => $trainingid,
                 )
         ));
 

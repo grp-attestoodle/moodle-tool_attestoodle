@@ -46,7 +46,7 @@ class learner_details implements \renderable {
     /** @var learner_certificate_form The form used to customize certificate */
     private $form2;
 
-    /** @var integer Id of the learner being displayed */
+    /** @var int Id of the learner being displayed */
     public $learnerid;
     /** @var learner Learner being displayed */
     public $learner;
@@ -54,7 +54,7 @@ class learner_details implements \renderable {
     public $begindate;
     /** @var \DateTime Begin date object */
     public $actualbegindate;
-    /** @var boolean True if the $begindate property is not parsable by the \DateTime constructor */
+    /** @var bool True if the $begindate property is not parsable by the \DateTime constructor */
     public $begindateerror;
     /** @var string End date formatted as YYYY-MM-DD */
     public $enddate;
@@ -62,7 +62,7 @@ class learner_details implements \renderable {
     public $actualenddate;
     /** @var \DateTime End date object + 1 day (to simplify comparison) */
     public $searchenddate;
-    /** @var boolean True if the $enddate property is not parsable by the \DateTime constructor */
+    /** @var bool True if the $enddate property is not parsable by the \DateTime constructor */
     public $enddateerror;
     /** @var string the category id for navigation bar. */
     public $categorylnk;
@@ -356,7 +356,7 @@ class learner_details implements \renderable {
                                 'begindate' => $this->begindate,
                                 'enddate' => $this->enddate,
                                 'categorylnk' => $this->categorylnk,
-                                'trainingid' => $this->trainingid
+                                'trainingid' => $this->trainingid,
                         )
                 ),
                 \get_string('backto_training_learners_list_btn_text', 'tool_attestoodle'),
@@ -379,7 +379,7 @@ class learner_details implements \renderable {
                 get_string('learner_details_table_header_column_name', 'tool_attestoodle'),
                 get_string('learner_details_table_header_column_type', 'tool_attestoodle'),
                 get_string('learner_details_table_header_column_validated_time', 'tool_attestoodle'),
-                get_string('learner_details_table_header_column_milestones', 'tool_attestoodle')
+                get_string('learner_details_table_header_column_milestones', 'tool_attestoodle'),
         );
     }
 
@@ -474,7 +474,7 @@ class learner_details implements \renderable {
                 'action' => 'generatecertificate',
                 'learner' => $this->learnerid,
                 'categorylnk' => $this->categorylnk,
-                'trainingid' => $this->trainingid
+                'trainingid' => $this->trainingid,
             );
             if ($this->actualbegindate) {
                 $dlcertifoptions['begindate'] = $this->actualbegindate->format('Y-m-d');

@@ -37,7 +37,7 @@ use tool_attestoodle\forms\training_milestones_update_form;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class training_milestones implements \renderable {
-    /** @var integer Id of the category associate to training displayed */
+    /** @var int Id of the category associate to training displayed */
     private $categoryid;
     /** @var training Actual training displayed */
     private $training;
@@ -97,7 +97,7 @@ class training_milestones implements \renderable {
                                             'milestonemod' => $milestonemod,
                                             'orderbyselection' => $orderbyselection,
                                             'orderbyfrom' => $orderbyfrom,
-                                            'modifallow' => $modifallow
+                                            'modifallow' => $modifallow,
                                           ) );
                 $this->handle_form();
             }
@@ -169,7 +169,7 @@ class training_milestones implements \renderable {
                 'milestonemod' => $datafromform->milestonemod,
                 'orderbyselection' => $datafromform->orderbyselection,
                 'orderbyfrom' => $datafromform->orderbyfrom,
-                'trainingid' => $this->trainingid
+                'trainingid' => $this->trainingid,
                 ]);
                 redirect($url);
                 return;
@@ -271,7 +271,7 @@ class training_milestones implements \renderable {
                         'milestonemod' => $datafromform->milestonemod,
                         'orderbyselection' => $datafromform->orderbyselection,
                         'orderbyfrom' => $datafromform->orderbyfrom,
-                        'modifallow' => $datafromform->edition
+                        'modifallow' => $datafromform->edition,
                     )
             );
         } else {

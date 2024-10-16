@@ -28,7 +28,7 @@
 namespace tool_attestoodle\output\renderable;
 
 
-use \renderable;
+use renderable;
 use tool_attestoodle\utils\plugins_accessor;
 /**
  * Display the list of all the trainings declared in Attestoodle.
@@ -70,7 +70,7 @@ class trainings_list implements renderable {
                 get_string('trainings_list_table_header_column_name', 'tool_attestoodle'),
                 get_string('trainings_list_table_header_column_hierarchy', 'tool_attestoodle'),
                 get_string('trainings_list_table_header_column_description', 'tool_attestoodle'),
-                ''
+                '',
         );
         if (plugins_accessor::get_instance()->get_task_plugin_info() != null) {
             $ret = array(

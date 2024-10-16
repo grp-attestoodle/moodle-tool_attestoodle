@@ -33,7 +33,7 @@ use tool_attestoodle\factories\trainings_factory;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class learner {
-    /** @var integer Id of the learner */
+    /** @var int Id of the learner */
     private $id;
 
     /** @var string Firstname of the learner */

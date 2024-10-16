@@ -53,13 +53,13 @@ class attestation_pdf {
 
     /** @var string The url of background image (copy tmp).*/
     protected $file;
-    /** @var boolean Indicates if the offsets are accepted by the model.*/
+    /** @var bool Indicates if the offsets are accepted by the model.*/
     protected $acceptoffset = false;
-    /** @var integer number of line breaks needed.*/
+    /** @var int number of line breaks needed.*/
     protected $offset = 0;
-    /** @var integer Number of the current page.*/
+    /** @var int Number of the current page.*/
     protected $currentpage = 1;
-    /** @var integer Total number of pages.*/
+    /** @var int Total number of pages.*/
     protected $nbpage = 1;
     /** @var string behavior to follow with respect to page numbers.*/
     protected $numpage = 'never';
@@ -613,7 +613,7 @@ class attestation_pdf {
                     if (!array_key_exists($val, $tabcomput)) {
                         $tabcomput[$val] = array(
                             "totalminutes" => 0,
-                            "coursename" => $val
+                            "coursename" => $val,
                             );
                     }
                     // Increment total minutes for the course id in the training.
