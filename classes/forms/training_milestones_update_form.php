@@ -153,6 +153,8 @@ class training_milestones_update_form extends \moodleform {
         $d0 = new \DateTime($classdatefrom['year'].'-'.$classdatefrom['month'].'-01'); // Day is ignored.
         $grp = new \stdClass();
         $grouping[$nodatestring] = $grp;
+        $grp = new \stdClass();
+        $grouping[$outsidedatestring] = $grp;
         for ($i = 0; $i < $classdatecount; $i++) {
             $grp = new \stdClass();
             $grp->id = $this->get_month_identifier($d0);
@@ -198,7 +200,11 @@ class training_milestones_update_form extends \moodleform {
                 }
                 $grp->modulecount = count($grp->filteredactivities);
             }
-            $grp->moduletot = count($grp->activities);
+            if (isset($grp->activities)) {
+                $grp->moduletot = count($grp->activities);
+            } else {
+                $grp->moduletot = 0;
+            }
             $grp->time = parse_minutes_to_hours($time);
         }
 
