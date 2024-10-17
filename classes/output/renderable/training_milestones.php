@@ -191,8 +191,8 @@ class training_milestones implements \renderable {
      * to the user to let him know how much activites have been updated and if
      * there is any error while save in DB.
      *
-     * @todo create a new private method to notify the user
-     * @todo translations
+     * To be studied : creation of a new private method to notify the user
+     * and translations
      *
      * @return void Return void if the user has not the rights to update in DB
      */

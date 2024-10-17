@@ -42,9 +42,9 @@ class course {
 
     /**
      * @var training Training corresponding to the course.
-     * @todo Replace by the ID of the training to avoid bijective relation
      */
     private $training;
+    // To be done ? replace by the ID of the training to avoid bijective relation.
 
     /**
      * Constructor of the course class

@@ -19,7 +19,7 @@
  *
  * @package tool_attestoodle
  * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
- * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace tool_attestoodle\gabarit;
@@ -32,7 +32,7 @@ use tool_attestoodle\gabarit\simul_pdf;
  * Created a pdf representing a certificate according to a model for a learner.
  *
  * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
- * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class attestation_pdf {
     /** @var stdClass Template of the pdf document, background, position of elements. etc. */

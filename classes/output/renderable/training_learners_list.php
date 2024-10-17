@@ -115,8 +115,7 @@ class training_learners_list implements renderable {
 
     /**
      * Computes the content header depending on params (the filter form).
-     *
-     * @todo Long method, could be reduce
+     * Comment : this is a long method, it should probably be reduced
      *
      * @return string The computed HTML string of the page header
      */

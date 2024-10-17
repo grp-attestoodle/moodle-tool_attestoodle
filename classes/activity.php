@@ -55,9 +55,9 @@ class activity {
 
     /**
      * @var course The course corresponding to the activity
-     * @todo Replace by the ID of the course to avoid bijective relation
      */
     private $course;
+    // To be done ? Replace by the id of the course to avoid bijective relation.
 
     /** @var bool The visibility of the activity.*/
     private $visible;
