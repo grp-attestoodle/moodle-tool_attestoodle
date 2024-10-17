@@ -94,14 +94,14 @@ class training_learners_list implements renderable {
 
         $this->form = new period_form(
                     new \moodle_url('/admin/tool/attestoodle/index.php',
-                        array('typepage' => 'learners', 'categoryid' => $training->get_categoryid(),
-                            'trainingid' => $training->get_id())),
-                        array(), 'post' );
+                        ['typepage' => 'learners', 'categoryid' => $training->get_categoryid(),
+                            'trainingid' => $training->get_id()]),
+                        [], 'post' );
 
         $stime = \DateTime::createFromFormat("Y-m-d", $this->thebegindate);
         $etime = \DateTime::createFromFormat("Y-m-d", $this->theenddate);
-        $this->form->set_data(array ('input_begin_date' => $stime->getTimestamp(),
-            'input_end_date' => $etime->getTimestamp()));
+        $this->form->set_data( ['input_begin_date' => $stime->getTimestamp(),
+            'input_end_date' => $etime->getTimestamp()]);
     }
 
     /**
@@ -131,12 +131,12 @@ class training_learners_list implements renderable {
             $output .= \html_writer::link(
                     new \moodle_url(
                             '/admin/tool/attestoodle/index.php',
-                            array('typepage' => 'trainingmanagement',
+                            ['typepage' => 'trainingmanagement',
                                 'categoryid' => $this->training->get_categoryid(),
-                                'trainingid' => $this->training->get_id())
+                                'trainingid' => $this->training->get_id()]
                     ),
                     get_string('backto_training_detail_btn_text', 'tool_attestoodle'),
-                    array('class' => 'btn btn-default attestoodle-button'));
+                    ['class' => 'btn btn-default attestoodle-button']);
             $output .= \html_writer::end_div();
 
             $output .= \html_writer::start_div('clearfix training-report-header');
@@ -152,30 +152,30 @@ class training_learners_list implements renderable {
                 $output .= \html_writer::link(
                     new \moodle_url(
                             '/admin/tool/attestoodle/index.php',
-                            array(
+                            [
                                     'typepage' => 'learners',
                                     'action' => 'downloadzip',
                                     'categoryid' => $this->training->get_categoryid(),
                                     'begindate' => $this->thebegindate,
                                     'enddate' => $this->theenddate,
                                     'trainingid' => $this->training->get_id(),
-                            )
+                            ]
                     ),
                     get_string('training_learners_list_download_zip_link', 'tool_attestoodle'),
-                    array('class' => 'btn btn-default attestoodle-button'));
+                    ['class' => 'btn btn-default attestoodle-button']);
                 // Generate all certificates link.
                 $output .= \html_writer::link(
                     new \moodle_url(
                             '/admin/tool/attestoodle/classes/generated/preparedinf.php',
-                            array(
+                            [
                                 'trainingid' => $this->training->get_id(),
                                 'categoryid' => $this->training->get_categoryid(),
                                 'begindate' => $this->thebegindate,
                                 'enddate' => $this->theenddate,
-                            )
+                            ]
                     ),
                     get_string('training_learners_list_generate_certificates_link', 'tool_attestoodle'),
-                    array('class' => 'btn btn-default attestoodle-button'));
+                    ['class' => 'btn btn-default attestoodle-button']);
                 $output .= \html_writer::end_div();
             }
         }
@@ -190,12 +190,12 @@ class training_learners_list implements renderable {
      * @return string[] The tables columns header
      */
     public function get_table_head() {
-        return array(
+        return [
                 get_string('training_learners_list_table_header_column_lastname', 'tool_attestoodle'),
                 get_string('training_learners_list_table_header_column_firstname', 'tool_attestoodle'),
                 get_string('training_learners_list_table_header_column_total_milestones', 'tool_attestoodle'),
                 '',
-        );
+        ];
     }
 
     /**
@@ -217,16 +217,16 @@ class training_learners_list implements renderable {
             $stdclass->firstname = $o->get_firstname();
             $stdclass->totalmarkers = parse_minutes_to_hours($totalmarkerperiod);
 
-            $parameters = array(
+            $parameters = [
                 'typepage' => 'learnerdetails',
                 'learner' => $o->get_id(),
                 'begindate' => $this->thebegindate,
                 'enddate' => $this->theenddate,
                 'categorylnk' => $this->training->get_categoryid(),
-                'trainingid' => $this->training->get_id());
+                'trainingid' => $this->training->get_id()];
             $url = new \moodle_url('/admin/tool/attestoodle/index.php', $parameters);
             $label = get_string('training_learners_list_table_link_details', 'tool_attestoodle');
-            $attributes = array('class' => 'attestoodle-button');
+            $attributes = ['class' => 'attestoodle-button'];
             $stdclass->link = "";
             $context = \context_coursecat::instance($this->training->get_categoryid());
             if (has_capability('tool/attestoodle:learnerdetails', $context)) {
@@ -256,7 +256,7 @@ class training_learners_list implements renderable {
     public function send_certificates_zipped() {
         // Create ZIP file.
         $zipper = \get_file_packer('application/zip');
-        $certificates = array();
+        $certificates = [];
 
         // Retrieve certificates based on period requested.
         foreach ($this->training->get_learners() as $learner) {

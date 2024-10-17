@@ -56,7 +56,7 @@ class learner {
         $this->id = $id;
         $this->firstname = $firstname;
         $this->lastname = $lastname;
-        $this->validatedactivities = array();
+        $this->validatedactivities = [];
     }
 
     /**
@@ -87,7 +87,7 @@ class learner {
      * @return training[] The trainings registered by the learner.
      */
     public function retrieve_training_registered() {
-        $trainingsregistered = array();
+        $trainingsregistered = [];
         $alltraining = trainings_factory::get_instance()->get_trainings();
         foreach ($alltraining as $t) {
             $alllearners = $t->get_learners();

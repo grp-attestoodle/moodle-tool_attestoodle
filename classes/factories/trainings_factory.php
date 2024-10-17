@@ -50,7 +50,7 @@ class trainings_factory extends singleton {
      */
     protected function __construct() {
         parent::__construct();
-        $this->trainings = array();
+        $this->trainings = [];
     }
 
     /**
@@ -60,7 +60,7 @@ class trainings_factory extends singleton {
      * @param int $numpage the page number searched.
      */
     public function create_trainings($numpage = 0) {
-        $this->trainings = array();
+        $this->trainings = [];
         // Must call categories_factory before find trainings.
         $dbtrainings = db_accessor::get_instance()->get_page_trainings($numpage * 10, 10);
 
@@ -99,7 +99,7 @@ class trainings_factory extends singleton {
      * @param int $categoryid the identifier of the category where we search training.
      */
     public function create_trainings_4_categ($categoryid) {
-        $this->trainings = array();
+        $this->trainings = [];
         // Must call categories_factory before find trainings.
         $dbtrainings = db_accessor::get_instance()->get_page_trainings_categ(0, 10, $categoryid);
 
@@ -292,7 +292,7 @@ class trainings_factory extends singleton {
      * @return integer[] The category IDs in an array
      */
     public function get_training_category_ids() {
-        $categoryids = array();
+        $categoryids = [];
         foreach ($this->trainings as $tr) {
             $categoryids[] = $tr->get_categoryid();
         }

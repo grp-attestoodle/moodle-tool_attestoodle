@@ -55,7 +55,7 @@ class course {
     public function __construct($id, $name) {
         $this->id = $id;
         $this->name = $name;
-        $this->activities = array();
+        $this->activities = [];
         $this->training = null;
     }
 

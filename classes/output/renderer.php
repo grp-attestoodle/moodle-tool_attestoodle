@@ -55,13 +55,13 @@ class renderer extends \plugin_renderer_base {
             $table = new \flexible_table('training_lst');
 
             if ($hastaskmanager) {
-                $table->define_columns(array('idnom', 'idhiearchie', 'iddescription', 'iddeadline', 'idactions'));
+                $table->define_columns(['idnom', 'idhiearchie', 'iddescription', 'iddeadline', 'idactions']);
             } else {
-                $table->define_columns(array('idnom', 'idhiearchie', 'iddescription', 'idactions'));
+                $table->define_columns(['idnom', 'idhiearchie', 'iddescription', 'idactions']);
             }
             $table->define_headers($obj->get_table_head());
 
-            $parameters = array('typepage' => 'trainingslist');
+            $parameters = ['typepage' => 'trainingslist'];
             $url = new \moodle_url('/admin/tool/attestoodle/index.php', $parameters);
 
             $table->define_baseurl($url->out());
@@ -75,9 +75,9 @@ class renderer extends \plugin_renderer_base {
             $datas = $obj->get_table_content();
             foreach ($datas as $ligne) {
                 if ($hastaskmanager) {
-                    $table->add_data(array($ligne->name, $ligne->hierarchy, $ligne->description, $ligne->task, $ligne->link));
+                    $table->add_data([$ligne->name, $ligne->hierarchy, $ligne->description, $ligne->task, $ligne->link]);
                 } else {
-                    $table->add_data(array($ligne->name, $ligne->hierarchy, $ligne->description, $ligne->link));
+                    $table->add_data([$ligne->name, $ligne->hierarchy, $ligne->description, $ligne->link]);
                 }
             }
             $output = $table->print_html();

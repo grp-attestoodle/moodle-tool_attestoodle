@@ -40,14 +40,14 @@ class period_form extends \moodleform {
      */
     public function definition() {
         $mform = $this->_form;
-        $group = array();
+        $group = [];
         $group[] =& $mform->createElement('date_selector', 'input_begin_date', '');
         $group[] =& $mform->createElement("static", null, null,
             get_string('learner_details_end_date_label', 'tool_attestoodle'));
         $group[] =& $mform->createElement('date_selector', 'input_end_date', '');
 
         $group[] =& $mform->createElement('submit', 'send',
-            get_string('learner_details_submit_button_value', 'tool_attestoodle'), array('class' => 'send-button'));
+            get_string('learner_details_submit_button_value', 'tool_attestoodle'), ['class' => 'send-button']);
         $mform->addGroup($group, 'period', get_string('learner_details_begin_date_label', 'tool_attestoodle') , '', false);
         $mform->addHelpButton('period', 'period_form', 'tool_attestoodle');
     }

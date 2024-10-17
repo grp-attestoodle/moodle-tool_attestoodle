@@ -70,8 +70,8 @@ class training {
      */
     public function __construct($category) {
         $this->category = $category;
-        $this->courses = array();
-        $this->learners = array();
+        $this->courses = [];
+        $this->learners = [];
     }
 
     /**

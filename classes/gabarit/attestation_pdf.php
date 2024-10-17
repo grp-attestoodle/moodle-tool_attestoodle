@@ -91,7 +91,7 @@ class attestation_pdf {
      */
     public function set_trainingid($trainingid) {
         global $DB;
-        $associate = $DB->get_record('tool_attestoodle_train_style', array('trainingid' => $trainingid));
+        $associate = $DB->get_record('tool_attestoodle_train_style', ['trainingid' => $trainingid]);
 
         $this->set_idtemplate($associate->templateid);
         $this->set_grpcriteria1($associate->grpcriteria1);
@@ -133,8 +133,8 @@ class attestation_pdf {
     public function set_idtemplate($idtemplate) {
         global $DB;
         $sql = "select type,data from {tool_attestoodle_tpl_detail} where templateid = " . $idtemplate;
-        $rs = $DB->get_recordset_sql ( $sql, array () );
-        $this->template = array();
+        $rs = $DB->get_recordset_sql ( $sql,  [] );
+        $this->template = [];
 
         foreach ($rs as $result) {
             $obj = json_decode($result->data);
@@ -168,7 +168,7 @@ class attestation_pdf {
      * Sort $this->template on 'y' ASC.
      */
     protected function comparetemplate() {
-        $tab = array();
+        $tab = [];
         $taille = count($this->template);
         $nb = 0;
         while ($nb < $taille) {
@@ -592,9 +592,9 @@ class attestation_pdf {
      * @param array $tabactivities sets of activities performed.
      */
     protected function regroup($tabactivities) {
-        $tabreturn = array();
+        $tabreturn = [];
         foreach ($tabactivities as $act) {
-            $subtab = array();
+            $subtab = [];
             $discrim1 = $act[$this->groupe1];
             $tot1 = 0;
             foreach ($tabactivities as $key => $subact) {
@@ -607,27 +607,27 @@ class attestation_pdf {
 
             if (count($subtab) > 0 && empty($this->groupe2) == false) {
                 // Subgroup processing.
-                $tabcomput = array();
+                $tabcomput = [];
                 foreach ($subtab as $subact) {
                     $val = $subact[$this->groupe2];
                     if (!array_key_exists($val, $tabcomput)) {
-                        $tabcomput[$val] = array(
+                        $tabcomput[$val] = [
                             "totalminutes" => 0,
                             "coursename" => $val,
-                            );
+                            ];
                     }
                     // Increment total minutes for the course id in the training.
                     $tabcomput[$val]["totalminutes"] += $subact["totalminutes"];
                 }
                 // Add criteria1 with totalminutes = -1.
-                $tabreturn[] = array ("totalminutes" => -1, "coursename" => $discrim1);
+                $tabreturn[] = ["totalminutes" => -1, "coursename" => $discrim1];
                 foreach ($tabcomput as $result) {
                     $tabreturn[] = $result;
                 }
             }
 
             if (empty($this->groupe2) && $tot1 > 0) {
-                $tabreturn[] = array ("totalminutes" => $tot1, "coursename" => $discrim1);
+                $tabreturn[] = ["totalminutes" => $tot1, "coursename" => $discrim1];
             }
         }
         return $tabreturn;

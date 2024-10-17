@@ -170,7 +170,7 @@ class plugins_accessor extends singleton {
 
         // If we pass here it is because no valid value of the plugin,
         // by default we take the start and end dates of the training.
-        $rec = $DB->get_record('tool_attestoodle_training', array('id' => $trainingid));
+        $rec = $DB->get_record('tool_attestoodle_training', ['id' => $trainingid]);
         if (isset($rec->startdate)) {
             $ret->d_start = $rec->startdate;
         }
@@ -189,7 +189,7 @@ class plugins_accessor extends singleton {
                   join {tool_attestoodle_launch_log} l on c.launchid = l.id
                  where trainingid = ?
               order by enddate desc";
-        $records = $DB->get_records_sql($req, array($trainingid));
+        $records = $DB->get_records_sql($req, [$trainingid]);
         if (count($records) > 0) {
             $first = true;
             foreach ($records as $record) {

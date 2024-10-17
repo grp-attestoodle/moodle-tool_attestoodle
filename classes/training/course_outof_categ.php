@@ -48,22 +48,22 @@ if (has_capability('tool/attestoodle:managemilestones', $context)) {
 
 $coursetoadd = search_course($coursename, $categoryid, $trainingid);
 $url = new \moodle_url('/admin/tool/attestoodle/classes/training/course_outof_categ.php',
-    array(
+    [
         'categoryid' => $categoryid,
         'trainingid' => $trainingid,
-        'coursename' => $coursename));
+        'coursename' => $coursename]);
 
 $form = new training_milestones_update_form($url,
-                                array(
-                                    'data' => array($coursetoadd),
+                                [
+                                    'data' => [$coursetoadd],
                                     'input_name_prefix' => "attestoodle_activity_id_",
-                                    'modifallow' => $modifallow)); // No need to prefill the milestone form.
+                                    'modifallow' => $modifallow]); // No need to prefill the milestone form.
 
 $urltrainingmgm = new moodle_url('/admin/tool/attestoodle/index.php',
-                            array(
+                            [
                                 'typepage' => 'trainingmanagement',
                                 'categoryid' => $categoryid,
-                                'trainingid' => $trainingid));
+                                'trainingid' => $trainingid]);
 
 if ($form->is_cancelled()) {
     redirect($urltrainingmgm);
@@ -77,7 +77,7 @@ if ($form->get_data()) {
 // NavBar.
 $PAGE->navbar->ignore_active();
 $navlevel1 = get_string('navlevel1', 'tool_attestoodle');
-$PAGE->navbar->add($navlevel1, new moodle_url('/admin/tool/attestoodle/index.php', array()));
+$PAGE->navbar->add($navlevel1, new moodle_url('/admin/tool/attestoodle/index.php', []));
 $navlevel2 = get_string('navlevel2', 'tool_attestoodle');
 $PAGE->navbar->add($navlevel2, $urltrainingmgm);
 $navlevel3a = get_string('onecoursemilestonetitle', 'tool_attestoodle', $coursetoadd->get_name());
@@ -169,9 +169,9 @@ function search_course($coursename, $categoryid, $trainingid) {
     $course = "";
     $lstactivities = "";
     $urlreturn = new \moodle_url('/admin/tool/attestoodle/index.php',
-                    array('typepage' => 'trainingmanagement',
+                    ['typepage' => 'trainingmanagement',
                         'categoryid' => $categoryid,
-                        'trainingid' => $trainingid));
+                        'trainingid' => $trainingid]);
 
     if (empty($coursename)) {
         \core\notification::warning(get_string('errnothingtosearch', 'tool_attestoodle'));

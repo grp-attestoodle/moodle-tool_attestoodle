@@ -112,18 +112,18 @@ class learner_details implements \renderable {
 
         $this->form = new period_form(
                     new \moodle_url('/admin/tool/attestoodle/index.php',
-                        array('typepage' => 'learnerdetails', 'categorylnk' => $this->categorylnk,
-                            'learner' => $this->learnerid, 'trainingid' => $trainingid)),
-                        array(), 'get' );
+                        ['typepage' => 'learnerdetails', 'categorylnk' => $this->categorylnk,
+                            'learner' => $this->learnerid, 'trainingid' => $trainingid]),
+                        [], 'get' );
 
         $stime = \DateTime::createFromFormat("Y-m-d", $this->begindate);
         $etime = \DateTime::createFromFormat("Y-m-d", $this->enddate);
-        $this->form->set_data(array ('input_begin_date' => $stime->getTimestamp(),
-                    'input_end_date' => $etime->getTimestamp()));
+        $this->form->set_data( ['input_begin_date' => $stime->getTimestamp(),
+                    'input_end_date' => $etime->getTimestamp()]);
 
         $idtemplate = 0;
         if ($DB->record_exists('tool_attestoodle_train_style', ['trainingid' => $trainingid ])) {
-            $associate = $DB->get_record('tool_attestoodle_train_style', array('trainingid' => $trainingid));
+            $associate = $DB->get_record('tool_attestoodle_train_style', ['trainingid' => $trainingid]);
             $idtemplate = $associate->templateid;
             $grp1 = $associate->grpcriteria1;
             if (empty($grp1)) {
@@ -154,15 +154,15 @@ class learner_details implements \renderable {
 
         $this->form2 = new learner_certificate_form(
                     new \moodle_url('/admin/tool/attestoodle/index.php',
-                        array('typepage' => 'learnerdetails', 'categorylnk' => $this->categorylnk,
-                            'learner' => $this->learnerid, 'trainingid' => $trainingid)),
-                        array('categoryid' => $categorylnk,
+                        ['typepage' => 'learnerdetails', 'categorylnk' => $this->categorylnk,
+                            'learner' => $this->learnerid, 'trainingid' => $trainingid]),
+                        ['categoryid' => $categorylnk,
                         'idtraining' => $trainingid,
-                        'idtemplate' => $idtemplate), 'get' );
+                        'idtemplate' => $idtemplate], 'get' );
 
-        $this->form2->set_data(array ('group1' => $grp1, 'group2' => $grp2,
+        $this->form2->set_data( ['group1' => $grp1, 'group2' => $grp2,
                 'displaydate' => $displaydate, 'custom' => $custom,
-                'disablecertif' => $disablecertif));
+                'disablecertif' => $disablecertif]);
         if ($this->form2->is_submitted()) {
             $this->handle_form2_submitted();
         }
@@ -177,7 +177,7 @@ class learner_details implements \renderable {
             $datafromform = $this->form2->get_submitted_data();
             if (!$datafromform->custom) {
                 $DB->delete_records('tool_attestoodle_user_style',
-                    array('userid' => $this->learnerid, 'trainingid' => $datafromform->idtraining));
+                    ['userid' => $this->learnerid, 'trainingid' => $datafromform->idtraining]);
             } else {
                 $dataobject = new \stdClass();
                 $dataobject->userid = $this->learnerid;
@@ -199,8 +199,8 @@ class learner_details implements \renderable {
                 } else {
                     $dataobject->withdateformat = null;
                 }
-                $rec = $DB->get_record('tool_attestoodle_user_style', array('userid' => $this->learnerid,
-                                                                    'trainingid' => $datafromform->idtraining));
+                $rec = $DB->get_record('tool_attestoodle_user_style', ['userid' => $this->learnerid,
+                                                                    'trainingid' => $datafromform->idtraining]);
                 if (isset($rec->id)) {
                     $dataobject->id = $rec->id;
                     $DB->update_record('tool_attestoodle_user_style', $dataobject);
@@ -350,17 +350,17 @@ class learner_details implements \renderable {
         $output .= "<h2>{$training->get_name()}</h2>";
         $output .= \html_writer::link(
                 new \moodle_url(
-                        '/admin/tool/attestoodle/index.php', array(
+                        '/admin/tool/attestoodle/index.php', [
                                 'typepage' => 'learners',
                                 'categoryid' => $training->get_categoryid(),
                                 'begindate' => $this->begindate,
                                 'enddate' => $this->enddate,
                                 'categorylnk' => $this->categorylnk,
                                 'trainingid' => $this->trainingid,
-                        )
+                        ]
                 ),
                 \get_string('backto_training_learners_list_btn_text', 'tool_attestoodle'),
-                array('class' => 'attestoodle-link')
+                ['class' => 'attestoodle-link']
         );
         $output .= "<br />";
 
@@ -374,13 +374,13 @@ class learner_details implements \renderable {
      * @return string[] The tables columns header
      */
     public function get_table_head() {
-        return array(
+        return [
                 get_string('learner_details_table_header_column_course_name', 'tool_attestoodle'),
                 get_string('learner_details_table_header_column_name', 'tool_attestoodle'),
                 get_string('learner_details_table_header_column_type', 'tool_attestoodle'),
                 get_string('learner_details_table_header_column_validated_time', 'tool_attestoodle'),
                 get_string('learner_details_table_header_column_milestones', 'tool_attestoodle'),
-        );
+        ];
     }
 
     /**
@@ -391,7 +391,7 @@ class learner_details implements \renderable {
      * @return \stdClass[] The array of \stdClass used by html_table function
      */
     public function get_table_content($training) {
-        $data = array();
+        $data = [];
 
         foreach ($this->get_learner_validated_activities() as $vact) {
             $act = $vact->get_activity();
@@ -427,7 +427,7 @@ class learner_details implements \renderable {
      * @return string The no validated activities message, translated
      */
     public function get_no_validated_activities_message() {
-        $output = \html_writer::start_tag("p", array("class" => "no-validated-activity"));
+        $output = \html_writer::start_tag("p", ["class" => "no-validated-activity"]);
         $output .= get_string('learner_details_no_validated_activities', 'tool_attestoodle');
         $output .= \html_writer::end_tag("p");
 
@@ -469,13 +469,13 @@ class learner_details implements \renderable {
             }
 
             // Instanciate the "Generate certificate" link with specified filters.
-            $dlcertifoptions = array(
+            $dlcertifoptions = [
                 'typepage' => 'learnerdetails',
                 'action' => 'generatecertificate',
                 'learner' => $this->learnerid,
                 'categorylnk' => $this->categorylnk,
                 'trainingid' => $this->trainingid,
-            );
+            ];
             if ($this->actualbegindate) {
                 $dlcertifoptions['begindate'] = $this->actualbegindate->format('Y-m-d');
             }
@@ -489,7 +489,7 @@ class learner_details implements \renderable {
                         $dlcertifoptions
                 ),
                 $linktext,
-                array('class' => 'attestoodle-link')
+                ['class' => 'attestoodle-link']
             );
             $output .= \html_writer::end_div();
         }

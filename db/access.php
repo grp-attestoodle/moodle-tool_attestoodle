@@ -24,90 +24,90 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$capabilities = array(
-        'tool/attestoodle:viewtraining' => array(
+$capabilities = [
+        'tool/attestoodle:viewtraining' => [
                 'captype' => 'read',
                 'contextlevel' => CONTEXT_SYSTEM,
-                'archetypes' => array(
+                'archetypes' => [
                         'manager' => CAP_ALLOW,
-                ),
-        ),
-        'tool/attestoodle:managetraining' => array(
+                ],
+        ],
+        'tool/attestoodle:managetraining' => [
                 'riskbitmask' => RISK_CONFIG | RISK_DATALOSS,
 
                 'captype' => 'write',
                 'contextlevel' => CONTEXT_SYSTEM,
-                'archetypes' => array(
+                'archetypes' => [
                         'manager' => CAP_ALLOW,
-                ),
-        ),
-        'tool/attestoodle:displaytrainings' => array(
+                ],
+        ],
+        'tool/attestoodle:displaytrainings' => [
                 'riskbitmask' => RISK_PERSONAL,
 
                 'captype' => 'read',
                 'contextlevel' => CONTEXT_SYSTEM,
-                'archetypes' => array(
+                'archetypes' => [
                         'manager' => CAP_ALLOW,
-                ),
-        ),
-        'tool/attestoodle:managemilestones' => array(
+                ],
+        ],
+        'tool/attestoodle:managemilestones' => [
                 'riskbitmask' => RISK_PERSONAL,
 
                 'captype' => 'read',
                 'contextlevel' => CONTEXT_SYSTEM,
-                'archetypes' => array(
+                'archetypes' => [
                         'manager' => CAP_ALLOW,
-                ),
-        ),
-        'tool/attestoodle:displaylearnerslist' => array(
+                ],
+        ],
+        'tool/attestoodle:displaylearnerslist' => [
                 'riskbitmask' => RISK_PERSONAL,
 
                 'captype' => 'read',
                 'contextlevel' => CONTEXT_SYSTEM,
-                'archetypes' => array(
+                'archetypes' => [
                         'manager' => CAP_ALLOW,
-                ),
-        ),
-        'tool/attestoodle:learnerdetails' => array(
+                ],
+        ],
+        'tool/attestoodle:learnerdetails' => [
                 'riskbitmask' => RISK_PERSONAL,
 
                 'captype' => 'read',
                 'contextlevel' => CONTEXT_SYSTEM,
-                'archetypes' => array(
+                'archetypes' => [
                         'manager' => CAP_ALLOW,
-                ),
-        ),
-        'tool/attestoodle:downloadcertificate' => array(
+                ],
+        ],
+        'tool/attestoodle:downloadcertificate' => [
                 'riskbitmask' => RISK_CONFIG | RISK_DATALOSS | RISK_PERSONAL,
 
                 'captype' => 'read write',
                 'contextlevel' => CONTEXT_SYSTEM,
-                'archetypes' => array(
+                'archetypes' => [
                         'manager' => CAP_ALLOW,
-                ),
-        ),
-        'tool/attestoodle:viewtemplate' => array(
+                ],
+        ],
+        'tool/attestoodle:viewtemplate' => [
                 'riskbitmask' => RISK_CONFIG | RISK_DATALOSS | RISK_PERSONAL,
                 'captype' => 'read write',
                 'contextlevel' => CONTEXT_SYSTEM,
-                'archetypes' => array(
+                'archetypes' => [
                         'manager' => CAP_ALLOW,
-                ),
-        ),
-        'tool/attestoodle:managetemplate' => array(
+                ],
+        ],
+        'tool/attestoodle:managetemplate' => [
                 'riskbitmask' => RISK_CONFIG | RISK_DATALOSS | RISK_PERSONAL,
                 'captype' => 'read write',
                 'contextlevel' => CONTEXT_SYSTEM,
-                'archetypes' => array(
+                'archetypes' => [
                         'manager' => CAP_ALLOW,
-                ),
-        ),
-        'tool/attestoodle:deletetemplate' => array(
+                ],
+        ],
+        'tool/attestoodle:deletetemplate' => [
                 'riskbitmask' => RISK_CONFIG | RISK_DATALOSS | RISK_PERSONAL,
                 'captype' => 'read write',
                 'contextlevel' => CONTEXT_SYSTEM,
-                'archetypes' => array(
+                'archetypes' => [
                         'manager' => CAP_ALLOW,
-                ),
-        ),
-);
+                ],
+        ],
+];

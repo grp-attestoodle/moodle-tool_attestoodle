@@ -41,11 +41,11 @@ class add_course_form extends \moodleform {
      */
     public function definition() {
         $mform = $this->_form;
-        $group = array();
-        $group[] =& $mform->createElement('text', 'coursename', '', array("size" => 35));
+        $group = [];
+        $group[] =& $mform->createElement('text', 'coursename', '', ["size" => 35]);
         $mform->setType('coursename', PARAM_NOTAGS);
         $group[] =& $mform->createElement('submit', 'action',
-            'Ajouter', array('class' => 'send-button'));
+            'Ajouter', ['class' => 'send-button']);
         $mform->addGroup($group, 'period', 'Cours à ajouter' , '', false);
     }
 }

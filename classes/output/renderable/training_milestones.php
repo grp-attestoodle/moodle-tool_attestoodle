@@ -87,7 +87,7 @@ class training_milestones implements \renderable {
                             'categoryid' => $this->training->get_categoryid(),
                             'trainingid' => $this->trainingid]);
                 $this->form = new training_milestones_update_form($url,
-                                    array(
+                                    [
                                             'data' => $this->training->get_courses(),
                                             'input_name_prefix' => "attestoodle_activity_id_",
                                             'type' => $type,
@@ -98,7 +98,7 @@ class training_milestones implements \renderable {
                                             'orderbyselection' => $orderbyselection,
                                             'orderbyfrom' => $orderbyfrom,
                                             'modifallow' => $modifallow,
-                                          ) );
+                                          ] );
                 $this->handle_form();
             }
         }
@@ -137,9 +137,9 @@ class training_milestones implements \renderable {
     private function goback($message) {
         $redirecturl = new \moodle_url(
                 '/admin/tool/attestoodle/index.php',
-                array('typepage' => 'trainingmanagement',
+                ['typepage' => 'trainingmanagement',
                     'categoryid' => $this->training->get_categoryid(),
-                    'trainingid' => $this->trainingid)
+                    'trainingid' => $this->trainingid]
         );
         redirect($redirecturl, $message, null, \core\output\notification::NOTIFY_INFO);
     }
@@ -261,7 +261,7 @@ class training_milestones implements \renderable {
                             'categoryid' => $this->training->get_categoryid(),
                             'trainingid' => $this->trainingid]
                     ),
-                    array(
+                    [
                         'data' => $this->training->get_courses(),
                         'input_name_prefix' => "attestoodle_activity_id_",
                         'type' => $datafromform->typemod,
@@ -272,7 +272,7 @@ class training_milestones implements \renderable {
                         'orderbyselection' => $datafromform->orderbyselection,
                         'orderbyfrom' => $datafromform->orderbyfrom,
                         'modifallow' => $datafromform->edition,
-                    )
+                    ]
             );
         } else {
             return;

@@ -114,7 +114,7 @@ function xmldb_tool_attestoodle_upgrade($oldversion) {
         $table->add_field('pdfinfo', XMLDB_TYPE_TEXT, 'medium', null, XMLDB_NOTNULL, null, null);
         $table->add_field('learnerid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
         // Adding keys to table.
-        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
         // Create table.
         if ($dbman->table_exists($table)) {
             $dbman->drop_table($table);
@@ -149,24 +149,24 @@ function xmldb_tool_attestoodle_upgrade($oldversion) {
                 continue;
             }
             $item->timemodified = \time();
-            $rec = $DB->get_record('course_modules', array('id' => $item->moduleid));
+            $rec = $DB->get_record('course_modules', ['id' => $item->moduleid]);
             if (!isset($rec->course)) {
                 continue;
             }
             $item->course = $rec->course;
 
-            $table = $DB->get_field('modules', 'name', array('id' => $rec->module));
-            $infocm = $DB->get_record($table, array('id' => $rec->instance));
+            $table = $DB->get_field('modules', 'name', ['id' => $rec->module]);
+            $infocm = $DB->get_record($table, ['id' => $rec->instance]);
             $item->name = $infocm->name;
 
-            $categ = $DB->get_field('course', 'category', array('id' => $rec->course));
-            $training = $DB->get_field('tool_attestoodle_training', 'id', array('categoryid' => $categ));
+            $categ = $DB->get_field('course', 'category', ['id' => $rec->course]);
+            $training = $DB->get_field('tool_attestoodle_training', 'id', ['categoryid' => $categ]);
 
             $notfind = ($training == 0);
             while ($notfind) {
-                $categ = $DB->get_field('course_categories', 'parent', array('id' => $categ));
+                $categ = $DB->get_field('course_categories', 'parent', ['id' => $categ]);
                 if ($categ != 0) {
-                    $training = $DB->get_field('tool_attestoodle_training', 'id', array('categoryid' => $categ));
+                    $training = $DB->get_field('tool_attestoodle_training', 'id', ['categoryid' => $categ]);
                     $notfind = ($training == 0);
                 } else {
                     $notfind = false;
@@ -214,7 +214,7 @@ function create_table_learner($dbman) {
     $table->add_field('predelete', XMLDB_TYPE_INTEGER, '1', null, null, null, null);
     $table->add_field('resultcriteria', XMLDB_TYPE_CHAR, '127', null, null, null, null);
     // Adding keys to table.
-    $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+    $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
     // Create table.
     if ($dbman->table_exists($table)) {
         $dbman->drop_table($table);
@@ -246,7 +246,7 @@ function create_table_learner_template($dbman) {
     $table->add_field('enablecertificate', XMLDB_TYPE_INTEGER, '1', null, null, null, null);
     $table->add_field('withdateformat', XMLDB_TYPE_CHAR, '127', null, null, null, null);
     // Adding keys to table.
-    $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+    $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
     // Create table.
     if ($dbman->table_exists($table)) {
         $dbman->drop_table($table);

@@ -43,17 +43,17 @@ $nbmax = required_param('nbmax', PARAM_ALPHANUMEXT);
 // NavBar.
 $PAGE->navbar->ignore_active();
 $navlevel1 = get_string('navlevel1', 'tool_attestoodle');
-$PAGE->navbar->add($navlevel1, new moodle_url('/admin/tool/attestoodle/index.php', array()));
+$PAGE->navbar->add($navlevel1, new moodle_url('/admin/tool/attestoodle/index.php', []));
 $navlevel2 = get_string('navlevel2', 'tool_attestoodle');
 $PAGE->navbar->add($navlevel2, new moodle_url('/admin/tool/attestoodle/index.php',
-                            array('typepage' => 'trainingmanagement',
+                            ['typepage' => 'trainingmanagement',
                                 'categoryid' => $categoryid,
-                                'trainingid' => $trainingid)));
+                                'trainingid' => $trainingid]));
 $navlevel3a = get_string('navlevel3a', 'tool_attestoodle');
 $PAGE->navbar->add($navlevel3a, new moodle_url('/admin/tool/attestoodle/index.php',
-                            array('typepage' => 'learners',
+                            ['typepage' => 'learners',
                                 'categoryid' => $categoryid,
-                                'trainingid' => $trainingid)));
+                                'trainingid' => $trainingid]));
 
 $PAGE->set_url(new moodle_url('/admin/tool/attestoodle/classes/generated/preparedinf.php', [] ));
 $PAGE->set_title(get_string('certificategenerate', 'tool_attestoodle'));
@@ -123,26 +123,26 @@ var halt = function(e, args) {
 
 initialisation();
 </script>');
-$PAGE->requires->js_init_call('ajax_certif_generate', array(array($launchid, $trainingid, $categoryid)));
+$PAGE->requires->js_init_call('ajax_certif_generate', [[$launchid, $trainingid, $categoryid]]);
 
-$attrib = array('class' => 'btn-create');
+$attrib = ['class' => 'btn-create'];
 $btnstop = $OUTPUT->action_link(new moodle_url('#'),
                 get_string('stop', 'tool_attestoodle'),
-                new component_action('click', 'halt', array()),
+                new component_action('click', 'halt', []),
                 $attrib);
 echo ("<br/><div id='btn_stop' style='display:inline'>" . $btnstop . "</div>");
 
 echo ("&nbsp;<div id='btn_ret' style='display:none'>");
 $linkno = \html_writer::link(
                 new moodle_url('/admin/tool/attestoodle/index.php',
-                            array('typepage' => 'learners',
+                            ['typepage' => 'learners',
                             'categoryid' => $categoryid,
                             'begindate' => $begindate,
                             'enddate' => $enddate,
-                            'trainingid' => $trainingid)
+                            'trainingid' => $trainingid]
                     ),
                     get_string('back'),
-                    array('class' => 'btn btn-default attestoodle-button'));
+                    ['class' => 'btn btn-default attestoodle-button']);
 
 echo $linkno;
 
