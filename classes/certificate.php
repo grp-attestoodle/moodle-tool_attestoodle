@@ -67,14 +67,14 @@ class certificate {
         $usercontext = \context_user::instance($this->learner->get_id());
 
         // Prepare file record object.
-        $fileinfos = array(
+        $fileinfos = [
                 'contextid' => $usercontext->id,
                 'component' => 'tool_attestoodle',
                 'filearea' => 'certificates',
                 'filepath' => '/',
                 'itemid' => 0,
-                'filename' => $this->get_file_name()
-        );
+                'filename' => $this->get_file_name(),
+        ];
 
         return $fileinfos;
     }
@@ -118,7 +118,7 @@ class certificate {
         $filteredmilestones = $this->get_filtered_milestones();
 
         // Retrieve activities informations in an array structure.
-        $activitiesstructured = array();
+        $activitiesstructured = [];
         $index = 0;
         foreach ($filteredmilestones as $fva) {
             // Retrieve activity.

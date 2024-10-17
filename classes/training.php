@@ -42,7 +42,7 @@ class training {
     /** @var learner[] Learners registered in the training */
     private $learners;
 
-    /** @var integer Id of the training. */
+    /** @var int Id of the training. */
     private $id;
 
     /** @var string The name of the training. */
@@ -70,8 +70,8 @@ class training {
      */
     public function __construct($category) {
         $this->category = $category;
-        $this->courses = array();
-        $this->learners = array();
+        $this->courses = [];
+        $this->learners = [];
     }
 
     /**

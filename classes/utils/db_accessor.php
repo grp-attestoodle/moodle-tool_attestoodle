@@ -49,6 +49,9 @@ class db_accessor extends singleton {
         global $DB;
         parent::__construct();
         self::$db = $DB;
+
+        global $CFG;
+        require_once("{$CFG->libdir}/completionlib.php");
     }
 
     /**
@@ -60,9 +63,9 @@ class db_accessor extends singleton {
      */
     public function get_milestone_by_module($id, $trainingid) {
         if ($trainingid == 0) {
-            $result = self::$db->get_record('tool_attestoodle_milestone', array('moduleid' => $id));
+            $result = self::$db->get_record('tool_attestoodle_milestone', ['moduleid' => $id]);
         } else {
-            $result = self::$db->get_record('tool_attestoodle_milestone', array('moduleid' => $id, 'trainingid' => $trainingid));
+            $result = self::$db->get_record('tool_attestoodle_milestone', ['moduleid' => $id, 'trainingid' => $trainingid]);
         }
         return $result;
     }
@@ -74,8 +77,8 @@ class db_accessor extends singleton {
      */
     public function delete_milestone($activity, $trainingid) {
         self::$db->delete_records('tool_attestoodle_milestone',
-                    array('moduleid' => $activity->get_id(),
-                        'trainingid' => $trainingid));
+                    ['moduleid' => $activity->get_id(),
+                        'trainingid' => $trainingid]);
     }
 
     /**
@@ -108,8 +111,8 @@ class db_accessor extends singleton {
                         SET creditedtime = ?, timemodified = ?
                       WHERE moduleid = ? and trainingid = ?";
 
-        self::$db->execute($request, array($activity->get_milestone(), \time(),
-                $activity->get_id(), $trainingid));
+        self::$db->execute($request, [$activity->get_milestone(), \time(),
+                $activity->get_id(), $trainingid]);
     }
 
     /**
@@ -137,7 +140,7 @@ class db_accessor extends singleton {
      * @return \stdClass Standard Moodle DB object
      */
     public function get_category($id) {
-        $result = self::$db->get_record('course_categories', array('id' => $id), 'id, name, description, parent');
+        $result = self::$db->get_record('course_categories', ['id' => $id], 'id, name, description, parent');
         return $result;
     }
 
@@ -149,7 +152,7 @@ class db_accessor extends singleton {
      */
     public function get_course_modules_by_course($id) {
         $request = "select * from {course_modules} where course = ? and deletioninprogress = 0 and completion > 0";
-        $result = self::$db->get_records_sql($request, array($id));
+        $result = self::$db->get_records_sql($request, [$id]);
 
         return $result;
     }
@@ -163,7 +166,7 @@ class db_accessor extends singleton {
             return self::$studentroleid;
         }
 
-        $result = self::$db->get_record('role', array('shortname' => 'student'), "id");
+        $result = self::$db->get_record('role', ['shortname' => 'student'], "id");
         self::$studentroleid = $result->id;
         return self::$studentroleid;
     }
@@ -191,7 +194,7 @@ class db_accessor extends singleton {
                     AND ra.roleid = ?
                 ORDER BY u.lastname
             ";
-        $result = self::$db->get_records_sql($request, array($courseid, $studentroleid));
+        $result = self::$db->get_records_sql($request, [$courseid, $studentroleid]);
 
         return $result;
     }
@@ -207,7 +210,7 @@ class db_accessor extends singleton {
                       JOIN {user} u ON u.id = l.userid
                       where trainingid = ?
                       order by u.lastname, u.firstname";
-        return self::$db->get_records_sql($request, array($trainingid));
+        return self::$db->get_records_sql($request, [$trainingid]);
     }
 
     /**
@@ -217,7 +220,7 @@ class db_accessor extends singleton {
      * @return false if some learner are enrol in the training, true in other case.
      */
     public function nolearner($trainingid) {
-        return ! self::$db->record_exists('tool_attestoodle_learner', array('trainingid' => $trainingid));
+        return ! self::$db->record_exists('tool_attestoodle_learner', ['trainingid' => $trainingid]);
     }
 
     /**
@@ -230,8 +233,8 @@ class db_accessor extends singleton {
         $req = "select distinct course
                   from {tool_attestoodle_milestone}
                  where trainingid = ?";
-        $result = self::$db->get_records_sql($req, array($trainingid));
-        $insertab = array();
+        $result = self::$db->get_records_sql($req, [$trainingid]);
+        $insertab = [];
         foreach ($result as $record) {
             $learnertab = self::get_learners_by_course($record->course);
             foreach ($learnertab as $learner) {
@@ -245,7 +248,7 @@ class db_accessor extends singleton {
         $dataobject->selected = 0;
         $dataobject->resultcriteria = 'new';
         foreach ($insertab as $learner) {
-            if (! self::$db->record_exists('tool_attestoodle_learner', array('trainingid' => $trainingid, 'userid' => $learner))) {
+            if (! self::$db->record_exists('tool_attestoodle_learner', ['trainingid' => $trainingid, 'userid' => $learner])) {
                 $dataobject->userid = $learner;
                 self::$db->insert_record('tool_attestoodle_learner', $dataobject);
             }
@@ -267,7 +270,7 @@ class db_accessor extends singleton {
                   from {tool_attestoodle_learner} l
                   join {user} u on u.id = l.userid
                  where trainingid = ? ' . $orderby;
-        return self::$db->get_recordset_sql($req, array($trainingid), $numpage, $perpage);
+        return self::$db->get_recordset_sql($req, [$trainingid], $numpage, $perpage);
     }
 
     /**
@@ -308,7 +311,7 @@ class db_accessor extends singleton {
                         SET selected = 1
                       WHERE userid = ? and trainingid = ?";
 
-        self::$db->execute($request, array($userid, $trainingid));
+        self::$db->execute($request, [$userid, $trainingid]);
     }
 
     /**
@@ -325,14 +328,14 @@ class db_accessor extends singleton {
                   from {tool_attestoodle_learner} l
                   join {user} u on u.id = l.userid
                  where trainingid = ? ' . $orderby;
-        $rs = self::$db->get_recordset_sql($req, array($trainingid));
-        $ids = array();
+        $rs = self::$db->get_recordset_sql($req, [$trainingid]);
+        $ids = [];
         foreach ($rs as $result) {
             if ($result->id == $upcheck) {
                 break;
             }
             if ($result->selected > 0) {
-                $ids = array();
+                $ids = [];
             } else {
                 $ids[] = $result->id;
             }
@@ -342,7 +345,7 @@ class db_accessor extends singleton {
                         SET selected = 1
                       WHERE userid = ? and trainingid = ?";
         foreach ($ids as $id) {
-            self::$db->execute($request, array($id, $trainingid));
+            self::$db->execute($request, [$id, $trainingid]);
         }
     }
 
@@ -355,7 +358,7 @@ class db_accessor extends singleton {
         $request = " UPDATE {tool_attestoodle_learner}
                         SET selected = 0, resultcriteria= '', predelete = 1
                       WHERE trainingid = ?";
-        self::$db->execute($request, array($trainingid));
+        self::$db->execute($request, [$trainingid]);
     }
 
     /**
@@ -380,7 +383,7 @@ class db_accessor extends singleton {
                         SET selected = 0
                       WHERE userid = ? and trainingid = ?";
 
-        self::$db->execute($request, array($userid, $trainingid));
+        self::$db->execute($request, [$userid, $trainingid]);
     }
 
     /**
@@ -389,11 +392,11 @@ class db_accessor extends singleton {
      * @param int $trainingid Id of the training.
      */
     public function fillnbcoursecriteria($trainingid) {
-        $tabuser = array();
+        $tabuser = [];
         $req = 'select l.userid
                   from {tool_attestoodle_learner} l
                  where l.trainingid = ? ';
-        $rs = self::$db->get_recordset_sql($req, array($trainingid));
+        $rs = self::$db->get_recordset_sql($req, [$trainingid]);
         foreach ($rs as $result) {
             $tabuser[$result->userid] = 0;
         }
@@ -406,7 +409,7 @@ class db_accessor extends singleton {
                       WHERE c.id = ?";
         $nbcourse = 0;
         foreach ($listcourse as $course) {
-            $rs = self::$db->get_recordset_sql($enrolled, array($course->id));
+            $rs = self::$db->get_recordset_sql($enrolled, [$course->id]);
             foreach ($rs as $result) {
                 if (isset($tabuser[$result->userid])) {
                     $tabuser[$result->userid] = $tabuser[$result->userid] + 1;
@@ -421,7 +424,7 @@ class db_accessor extends singleton {
 
         foreach ($tabuser as $id => $value) {
             $crit = $value . "/" . $nbcourse;
-            self::$db->execute($req, array($crit, $id, $trainingid));
+            self::$db->execute($req, [$crit, $id, $trainingid]);
         }
     }
 
@@ -435,7 +438,7 @@ class db_accessor extends singleton {
                   from {tool_attestoodle_learner}
                  where userid in (SELECT userid FROM {tool_attestoodle_learner} where trainingid = ?)
                  group by userid";
-        $rs = self::$db->get_recordset_sql($req, array($trainingid));
+        $rs = self::$db->get_recordset_sql($req, [$trainingid]);
         $upd = " UPDATE {tool_attestoodle_learner}
                         SET resultcriteria= ?
                       WHERE userid = ? and trainingid = ?";
@@ -444,7 +447,7 @@ class db_accessor extends singleton {
             if ($val < 10) {
                 $val = "0" . $val;
             }
-            self::$db->execute($upd, array($val, $result->userid, $trainingid));
+            self::$db->execute($upd, [$val, $result->userid, $trainingid]);
         }
     }
 
@@ -454,7 +457,7 @@ class db_accessor extends singleton {
      * @param int $trainingid Id of the training where we want to delete selected learners.
      */
     public function select_off_learner($trainingid) {
-        self::$db->delete_records('tool_attestoodle_learner', array('trainingid' => $trainingid, 'selected' => 1));
+        self::$db->delete_records('tool_attestoodle_learner', ['trainingid' => $trainingid, 'selected' => 1]);
     }
 
     /**
@@ -474,12 +477,10 @@ class db_accessor extends singleton {
      * @return \stdClass Standard Moodle DB object
      */
     public function get_activities_validated_by_learner($learner) {
-        $result = self::$db->get_records(
-                'course_modules_completion',
-                array(
-                    'userid' => $learner->get_id(),
-                    'completionstate' => 1
-                ));
+        $result = self::$db->get_records_select(
+            'course_modules_completion',
+            'userid = ' . $learner->get_id() . ' AND (completionstate = ? OR completionstate = ?)',
+            [COMPLETION_COMPLETE, COMPLETION_COMPLETE_PASS]);
         return $result;
     }
 
@@ -490,7 +491,7 @@ class db_accessor extends singleton {
      * @return \stdClass Standard Moodle DB object
      */
     public function get_module_table_name($id) {
-        $result = self::$db->get_record('modules', array('id' => $id), "name");
+        $result = self::$db->get_record('modules', ['id' => $id], "name");
         if ($result) {
             return $result->name;
         }
@@ -505,7 +506,7 @@ class db_accessor extends singleton {
      * @return \stdClass Standard Moodle DB object
      */
     public function get_course_modules_infos($instanceid, $tablename) {
-        $result = self::$db->get_record($tablename, array('id' => $instanceid));
+        $result = self::$db->get_record($tablename, ['id' => $instanceid]);
         return $result;
     }
 
@@ -516,7 +517,7 @@ class db_accessor extends singleton {
      * @return \stdClass Standard Moodle DB object
      */
     public function get_training_by_category($categoryid) {
-        return self::$db->get_records('tool_attestoodle_training', array('categoryid' => $categoryid));
+        return self::$db->get_records('tool_attestoodle_training', ['categoryid' => $categoryid]);
     }
 
     /**
@@ -526,7 +527,7 @@ class db_accessor extends singleton {
      * @return \stdClass Standard Moodle DB object
      */
     public function get_training_by_id($id) {
-        return self::$db->get_record('tool_attestoodle_training', array('id' => $id));
+        return self::$db->get_record('tool_attestoodle_training', ['id' => $id]);
     }
 
     /**
@@ -551,7 +552,7 @@ class db_accessor extends singleton {
      */
     public function get_page_trainings_categ($numpage, $perpage, $categoryid) {
         $req = 'select * from {tool_attestoodle_training} where categoryid = ? order by id desc';
-        return self::$db->get_recordset_sql($req, array($categoryid), $numpage, $perpage);
+        return self::$db->get_recordset_sql($req, [$categoryid], $numpage, $perpage);
     }
 
     /**
@@ -577,11 +578,11 @@ class db_accessor extends singleton {
      * @param int $trainingid The training ID that we want to delete
      */
     public function delete_training_by_id($trainingid) {
-        self::$db->delete_records('tool_attestoodle_training', array('id' => $trainingid));
-        self::$db->delete_records('tool_attestoodle_train_style', array('trainingid' => $trainingid));
-        self::$db->delete_records('tool_attestoodle_user_style', array('trainingid' => $trainingid));
-        self::$db->delete_records('tool_attestoodle_milestone', array('trainingid' => $trainingid));
-        self::$db->delete_records('tool_attestoodle_learner', array('trainingid' => $trainingid));
+        self::$db->delete_records('tool_attestoodle_training', ['id' => $trainingid]);
+        self::$db->delete_records('tool_attestoodle_train_style', ['trainingid' => $trainingid]);
+        self::$db->delete_records('tool_attestoodle_user_style', ['trainingid' => $trainingid]);
+        self::$db->delete_records('tool_attestoodle_milestone', ['trainingid' => $trainingid]);
+        self::$db->delete_records('tool_attestoodle_learner', ['trainingid' => $trainingid]);
 
         // Delete generate files.
         $sql = "SELECT distinct filename, learnerid
@@ -590,14 +591,14 @@ class db_accessor extends singleton {
         $result = self::$db->get_records_sql($sql, ['trainingid' => $trainingid]);
         $fs = get_file_storage();
         foreach ($result as $record) {
-            $fileinfo = array(
+            $fileinfo = [
                 'contextid' => $record->learnerid,
                 'component' => 'tool_attestoodle',
                 'filearea' => 'certificates',
                 'filepath' => '/',
                 'itemid' => 0,
-                'filename' => $record->filename
-            );
+                'filename' => $record->filename,
+            ];
             $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
                 $fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
             if ($file) {
@@ -618,7 +619,7 @@ class db_accessor extends singleton {
                                WHERE trainingid = :trainingid)";
         self::$db->execute($sql, ['trainingid' => $trainingid]);
 
-        self::$db->delete_records('tool_attestoodle_certif_log', array('trainingid' => $trainingid));
+        self::$db->delete_records('tool_attestoodle_certif_log', ['trainingid' => $trainingid]);
 
         // Delete in Sub plugin.
         plugins_accessor::get_instance()->delete_training($trainingid);
@@ -630,9 +631,9 @@ class db_accessor extends singleton {
      * @param int $categoryid The category ID that we want to delete
      */
     public function delete_training($categoryid) {
-        $training = self::$db->get_record('tool_attestoodle_training', array('categoryid' => $categoryid));
+        $training = self::$db->get_record('tool_attestoodle_training', ['categoryid' => $categoryid]);
         self::delete_training_by_id($training->id);
-        self::$db->delete_records('tool_attestoodle_training', array('categoryid' => $categoryid));
+        self::$db->delete_records('tool_attestoodle_training', ['categoryid' => $categoryid]);
     }
 
     /**
@@ -647,7 +648,7 @@ class db_accessor extends singleton {
         $dataobject->startdate = \time();
 
         $idtraining = self::$db->insert_record('tool_attestoodle_training', $dataobject);
-        $template = self::$db->get_record('tool_attestoodle_template', array('name' => 'Site'));
+        $template = self::$db->get_record('tool_attestoodle_template', ['name' => 'Site']);
         $record = new \stdClass();
         $record->trainingid = $idtraining;
         $record->templateid = $template->id;
@@ -706,7 +707,7 @@ class db_accessor extends singleton {
      * that has been use for the certificate
      */
     public function log_values($certificatelogid, $validatedactivities) {
-        $milestones = array();
+        $milestones = [];
         foreach ($validatedactivities as $fva) {
             $act = $fva->get_activity();
             $dataobject = new \stdClass();
@@ -729,8 +730,8 @@ class db_accessor extends singleton {
                      WHERE course = ?
                        and sequence != ''
                   ORDER BY section";
-        $result = self::$db->get_records_sql($request, array($courseid));
-        $ret = array();
+        $result = self::$db->get_records_sql($request, [$courseid]);
+        $ret = [];
         foreach ($result as $enreg) {
             $morceaux = explode(",", $enreg->sequence);
             foreach ($morceaux as $morceau) {
@@ -750,7 +751,7 @@ class db_accessor extends singleton {
      * @return \stdClass Standard Moodle DB object (module).
      */
     public function get_allmodules() {
-        $result = self::$db->get_records('modules', array('visible' => 1));
+        $result = self::$db->get_records('modules', ['visible' => 1]);
         return $result;
     }
 
@@ -768,7 +769,7 @@ class db_accessor extends singleton {
                                      where path like '%/".$id."/%')
                         or category = ".$id.");";
 
-        $result = self::$db->get_records_sql($req, array());
+        $result = self::$db->get_records_sql($req, []);
         return $result;
     }
 
@@ -784,7 +785,7 @@ class db_accessor extends singleton {
                                       from {tool_attestoodle_milestone}
                                      where trainingid = ". $idtraining .");";
 
-        $result = self::$db->get_records_sql($req, array());
+        $result = self::$db->get_records_sql($req, []);
         return $result;
     }
 
@@ -796,7 +797,7 @@ class db_accessor extends singleton {
      */
     public function is_milestone_set($trainingid) {
         $req = "select sum(creditedtime) as tot from {tool_attestoodle_milestone} where trainingid = ?";
-        return self::$db->get_field_sql($req, array ($trainingid));
+        return self::$db->get_field_sql($req,  [$trainingid]);
     }
 
     /**
@@ -807,7 +808,7 @@ class db_accessor extends singleton {
      */
     public function get_milestone_off($trainingid) {
         $req = "select count(*) as nb from {tool_attestoodle_milestone} where trainingid = ?";
-        $nb1 = self::$db->get_field_sql($req, array ($trainingid));
+        $nb1 = self::$db->get_field_sql($req,  [$trainingid]);
 
         $req = "select count(*) as nb
                   from {tool_attestoodle_milestone} a, {course_modules} c
@@ -816,7 +817,7 @@ class db_accessor extends singleton {
                    and a.course = c.course
                    and a.trainingid = ?";
 
-        $nb2 = self::$db->get_field_sql($req, array ($trainingid));
+        $nb2 = self::$db->get_field_sql($req,  [$trainingid]);
         if ($nb1 != $nb2) {
             $req = "select a.id, a.creditedtime,a.name, b.fullname
                       from {tool_attestoodle_milestone} a, {course} b
@@ -830,9 +831,9 @@ class db_accessor extends singleton {
                      where a.trainingid = ?
                        and a.course not in (select id
                                               from {course})";
-            return self::$db->get_records_sql($req, array ($trainingid, $trainingid));
+            return self::$db->get_records_sql($req,  [$trainingid, $trainingid]);
         }
-        return array();
+        return [];
     }
 
     /**
@@ -844,7 +845,7 @@ class db_accessor extends singleton {
      */
     public function get_new_activities($trainingid) {
         $req = "select max(timemodified) as timemodified from {tool_attestoodle_milestone} where trainingid = ?";
-        $lastupdate = self::$db->get_field_sql($req, array ($trainingid));
+        $lastupdate = self::$db->get_field_sql($req,  [$trainingid]);
         if (!isset($lastupdate)) {
             return null;
         }
@@ -857,7 +858,7 @@ class db_accessor extends singleton {
                                       from {tool_attestoodle_milestone}
                                      where trainingid = ?)
                    group by fullname";
-        return self::$db->get_records_sql($req, array ($lastupdate, $trainingid));
+        return self::$db->get_records_sql($req,  [$lastupdate, $trainingid]);
     }
 
     /**
@@ -868,7 +869,7 @@ class db_accessor extends singleton {
     public function delete_milestones_off($trainingid) {
         $milestones = self::get_milestone_off($trainingid);
         foreach ($milestones as $milestone) {
-            self::$db->delete_records('tool_attestoodle_milestone', array('id' => $milestone->id));
+            self::$db->delete_records('tool_attestoodle_milestone', ['id' => $milestone->id]);
         }
     }
 
@@ -881,7 +882,7 @@ class db_accessor extends singleton {
         $request = " UPDATE {tool_attestoodle_milestone}
                         SET timemodified = ?
                       WHERE trainingid = ?";
-        self::$db->execute($request, array(\time(), $trainingid));
+        self::$db->execute($request, [\time(), $trainingid]);
     }
 
     /**
@@ -893,7 +894,7 @@ class db_accessor extends singleton {
      */
     public function get_user_template($userid, $trainingid) {
         return self::$db->get_record('tool_attestoodle_user_style',
-                array('userid' => $userid, 'trainingid' => $trainingid));
+                ['userid' => $userid, 'trainingid' => $trainingid]);
     }
 
     /**
@@ -904,6 +905,6 @@ class db_accessor extends singleton {
      */
     public function find_course($name) {
         $req = "select * from {course} where shortname like '%" . $name . "%'";
-        return self::$db->get_records_sql($req, array());
+        return self::$db->get_records_sql($req, []);
     }
 }

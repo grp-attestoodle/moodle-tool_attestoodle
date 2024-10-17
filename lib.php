@@ -63,11 +63,11 @@ function tool_attestoodle_extend_navigation_category_settings(navigation_node $p
     if ($userhascapability) {
         $categoryid = $PAGE->context->instanceid;
         $url = new moodle_url($toolpath . '/index.php',
-                array(
+                [
                         "typepage" => "trainingmanagement",
                         "categoryid" => $categoryid,
-                        "call" => "categ"
-                ));
+                        "call" => "categ",
+                ]);
         $node = navigation_node::create(
                 "Attestoodle",
                 $url,
@@ -92,7 +92,7 @@ function tool_attestoodle_extend_navigation_category_settings(navigation_node $p
  * @param array $options optional parameter for form's component.
  * @link See doc at https://docs.moodle.org/dev/File_API#Serving_files_to_users
  */
-function tool_attestoodle_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options=array()) {
+function tool_attestoodle_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options=[]) {
     if ($course && $cm) {
         $cm = $cm;
         $course = $course;
@@ -159,21 +159,21 @@ function tool_attestoodle_myprofile_navigation(\core_user\output\myprofile\tree 
 
         if (has_capability('tool/attestoodle:managetraining', $context)) {
             $urladdtrain = new moodle_url("$CFG->wwwroot/course/");
-            $content = \html_writer::link($urladdtrain, get_string('add_training', 'tool_attestoodle'), array());
+            $content = \html_writer::link($urladdtrain, get_string('add_training', 'tool_attestoodle'), []);
             $localnode = new core_user\output\myprofile\node('attestoodle', 'newtrain', null, null, null, $content);
             $tree->add_node($localnode);
         }
 
         if (has_capability('tool/attestoodle:displaytrainings', $context)) {
-            $url = new moodle_url('/admin/tool/attestoodle/index.php', array());
-            $content = \html_writer::link($url, get_string('training_list_link', 'tool_attestoodle'), array());
+            $url = new moodle_url('/admin/tool/attestoodle/index.php', []);
+            $content = \html_writer::link($url, get_string('training_list_link', 'tool_attestoodle'), []);
             $localnode = new core_user\output\myprofile\node('attestoodle', 'listtrain', null, null, null, $content);
             $tree->add_node($localnode);
         }
 
         if (has_capability('tool/attestoodle:viewtemplate', $context)) {
             $urllisttemplate = new moodle_url("$CFG->wwwroot/$CFG->admin/tool/attestoodle/classes/gabarit/listtemplate.php");
-            $content = \html_writer::link($urllisttemplate, get_string('template_certificate', 'tool_attestoodle'), array());
+            $content = \html_writer::link($urllisttemplate, get_string('template_certificate', 'tool_attestoodle'), []);
             $localnode = new core_user\output\myprofile\node('attestoodle', 'lsttemplate', null, null, null, $content);
             $tree->add_node($localnode);
         }

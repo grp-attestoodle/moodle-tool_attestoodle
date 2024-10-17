@@ -45,7 +45,7 @@ if ($action == "validate") {
     db_accessor::get_instance()->validate_learner($trainingid);
     $redirecturl = new \moodle_url(
                 '/admin/tool/attestoodle/index.php',
-                array('typepage' => 'trainingmanagement', 'categoryid' => $categoryid, 'trainingid' => $trainingid));
+                ['typepage' => 'trainingmanagement', 'categoryid' => $categoryid, 'trainingid' => $trainingid]);
     redirect($redirecturl);
 }
 
@@ -53,7 +53,7 @@ if ($action == "cancel") {
     db_accessor::get_instance()->cancel_learner($trainingid);
     $redirecturl = new \moodle_url(
                 '/admin/tool/attestoodle/index.php',
-                array('typepage' => 'trainingmanagement', 'categoryid' => $categoryid, 'trainingid' => $trainingid));
+                ['typepage' => 'trainingmanagement', 'categoryid' => $categoryid, 'trainingid' => $trainingid]);
     redirect($redirecturl);
 }
 
@@ -65,14 +65,14 @@ $PAGE->navbar->ignore_active();
 $titlepage = get_string('selectlearner', 'tool_attestoodle');
 
 $navlevel1 = get_string('navlevel1', 'tool_attestoodle');
-$PAGE->navbar->add($navlevel1, new moodle_url('/admin/tool/attestoodle/index.php', array()));
+$PAGE->navbar->add($navlevel1, new moodle_url('/admin/tool/attestoodle/index.php', []));
 $navlevel2 = get_string('navlevel2', 'tool_attestoodle');
 $PAGE->navbar->add($navlevel2, new moodle_url('/admin/tool/attestoodle/index.php',
-                                                array('typepage' => 'trainingmanagement',
+                                                ['typepage' => 'trainingmanagement',
                                                     'categoryid' => $categoryid,
-                                                    'trainingid' => $trainingid)));
+                                                    'trainingid' => $trainingid]));
 
-$param = array('categoryid' => $categoryid, 'trainingid' => $trainingid);
+$param = ['categoryid' => $categoryid, 'trainingid' => $trainingid];
 $PAGE->navbar->add($titlepage, new moodle_url('/admin/tool/attestoodle/classes/training/select_learners.php', $param));
 $PAGE->set_url(new moodle_url('/admin/tool/attestoodle/classes/training/select_learners.php', $param));
 $PAGE->set_title($titlepage);
@@ -95,18 +95,18 @@ if (get_string_manager()->string_exists('UrlHlpTo_selectlearners', 'tool_attesto
 }
 
 // Table.
-$baseurl = new moodle_url('/admin/tool/attestoodle/classes/training/select_learners.php', array(
+$baseurl = new moodle_url('/admin/tool/attestoodle/classes/training/select_learners.php', [
         'page' => $page,
         'perpage' => $perpage,
         'categoryid' => $categoryid,
-        'trainingid' => $trainingid));
+        'trainingid' => $trainingid]);
 
 $table = new flexible_table('admin_tool_learners');
-$tablecolumns = array('username', 'lastname', 'firstname', 'email', 'selected', 'resultcriteria');
-$tableheaders = array(get_string('username'), get_string('lastname'), get_string('firstname'),
+$tablecolumns = ['username', 'lastname', 'firstname', 'email', 'selected', 'resultcriteria'];
+$tableheaders = [get_string('username'), get_string('lastname'), get_string('firstname'),
                       get_string('email', 'tool_attestoodle'),
                       get_string('selection', 'tool_attestoodle'),
-                      get_string('result', 'tool_attestoodle'));
+                      get_string('result', 'tool_attestoodle')];
 
 $table->define_columns($tablecolumns);
 $table->define_headers($tableheaders);
@@ -123,7 +123,7 @@ $table->pagesize($perpage, $matchcount);
 $order = " order by " . $table->get_sql_sort();
 $rs = db_accessor::get_instance()->get_page_learner($table->get_page_start(), $table->get_page_size(), $trainingid, $order);
 
-$rows = array();
+$rows = [];
 
 $hasselect = false;
 
@@ -158,20 +158,20 @@ foreach ($rs as $result) {
         }
         $hasselect = true;
     }
-    $rows[] = array('username' => $result->username,
+    $rows[] = ['username' => $result->username,
             'lastname' => $result->lastname,
             'firstname' => $result->firstname,
             'email' => $result->email,
             'selected' => $sellink,
-            'resultcriteria' => $result->resultcriteria
-            );
+            'resultcriteria' => $result->resultcriteria,
+            ];
 }
 
 foreach ($rows as $row) {
     $table->add_data(
-            array(
+            [
                 $row['username'], $row['lastname'], $row['firstname'], $row['email'],
-                $row['selected'], $row['resultcriteria']));
+                $row['selected'], $row['resultcriteria']]);
 }
 echo get_string('number_learners', 'tool_attestoodle', $matchcount);
 
@@ -179,14 +179,14 @@ $table->print_html();
 
 echo "<br>";
 
-$parameters = array(
+$parameters = [
                     'categoryid' => $categoryid,
                     'trainingid' => $trainingid,
                     'perpage' => $perpage,
-                    'action' => 'selecton'
-                    );
+                    'action' => 'selecton',
+                    ];
 
-$attributes = array('class' => 'btn btn-default attestoodle-button');
+$attributes = ['class' => 'btn btn-default attestoodle-button'];
 $nbselect = db_accessor::get_instance()->countselected($trainingid);
 
 if ($nbselect > 0) {

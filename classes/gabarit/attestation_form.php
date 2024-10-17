@@ -30,7 +30,7 @@ require_once($CFG->dirroot . '/repository/lib.php');
  * Form to create or modify the template of certificate.
  *
  * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
- * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class attestation_form extends moodleform {
 
@@ -44,19 +44,19 @@ class attestation_form extends moodleform {
         $mform->addElement('hidden', 'namelock');
         $mform->setType('namelock', PARAM_INT);
 
-        $mform->addElement('text', 'name', get_string('templatename', 'tool_attestoodle'), array("size" => 35));
+        $mform->addElement('text', 'name', get_string('templatename', 'tool_attestoodle'), ["size" => 35]);
         $mform->setType('name', PARAM_NOTAGS);
         $mform->disabledIf('name', 'namelock', 'eq', 1);
 
         $mform->addElement('filemanager', 'fichier', get_string('background', 'tool_attestoodle'),
             null,
-            array(
+            [
                 'subdirs' => 0,
                 'maxbytes' => 10485760,
                 'areamaxbytes' => 10485760,
                 'maxfiles' => 1,
-                'accepted_types' => array('.png'),
-                'return_types' => FILE_INTERNAL | FILE_EXTERNAL));
+                'accepted_types' => ['.png'],
+                'return_types' => FILE_INTERNAL | FILE_EXTERNAL]);
 
         $learnergroup = $this->create_line('learner');
         $mform->addGroup($learnergroup, 'learnergroup', get_string('learner', 'tool_attestoodle'), ' ', false);
@@ -89,24 +89,24 @@ class attestation_form extends moodleform {
         $mform->setExpanded('literaux', false);
 
         $mform->addElement('header', 'pagebreak', get_string('pagebreak', 'tool_attestoodle'));
-        $radioarray = array();
+        $radioarray = [];
         $radioarray[] = $mform->createElement('radio', 'viewpagenumber', '', get_string('nl_never', 'tool_attestoodle'), 0);
         $radioarray[] = $mform->createElement('radio', 'viewpagenumber', '', get_string('nl_necessary', 'tool_attestoodle'), 1);
         $radioarray[] = $mform->createElement('radio', 'viewpagenumber', '', get_string('nl_always', 'tool_attestoodle'), 2);
-        $mform->addGroup($radioarray, 'viewpagenumber', get_string('viewpagenumber', 'tool_attestoodle'), array(' '), false);
+        $mform->addGroup($radioarray, 'viewpagenumber', get_string('viewpagenumber', 'tool_attestoodle'), [' '], false);
         $group = $this->create_line('pagenumber');
         $group[] =& $mform->createElement('checkbox', 'pagenumber_total', '', get_string('nl_ontotal', 'tool_attestoodle'));
         $mform->addGroup($group, 'pagenumber', get_string('nl_pagenumber', 'tool_attestoodle'), ' ', false);
         $mform->disabledIf('pagenumber', 'viewpagenumber', 'eq', 0);
-        $group = array();
+        $group = [];
         $group[] =& $mform->createElement('checkbox', 'repeatbackground', '');
         $mform->addGroup($group, 'repback', get_string('nl_background', 'tool_attestoodle'), ' ', false);
-        $group = array();
+        $group = [];
         $group[] =& $mform->createElement('radio', 'repeatpreactivities', '', get_string('nl_preactch1', 'tool_attestoodle'), 0);
         $group[] =& $mform->createElement('radio', 'repeatpreactivities', '', get_string('nl_preactch2', 'tool_attestoodle'), 1);
         $mform->addGroup($group, 'reppreact', get_string('nl_preact', 'tool_attestoodle'), ' ', false);
 
-        $group = array();
+        $group = [];
         $group[] =& $mform->createElement('radio', 'repeatpostactivities', '', get_string('nl_postactch1', 'tool_attestoodle'), 0);
         $group[] =& $mform->createElement('radio', 'repeatpostactivities', '', get_string('nl_preactch2', 'tool_attestoodle'), 1);
         $mform->addGroup($group, 'reppostact', get_string('nl_postact', 'tool_attestoodle'), ' ', false);
@@ -114,9 +114,9 @@ class attestation_form extends moodleform {
         $mform->setExpanded('pagebreak', false);
 
         $mform->addElement('header', 'actionssection', get_string('actions', 'tool_attestoodle'));
-        $actionbuttongroup = array();
-        $actionbuttongroup[] =& $mform->createElement('submit', 'save', get_string('savechanges'), array('class' => 'send-button'));
-        $actionbuttongroup[] =& $mform->createElement('submit', 'cancel', get_string('cancel'), array('class' => 'cancel-button'));
+        $actionbuttongroup = [];
+        $actionbuttongroup[] =& $mform->createElement('submit', 'save', get_string('savechanges'), ['class' => 'send-button']);
+        $actionbuttongroup[] =& $mform->createElement('submit', 'cancel', get_string('cancel'), ['class' => 'cancel-button']);
         $mform->addGroup($actionbuttongroup, 'actionbuttongroup', '', ' ', false);
         $mform->setExpanded('actionssection', true);
     }
@@ -126,19 +126,19 @@ class attestation_form extends moodleform {
      * @param string $prefix name of the subject of the line.
      */
     protected function create_line($prefix) {
-        $familles = array('courier', 'helvetica', 'times');
-        $emphases = array('', 'B', 'I');
-        $alignments = array('L', 'R', 'C', 'J');
-        $sizes = array('6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16',
-            '18', '20', '22', '24', '26', '28', '32', '36', '40', '44', '48', '54', '60', '66', '72');
+        $familles = ['courier', 'helvetica', 'times'];
+        $emphases = ['', 'B', 'I'];
+        $alignments = ['L', 'R', 'C', 'J'];
+        $sizes = ['6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16',
+            '18', '20', '22', '24', '26', '28', '32', '36', '40', '44', '48', '54', '60', '66', '72'];
 
         $mform    = $this->_form;
-        $group = array();
+        $group = [];
         $group[] =& $mform->createElement("static", null, null, " X :");
-        $group[] =& $mform->createElement('text', $prefix . 'Posx', '', array("size" => 3));
+        $group[] =& $mform->createElement('text', $prefix . 'Posx', '', ["size" => 3]);
         $mform->setType($prefix . 'Posx', PARAM_INT);
         $group[] =& $mform->createElement("static", null, null, " Y :");
-        $group[] =& $mform->createElement('text', $prefix . 'Posy', '', array("size" => 3));
+        $group[] =& $mform->createElement('text', $prefix . 'Posy', '', ["size" => 3]);
         $mform->setType($prefix . 'Posy', PARAM_INT);
         $group[] =& $mform->createElement("static", null, null, get_string('font', 'tool_attestoodle'));
         $group[] =& $mform->createElement('select', $prefix . 'FontFamily', '', $familles, null);
@@ -150,11 +150,11 @@ class attestation_form extends moodleform {
         $group[] =& $mform->createElement('select', $prefix . 'Align', '', $alignments, null);
         if ($prefix != "activities") {
             $group[] =& $mform->createElement("static", null, null, '<br>' . get_string('rubric', 'tool_attestoodle'));
-            $group[] =& $mform->createElement('text', $prefix . 'lib', '', array("size" => 45));
+            $group[] =& $mform->createElement('text', $prefix . 'lib', '', ["size" => 45]);
             $mform->setType($prefix . 'lib', PARAM_TEXT );
         } else {
             $group[] =& $mform->createElement("static", null, null, '<br>' . get_string('arraysize', 'tool_attestoodle'));
-            $group[] =& $mform->createElement('text', $prefix . 'size', '', array("size" => 3));
+            $group[] =& $mform->createElement('text', $prefix . 'size', '', ["size" => 3]);
             $mform->setType($prefix . 'size', PARAM_INT);
         }
         return $group;
@@ -199,10 +199,10 @@ class attestation_form extends moodleform {
      * @param array $selected list of selected elements.
      * @return bool
      */
-    public function update_selectgroup($name, $options, $selected=array()) {
+    public function update_selectgroup($name, $options, $selected=[]) {
         $mform   = $this->_form;
         $element = $mform->getElement($name);
-        $element->_optGroups = array(); // Reset the optgroup array() !
+        $element->_optGroups = []; // Reset the optgroup array() !
         return $element->loadArrayOptGroups($options, $selected);
     }
 
@@ -226,7 +226,7 @@ class attestation_form extends moodleform {
 
         if (!empty($data['name']) && $data['namelock'] != 1) {
             $sql = 'select * from {tool_attestoodle_template} where name = ? and id != ?';
-            if ($DB->record_exists_sql($sql, array($data['name'], $data['templateid']))) {
+            if ($DB->record_exists_sql($sql, [$data['name'], $data['templateid']])) {
                 $errors['body'] = get_string('errduplicatename', 'tool_attestoodle');
             }
         }
@@ -238,7 +238,7 @@ class attestation_form extends moodleform {
      * @return null or action.
      */
     public function get_submit_action() {
-        $submitactions = array('send', 'save', 'cancel', 'trash');
+        $submitactions = ['send', 'save', 'cancel', 'trash'];
         foreach ($submitactions as $submitaction) {
             if (optional_param($submitaction, false, PARAM_BOOL)) {
                 return $submitaction;

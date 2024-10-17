@@ -37,7 +37,7 @@ use tool_attestoodle\forms\training_milestones_update_form;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class training_milestones implements \renderable {
-    /** @var integer Id of the category associate to training displayed */
+    /** @var int Id of the category associate to training displayed */
     private $categoryid;
     /** @var training Actual training displayed */
     private $training;
@@ -87,7 +87,7 @@ class training_milestones implements \renderable {
                             'categoryid' => $this->training->get_categoryid(),
                             'trainingid' => $this->trainingid]);
                 $this->form = new training_milestones_update_form($url,
-                                    array(
+                                    [
                                             'data' => $this->training->get_courses(),
                                             'input_name_prefix' => "attestoodle_activity_id_",
                                             'type' => $type,
@@ -97,8 +97,8 @@ class training_milestones implements \renderable {
                                             'milestonemod' => $milestonemod,
                                             'orderbyselection' => $orderbyselection,
                                             'orderbyfrom' => $orderbyfrom,
-                                            'modifallow' => $modifallow
-                                          ) );
+                                            'modifallow' => $modifallow,
+                                          ] );
                 $this->handle_form();
             }
         }
@@ -137,9 +137,9 @@ class training_milestones implements \renderable {
     private function goback($message) {
         $redirecturl = new \moodle_url(
                 '/admin/tool/attestoodle/index.php',
-                array('typepage' => 'trainingmanagement',
+                ['typepage' => 'trainingmanagement',
                     'categoryid' => $this->training->get_categoryid(),
-                    'trainingid' => $this->trainingid)
+                    'trainingid' => $this->trainingid]
         );
         redirect($redirecturl, $message, null, \core\output\notification::NOTIFY_INFO);
     }
@@ -169,7 +169,7 @@ class training_milestones implements \renderable {
                 'milestonemod' => $datafromform->milestonemod,
                 'orderbyselection' => $datafromform->orderbyselection,
                 'orderbyfrom' => $datafromform->orderbyfrom,
-                'trainingid' => $this->trainingid
+                'trainingid' => $this->trainingid,
                 ]);
                 redirect($url);
                 return;
@@ -191,8 +191,8 @@ class training_milestones implements \renderable {
      * to the user to let him know how much activites have been updated and if
      * there is any error while save in DB.
      *
-     * @todo create a new private method to notify the user
-     * @todo translations
+     * To be studied : creation of a new private method to notify the user
+     * and translations
      *
      * @return void Return void if the user has not the rights to update in DB
      */
@@ -261,7 +261,7 @@ class training_milestones implements \renderable {
                             'categoryid' => $this->training->get_categoryid(),
                             'trainingid' => $this->trainingid]
                     ),
-                    array(
+                    [
                         'data' => $this->training->get_courses(),
                         'input_name_prefix' => "attestoodle_activity_id_",
                         'type' => $datafromform->typemod,
@@ -271,8 +271,8 @@ class training_milestones implements \renderable {
                         'milestonemod' => $datafromform->milestonemod,
                         'orderbyselection' => $datafromform->orderbyselection,
                         'orderbyfrom' => $datafromform->orderbyfrom,
-                        'modifallow' => $datafromform->edition
-                    )
+                        'modifallow' => $datafromform->edition,
+                    ]
             );
         } else {
             return;

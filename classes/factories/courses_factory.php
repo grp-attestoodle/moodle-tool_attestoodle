@@ -72,7 +72,7 @@ class courses_factory extends singleton {
     public function retrieve_courses_childof_category($id, $trainingid = 0) {
         $dbcourses = db_accessor::get_instance()->get_courses_childof_category($id);
 
-        $courses = array();
+        $courses = [];
         foreach ($dbcourses as $course) {
             $courses[$course->id] = $this->create($course, $trainingid);
         }
@@ -95,7 +95,7 @@ class courses_factory extends singleton {
      */
     public function retrieve_courses_of_training($trainingid) {
         $dbcourses = db_accessor::get_instance()->get_courses_of_training($trainingid);
-        $courses = array();
+        $courses = [];
         foreach ($dbcourses as $course) {
             $courses[] = $this->create($course, $trainingid);
         }

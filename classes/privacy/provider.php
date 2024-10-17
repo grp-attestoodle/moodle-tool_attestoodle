@@ -51,7 +51,7 @@ class provider implements
       * @param collection $collection Collection of items to add metadata to.
       * @return collection Collection with our added items.
       */
-    public static function get_metadata(collection $collection) : collection {
+    public static function get_metadata(collection $collection): collection {
         // Filesystem Certificate pdf generated.
         $collection->add_subsystem_link('core_files', [], 'privacy:metadata:core_files');
 
@@ -101,7 +101,7 @@ class provider implements
      * @param   int           $userid       The user to search.
      * @return  contextlist   $contextlist  The list of contexts used in this plugin.
      */
-    public static function get_contexts_for_userid(int $userid) : contextlist {
+    public static function get_contexts_for_userid(int $userid): contextlist {
         $contextlist = new contextlist();
 
         $sqlfile = "SELECT distinct f.contextid
@@ -138,18 +138,18 @@ class provider implements
         $sql = "SELECT distinct filename as filename
                   FROM {tool_attestoodle_certif_log}
                  WHERE learnerid = :userid";
-        $params = ['userid' => $userid, ];
+        $params = ['userid' => $userid];
         $result = $DB->get_records_sql($sql, $params);
 
         foreach ($result as $record) {
-            $fileinfo = array(
+            $fileinfo = [
                 'contextid' => $usercontext->id,
                 'component' => 'tool_attestoodle',
                 'filearea' => 'certificates',
                 'filepath' => '/',
                 'itemid' => 0,
-                'filename' => $record->filename
-            );
+                'filename' => $record->filename,
+            ];
             $file = $fs->get_file($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
                 $fileinfo['itemid'], $fileinfo['filepath'], $fileinfo['filename']);
             if ($file) {
@@ -168,7 +168,7 @@ class provider implements
         // Delete launch with no detail.
         $sql = "delete from {tool_attestoodle_launch_log}
                  where id not in (select launchid from {tool_attestoodle_certif_log})";
-        $result = $DB->execute($sql, array());
+        $result = $DB->execute($sql, []);
 
         $DB->delete_records('tool_attestoodle_user_style', ['userid' => $userid]);
         $DB->delete_records('tool_attestoodle_learner', ['userid' => $userid]);
@@ -198,34 +198,34 @@ class provider implements
         $sqlrq1 = "select id,trainingid,launchid
                     from {tool_attestoodle_certif_log}
                    where learnerid = :userid";
-        $params = ['userid' => $userid, ];
+        $params = ['userid' => $userid];
         $result1 = $DB->get_records_sql($sqlrq1, $params);
         $certificate = [];
 
         foreach ($result1 as $rowcertif) {
-            $training = $DB->get_record('tool_attestoodle_training', array('id' => $rowcertif->trainingid));
+            $training = $DB->get_record('tool_attestoodle_training', ['id' => $rowcertif->trainingid]);
             $certif = new \stdClass();
 
             if (empty($training->name)) {
-                $categ = $DB->get_record('course_categories', array('id' => $training->categoryid));
+                $categ = $DB->get_record('course_categories', ['id' => $training->categoryid]);
                 $training->name = $categ->name;
             }
             $certif->training = $training->name;
 
-            $launch = $DB->get_record('tool_attestoodle_launch_log', array('id' => $rowcertif->launchid));
+            $launch = $DB->get_record('tool_attestoodle_launch_log', ['id' => $rowcertif->launchid]);
 
             $period = get_string('fromdate', 'tool_attestoodle', $launch->begindate)
                     . ' ' . get_string('todate', 'tool_attestoodle', $launch->enddate);
             $certif->period = $period;
 
-            $result2 = $DB->get_records('tool_attestoodle_value_log', array('certificateid' => $rowcertif->id));
+            $result2 = $DB->get_records('tool_attestoodle_value_log', ['certificateid' => $rowcertif->id]);
             $contextdata = [];
             $total = 0;
             foreach ($result2 as $row) {
                 $req = "select distinct name as name
                           from {tool_attestoodle_milestone}
                          where moduleid = :moduleid";
-                $module = $DB->get_record_sql($req, array('moduleid' => $row->moduleid));
+                $module = $DB->get_record_sql($req, ['moduleid' => $row->moduleid]);
                 $name = get_string('error_unknown_item', 'tool_attestoodle');
                 if (!empty($module->name)) {
                     $name = $module->name;

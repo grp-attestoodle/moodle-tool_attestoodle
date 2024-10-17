@@ -38,7 +38,7 @@ if ($hassiteconfig) {
 }
 
 // If there aren't any entries in the table then we need to prepare them!
-if (!$DB->record_exists('tool_attestoodle_template', array('name' => 'Site'))) {
+if (!$DB->record_exists('tool_attestoodle_template', ['name' => 'Site'])) {
     $model = new stdClass();
     $model->name = 'Site';
     $model->timecreated = usergetdate(time())[0];
@@ -86,8 +86,8 @@ if (!$DB->record_exists('tool_attestoodle_template', array('name' => 'Site'))) {
         $fs = get_file_storage();
         $file = $fs->get_file(1, 'tool_attestoodle', 'fichier', $idtemplate, '/', 'attest_background.png');
         if (!$file) {
-            $filerecord = array('contextid' => 1, 'component' => 'tool_attestoodle', 'filearea' => 'fichier',
-                'itemid' => $idtemplate, 'filepath' => '/');
+            $filerecord = ['contextid' => 1, 'component' => 'tool_attestoodle', 'filearea' => 'fichier',
+                'itemid' => $idtemplate, 'filepath' => '/'];
             $url = "$CFG->wwwroot/admin/tool/attestoodle/pix/attest_background.png";
             $fs->create_file_from_url($filerecord, $url, null, true);
         }

@@ -38,7 +38,7 @@ $context = context_system::instance();
 $PAGE->set_context($context);
 $PAGE->navbar->ignore_active();
 $navlevel1 = get_string('navlevel1b', 'tool_attestoodle');
-$PAGE->navbar->add($navlevel1, new moodle_url('/admin/tool/attestoodle/classes/gabarit/listtemplate.php', array()));
+$PAGE->navbar->add($navlevel1, new moodle_url('/admin/tool/attestoodle/classes/gabarit/listtemplate.php', []));
 
 require_login();
 
@@ -47,29 +47,29 @@ $title = get_string('pluginname', 'tool_attestoodle') . " - " .
             get_string('listtemplate_title', 'tool_attestoodle');
 $PAGE->set_heading($title);
 
-$baseurl = new moodle_url('/admin/tool/attestoodle/classes/gabarit/listtemplate.php', array(
+$baseurl = new moodle_url('/admin/tool/attestoodle/classes/gabarit/listtemplate.php', [
         'page' => $page,
-        'perpage' => $perpage));
+        'perpage' => $perpage]);
 $PAGE->set_url($baseurl);
 
 if ($delete) {
     if ($confirm != md5($delete)) { // Must be confirm.
         echo $OUTPUT->header();
         echo $OUTPUT->heading(get_string('deletemodel', 'tool_attestoodle'));
-        $optionsyes = array('delete' => $delete, 'confirm' => md5($delete), 'sesskey' => sesskey());
-        $returnurl = new moodle_url('/admin/tool/attestoodle/classes/gabarit/listtemplate.php', array());
+        $optionsyes = ['delete' => $delete, 'confirm' => md5($delete), 'sesskey' => sesskey()];
+        $returnurl = new moodle_url('/admin/tool/attestoodle/classes/gabarit/listtemplate.php', []);
         $deleteurl = new moodle_url($returnurl, $optionsyes);
 
         $deletebutton = new single_button($deleteurl, get_string('delete'), 'post');
-        $template = $DB->get_record('tool_attestoodle_template', array('id' => $delete));
+        $template = $DB->get_record('tool_attestoodle_template', ['id' => $delete]);
 
         echo $OUTPUT->confirm(get_string('confdeltemplate', 'tool_attestoodle', $template),
                               $deletebutton, $returnurl);
         echo $OUTPUT->footer();
         die;
     } else { // Delete after confirmation.
-        $DB->delete_records('tool_attestoodle_tpl_detail', array('templateid' => $delete));
-        $DB->delete_records('tool_attestoodle_template', array('id' => $delete));
+        $DB->delete_records('tool_attestoodle_tpl_detail', ['templateid' => $delete]);
+        $DB->delete_records('tool_attestoodle_template', ['id' => $delete]);
     }
 }
 
@@ -82,8 +82,8 @@ if (get_string_manager()->string_exists('UrlHlpTo_listtemplate', 'tool_attestood
 }
 
 $table = new flexible_table('admin_tool_lst');
-$tablecolumns = array('idnom', 'idactions');
-$tableheaders = array('Nom', 'Actions');
+$tablecolumns = ['idnom', 'idactions'];
+$tableheaders = ['Nom', 'Actions'];
 
 $table->define_columns($tablecolumns);
 $table->define_headers($tableheaders);
@@ -102,14 +102,14 @@ $table->pagesize($perpage, $matchcount);
 $rs = $DB->get_recordset_sql('select id, name from {tool_attestoodle_template} order by name', null,
     $table->get_page_start(), $table->get_page_size());
 
-$rows = array();
+$rows = [];
 foreach ($rs as $result) {
     // Possible suppression test.
     $dellink = "";
     if (has_capability('tool/attestoodle:deletetemplate', \context_system::instance())) {
         if ($result->name != 'Site'
-        && !$DB->record_exists('tool_attestoodle_train_style', array('templateid' => $result->id))
-        && !$DB->record_exists('tool_attestoodle_user_style', array('templateid' => $result->id))) {
+        && !$DB->record_exists('tool_attestoodle_train_style', ['templateid' => $result->id])
+        && !$DB->record_exists('tool_attestoodle_user_style', ['templateid' => $result->id])) {
             $deleteurl = new moodle_url('/admin/tool/attestoodle/classes/gabarit/listtemplate.php',
                           ['delete' => $result->id]);
             $dellink = "<a href=" . $deleteurl . "><i class='fa fa-trash'></i></a>&nbsp;&nbsp;";
@@ -130,11 +130,11 @@ foreach ($rs as $result) {
         $prevlink = "<a target='preview' href=" . $previewurl . "><i class='fa fa-eye'></i></a>&nbsp;&nbsp;";
     }
 
-    $rows[] = array('idnom' => $result->name, 'idactions' => $dellink . $prevlink . $editlink);
+    $rows[] = ['idnom' => $result->name, 'idactions' => $dellink . $prevlink . $editlink];
 }
 
 foreach ($rows as $row) {
-    $table->add_data(array($row['idnom'], $row['idactions']));
+    $table->add_data([$row['idnom'], $row['idactions']]);
 }
 
 $table->print_html();

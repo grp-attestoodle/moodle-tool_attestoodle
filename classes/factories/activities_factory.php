@@ -49,7 +49,7 @@ class activities_factory extends singleton {
      */
     protected function __construct() {
         parent::__construct();
-        $this->modulenames = array();
+        $this->modulenames = [];
     }
 
     /**
@@ -123,7 +123,7 @@ class activities_factory extends singleton {
      */
     public function retrieve_activities_by_course($id, $trainingid) {
         $dbcoursemodules = db_accessor::get_instance()->get_course_modules_by_course($id);
-        $activities = array();
+        $activities = [];
         foreach ($dbcoursemodules as $coursemodule) {
             $activityid = $coursemodule->id;
 

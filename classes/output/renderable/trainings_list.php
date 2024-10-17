@@ -28,7 +28,7 @@
 namespace tool_attestoodle\output\renderable;
 
 
-use \renderable;
+use renderable;
 use tool_attestoodle\utils\plugins_accessor;
 /**
  * Display the list of all the trainings declared in Attestoodle.
@@ -66,19 +66,19 @@ class trainings_list implements renderable {
      * @return string[] The tables columns header
      */
     public function get_table_head() {
-        $ret = array(
+        $ret = [
                 get_string('trainings_list_table_header_column_name', 'tool_attestoodle'),
                 get_string('trainings_list_table_header_column_hierarchy', 'tool_attestoodle'),
                 get_string('trainings_list_table_header_column_description', 'tool_attestoodle'),
-                ''
-        );
+                '',
+        ];
         if (plugins_accessor::get_instance()->get_task_plugin_info() != null) {
-            $ret = array(
+            $ret = [
                 get_string('trainings_list_table_header_column_name', 'tool_attestoodle'),
                 get_string('trainings_list_table_header_column_hierarchy', 'tool_attestoodle'),
                 get_string('trainings_list_table_header_column_description', 'tool_attestoodle'),
                 get_string('deadline', 'tool_attestoodle'),
-                '');
+                ''];
         }
         return $ret;
     }
@@ -94,7 +94,7 @@ class trainings_list implements renderable {
             global $OUTPUT;
             $stdclass = new \stdClass();
 
-            $categorylink = new \moodle_url("/course/index.php", array("categoryid" => $training->get_categoryid()));
+            $categorylink = new \moodle_url("/course/index.php", ["categoryid" => $training->get_categoryid()]);
             $stdclass->name = "<a href='{$categorylink}'>{$training->get_name()}</a>";
 
             $stdclass->hierarchy = $training->get_hierarchy();
@@ -102,25 +102,25 @@ class trainings_list implements renderable {
             $stdclass->description = $training->get_description();
 
             // Links.
-            $parameters = array(
+            $parameters = [
                 'typepage' => 'learners', 'trainingid' => $training->get_id(),
-                'categoryid' => $training->get_categoryid());
+                'categoryid' => $training->get_categoryid()];
             $url = new \moodle_url('/admin/tool/attestoodle/index.php', $parameters);
             $label = "<img src=" . $OUTPUT->image_url ( 'i/group', 'moodle' ). " title='"
                 . get_string('student_list_link', 'tool_attestoodle') ."' />";
 
             $studentlink = \html_writer::link($url, $label);
 
-            $parameters = array('typepage' => 'trainingmanagement',
-                'categoryid' => $training->get_categoryid(), 'trainingid' => $training->get_id());
+            $parameters = ['typepage' => 'trainingmanagement',
+                'categoryid' => $training->get_categoryid(), 'trainingid' => $training->get_id()];
             $url = new \moodle_url('/admin/tool/attestoodle/index.php', $parameters);
             $label = "<img src=" . $OUTPUT->image_url ( 'i/settings', 'moodle' ). " title='"
                 . get_string('training_setting_link', 'tool_attestoodle') ."' />";
 
             $settinglink = \html_writer::link($url, $label);
 
-            $parameters = array('typepage' => 'managemilestones',
-                'categoryid' => $training->get_categoryid(), 'trainingid' => $training->get_id());
+            $parameters = ['typepage' => 'managemilestones',
+                'categoryid' => $training->get_categoryid(), 'trainingid' => $training->get_id()];
             $url = new \moodle_url('/admin/tool/attestoodle/index.php', $parameters);
             $label = "<img src=" . $OUTPUT->image_url ( 'navigation', 'tool_attestoodle' ). " title='"
                 . get_string('milestone_manage_link', 'tool_attestoodle') ."' />";

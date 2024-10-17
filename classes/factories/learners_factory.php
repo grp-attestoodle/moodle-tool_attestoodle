@@ -47,7 +47,7 @@ class learners_factory extends singleton {
      */
     protected function __construct() {
         parent::__construct();
-        $this->learners = array();
+        $this->learners = [];
     }
 
     /**
@@ -71,13 +71,12 @@ class learners_factory extends singleton {
     /**
      * Method that retrieves the activities validated by a learner in DB and
      * stores them in the learner.
-     *
-     * @todo The passing by reference may be useless
+     * Comment : the passing by reference may be useless.
      *
      * @param learner $learner The learner to search activities for
      */
     public function retrieve_validated_activities(&$learner) {
-        $learner->set_validated_activities(array());
+        $learner->set_validated_activities([]);
         $dbactivities = db_accessor::get_instance()->get_activities_validated_by_learner($learner);
 
         foreach ($dbactivities as $dbactivity) {
@@ -124,7 +123,7 @@ class learners_factory extends singleton {
      * @param Training $training where we search learner.
      */
     public function retrieve_learners_by_training($training) {
-        $learners = array();
+        $learners = [];
 
         $dblearners = db_accessor::get_instance()->get_learners_by_training($training->get_id());
 

@@ -59,10 +59,10 @@ class learner_certificate_form extends \moodleform {
             get_string('disablecertiflib', 'tool_attestoodle'));
         $mform->disabledIf('disablecertif', 'custom', 'eq', 0);
 
-        $group = array();
+        $group = [];
         // Select template.
         $rs = $DB->get_records('tool_attestoodle_template', null, null, 'id, name');
-        $lsttemplate = array();
+        $lsttemplate = [];
         foreach ($rs as $result) {
             $lsttemplate[$result->id] = $result->name;
         }
@@ -89,12 +89,12 @@ class learner_certificate_form extends \moodleform {
 
         $mform->addGroup($group, 'activities', get_string('template_certificate', 'tool_attestoodle'), ' ', false);
         // Level of grouping.
-        $level1s = array(
+        $level1s = [
                     'coursename' => get_string('grp_course', 'tool_attestoodle'),
                     'name' => get_string('grp_activity', 'tool_attestoodle'),
-                    'type' => get_string('grp_type', 'tool_attestoodle')
-                    );
-        $level2s = array_merge(array('' => ''), $level1s);
+                    'type' => get_string('grp_type', 'tool_attestoodle'),
+                    ];
+        $level2s = array_merge(['' => ''], $level1s);
         $mform->addElement('select', 'group1', get_string('grp_level1', 'tool_attestoodle'), $level1s, null);
         $mform->disabledIf('group1', 'custom', 'eq', 0);
         $mform->disabledIf('group1', 'disablecertif', 'eq', 1);

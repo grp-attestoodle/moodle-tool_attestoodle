@@ -1,4 +1,8 @@
 # Release notes
+## v1.10.4
+
+- Issue #168 fix, 
+- and improved compliance with Moodle coding rules (CI configuration updated)
 
 ## v1.10.3
 

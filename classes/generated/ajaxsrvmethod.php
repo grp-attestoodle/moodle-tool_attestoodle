@@ -40,8 +40,8 @@ $categoryid = optional_param('categoryid', 1, PARAM_INT);
 
 // Load Data and generated certificate.
 $nb = 0;
-$rs = $DB->get_records('tool_attestoodle_tmp', array ('trainingid' => $trainingid), '', '*', 0, 2);
-$tabid = array();
+$rs = $DB->get_records('tool_attestoodle_tmp',  ['trainingid' => $trainingid], '', '*', 0, 2);
+$tabid = [];
 foreach ($rs as $result) {
     $tabid[] = $result->id;
     $pdfinfo = json_decode($result->pdfinfo);
@@ -50,7 +50,7 @@ foreach ($rs as $result) {
 
     $tab = $pdfinfo->activities;
     $index = 0;
-    $activities = array();
+    $activities = [];
     while (isset($pdfinfo->activities->{'act'.$index})) {
         $obj = $pdfinfo->activities->{'act'.$index};
         $activities[$index]["coursename"] = $obj->coursename;
@@ -78,7 +78,7 @@ foreach ($rs as $result) {
     }
 
     $template = $DB->get_record('tool_attestoodle_user_style',
-                array('userid' => $pdfinfo->learnerid, 'trainingid' => $trainingid));
+                ['userid' => $pdfinfo->learnerid, 'trainingid' => $trainingid]);
     $pdf = new attestation_pdf();
     if (!isset($template->id)) {
         $pdf->set_trainingid($trainingid);
@@ -121,7 +121,7 @@ foreach ($rs as $result) {
         $certificatelogid = $DB->insert_record('tool_attestoodle_certif_log', $dataobject, true);
 
         // Try to record the values used to generate the certificate.
-        $milestones = array();
+        $milestones = [];
         foreach ($activities as $obj) {
             $dataobject = new \stdClass();
             $dataobject->creditedtime = $obj["totalminutes"];
@@ -134,12 +134,12 @@ foreach ($rs as $result) {
 }
 
 for ($i = 0; $i < count($tabid); $i++) {
-    $DB->delete_records('tool_attestoodle_tmp', array ('id' => $tabid[$i]));
+    $DB->delete_records('tool_attestoodle_tmp',  ['id' => $tabid[$i]]);
 }
 
 
 
-$res = array();
+$res = [];
 $res['result'] = true;
 $res['nb'] = $nb;
 echo $OUTPUT->header();

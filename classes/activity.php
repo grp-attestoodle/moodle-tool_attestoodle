@@ -35,10 +35,10 @@ use tool_attestoodle\factories\activities_factory;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class activity {
-    /** @var integer Id of the activity */
+    /** @var int Id of the activity */
     private $id;
 
-    /** @var integer Id of the activity from its specific module type */
+    /** @var int Id of the activity from its specific module type */
     private $idmodule;
 
     /** @var string Name of the activity */
@@ -50,14 +50,14 @@ class activity {
     /** @var string Type of the activity */
     private $type;
 
-    /** @var integer Milestone time (in minutes) of the activity */
+    /** @var int Milestone time (in minutes) of the activity */
     private $milestone;
 
     /**
      * @var course The course corresponding to the activity
-     * @todo Replace by the ID of the course to avoid bijective relation
      */
     private $course;
+    // To be done ? Replace by the id of the course to avoid bijective relation.
 
     /** @var bool The visibility of the activity.*/
     private $visible;

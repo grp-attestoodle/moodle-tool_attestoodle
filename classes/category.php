@@ -35,7 +35,7 @@ use tool_attestoodle\factories\categories_factory;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class category {
-    /** @var integer Id of the category */
+    /** @var int Id of the category */
     private $id;
 
     /** @var string Name of the category */

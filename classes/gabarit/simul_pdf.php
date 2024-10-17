@@ -18,7 +18,7 @@
  * pdf simulation utility file.
  * @package tool_attestoodle
  * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
- * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace tool_attestoodle\gabarit;
 defined('MOODLE_INTERNAL') || die();
@@ -28,7 +28,7 @@ require_once("$CFG->dirroot/lib/pdflib.php");
 /**
  * Simul a pdf for compute nb page required.
  * @copyright  2018 Pole de Ressource Numerique de l'Universite du Mans
- * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class simul_pdf extends attestation_pdf {
     /**

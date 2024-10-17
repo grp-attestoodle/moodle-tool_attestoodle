@@ -44,11 +44,11 @@ $navlevel2 = get_string('navlevel2', 'tool_attestoodle');
 $navlevel3a = get_string('navlevel3a', 'tool_attestoodle');
 
 $PAGE->navbar->ignore_active();
-$PAGE->navbar->add($navlevel1, new moodle_url('/admin/tool/attestoodle/index.php', array()));
+$PAGE->navbar->add($navlevel1, new moodle_url('/admin/tool/attestoodle/index.php', []));
 $PAGE->navbar->add($navlevel2, new moodle_url('/admin/tool/attestoodle/index.php',
-                            array('typepage' => 'trainingmanagement', 'categoryid' => $categoryid)));
+                            ['typepage' => 'trainingmanagement', 'categoryid' => $categoryid]));
 $PAGE->navbar->add($navlevel3a, new moodle_url('/admin/tool/attestoodle/index.php',
-                            array('typepage' => 'learners', 'categoryid' => $categoryid)));
+                            ['typepage' => 'learners', 'categoryid' => $categoryid]));
 $PAGE->set_url(new moodle_url('/admin/tool/attestoodle/classes/generated/preparedinf.php', [] ));
 
 $PAGE->set_title(get_string('confirmation', 'tool_attestoodle'));
@@ -61,10 +61,10 @@ $training = trainings_factory::get_instance()->retrieve_training_by_id($training
 
 // Data preparation.
 $nb = 0;
-$DB->delete_records('tool_attestoodle_tmp', array ('trainingid' => $trainingid));
+$DB->delete_records('tool_attestoodle_tmp',  ['trainingid' => $trainingid]);
 foreach ($training->get_learners() as $learner) {
     $template = $DB->get_record('tool_attestoodle_user_style',
-                array('userid' => $learner->get_id(), 'trainingid' => $trainingid));
+                ['userid' => $learner->get_id(), 'trainingid' => $trainingid]);
     $enablecertificate = 1;
     if (isset($template->enablecertificate)) {
         $enablecertificate = $template->enablecertificate;
@@ -94,27 +94,27 @@ echo (get_string('questgenerate', 'tool_attestoodle', $nb) . "<br/>");
 $linkyes = \html_writer::link(
                 new \moodle_url(
                             '/admin/tool/attestoodle/classes/generated/createdpdf.php',
-                            array(
+                            [
                                 'trainingid' => $trainingid,
                                 'categoryid' => $categoryid,
                                 'begindate' => $begindate,
                                 'enddate' => $enddate,
-                                'nbmax' => $nb
-                            )
+                                'nbmax' => $nb,
+                            ]
                     ),
                     get_string('yes'),
-                    array('class' => 'btn btn-default attestoodle-button'));
+                    ['class' => 'btn btn-default attestoodle-button']);
 
 $linkno = \html_writer::link(
                 new moodle_url('/admin/tool/attestoodle/index.php',
-                            array('typepage' => 'learners',
+                            ['typepage' => 'learners',
                             'trainingid' => $trainingid,
                             'categoryid' => $categoryid,
                             'begindate' => $begindate,
-                            'enddate' => $enddate)
+                            'enddate' => $enddate]
                     ),
                     get_string('no'),
-                    array('class' => 'btn btn-default attestoodle-button'));
+                    ['class' => 'btn btn-default attestoodle-button']);
 
 echo $linkno . '&nbsp;&nbsp;' . $linkyes;
 echo ("</center>");

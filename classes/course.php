@@ -31,7 +31,7 @@ namespace tool_attestoodle;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class course {
-    /** @var integer Id of the course */
+    /** @var int Id of the course */
     private $id;
 
     /** @var string Name of the course */
@@ -42,9 +42,9 @@ class course {
 
     /**
      * @var training Training corresponding to the course.
-     * @todo Replace by the ID of the training to avoid bijective relation
      */
     private $training;
+    // To be done ? replace by the ID of the training to avoid bijective relation.
 
     /**
      * Constructor of the course class
@@ -55,7 +55,7 @@ class course {
     public function __construct($id, $name) {
         $this->id = $id;
         $this->name = $name;
-        $this->activities = array();
+        $this->activities = [];
         $this->training = null;
     }
 

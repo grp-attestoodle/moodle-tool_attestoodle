@@ -38,24 +38,24 @@ $delete = optional_param('delete', 15, PARAM_INT);
 $confirm = optional_param('confirm', '', PARAM_ALPHANUM);
 
 $url = new moodle_url('/admin/tool/attestoodle/classes/training/delete_training.php',
-            array('delete' => $delete, 'categoryid' => $categoryid, 'trainingid' => $trainingid));
+            ['delete' => $delete, 'categoryid' => $categoryid, 'trainingid' => $trainingid]);
 $PAGE->set_url($url);
 
 if ($confirm != md5($delete)) { // Must be confirm.
     echo $OUTPUT->header();
     echo $OUTPUT->heading(get_string('deletetraining', 'tool_attestoodle'));
-    $optionsyes = array('delete' => $delete, 'confirm' => md5($delete), 'sesskey' => sesskey(),
-                        'categoryid' => $categoryid, 'trainingid' => $trainingid);
+    $optionsyes = ['delete' => $delete, 'confirm' => md5($delete), 'sesskey' => sesskey(),
+                        'categoryid' => $categoryid, 'trainingid' => $trainingid];
 
     $returnurl = new moodle_url('/admin/tool/attestoodle/index.php',
-                        array (
+                         [
                             'typepage' => 'trainingmanagement',
                             'trainingid' => $trainingid,
-                            'categoryid' => $categoryid));
+                            'categoryid' => $categoryid]);
     $deleteurl = new moodle_url('/admin/tool/attestoodle/classes/training/delete_training.php', $optionsyes);
 
     $deletebutton = new single_button($deleteurl, get_string('delete'), 'post');
-    $training = $DB->get_record('tool_attestoodle_training', array('id' => $trainingid));
+    $training = $DB->get_record('tool_attestoodle_training', ['id' => $trainingid]);
     echo $OUTPUT->confirm('Voulez-vous vraiment supprimer la formation ' . $training->name,
                               $deletebutton, $returnurl);
     echo $OUTPUT->footer();

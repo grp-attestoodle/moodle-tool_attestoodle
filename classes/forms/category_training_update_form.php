@@ -64,14 +64,14 @@ class category_training_update_form extends \moodleform {
 
         if ($idtemplate == -1 && $editmode == 1) {
             $mform->addElement("static", null, null, get_string('confirmtraincreate', 'tool_attestoodle'));
-            $group = array();
-            $group[] =& $mform->createElement('submit', 'create_yes', get_string('yes'), array('class' => 'send-button'));
-            $group[] =& $mform->createElement('submit', 'create_no', get_string('no'), array('class' => 'send-button'));
+            $group = [];
+            $group[] =& $mform->createElement('submit', 'create_yes', get_string('yes'), ['class' => 'send-button']);
+            $group[] =& $mform->createElement('submit', 'create_no', get_string('no'), ['class' => 'send-button']);
             $mform->addGroup($group, 'buttongroup', '', ' ', false);
         }
 
         if ($istraining) {
-            $mform->addElement('text', 'name', get_string('trainingname', 'tool_attestoodle'), array("size" => 50));
+            $mform->addElement('text', 'name', get_string('trainingname', 'tool_attestoodle'), ["size" => 50]);
             $mform->setType('name', PARAM_NOTAGS);
             $training = trainings_factory::get_instance()->retrieve_training($category->get_id());
             $mform->setDefault('name', $training->get_name());
@@ -81,17 +81,17 @@ class category_training_update_form extends \moodleform {
             $mform->disabledIf('startdate', 'edition', 'eq', 0);
             $mform->addElement('date_selector', 'enddate', get_string('endtraining', 'tool_attestoodle'));
             $mform->disabledIf('enddate', 'edition', 'eq', 0);
-            $mform->addElement('text', 'duration', get_string('durationtraining', 'tool_attestoodle') , array("size" => 3));
+            $mform->addElement('text', 'duration', get_string('durationtraining', 'tool_attestoodle') , ["size" => 3]);
             $mform->setType('duration', PARAM_INT);
             $mform->disabledIf('duration', 'edition', 'eq', 0);
         }
 
         if ($idtemplate > -1) {
             $mform->addElement('header', 'templatesection', get_string('template_certificate', 'tool_attestoodle'));
-            $group = array();
+            $group = [];
             // Select template.
             $rs = $DB->get_records('tool_attestoodle_template', null, null, 'id, name');
-            $lsttemplate = array();
+            $lsttemplate = [];
             foreach ($rs as $result) {
                 $lsttemplate[$result->id] = $result->name;
             }
@@ -116,12 +116,12 @@ class category_training_update_form extends \moodleform {
             $mform->addGroup($group, 'activities', get_string('template_certificate', 'tool_attestoodle'), ' ', false);
             $mform->disabledIf('activities', 'edition', 'eq', 0);
             // Level of grouping.
-            $level1s = array(
+            $level1s = [
                     'coursename' => get_string('grp_course', 'tool_attestoodle'),
                     'name' => get_string('grp_activity', 'tool_attestoodle'),
-                    'type' => get_string('grp_type', 'tool_attestoodle')
-                    );
-            $level2s = array_merge(array('' => ''), $level1s);
+                    'type' => get_string('grp_type', 'tool_attestoodle'),
+                    ];
+            $level2s = array_merge(['' => ''], $level1s);
             $mform->addElement('select', 'group1', get_string('grp_level1', 'tool_attestoodle'), $level1s, null);
             $mform->disabledIf('group1', 'edition', 'eq', 0);
 
@@ -131,11 +131,11 @@ class category_training_update_form extends \moodleform {
         }
         if ($editmode == 1 && $idtemplate != -1) {
             $mform->addElement('header', 'actionsection', get_string('actions'));
-            $actionbuttongroup = array();
+            $actionbuttongroup = [];
             $actionbuttongroup[] =& $mform->createElement('submit', 'save', get_string('savechanges'),
-                array('class' => 'send-button'));
+                ['class' => 'send-button']);
             $actionbuttongroup[] =& $mform->createElement('submit', 'delete', get_string('delete'),
-                array('class' => 'cancel-button'));
+                ['class' => 'cancel-button']);
             $mform->addGroup($actionbuttongroup, 'actionbuttongroup', '', ' ', false);
             $mform->setExpanded('actionsection', true);
         }
@@ -157,7 +157,7 @@ class category_training_update_form extends \moodleform {
             if ($this->oldname != $data['name']) {
                 // Name Already exist ?
                 $sql = 'select * from {tool_attestoodle_training} where name = ?';
-                if ($DB->record_exists_sql($sql, array($data['name']))) {
+                if ($DB->record_exists_sql($sql, [$data['name']])) {
                     $errors['name'] = get_string('errduplicatename', 'tool_attestoodle');
                 }
             }

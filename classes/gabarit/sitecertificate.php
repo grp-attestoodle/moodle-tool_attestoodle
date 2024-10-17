@@ -39,15 +39,15 @@ $lnkidtemplate = $idtemplate;
 $namelock = 0;
 
 if (!isset($idtemplate)) {
-    $template = $DB->get_record('tool_attestoodle_template', array('name' => 'Site'));
+    $template = $DB->get_record('tool_attestoodle_template', ['name' => 'Site']);
     $idtemplate = $template->id;
     $namelock = 1;
     $previewok = true;
 } else {
-    $template = $DB->get_record('tool_attestoodle_template', array('id' => $idtemplate));
+    $template = $DB->get_record('tool_attestoodle_template', ['id' => $idtemplate]);
     if ($template == null) {
         // New model copy of template 'Site'.
-        $template = $DB->get_record('tool_attestoodle_template', array('name' => 'Site'));
+        $template = $DB->get_record('tool_attestoodle_template', ['name' => 'Site']);
         $idtemplate = $template->id;
         $template->name = '';
         $previewok = false;
@@ -56,7 +56,7 @@ if (!isset($idtemplate)) {
         if ($template->name == "Site") {
             $namelock = 1;
         } else {
-            if ($DB->record_exists('tool_attestoodle_train_style', array('templateid' => $idtemplate))) {
+            if ($DB->record_exists('tool_attestoodle_train_style', ['templateid' => $idtemplate])) {
                 $namelock = 1;
             }
         }
@@ -67,11 +67,11 @@ if (!isset($idtemplate)) {
 $PAGE->set_context($context);
 $PAGE->navbar->ignore_active();
 $navlevel1 = get_string('navlevel1b', 'tool_attestoodle');
-$PAGE->navbar->add($navlevel1, new moodle_url('/admin/tool/attestoodle/classes/gabarit/listtemplate.php', array()));
+$PAGE->navbar->add($navlevel1, new moodle_url('/admin/tool/attestoodle/classes/gabarit/listtemplate.php', []));
 $navlevel2 = get_string('navlevel2b', 'tool_attestoodle');
 $baseurl = new moodle_url(
     '/admin/tool/attestoodle/classes/gabarit/sitecertificate.php',
-    array('templateid' => $lnkidtemplate)
+    ['templateid' => $lnkidtemplate]
 );
 $PAGE->navbar->add($navlevel2 . $template->name, $baseurl);
 require_login();
@@ -90,14 +90,14 @@ if ($fromform = $mform->get_data()) {
     $datas = $mform->get_data();
 
     if (isset($datas->cancel)) {
-        $redirecturl = new \moodle_url('/admin/tool/attestoodle/classes/gabarit/listtemplate.php', array());
+        $redirecturl = new \moodle_url('/admin/tool/attestoodle/classes/gabarit/listtemplate.php', []);
         redirect($redirecturl);
         return;
     }
 
     if (isset($datas->name)) {
         // Create.
-        if (!$DB->record_exists('tool_attestoodle_template', array('name' => $datas->name))) {
+        if (!$DB->record_exists('tool_attestoodle_template', ['name' => $datas->name])) {
             $model = new stdClass();
             $model->name = $datas->name;
             $model->timecreated = usergetdate(time())[0];
@@ -107,14 +107,14 @@ if ($fromform = $mform->get_data()) {
         }
     } else {
         // Update timemodified et userid.
-        $template = $DB->get_record('tool_attestoodle_template', array('id' => $datas->templateid));
+        $template = $DB->get_record('tool_attestoodle_template', ['id' => $datas->templateid]);
         $template->timemodified = usergetdate(time())[0];
         $template->userid = $USER->id;
         $DB->update_record('tool_attestoodle_template', $template);
         $idtemplate = $datas->templateid;
     }
     $previewok = true;
-    $nvxtuples = array();
+    $nvxtuples = [];
 
     $backgroundexist = false;
     if ($datas->fichier) {
@@ -124,7 +124,7 @@ if ($fromform = $mform->get_data()) {
             'tool_attestoodle',
             'fichier',
             $idtemplate,
-            array('subdirs' => 0, 'maxbytes' => 10485760, 'maxfiles' => 1)
+            ['subdirs' => 0, 'maxbytes' => 10485760, 'maxfiles' => 1]
         );
         // Get and save file name.
         $fs = get_file_storage();
@@ -333,7 +333,7 @@ if ($fromform = $mform->get_data()) {
         );
     }
 
-    $DB->delete_records('tool_attestoodle_tpl_detail', array('templateid' => $idtemplate));
+    $DB->delete_records('tool_attestoodle_tpl_detail', ['templateid' => $idtemplate]);
     if (count($nvxtuples) > 0) {
         foreach ($nvxtuples as $record) {
             $DB->insert_record('tool_attestoodle_tpl_detail', $record);
@@ -344,7 +344,7 @@ if ($fromform = $mform->get_data()) {
         // We can't modified values of the form so we reload page.
         $redirecturl = new \moodle_url(
             '/admin/tool/attestoodle/classes/gabarit/sitecertificate.php',
-            array("templateid" => $idtemplate)
+            ["templateid" => $idtemplate]
         );
         redirect($redirecturl);
         return;
@@ -358,8 +358,8 @@ if (get_string_manager()->string_exists('UrlHlpTo_sitecertificate', 'tool_attest
 }
 
 $sql = "select type,data from {tool_attestoodle_tpl_detail} where templateid = " . $idtemplate;
-$rs = $DB->get_recordset_sql($sql, array());
-$valdefault = array();
+$rs = $DB->get_recordset_sql($sql, []);
+$valdefault = [];
 $nbtxt = 0;
 foreach ($rs as $result) {
     $obj = json_decode($result->data);
@@ -419,7 +419,7 @@ if (!isset($create)) {
         'tool_attestoodle',
         'fichier',
         $idtemplate,
-        array('subdirs' => 0, 'maxbytes' => 10485760, 'maxfiles' => 1)
+        ['subdirs' => 0, 'maxbytes' => 10485760, 'maxfiles' => 1]
     );
     $entry->fichier = $draftitemid;
     $mform->set_data($entry);
@@ -429,8 +429,8 @@ if (!isset($create)) {
 // Set default data, if any !
 $formdata = $valdefault;
 $mform->set_data($formdata);
-$mform->set_data(array('namelock' => $namelock));
-$mform->set_data(array('name' => $template->name));
+$mform->set_data(['namelock' => $namelock]);
+$mform->set_data(['name' => $template->name]);
 // Displays the form !
 $mform->display();
 if ($previewok) {
@@ -449,13 +449,13 @@ echo $OUTPUT->footer();
  * @param string $objson values ​​in json format.
  */
 function add_values_from_json(&$arrayvalues, $prefixe, $objson) {
-    $emphases = array('', 'B', 'I');
-    $alignments = array('L', 'R', 'C', 'J');
-    $sizes = array(
+    $emphases = ['', 'B', 'I'];
+    $alignments = ['L', 'R', 'C', 'J'];
+    $sizes = [
         '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '18', '20', '22', '24', '26', '28', '32',
-        '36', '40', '44', '48', '54', '60', '66', '72'
-    );
-    $familles = array('courier', 'helvetica', 'times');
+        '36', '40', '44', '48', '54', '60', '66', '72',
+    ];
+    $familles = ['courier', 'helvetica', 'times'];
 
     $arrayvalues[$prefixe . 'Posx'] = $objson->location->x;
     $arrayvalues[$prefixe . 'Posy'] = $objson->location->y;
@@ -558,13 +558,13 @@ function data_to_structure(
     $dtosize = null,
     $dtoontotal = null
 ) {
-    $emphases = array('', 'B', 'I');
-    $alignments = array('L', 'R', 'C', 'J');
-    $sizes = array(
+    $emphases = ['', 'B', 'I'];
+    $alignments = ['L', 'R', 'C', 'J'];
+    $sizes = [
         '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '18', '20', '22', '24', '26', '28', '32',
-        '36', '40', '44', '48', '54', '60', '66', '72'
-    );
-    $familles = array('courier', 'helvetica', 'times');
+        '36', '40', '44', '48', '54', '60', '66', '72',
+    ];
+    $familles = ['courier', 'helvetica', 'times'];
 
     $templatedetail = new stdClass();
     $templatedetail->templateid = $dtotemplateid;
