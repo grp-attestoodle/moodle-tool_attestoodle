@@ -1,4 +1,8 @@
 # Release notes
+## v1.10.5
+
+- Issue #171 fix
+
 ## v1.10.4
 
 - Issue #168 fix, 
