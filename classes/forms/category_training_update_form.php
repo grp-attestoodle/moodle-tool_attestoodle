@@ -161,6 +161,9 @@ class category_training_update_form extends \moodleform {
                     $errors['name'] = get_string('errduplicatename', 'tool_attestoodle');
                 }
             }
+            if (str_contains($data['name'], '/')) {
+                $errors['name'] = get_string('errslashinname', 'tool_attestoodle');
+            }
         }
 
         if (isset($data['enddate']) && $data['startdate'] > $data['enddate']) {

@@ -266,6 +266,7 @@ $string['period_form_help'] = 'Indicate the period
  until the end date
  included.';
 $string['errduplicatename'] = 'Duplicate nane detected !!';
+$string['errslashinname'] = 'Name should not contains "/" characters !!';
 $string['createtemplate'] = 'Create new template';
 $string['stop'] = 'Stop';
 $string['confirmation'] = 'Confirmation';
